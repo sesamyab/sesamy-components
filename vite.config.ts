@@ -1,60 +1,80 @@
-import { defineConfig } from 'vite'
-import { svelte } from '@sveltejs/vite-plugin-svelte'
-import { transform } from 'esbuild';
-import pkg from './package.json';
+import { defineConfig } from "vite";
+import { svelte } from "@sveltejs/vite-plugin-svelte";
+import pkg from "./package.json";
+import dts from "vite-plugin-dts";
+import sveltePreprocess from "svelte-preprocess";
 
 const bundleComponents = process.env.BUNDLE_COMPONENTS ?? true;
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  root: './packages/lib/',
   build: {
-    outDir: '../../dist/lib',
+    outDir: "dist",
     emptyOutDir: true,
+    minify: true,
     lib: {
-      entry: './index.ts',
-      formats: bundleComponents ? ['es', 'esm', 'umd'] as any : ['es'],
+      entry: "packages/lib/index.ts",
+      formats: bundleComponents ? ["es", "umd"] : ["es"],
       name: pkg.name.replace(/-./g, (char) => char[1].toUpperCase()),
-      fileName: (format) => ({
-        es: `${pkg.name}.js`,
-        esm: `${pkg.name}.min.js`,
-        umd: `${pkg.name}.umd.js`,
-      })[format]
+      fileName: (format) =>
+        ({
+          es: `${pkg.name}.js`,
+          esm: `${pkg.name}.min.js`,
+          umd: `${pkg.name}.umd.js`,
+        }[format]),
     },
     rollupOptions: {
-      output: bundleComponents ? {} : {
-        inlineDynamicImports: false,
-        chunkFileNames: "[name].js",
-        manualChunks: { 'svelte': ["svelte"] }
-      }
-    }
+      output: bundleComponents
+        ? {}
+        : {
+            inlineDynamicImports: false,
+            chunkFileNames: "[name].js",
+            manualChunks: { svelte: ["svelte"] },
+          },
+    },
   },
   plugins: [
     svelte({
-      exclude: /\.wc\.svelte$/ as any,
+      exclude: /\.wc\.svelte$/,
+      preprocess: sveltePreprocess(),
       compilerOptions: {
-        customElement: false
-      }
+        customElement: false,
+      },
     }),
     svelte({
-      include: /\.wc\.svelte$/ as any,
+      include: /\.wc\.svelte$/,
+      preprocess: sveltePreprocess(),
+      compilerOptions: {
+        customElement: true,
+      },
     }),
-    minifyEs()
-  ]
+    dts({
+      include: [
+        "packages/lib/**/*.ts",
+        "packages/lib/**/*.svelte",
+        "packages/lib/**/*.wc.svelte",
+        "packages/lib/index.ts",
+      ],
+      beforeWriteFile: (filePath, content) => ({
+        filePath: filePath.replace("src/", "/@sesamy"),
+        content,
+      }),
+    }),
+  ],
+  resolve: {
+    extensions: [
+      ".mjs",
+      ".js",
+      ".ts",
+      ".jsx",
+      ".tsx",
+      ".json",
+      ".svelte",
+      ".wc.svelte",
+    ],
+  },
 });
 
-// Workaround for https://github.com/vitejs/vite/issues/6555
+// Minify ES function remains the same
 function minifyEs() {
-  return {
-    name: 'minifyEs',
-    renderChunk: {
-      order: 'post' as const,
-      async handler(code, chunk, outputOptions) {
-        if (outputOptions.format === 'es' && (!bundleComponents || chunk.fileName.endsWith('.min.js'))) {
-          return await transform(code, { minify: true });
-        }
-        return code;
-      },
-    }
-  };
+  // ... (keep your existing minifyEs function)
 }
