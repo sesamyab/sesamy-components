@@ -10,8 +10,8 @@
   </p>
 
   <p class="container">
-    <my-component></my-component>
     <sesamy-login></sesamy-login>
+    <sesamy-paywall></sesamy-paywall>
   </p>
 </main>
 
