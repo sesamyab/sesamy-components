@@ -8,10 +8,10 @@ export default defineConfig({
     lib: {
       entry: "packages/lib/index.ts",
       name: "@sesamy/sesamy-components",
-      fileName: (format) => `index.${format}.js`,
+      fileName: (format) => `sesamy-components.${format}.js`,
       formats: ["es", "umd"],
     },
-    outDir: "dist",
+    outDir: "dist/lib",
     rollupOptions: {
       external: ["svelte"],
       output: {
@@ -42,12 +42,8 @@ export default defineConfig({
         "packages/lib/**/*.svelte",
         "packages/lib/**/*.wc.svelte",
       ],
-      beforeWriteFile: (filePath, content) => ({
-        filePath: filePath.replace("packages/lib/", ""),
-        content,
-      }),
+      outDir: "dist/lib",
       rollupTypes: true,
-      outDir: "dist",
       compilerOptions: {
         baseUrl: "packages/lib",
         paths: {

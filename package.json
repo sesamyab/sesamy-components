@@ -1,11 +1,19 @@
 {
   "name": "@sesamy/sesamy-components",
   "description": "Ahareable web components library with Vite + Svelte",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "type": "module",
-  "module": "dist/lib/sesamy-components.js",
+  "module": "dist/lib/sesamy-components.es.js",
   "main": "dist/lib/sesamy-components.umd.js",
   "types": "dist/lib/sesamy-components.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/lib/sesamy-components.es.js",
+      "require": "./dist/lib/sesamy-components.umd.js",
+      "types": "./dist/lib/sesamy-components.d.ts"
+    }
+  },
+  "sideEffects": false,
   "scripts": {
     "start": "npm run dev -s",
     "dev": "vite --config vite.demo.config.ts",
