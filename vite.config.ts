@@ -1,63 +1,59 @@
 import { defineConfig } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
-import pkg from "./package.json";
 import dts from "vite-plugin-dts";
 import sveltePreprocess from "svelte-preprocess";
 
-const bundleComponents = process.env.BUNDLE_COMPONENTS ?? true;
-
 export default defineConfig({
   build: {
-    outDir: "dist",
-    emptyOutDir: true,
-    minify: true,
     lib: {
       entry: "packages/lib/index.ts",
-      formats: bundleComponents ? ["es", "umd"] : ["es"],
-      name: pkg.name.replace(/-./g, (char) => char[1].toUpperCase()),
-      fileName: (format) =>
-        ({
-          es: `${pkg.name}.js`,
-          esm: `${pkg.name}.min.js`,
-          umd: `${pkg.name}.umd.js`,
-        }[format]),
+      name: "@sesamy/sesamy-components",
+      fileName: (format) => `index.${format}.js`,
+      formats: ["es", "umd"],
     },
+    outDir: "dist",
     rollupOptions: {
-      output: bundleComponents
-        ? {}
-        : {
-            inlineDynamicImports: false,
-            chunkFileNames: "[name].js",
-            manualChunks: { svelte: ["svelte"] },
-          },
+      external: ["svelte"],
+      output: {
+        globals: {
+          svelte: "Svelte",
+        },
+      },
     },
   },
   plugins: [
     svelte({
-      exclude: /\.wc\.svelte$/,
-      preprocess: sveltePreprocess(),
-      compilerOptions: {
-        customElement: false,
-      },
-    }),
-    svelte({
-      include: /\.wc\.svelte$/,
       preprocess: sveltePreprocess(),
       compilerOptions: {
         customElement: true,
       },
+      include: ["packages/lib/**/*.wc.svelte"],
+    }),
+    svelte({
+      preprocess: sveltePreprocess(),
+      compilerOptions: {
+        customElement: false,
+      },
+      exclude: ["**/*.wc.svelte"],
     }),
     dts({
       include: [
         "packages/lib/**/*.ts",
         "packages/lib/**/*.svelte",
         "packages/lib/**/*.wc.svelte",
-        "packages/lib/index.ts",
       ],
       beforeWriteFile: (filePath, content) => ({
-        filePath: filePath.replace("src/", "/@sesamy"),
+        filePath: filePath.replace("packages/lib/", ""),
         content,
       }),
+      rollupTypes: true,
+      outDir: "dist",
+      compilerOptions: {
+        baseUrl: "packages/lib",
+        paths: {
+          "*": ["*", "*.svelte", "*.wc.svelte"],
+        },
+      },
     }),
   ],
   resolve: {
@@ -73,8 +69,3 @@ export default defineConfig({
     ],
   },
 });
-
-// Minify ES function remains the same
-function minifyEs() {
-  // ... (keep your existing minifyEs function)
-}

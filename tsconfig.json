@@ -8,26 +8,24 @@
     "allowJs": true,
     "checkJs": true,
     "isolatedModules": true,
-    "outDir": "../../dist",
+    "outDir": "./dist",
     "declaration": true,
-    "declarationDir": "../../dist",
+    "declarationDir": "./dist",
+    "emitDeclarationOnly": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "baseUrl": ".",
+    "baseUrl": "packages/lib",
     "paths": {
       "*": ["*", "*.svelte", "*.wc.svelte"]
     }
   },
   "include": [
-    "lib/**/*.d.ts",
-    "lib/**/*.ts",
-    "lib/**/*.js",
-    "lib/**/*.svelte",
-    "lib/**/*.wc.svelte",
-    "index.ts",
-    "packages/lib/svelte.d.ts"
-  ],
-  "references": [{ "path": "./tsconfig.node.json" }]
+    "packages/lib/**/*.d.ts",
+    "packages/lib/**/*.ts",
+    "packages/lib/**/*.js",
+    "packages/lib/**/*.svelte",
+    "packages/lib/**/*.wc.svelte"
+  ]
 }
