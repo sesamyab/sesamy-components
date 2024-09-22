@@ -29,5 +29,11 @@
     "packages/lib/**/*.js",
     "packages/lib/**/*.svelte",
     "packages/lib/**/*.wc.svelte"
+  ],
+  "exclude": [
+    "**/*.stories.ts",
+    "**/*.stories.js",
+    "**/*.stories.svelte",
+    "node_modules"
   ]
 }
