@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import dts from "vite-plugin-dts";
 import sveltePreprocess from "svelte-preprocess";
+import path from "path";
 
 export default defineConfig({
   build: {
@@ -50,6 +51,28 @@ export default defineConfig({
           "*": ["*", "*.svelte", "*.wc.svelte"],
         },
       },
+      beforeWriteFile: (filePath, content) => {
+        if (filePath.endsWith("index.d.ts")) {
+          // Modify the content to include explicit type definitions
+          content = `
+import { SvelteComponent } from 'svelte';
+
+export class Login extends SvelteComponent {
+  $$prop_def: {
+    buttonText?: string;
+    onLogin?: (event: CustomEvent) => void;
+  }
+}
+
+export class Paywall extends SvelteComponent {
+  // Add Paywall properties here
+}
+
+${content}
+          `;
+        }
+        return { filePath, content };
+      },
     }),
   ],
   resolve: {
@@ -63,5 +86,11 @@ export default defineConfig({
       ".svelte",
       ".wc.svelte",
     ],
+    alias: {
+      "@sesamy/sesamy-components": path.resolve(
+        __dirname,
+        "packages/lib/src/sesamy-components.d.ts",
+      ),
+    },
   },
 });

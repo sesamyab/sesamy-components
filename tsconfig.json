@@ -19,7 +19,9 @@
     "baseUrl": "packages/lib",
     "paths": {
       "*": ["*", "*.svelte", "*.wc.svelte"]
-    }
+    },
+    "types": ["./packages/lib/src/sesamy-components.d.ts"],
+    "typeRoots": ["./packages/lib/src", "./node_modules/@types"]
   },
   "include": [
     "packages/lib/**/*.d.ts",
