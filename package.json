@@ -1,7 +1,7 @@
 {
   "name": "@sesamy/sesamy-components",
   "description": "Ahareable web components library with Vite + Svelte",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "type": "module",
   "module": "dist/lib/sesamy-components.es.js",
   "main": "dist/lib/sesamy-components.umd.js",
