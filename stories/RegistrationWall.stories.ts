@@ -1,5 +1,3 @@
-// File: src/stories/RegistrationWall.stories.ts
-
 import { html } from "lit-html";
 import { action } from "@storybook/addon-actions";
 import type { Meta, StoryObj } from "@storybook/web-components";

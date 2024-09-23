@@ -1,33 +1,8 @@
-<svelte:options customElement="sesamy-registration-wall" />
+<svelte:options customElement="sesamy-hello" />
 
-<script lang="ts">
-  import { createEventDispatcher } from "svelte";
-
-  type SocialProvider = "google" | "facebook" | "apple";
-
-  const dispatch = createEventDispatcher<{
-    continue: { email: string };
-    socialLogin: { provider: SocialProvider };
-    workSchoolLogin: void;
-    subscriptionOptions: void;
-  }>();
-
-  let email = "";
-
-  function handleContinue() {
-    dispatch("continue", { email });
-  }
-
-  function handleSocialLogin(provider: SocialProvider) {
-    dispatch("socialLogin", { provider });
-  }
-
-  function handleWorkSchoolLogin() {
-    dispatch("workSchoolLogin");
-  }
-
-  function handleSubscriptionOptions() {
-    dispatch("subscriptionOptions");
+<script type="ts">
+  function hanldleClick() {
+    console.log("Button clicked");
   }
 </script>
 
@@ -39,14 +14,9 @@
   </p>
 
   <label for="email">Email Address</label>
-  <input
-    type="email"
-    id="email"
-    bind:value={email}
-    placeholder="Enter your email"
-  />
+  <input type="email" id="email" placeholder="Enter your email" />
 
-  <button on:click={handleContinue}>Continue</button>
+  <button on:click={hanldleClick}>Continue</button>
 
   <div class="divider">or</div>
 
@@ -56,33 +26,24 @@
     <a href="#privacy">Privacy Policy</a>.
   </p>
 
-  <button
-    on:click={() => handleSocialLogin("google")}
-    class="social-button google"
-  >
+  <button on:click={hanldleClick} class="social-button google">
     Continue with Google
   </button>
 
-  <button
-    on:click={() => handleSocialLogin("facebook")}
-    class="social-button facebook"
-  >
+  <button on:click={hanldleClick} class="social-button facebook">
     Continue with Facebook
   </button>
 
-  <button
-    on:click={() => handleSocialLogin("apple")}
-    class="social-button apple"
-  >
+  <button on:click={hanldleClick} class="social-button apple">
     Continue with Apple
   </button>
 
-  <a href="#" on:click={handleWorkSchoolLogin}
+  <a href="#" on:click={hanldleClick}
     >Continue with work or school single sign-on &gt;</a
   >
 
   <p>Enjoy unlimited access to all of The Times.</p>
-  <button on:click={handleSubscriptionOptions}>See subscription options</button>
+  <button on:click={hanldleClick}>See subscription options</button>
 </div>
 
 <style>
