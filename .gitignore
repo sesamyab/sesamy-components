@@ -23,3 +23,5 @@ TODO
 *.njsproj
 *.sln
 *.sw?
+
+*storybook.log
