@@ -568,6 +568,16 @@
     lodash "^4.17.21"
     ts-dedent "^2.0.0"
 
+"@storybook/addon-controls@^8.3.3":
+  version "8.3.3"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-controls/-/addon-controls-8.3.3.tgz#bad8729f03897f9df0909a11e9181a9d88eb274d"
+  integrity sha512-78xRtVpY7eX/Lti00JLgwYCBRB6ZcvzY3SWk0uQjEqcTnQGoQkVg2L7oWFDlDoA1LBY18P5ei2vu8MYT9GXU4g==
+  dependencies:
+    "@storybook/global" "^5.0.0"
+    dequal "^2.0.2"
+    lodash "^4.17.21"
+    ts-dedent "^2.0.0"
+
 "@storybook/addon-docs@8.3.2":
   version "8.3.2"
   resolved "https://registry.npmjs.org/@storybook/addon-docs/-/addon-docs-8.3.2.tgz"

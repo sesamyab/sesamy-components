@@ -53,9 +53,15 @@
 </div>
 
 <style>
+  :host {
+    --max-width: 500px;
+    --font-family: Arial, sans-serif;
+    display: block;
+  }
+
   .registration-wall {
-    font-family: Arial, sans-serif;
-    max-width: 500px;
+    font-family: --var(font-family);
+    max-width: var(--max-width);
     margin: 0 auto;
     padding: 20px;
     text-align: center;

@@ -1,7 +1,7 @@
 {
   "name": "@sesamy/sesamy-components",
   "description": "Ahareable web components library with Vite + Svelte",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "type": "module",
   "module": "dist/lib/sesamy-components.es.js",
   "main": "dist/lib/sesamy-components.umd.js",
@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^1.9.0",
+    "@storybook/addon-controls": "^8.3.3",
     "@storybook/addon-essentials": "^8.3.2",
     "@storybook/addon-interactions": "^8.3.2",
     "@storybook/addon-links": "^8.3.2",
