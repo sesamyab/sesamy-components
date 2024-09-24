@@ -1,5 +1,3 @@
-// File: packages/lib/src/stories/Paywall.stories.ts
-
 import { html } from "lit-html";
 import type { Meta, StoryObj } from "@storybook/web-components";
 import { Paywall } from "@sesamy/sesamy-components";

@@ -11,6 +11,10 @@ declare module "../../../dist/lib/sesamy-components.es.js" {
   export class Hello extends HTMLElement {
     // Add properties for Paywall if needed
   }
+
+  export class RegistrationWall extends HTMLElement {
+    // Add properties for Paywall if needed
+  }
 }
 
 declare global {
@@ -18,5 +22,6 @@ declare global {
     "sesamy-login": Login;
     "sesamy-paywall": Paywall;
     "sesamy-hello": Hello;
+    "sesamy-registration-wall": RegistrationWall;
   }
 }
