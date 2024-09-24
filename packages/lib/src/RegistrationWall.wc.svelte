@@ -54,13 +54,13 @@
 
 <style>
   :host {
-    --max-width: 500px;
+    --max-width: 700px;
     --font-family: Arial, sans-serif;
     display: block;
   }
 
   .registration-wall {
-    font-family: --var(font-family);
+    font-family: var(--font-family);
     max-width: var(--max-width);
     margin: 0 auto;
     padding: 20px;
