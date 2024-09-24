@@ -1,7 +1,7 @@
 {
   "name": "@sesamy/sesamy-components",
   "description": "Ahareable web components library with Vite + Svelte",
-  "version": "0.0.3",
+  "version": "0.0.8",
   "type": "module",
   "module": "dist/lib/sesamy-components.es.js",
   "main": "dist/lib/sesamy-components.umd.js",
@@ -15,13 +15,13 @@
   },
   "sideEffects": false,
   "scripts": {
-    "start": "yarn run dev -s",
+    "start": "yarn run dev",
     "dev": "vite --config vite.demo.config.ts",
     "build": "vite build",
     "build:demo": "vite build --config vite.demo.config.ts",
     "preview": "vite preview --config vite.demo.config.ts",
     "check": "svelte-check --tsconfig ./tsconfig.json",
-    "prepublishOnly": "yarn run build -s",
+    "prepublishOnly": "yarn run build",
     "storybook": "yarn run build && storybook dev -p 6006",
     "build-storybook": "yarn run build && storybook build"
   },
