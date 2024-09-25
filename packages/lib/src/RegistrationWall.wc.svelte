@@ -19,27 +19,27 @@
   <div class="form-container">
     <input type="email" id="email" placeholder="Skriv in din epost" />
 
-    <button part="continueButton" class="continue-button" on:click={handleClick}
+    <button part="continueButton" class="continue-button" onclick={handleClick}
       >Fortsätt</button
     >
 
     <div class="divider">eller</div>
 
-    <button on:click={handleClick} class="social-button google">
+    <button onclick={handleClick} class="social-button google">
       <span class="button-content">
         <GoogleLogo width="18" height="18" />
         <span class="button-text">Fortsätt med Google</span>
       </span>
     </button>
 
-    <button on:click={handleClick} class="social-button facebook">
+    <button onclick={handleClick} class="social-button facebook">
       <span class="button-content">
         <FacebookLogo width="18" height="18" />
         <span class="button-text">Fortsätt med Facebook</span>
       </span>
     </button>
 
-    <button on:click={handleClick} class="social-button apple">
+    <button onclick={handleClick} class="social-button apple">
       <span class="button-content">
         <AppleLogo width="18" height="18" />
         <span class="button-text">Fortsätt med Apple</span>
@@ -54,9 +54,8 @@
 
 <style>
   :host {
-    --max-width: 700px;
+    --max-width: 800px;
     --font-family: Arial, sans-serif;
-    display: block;
   }
 
   .registration-wall {
