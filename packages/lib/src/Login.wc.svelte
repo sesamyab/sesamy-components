@@ -1,6 +1,6 @@
 <svelte:options customElement="sesamy-login" />
 
-<script>
+<script lang="ts">
   let loading = false;
   let loggedIn = false;
   let userAvatar = "https://via.placeholder.com/50"; // Placeholder avatar image
@@ -34,14 +34,12 @@
   </button>
 {:else if loggedIn}
   <!-- Logged In State -->
-  <button class="avatar-btn" on:click={logout} aria-label="Log out">
+  <button class="avatar-btn" onclick={logout} aria-label="Log out">
     <img src={userAvatar} alt="User Avatar" />
   </button>
 {:else}
   <!-- Logged Out State -->
-  <button class="login-btn" on:click={login} aria-label="Log in">
-    Login
-  </button>
+  <button class="login-btn" onclick={login} aria-label="Log in"> Login </button>
 {/if}
 
 <style>

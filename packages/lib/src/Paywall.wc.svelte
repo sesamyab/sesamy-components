@@ -1,6 +1,6 @@
 <svelte:options customElement="sesamy-paywall" />
 
-<script>
+<script lang="ts">
   import { CheckCircle2 } from "lucide-svelte";
 
   let selectedPlan = "sixMonths";

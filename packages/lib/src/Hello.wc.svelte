@@ -1,6 +1,6 @@
 <svelte:options customElement="sesamy-hello" />
 
-<script type="ts">
+<script lang="ts">
   function hanldleClick() {
     console.log("Button clicked");
   }
@@ -16,7 +16,7 @@
   <label for="email">Email Address</label>
   <input type="email" id="email" placeholder="Enter your email" />
 
-  <button on:click={hanldleClick}>Continue</button>
+  <button onclick={hanldleClick}>Continue</button>
 
   <div class="divider">or</div>
 
@@ -26,24 +26,24 @@
     <a href="#privacy">Privacy Policy</a>.
   </p>
 
-  <button on:click={hanldleClick} class="social-button google">
+  <button onclick={hanldleClick} class="social-button google">
     Continue with Google
   </button>
 
-  <button on:click={hanldleClick} class="social-button facebook">
+  <button onclick={hanldleClick} class="social-button facebook">
     Continue with Facebook
   </button>
 
-  <button on:click={hanldleClick} class="social-button apple">
+  <button onclick={hanldleClick} class="social-button apple">
     Continue with Apple
   </button>
 
-  <a href="#" on:click={hanldleClick}
+  <a href="#" onclick={hanldleClick}
     >Continue with work or school single sign-on &gt;</a
   >
 
   <p>Enjoy unlimited access to all of The Times.</p>
-  <button on:click={hanldleClick}>See subscription options</button>
+  <button onclick={hanldleClick}>See subscription options</button>
 </div>
 
 <style>

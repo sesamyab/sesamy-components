@@ -81,7 +81,7 @@ Here's an example:
   const dispatchEvent = (name, detail) =>
     component.dispatchEvent(new CustomEvent(name, { detail }));
 </script>
-<button on:click={() => dispatchEvent("test", "Hello!")}>
+<button onclick={() => dispatchEvent("test", "Hello!")}>
   Click to dispatch event
 </button>
 ```

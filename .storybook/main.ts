@@ -7,7 +7,11 @@ const config: StorybookConfig = {
     "../packages/lib/src/**/*.mdx",
     "../packages/lib/src/**/*.stories.@(js|jsx|ts|tsx)",
   ],
-  addons: ["@storybook/addon-links", "@storybook/addon-essentials"],
+  addons: [
+    "@storybook/addon-links",
+    "@storybook/addon-essentials",
+    "@storybook/addon-controls",
+  ],
   framework: {
     name: "@storybook/web-components-vite",
     options: {},
