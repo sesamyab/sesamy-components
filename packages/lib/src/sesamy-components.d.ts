@@ -8,7 +8,7 @@ declare module "../../../dist/lib/sesamy-components.es.js" {
     // Add properties for Paywall if needed
   }
 
-  export class Hello extends HTMLElement {
+  export class Button extends HTMLElement {
     // Add properties for Paywall if needed
   }
 
@@ -21,7 +21,7 @@ declare global {
   interface HTMLElementTagNameMap {
     "sesamy-login": Login;
     "sesamy-paywall": Paywall;
-    "sesamy-hello": Hello;
+    "sesamy-button": Button;
     "sesamy-registration-wall": RegistrationWall;
   }
 }
