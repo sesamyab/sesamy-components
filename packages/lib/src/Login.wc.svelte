@@ -61,6 +61,7 @@
     {:else}
       <slot name="loginButton">
         <Button
+          part="loginButton"
           {loading}
           class="login-btn"
           onclick={() => login(api)}
