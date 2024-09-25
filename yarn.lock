@@ -525,10 +525,10 @@
     argparse "~1.0.9"
     string-argv "~0.3.1"
 
-"@sesamy/sesamy-js@^1.21.6":
-  version "1.21.6"
-  resolved "https://registry.npmjs.org/@sesamy/sesamy-js/-/sesamy-js-1.21.6.tgz"
-  integrity sha512-6U6rft5bYwKb+e6hekTC55MfJprJI6cPzpAvRwJO6rf76SdlFqiI2ubbbBH4kv29PkF70mzu0l0FWd4WUbO0xQ==
+"@sesamy/sesamy-js@^1.21.9":
+  version "1.21.9"
+  resolved "https://registry.yarnpkg.com/@sesamy/sesamy-js/-/sesamy-js-1.21.9.tgz#ba427d1a03d884be2fb76fbe073f2a404847a3d5"
+  integrity sha512-tvGTeSDtwu3phTqlTWnSbwX3KwwOJ0HZ3hcYKiOXRpxEA5jM8PdhrlaClDIuuZ/VZvNjkh6OkYZUX8lXEcOpLg==
   dependencies:
     "@analytics/activity-utils" "^0.1.16"
     "@analytics/scroll-utils" "^0.1.22"
