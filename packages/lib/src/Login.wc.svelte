@@ -67,5 +67,61 @@
 </Base>
 
 <style>
-  /* ... (styles remain the same) ... */
+  .login-btn,
+  .loading-btn,
+  .avatar-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    outline: none;
+  }
+  /* Rectangular login button */
+  .login-btn {
+    width: 120px;
+    height: 40px;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  .login-btn:hover {
+    background-color: #0056b3;
+  }
+  .login-btn:focus,
+  .avatar-btn:focus {
+    outline: 2px solid #0056b3;
+    outline-offset: 4px;
+  }
+  /* Circular loading button and avatar */
+  .loading-btn,
+  .avatar-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+  }
+  .loading-btn {
+    background-color: #00bfff;
+    animation: pulse 1s infinite ease-in-out;
+  }
+  .avatar-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+  @keyframes pulse {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
 </style>
