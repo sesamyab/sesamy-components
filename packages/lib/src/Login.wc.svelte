@@ -1,46 +1,70 @@
 <svelte:options customElement="sesamy-login" />
 
 <script lang="ts">
+  import Base from "./Base.svelte";
+  import type { Api } from "./api";
+
   let loading = false;
   let loggedIn = false;
   let userAvatar = "https://via.placeholder.com/50"; // Placeholder avatar image
 
-  // Mock function to simulate login process
-  const login = async () => {
+  // Function to handle login
+  const login = async (api: Api) => {
     loading = true;
-    await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate loading
-    loading = false;
-    loggedIn = true;
+    try {
+      // console.log("Logging in...");
+      await api.auth.loginWithRedirect();
+    } catch (error) {
+      console.error("Login failed:", error);
+    } finally {
+      loading = false;
+    }
   };
 
-  // Mock function to simulate logout process
-  const logout = () => {
-    loggedIn = false;
+  // Function to handle logout
+  const logout = async (api: Api) => {
+    try {
+      await api.auth.logout();
+      loggedIn = false;
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
-  // Mock function to check if user is logged in (initially false)
-  const checkLoggedIn = () => {
-    return loggedIn;
+  // Function to check if user is logged in
+  const checkLoggedIn = async (api: Api) => {
+    try {
+      loggedIn = await api.auth.isAuthenticated();
+    } catch (error) {
+      console.error("Error checking login status:", error);
+    }
   };
-
-  // Simulate login status on component load
-  loggedIn = checkLoggedIn();
 </script>
 
-{#if loading}
-  <!-- Loading State -->
-  <button class="loading-btn" aria-busy="true" aria-label="Logging in">
-    <!-- Pulsating animation for loading state -->
-  </button>
-{:else if loggedIn}
-  <!-- Logged In State -->
-  <button class="avatar-btn" onclick={logout} aria-label="Log out">
-    <img src={userAvatar} alt="User Avatar" />
-  </button>
-{:else}
-  <!-- Logged Out State -->
-  <button class="login-btn" onclick={login} aria-label="Log in"> Login </button>
-{/if}
+<Base let:api>
+  {#await checkLoggedIn(api) then _}
+    {#if loading}
+      <!-- Loading State -->
+      <button class="loading-btn" aria-busy="true" aria-label="Logging in">
+        <!-- Pulsating animation for loading state -->
+      </button>
+    {:else if loggedIn}
+      <!-- Logged In State -->
+      <button
+        class="avatar-btn"
+        on:click={() => logout(api)}
+        aria-label="Log out"
+      >
+        <img src={userAvatar} alt="User Avatar" />
+      </button>
+    {:else}
+      <!-- Logged Out State -->
+      <button class="login-btn" on:click={() => login(api)} aria-label="Log in">
+        Login
+      </button>
+    {/if}
+  {/await}
+</Base>
 
 <style>
   .login-btn,
@@ -54,7 +78,6 @@
     border: none;
     outline: none;
   }
-
   /* Rectangular login button */
   .login-btn {
     width: 120px;
@@ -65,17 +88,14 @@
     font-size: 16px;
     font-weight: bold;
   }
-
   .login-btn:hover {
     background-color: #0056b3;
   }
-
   .login-btn:focus,
   .avatar-btn:focus {
     outline: 2px solid #0056b3;
     outline-offset: 4px;
   }
-
   /* Circular loading button and avatar */
   .loading-btn,
   .avatar-btn {
@@ -83,19 +103,16 @@
     height: 50px;
     border-radius: 50%;
   }
-
   .loading-btn {
     background-color: #00bfff;
     animation: pulse 1s infinite ease-in-out;
   }
-
   .avatar-btn img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     border-radius: 50%;
   }
-
   @keyframes pulse {
     0% {
       opacity: 1;
