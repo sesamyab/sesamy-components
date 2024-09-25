@@ -1,0 +1,24 @@
+:root {
+    /**
+    * @tokens Animations
+    * @presenter Animation
+    */
+
+    --animation-rotate: rotate 1.2s infinite cubic-bezier(0.55, 0, 0.1, 1);
+
+    /**
+    * @tokens Colors
+    * @presenter Color
+    */
+
+    --smy-color-neutral-0: hsl(0, 0%, 100%);
+    --smy-color-neutral-1000: hsl(0, 0%, 0%);
+
+    /* Inputs */
+    --smy-input-background-color: var(--smy-color-neutral-0);
+
+
+   /* Panels */
+   --smy-panel-background-color: var(--smy-color-neutral-0);
+   --smy-panel-border-color: var(--smy-color-neutral-200);
+   --smy-panel-border-width: 1px;}
