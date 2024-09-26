@@ -5,7 +5,7 @@
 
 <main>
   <NavBar />
-  <section class="content">
+  <section class="content bg-green-500">
     <article>
       <h1>Sesamy Components Demo Page</h1>
       <p>
