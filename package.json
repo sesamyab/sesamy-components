@@ -15,15 +15,15 @@
   },
   "sideEffects": false,
   "scripts": {
-    "start": "yarn run dev",
     "dev": "vite --config vite.demo.config.ts",
-    "build": "vite build",
+    "build": "yarn build:demo && yarn build:lib",
+    "build:lib": "vite build --config vite.lib.config.ts",
     "build:demo": "vite build --config vite.demo.config.ts",
     "preview": "vite preview --config vite.demo.config.ts",
     "check": "svelte-check --tsconfig ./tsconfig.json",
-    "prepublishOnly": "yarn run build",
-    "storybook": "yarn run build && storybook dev -p 6006",
-    "build-storybook": "yarn run build && storybook build"
+    "prepublishOnly": "yarn run build:lib",
+    "storybook": "yarn run build:lib && storybook dev -p 6006",
+    "build-storybook": "yarn run build:lib && storybook build"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^1.9.0",
@@ -39,8 +39,12 @@
     "@storybook/web-components": "^8.3.2",
     "@storybook/web-components-vite": "^8.3.2",
     "@sveltejs/vite-plugin-svelte": "^4.0.0-next.6",
+    "@testing-library/jest-dom": "^6.5.0",
+    "@testing-library/svelte": "^5.2.1",
     "@tsconfig/svelte": "^5.0.4",
     "@types/node": "^22.5.5",
+    "@types/testing-library__jest-dom": "^6.0.0",
+    "jsdom": "^25.0.1",
     "lit": "^3.2.0",
     "lit-html": "^3.2.0",
     "storybook": "^8.3.2",
@@ -50,7 +54,8 @@
     "tslib": "^2.7.0",
     "typescript": "^5.6.2",
     "vite": "^5.4.7",
-    "vite-plugin-dts": "^4.2.1"
+    "vite-plugin-dts": "^4.2.1",
+    "vitest": "^2.1.1"
   },
   "files": [
     "dist/lib"
