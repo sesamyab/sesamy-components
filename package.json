@@ -15,15 +15,15 @@
   },
   "sideEffects": false,
   "scripts": {
-    "start": "yarn run dev",
     "dev": "vite --config vite.demo.config.ts",
-    "build": "vite build",
-    "build:demo": "vite build --config vite.demo.config.ts && vite build",
+    "build": "yarn build:demo && yarn build:lib",
+    "build:lib": "vite build --config vite.lib.config.ts",
+    "build:demo": "vite build --config vite.demo.config.ts",
     "preview": "vite preview --config vite.demo.config.ts",
     "check": "svelte-check --tsconfig ./tsconfig.json",
-    "prepublishOnly": "yarn run build",
-    "storybook": "yarn run build && storybook dev -p 6006",
-    "build-storybook": "yarn run build && storybook build"
+    "prepublishOnly": "yarn run build:lib",
+    "storybook": "yarn run build:lib && storybook dev -p 6006",
+    "build-storybook": "yarn run build:lib && storybook build"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^1.9.0",
