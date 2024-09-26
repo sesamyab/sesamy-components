@@ -1,6 +1,6 @@
 <svelte:options customElement="sesamy-button" />
 
-<script>
+<script lang="ts">
   export let outline = true;
   export let loading = false;
   export let disabled = false;
