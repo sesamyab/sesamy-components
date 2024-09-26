@@ -11,7 +11,13 @@
 {#if href && !disabled && !loading}
   <a {href} class="button" class:outline {onclick}><slot /></a>
 {:else}
-  <button class="button" class:outline class:disabled {disabled} {onclick}>
+  <button
+    class="button bg-yellow-500"
+    class:outline
+    class:disabled
+    {disabled}
+    {onclick}
+  >
     {#if loading}
       <span class="loader"></span>
     {/if}

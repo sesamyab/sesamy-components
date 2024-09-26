@@ -17,7 +17,7 @@
   "scripts": {
     "start": "yarn run dev",
     "dev": "vite --config vite.demo.config.ts",
-    "build": "vite build",
+    "build": "vite build --config vite.demo.config.ts && vite build --config vite.config.ts",
     "build:demo": "vite build --config vite.demo.config.ts",
     "preview": "vite preview --config vite.demo.config.ts",
     "check": "svelte-check --tsconfig ./tsconfig.json",
