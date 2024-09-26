@@ -1,10 +1,13 @@
 <script lang="ts">
+  import libstyles from "./app.css?inline";
   import { getApi } from "./api";
 
   const apiPromise = getApi({
     clientId: "demo",
     environment: "dev",
   });
+
+  let style = "<sty" + "le>" + libstyles + "</style>";
 </script>
 
 {#await apiPromise}
@@ -15,5 +18,4 @@
   <p style="color: red">{error.message}</p>
 {/await}
 
-<style>
-</style>
+{@html style}

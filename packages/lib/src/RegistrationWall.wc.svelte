@@ -11,7 +11,11 @@
 </script>
 
 <div class="registration-wall">
-  <slot name="title"><h1>Skapa ett gratis konto eller logga in</h1></slot>
+  <slot name="title"
+    ><h1 class="text-3xl font-bold underline">
+      Skapa ett gratis konto eller logga in
+    </h1></slot
+  >
   <slot name="description">
     <p>Få tillgång till gratis artiklar och nyhetsbrev.</p>
   </slot>
