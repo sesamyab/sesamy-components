@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import dts from "vite-plugin-dts";
-import sveltePreprocess from "svelte-preprocess";
+import { sveltePreprocess } from "svelte-preprocess";
 
 export default defineConfig({
   build: {
@@ -53,6 +53,7 @@ export default defineConfig({
       },
     }),
   ],
+
   resolve: {
     extensions: [
       ".mjs",
