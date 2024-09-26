@@ -23,7 +23,7 @@
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "prepublishOnly": "yarn run build:lib",
     "storybook": "yarn run build:lib && storybook dev -p 6006",
-    "build-storybook": "yarn run build:lib && storybook build"
+    "build:storybook": "yarn run build:lib && storybook build"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^1.9.0",
