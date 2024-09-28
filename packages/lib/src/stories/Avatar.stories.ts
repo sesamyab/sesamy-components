@@ -19,6 +19,7 @@ const meta: Meta<AvatarProps> = {
       src=${ifDefined(args.src)}
       alt=${ifDefined(args.alt)}
       size=${ifDefined(args.size)}
+      ?loading=${args.loading}
       @click=${() => console.log("Avatar clicked")}
     ></sesamy-avatar>
   `,
@@ -29,7 +30,7 @@ const meta: Meta<AvatarProps> = {
       control: { type: "select" },
       options: ["sm", "md", "lg"],
     },
-    loading: { control: "boolean", defaultValue: false },
+    loading: { control: "boolean" },
   },
 };
 
@@ -42,6 +43,7 @@ export const Default: Story = {
     src: "",
     alt: "Default Avatar",
     size: "md",
+    loading: false,
   },
 };
 
@@ -50,6 +52,7 @@ export const WithImage: Story = {
     src: "https://cdn.prod.website-files.com/5e51c674258ffe10d286d30a/5e5357079588e00bb27e9058_peep-46.png",
     alt: "User Avatar",
     size: "md",
+    loading: false,
   },
 };
 
@@ -58,6 +61,7 @@ export const Small: Story = {
     src: "",
     alt: "Small Avatar",
     size: "sm",
+    loading: false,
   },
 };
 
@@ -66,6 +70,7 @@ export const Large: Story = {
     src: "",
     alt: "Large Avatar",
     size: "lg",
+    loading: false,
   },
 };
 

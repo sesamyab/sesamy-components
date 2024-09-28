@@ -9,16 +9,16 @@ declare module "../../../dist/lib/sesamy-components.es.js" {
   }
 
   export class Avatar extends HTMLElement {
-    // Add properties for Paywall if needed
+    loding?: boolean;
+    size?: "sm" | "md" | "lg";
   }
 
   export class Button extends HTMLElement {
-    // Add properties for Paywall if needed
+    loding?: boolean;
+    size?: "sm" | "md" | "lg";
   }
 
-  export class RegistrationWall extends HTMLElement {
-    // Add properties for Paywall if needed
-  }
+  export class RegistrationWall extends HTMLElement {}
 }
 
 declare global {
