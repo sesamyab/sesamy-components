@@ -65,7 +65,7 @@
     "dist/lib"
   ],
   "dependencies": {
-    "@sesamy/sesamy-js": "^1.21.9",
+    "@sesamy/sesamy-js": "^1.22.0",
     "lucide-svelte": "^0.445.0"
   }
 }

@@ -1,6 +1,15 @@
 <script lang="ts">
   import "../../lib";
   import NavBar from "./components/NavBar.svelte";
+  import { init } from "@sesamy/sesamy-js";
+
+  init({
+    clientId: "demo",
+    environment: "dev",
+    api: {
+      namespace: "sesamy",
+    },
+  });
 </script>
 
 <main>
