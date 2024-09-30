@@ -1,17 +1,22 @@
 <svelte:options customElement="sesamy-registration-wall" />
 
 <script lang="ts">
+  import type { SesamyAPI } from "@sesamy/sesamy-js";
   import AppleLogo from "./assets/AppleLogo.svelte";
   import FacebookLogo from "./assets/FacebookLogo.svelte";
   import GoogleLogo from "./assets/GoogleLogo.svelte";
   import Base from "./Base.svelte";
 
-  function handleClick() {
-    console.log("Button clicked");
-  }
+  const login = async (api: SesamyAPI) => {
+    try {
+      await api.auth.loginWithRedirect();
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
+  };
 </script>
 
-<Base>
+<Base let:api>
   <div
     class="max-w-[800px] mx-auto p-5 text-center bg-[#f8f8f5] border border-[#e9e9da] rounded-lg font-sans"
   >
@@ -37,7 +42,7 @@
       <button
         part="continueButton"
         class="w-full p-2.5 bg-[#4285f4] text-white border-none rounded-md cursor-pointer mb-2.5 text-sm"
-        onclick={handleClick}>Fortsätt</button
+        onclick={() => login(api)}>Fortsätt</button
       >
 
       <div
@@ -47,7 +52,7 @@
       </div>
 
       <button
-        onclick={handleClick}
+        onclick={() => login(api)}
         class="w-full p-2.5 bg-white text-black border border-gray-300 rounded-md cursor-pointer mb-2.5 text-sm flex justify-center items-center"
       >
         <span class="flex items-center justify-center">
@@ -57,7 +62,7 @@
       </button>
 
       <button
-        onclick={handleClick}
+        onclick={() => login(api)}
         class="w-full p-2.5 bg-white text-black border border-gray-300 rounded-md cursor-pointer mb-2.5 text-sm flex justify-center items-center"
       >
         <span class="flex items-center justify-center">
@@ -67,7 +72,7 @@
       </button>
 
       <button
-        onclick={handleClick}
+        onclick={() => login(api)}
         class="w-full p-2.5 bg-white text-black border border-gray-300 rounded-md cursor-pointer mb-2.5 text-sm flex justify-center items-center"
       >
         <span class="flex items-center justify-center">
