@@ -1,15 +1,35 @@
-import { init } from "@sesamy/sesamy-js";
-import type { Config } from "@sesamy/sesamy-js";
+import type { Config, SesamyAPI } from "@sesamy/sesamy-js";
 
-export type Api = Awaited<ReturnType<typeof init>>;
+interface SesamyWindow {
+  sesamy?: SesamyAPI;
+}
 
-let api: Api | null = null;
+// Extend the global Window type with your SesamyWindow interface
+declare global {
+  interface Window extends SesamyWindow {}
+}
 
-// For now we explictly pass the config here. It would be possible to fetch it from the window object as well
-export async function getApi(config: Config, reinitialize = false) {
-  if (!api || reinitialize) {
-    api = await init(config);
+export async function getApi() {
+  if (window.sesamy) {
+    return window.sesamy;
   }
 
-  return api;
+  return new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      if (window.sesamy) {
+        resolve(window.sesamy);
+      } else {
+        reject(
+          new Error(
+            "sesamyReady event did not occur within the expected time.",
+          ),
+        );
+      }
+    }, 5000);
+
+    window.addEventListener("sesamyJsReady", () => {
+      clearTimeout(timeout);
+      resolve(true);
+    });
+  });
 }
