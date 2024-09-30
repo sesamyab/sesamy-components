@@ -9,7 +9,7 @@ declare global {
   interface Window extends SesamyWindow {}
 }
 
-export async function getApi() {
+export async function getApi(): Promise<SesamyAPI> {
   if (window.sesamy) {
     return window.sesamy;
   }
@@ -27,9 +27,17 @@ export async function getApi() {
       }
     }, 5000);
 
-    window.addEventListener("sesamyJsReady", () => {
-      clearTimeout(timeout);
-      resolve(true);
-    });
+    function onSesamyJsReady() {
+      if (!window.sesamy) {
+        reject(new Error("Sesamy API is not available"));
+      } else {
+        clearTimeout(timeout);
+        window.removeEventListener("sesamyJsReady", onSesamyJsReady);
+
+        resolve(window.sesamy);
+      }
+    }
+
+    window.addEventListener("sesamyJsReady", onSesamyJsReady);
   });
 }

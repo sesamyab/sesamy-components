@@ -16,6 +16,8 @@ declare module "../../../dist/lib/sesamy-components.es.js" {
   export class Button extends HTMLElement {
     loding?: boolean;
     size?: "sm" | "md" | "lg";
+    part?: string;
+    "aria-label"?: string;
   }
 
   export class RegistrationWall extends HTMLElement {}

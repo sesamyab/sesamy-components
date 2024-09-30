@@ -4,6 +4,8 @@
   export let outline = true;
   export let loading = false;
   export let disabled = false;
+  export let size: "sm" | "md" | "lg" | "" = "";
+  export let part;
   export let onclick = () => {};
   export let href = "";
 </script>
@@ -12,9 +14,10 @@
   <a {href} class="button" class:outline {onclick}><slot /></a>
 {:else}
   <button
-    class="button bg-yellow-500"
+    class="button bg-yellow-500 {size}"
     class:outline
     class:disabled
+    {part}
     {disabled}
     {onclick}
   >
