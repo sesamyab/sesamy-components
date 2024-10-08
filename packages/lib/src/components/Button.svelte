@@ -13,7 +13,7 @@
 
 <button
   class={twMerge(
-    'bg-[var(--sesamy-main-color,purple)] text-white font-medium row w-full rounded-lg shadow-lg py-3',
+    'bg-[var(--s-main-color,purple)] text-white font-medium row w-full rounded-lg shadow-lg py-3',
     classes
   )}
   {onclick}

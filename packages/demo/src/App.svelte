@@ -14,7 +14,7 @@
 
 <main>
   <NavBar />
-  <section class="content bg-gray-100">
+  <section class="content bg-gray-100" style="--sesamy-main-color: blue;">
     <sesamy-paywall></sesamy-paywall>
     <article>
       <h1>Sesamy Components Demo Page</h1>

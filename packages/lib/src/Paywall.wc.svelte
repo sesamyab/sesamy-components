@@ -32,22 +32,22 @@
 
 <Base>
   <Column
-    class="w-full shadow-lg pt-6 bg-gradient-to-b from-[var(--sesamy-bg-color,purple)] rounded-3xl to-[#F8EEEE]"
+    class="w-full shadow-lg pt-6 bg-gradient-to-b from-[var(--s-bg-color,purple)] rounded-3xl to-[#F8EEEE]"
   >
     <Row class="text-xs gap-1 pt-2">
-      Redan prenumerant? <a href="/" class="text-[var(--sesamy-main-color,purple)]">
+      Redan prenumerant? <a href="/" class="text-[var(--s-main-color,purple)]">
         Logga in för att läsa
       </a>
     </Row>
 
     <Column class="gap-4 px-16 pb-16 pt-10 w-full" up left>
-      <Icon class="text-[120px] text-[var(--sesamy-main-color,purple)] font-bold" name="fokus" />
+      <Icon class="text-[120px] text-[var(--s-main-color,purple)] font-bold" name="fokus" />
       <div class="text-3xl mt-4">Läs Fokus Digital i 6 månader för bara 79kr!</div>
 
       <ul class="text-black column-left gap-0.5">
         {#each features as feature}
           <li class="row-left gap-2">
-            <Icon class="text-xs text-[var(--sesamy-main-color,purple)]" name="checkmark" />
+            <Icon class="text-xs text-[var(--s-main-color,purple)]" name="checkmark" />
             <span class="font-medium">{feature}</span>
           </li>
         {/each}

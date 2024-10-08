@@ -10,7 +10,7 @@
 
 <Column
   class={twMerge(
-    'bg-white border-gray-200 has-[input:checked]:border-[var(--sesamy-main-color,purple)] transition-colors rounded-lg border-2 w-full',
+    'bg-white border-gray-200 has-[input:checked]:border-[var(--s-main-color,purple)] transition-colors rounded-lg border-2 w-full',
     classes
   )}
   left

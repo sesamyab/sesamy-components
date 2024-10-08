@@ -7,8 +7,8 @@
 
   let sesamyDesignTokens = `
     * {
-      --sesamy-main-color: #E71104;
-      --sesamy-bg-color: #F6DFDC;
+      --s-main-color: var(--sesamy-main-color, #E71104);
+      --s-bg-color: var(--sesamy-bg-color, #F6DFDC);
     }
   `;
 
