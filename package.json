@@ -23,7 +23,8 @@
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "prepublishOnly": "yarn run build:lib",
     "storybook": "yarn run build:lib && storybook dev -p 6006",
-    "build:storybook": "yarn run build:lib && storybook build"
+    "build:storybook": "yarn run build:lib && storybook build",
+    "svg:generate": "svgo -f ./packages/lib/src/icons -o ./packages/lib/src/icons && node ./scripts/icon.js ./packages/lib/src/icons --generate-types"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^1.9.0",
@@ -55,6 +56,7 @@
     "svelte": "5.0.0-next.259",
     "svelte-check": "^4.0.2",
     "svelte-preprocess": "^6.0.2",
+    "svgo": "^3.0.2",
     "tailwind-merge": "^2.5.2",
     "tailwindcss": "^3.4.13",
     "tslib": "^2.7.0",
