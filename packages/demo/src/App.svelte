@@ -1,47 +1,43 @@
 <script lang="ts">
-  import "../../lib";
-  import NavBar from "./components/NavBar.svelte";
-  import { init } from "@sesamy/sesamy-js";
+  import '../../lib';
+  import NavBar from './components/NavBar.svelte';
+  import { init } from '@sesamy/sesamy-js';
 
   init({
-    clientId: "demo",
-    environment: "dev",
+    clientId: 'demo',
+    environment: 'dev',
     api: {
-      namespace: "sesamy",
-    },
+      namespace: 'sesamy'
+    }
   });
 </script>
 
 <main>
   <NavBar />
-  <section class="content bg-green-500">
+  <section class="content bg-gray-100">
+    <sesamy-paywall></sesamy-paywall>
     <article>
       <h1>Sesamy Components Demo Page</h1>
 
       <sesamy-avatar size="md" loading></sesamy-avatar>
 
       <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sed elit
-        sollicitudin nisl condimentum suscipit vitae sed lacus. Nullam venenatis
-        vestibulum eros vitae rutrum. Donec vel purus tempus metus vehicula
-        fringilla. Donec id tempus libero. Morbi feugiat ante vel dignissim
-        mollis. Phasellus vehicula, metus at condimentum molestie, nibh lectus
-        ullamcorper lectus, quis tempus neque risus nec felis. Sed quis quam et
-        leo vulputate luctus. Sed aliquet lobortis tincidunt. Nam mollis ligula
-        ac mattis sagittis. Phasellus condimentum, sapien sit amet maximus
-        fermentum, lacus risus sodales mi, luctus tincidunt leo massa nec
-        lectus. Phasellus mattis eu nunc ac eleifend. Proin lobortis tortor non
-        mauris vulputate ullamcorper. Cras commodo risus quis augue varius
-        posuere.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sed elit sollicitudin nisl
+        condimentum suscipit vitae sed lacus. Nullam venenatis vestibulum eros vitae rutrum. Donec
+        vel purus tempus metus vehicula fringilla. Donec id tempus libero. Morbi feugiat ante vel
+        dignissim mollis. Phasellus vehicula, metus at condimentum molestie, nibh lectus ullamcorper
+        lectus, quis tempus neque risus nec felis. Sed quis quam et leo vulputate luctus. Sed
+        aliquet lobortis tincidunt. Nam mollis ligula ac mattis sagittis. Phasellus condimentum,
+        sapien sit amet maximus fermentum, lacus risus sodales mi, luctus tincidunt leo massa nec
+        lectus. Phasellus mattis eu nunc ac eleifend. Proin lobortis tortor non mauris vulputate
+        ullamcorper. Cras commodo risus quis augue varius posuere.
       </p>
       <p>
-        Aenean accumsan ultrices aliquam. Morbi euismod non eros vel
-        pellentesque. Sed sed molestie neque, eget fermentum ligula. Sed varius,
-        libero vitae rutrum fringilla, nulla sem ultrices turpis, sed porta
-        ligula elit eu ipsum. Quisque eu egestas est. Pellentesque ut varius
-        elit, non luctus massa. Ut blandit velit at condimentum interdum.
+        Aenean accumsan ultrices aliquam. Morbi euismod non eros vel pellentesque. Sed sed molestie
+        neque, eget fermentum ligula. Sed varius, libero vitae rutrum fringilla, nulla sem ultrices
+        turpis, sed porta ligula elit eu ipsum. Quisque eu egestas est. Pellentesque ut varius elit,
+        non luctus massa. Ut blandit velit at condimentum interdum.
       </p>
-      <sesamy-paywall></sesamy-paywall>
     </article>
   </section>
 </main>

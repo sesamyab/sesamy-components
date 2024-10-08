@@ -49,6 +49,8 @@
     "lit": "^3.2.0",
     "lit-html": "^3.2.0",
     "postcss": "^8.4.47",
+    "prettier": "^3.1.1",
+    "prettier-plugin-svelte": "^3.1.2",
     "storybook": "^8.3.2",
     "svelte": "5.0.0-next.259",
     "svelte-check": "^4.0.2",
@@ -65,6 +67,7 @@
     "dist/lib"
   ],
   "dependencies": {
+    "@ape-egg/tailwind-rows-columns": "^1.0.2",
     "@sesamy/sesamy-js": "^1.22.0",
     "lucide-svelte": "^0.445.0"
   }
