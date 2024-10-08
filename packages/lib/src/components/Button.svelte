@@ -1,11 +1,11 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
+  import type { HTMLButtonAttributes } from 'svelte/elements';
   import { twMerge } from 'tailwind-merge';
 
-  type Props = {
+  type Props = HTMLButtonAttributes & {
     onclick: () => void;
     children: Snippet;
-    [key: string]: any;
   };
 
   let { onclick, children, class: classes, ...rest }: Props = $props();

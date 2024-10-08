@@ -2,16 +2,9 @@
   import type { Snippet } from 'svelte';
   import { twMerge } from 'tailwind-merge';
 
-  let {
-    up,
-    right,
-    down,
-    left,
-    style,
-    class: classes,
-    children,
-    ...rest
-  }: { [x: string]: any; children: Snippet } = $props();
+  type Props = { children: Snippet; [key: string]: any };
+
+  let { up, right, down, left, style, class: classes, children, ...rest }: Props = $props();
 </script>
 
 <div
