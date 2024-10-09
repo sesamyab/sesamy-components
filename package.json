@@ -22,6 +22,7 @@
     "preview": "vite preview --config vite.demo.config.ts",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "prepublishOnly": "yarn run build:lib",
+    "semantic-release": "semantic-release",
     "storybook": "yarn run build:lib && storybook dev -p 6006",
     "build:storybook": "yarn run build:lib && storybook build"
   },
