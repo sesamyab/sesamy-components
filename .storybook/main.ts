@@ -1,6 +1,7 @@
 import type { StorybookConfig } from "@storybook/web-components-vite";
 import { mergeConfig } from "vite";
 import path from "path";
+import { viteStaticCopy } from "vite-plugin-static-copy";
 
 const config: StorybookConfig = {
   stories: [
@@ -21,6 +22,16 @@ const config: StorybookConfig = {
   },
   async viteFinal(config) {
     return mergeConfig(config, {
+      plugins: [
+        viteStaticCopy({
+          targets: [
+            {
+              src: "node_modules/@sesamy/sesamy-js/dist/sesamy-js.mjs",
+              dest: "assets",
+            },
+          ],
+        }),
+      ],
       resolve: {
         alias: {
           "@sesamy/sesamy-components": path.resolve(
