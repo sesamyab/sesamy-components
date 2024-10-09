@@ -1,7 +1,7 @@
 {
   "name": "@sesamy/sesamy-components",
-  "description": "Ahareable web components library with Vite + Svelte",
-  "version": "0.0.10",
+  "description": "Shareable web components library built with Vite + Svelte",
+  "version": "0.0.11",
   "type": "module",
   "module": "dist/lib/sesamy-components.es.js",
   "main": "dist/lib/sesamy-components.umd.js",
@@ -25,8 +25,39 @@
     "storybook": "yarn run build:lib && storybook dev -p 6006",
     "build:storybook": "yarn run build:lib && storybook build"
   },
+  "release": {
+    "branches": [
+      "main"
+    ],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/changelog",
+      [
+        "@semantic-release/npm",
+        {
+          "npmPublish": true,
+          "tarballDir": "dist",
+          "pkgRoot": "build"
+        }
+      ],
+      "@semantic-release/github",
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "CHANGELOG.md",
+            "package.json"
+          ],
+          "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+        }
+      ]
+    ]
+  },
   "devDependencies": {
     "@chromatic-com/storybook": "^1.9.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
     "@storybook/addon-controls": "^8.3.3",
     "@storybook/addon-essentials": "^8.3.2",
     "@storybook/addon-interactions": "^8.3.2",
@@ -49,6 +80,7 @@
     "lit": "^3.2.0",
     "lit-html": "^3.2.0",
     "postcss": "^8.4.47",
+    "semantic-release": "^24.1.2",
     "storybook": "^8.3.2",
     "svelte": "5.0.0-next.259",
     "svelte-check": "^4.0.2",
