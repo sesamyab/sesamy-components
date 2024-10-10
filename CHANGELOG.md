@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/sesamyab/sesamy-components/compare/v1.1.0...v1.1.1) (2024-10-10)
+
+
+### Bug Fixes
+
+* versioning with semantic ([13d5dd6](https://github.com/sesamyab/sesamy-components/commit/13d5dd6e6982c02be3df7beda845c4d0ee61e8a7))
+
 # [1.1.0](https://github.com/sesamyab/sesamy-components/compare/v1.0.0...v1.1.0) (2024-10-10)
 
 
