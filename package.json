@@ -1,7 +1,7 @@
 {
   "name": "@sesamy/sesamy-components",
   "description": "Shareable web components library built with Vite + Svelte",
-  "version": "0.0.11",
+  "version": "1.1.0",
   "type": "module",
   "module": "dist/lib/sesamy-components.es.js",
   "main": "dist/lib/sesamy-components.umd.js",
@@ -37,6 +37,13 @@
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
       "@semantic-release/changelog",
+      [
+        "@semantic-release/npm",
+        {
+          "npmPublish": true,
+          "tarballDir": "dist"          
+        }
+      ],
       "@semantic-release/github",
       [
         "@semantic-release/git",
