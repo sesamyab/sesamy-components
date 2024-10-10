@@ -3,6 +3,8 @@
   import NavBar from './components/NavBar.svelte';
   import { init } from '@sesamy/sesamy-js';
 
+  let template = $state('BOXES');
+
   init({
     clientId: 'demo',
     environment: 'dev',
@@ -14,8 +16,21 @@
 
 <main>
   <NavBar />
-  <section class="content bg-gray-100" style="--sesamy-main-color: purple;">
-    <sesamy-paywall></sesamy-paywall>
+  <section class="content bg-gray-100">
+    <select value={template} onchange={({ target: { value } }: any) => (template = value)}>
+      <option value="ARTICLE">Article</option>
+      <option value="BOXES">Boxes</option>
+    </select>
+
+    <div style="width: 800px;">
+      {#key template}
+        <sesamy-paywall
+          {template}
+          settings-url="https://api.sesamy.dev/paywall/paywalls/kvartal/1idkV75XtXSVQAXtTp2dL"
+        ></sesamy-paywall>
+      {/key}
+    </div>
+
     <article>
       <h1>Sesamy Components Demo Page</h1>
 

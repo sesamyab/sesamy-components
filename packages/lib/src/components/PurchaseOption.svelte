@@ -7,12 +7,13 @@
     name: string;
     checked?: boolean;
     children: Snippet;
+    [key: string]: any;
   };
 
-  let { id, name, checked, children }: Props = $props();
+  let { id, name, checked, children, ...rest }: Props = $props();
 </script>
 
-<label class="p-4 row-left w-full gap-4" for={id}>
+<label class="p-4 row-left gap-4 w-full" for={id} {...rest}>
   <input type="radio" class="hidden peer" {checked} {name} {id} />
   <div
     class="w-4 h-4 rounded-full transition-all bg-white border border-[#E7E7EC] relative peer-checked:border-[var(--s-main-color,purple)] peer-checked:bg-[var(--s-main-color,purple)]"

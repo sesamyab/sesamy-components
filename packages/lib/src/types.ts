@@ -5,3 +5,8 @@ export interface LoginProps extends HTMLElement {
   userAvatar?: string;
   onLogin?: (event: CustomEvent) => void;
 }
+
+export interface PaywallProps extends HTMLElement {
+  ['settings-url']: string;
+  template: 'ARTICLE' | 'BOXES';
+}

@@ -4,17 +4,21 @@
   import { twMerge } from 'tailwind-merge';
 
   type Props = HTMLButtonAttributes & {
-    onclick: () => void;
+    onclick?: () => void;
     children: Snippet;
+    secondary?: boolean;
   };
 
-  let { onclick, children, class: classes, ...rest }: Props = $props();
+  let { onclick, children, class: classes, secondary = false, ...rest }: Props = $props();
 </script>
 
 <button
   class={twMerge(
-    'bg-[var(--s-main-color,purple)] font-bold text-white row w-full rounded-lg shadow py-3',
-    classes
+    'bg-[var(--s-main-color,purple)] active:translate-y-px border border-transparent font-bold text-white row w-full rounded-lg py-3',
+    classes,
+    !secondary && 'shadow',
+    secondary &&
+      'bg-transparent border-[var(--s-main-color,purple)] text-[var(--s-main-color,purple)]'
   )}
   {onclick}
   {...rest}
