@@ -2,20 +2,18 @@ import { html } from "lit-html";
 import type { Meta, StoryObj } from "@storybook/web-components";
 import { Paywall } from "@sesamy/sesamy-components";
 
-// Import the component to ensure it's registered
-import "../../../../dist/lib/sesamy-components.es.js";
 
 interface PaywallProps {
-  // Add any props here if the component accepts any
+  'settings-url': string;
 }
 
 const meta: Meta<PaywallProps> = {
   title: "Components/Paywall",
   tags: ["autodocs"],
   component: "sesamy-paywall",
-  render: (args) => html` <sesamy-paywall></sesamy-paywall> `,
+  render: (args) => html` <sesamy-paywall settings-url=${args["settings-url"]}></sesamy-paywall> `,
   argTypes: {
-    // Add any interactive props here if needed
+    'settings-url': { control: "text", defaultValue: "https://api.sesamy.dev/paywall/paywalls/kvartal/1idkV75XtXSVQAXtTp2dL" },
   },
 };
 
@@ -24,13 +22,14 @@ type Story = StoryObj<PaywallProps>;
 
 export const Default: Story = {
   args: {
-    // Add any default props here if needed
+    "settings-url": "https://api.sesamy.dev/paywall/paywalls/kvartal/1idkV75XtXSVQAXtTp2dL",
+
   },
 };
 
 export const MobileView: Story = {
   args: {
-    // Add any props for mobile view if needed
+    "settings-url": "https://api.sesamy.dev/paywall/paywalls/kvartal/1idkV75XtXSVQAXtTp2dL",
   },
   parameters: {
     viewport: {
@@ -41,7 +40,7 @@ export const MobileView: Story = {
 
 export const TabletView: Story = {
   args: {
-    // Add any props for tablet view if needed
+    "settings-url": "https://api.sesamy.dev/paywall/paywalls/kvartal/1idkV75XtXSVQAXtTp2dL",
   },
   parameters: {
     viewport: {
