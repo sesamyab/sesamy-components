@@ -4,7 +4,6 @@
   import Base from './Base.svelte';
   import type { IconName } from './icons/types';
   import type { PaywallProps } from './types';
-  import { onMount } from 'svelte';
   import PaywallRenderer from './components/PaywallRenderer.svelte';
 
   const paymentMethods = [
@@ -25,9 +24,11 @@
   }: PaywallProps & { t: { [key: string]: string } } = $props();
   let paywall = $state<{ [key: string]: any } | undefined>(undefined);
 
-  onMount(async () => {
-    const response = await fetch(settingsUrl);
-    paywall = await response.json();
+  $effect(() => {
+    (async () => {
+      const response = await fetch(settingsUrl);
+      paywall = await response.json();
+    })();
   });
 </script>
 
