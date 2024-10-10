@@ -7,7 +7,7 @@
   import Button from "./Button.wc.svelte";
   import type { LoginProps } from "./types";
 
-  let { loading, loggedIn, userAvatar }: LoginProps = $props();
+  let { loading, loggedIn, userAvatar, t }: LoginProps & { t: { [key: string]: string } } = $props();
 
   const login = async (api: SesamyAPI) => {
     loading = true;
@@ -42,14 +42,14 @@
   };
 </script>
 
-<Base let:api>
+<Base let:api let:t>
   {#await checkLoggedIn(api) then _}
     {#if loading || loggedIn}
       <Avatar {loading} onclick={() => logout(api)} size="sm"></Avatar>
     {:else}
       <slot name="loginButton">
         <Button part="loginButton" {loading} onclick={() => login(api)}>
-          Login
+          {t('login')}
         </Button>
       </slot>
     {/if}
