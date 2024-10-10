@@ -8,6 +8,7 @@ type ButtonProps = {
   disabled?: boolean;
   loading?: boolean;
   outline?: boolean;
+  variant?: "primary" | "secondary";
   onClick?: () => void;
 };
 
@@ -43,6 +44,13 @@ export const Default: Story = {
     outline: true,
     disabled: false,
     loading: false,
+  },
+};
+
+export const Primary: Story = {
+  args: {
+    buttonText: "Primary Button",
+    variant: "primary",
   },
 };
 

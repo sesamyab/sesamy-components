@@ -1,4 +1,4 @@
-export interface LoginProps extends HTMLElement {
+export interface LoginProps {
   buttonText?: string;
   loading?: boolean;
   loggedIn?: boolean;

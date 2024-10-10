@@ -1,7 +1,7 @@
 {
   "name": "@sesamy/sesamy-components",
-  "description": "Ahareable web components library with Vite + Svelte",
-  "version": "0.0.10",
+  "description": "Shareable web components library built with Vite + Svelte",
+  "version": "0.0.11",
   "type": "module",
   "module": "dist/lib/sesamy-components.es.js",
   "main": "dist/lib/sesamy-components.umd.js",
@@ -22,14 +22,38 @@
     "preview": "vite preview --config vite.demo.config.ts",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "prepublishOnly": "yarn run build:lib",
+    "semantic-release": "semantic-release",
     "storybook": "yarn run build:lib && storybook dev -p 6006",
     "build:storybook": "yarn run build:lib && storybook build",
     "svg:generate": "svgo -f ./packages/lib/src/icons -o ./packages/lib/src/icons && node ./scripts/icon.js ./packages/lib/src/icons --generate-types",
     "pull-translations": "i18nexus pull -k UqoFFUDIqHedrUA4OlDXwg --path ./packages/lib/src/locales && prettier --write ./packages/lib/src/locales/**/*.json && yarn sort-translations",
     "sort-translations": "sort-json ./packages/lib/src/locales/**/*.json"
   },
+  "release": {
+    "branches": [
+      "main"
+    ],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/changelog",
+      "@semantic-release/github",
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "CHANGELOG.md",
+            "package.json"
+          ],
+          "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+        }
+      ]
+    ]
+  },
   "devDependencies": {
     "@chromatic-com/storybook": "^1.9.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
     "@storybook/addon-controls": "^8.3.3",
     "@storybook/addon-essentials": "^8.3.2",
     "@storybook/addon-interactions": "^8.3.2",
@@ -46,7 +70,6 @@
     "@testing-library/svelte": "^5.2.1",
     "@tsconfig/svelte": "^5.0.4",
     "@types/node": "^22.5.5",
-    "@types/testing-library__jest-dom": "^6.0.0",
     "autoprefixer": "^10.4.20",
     "i18nexus-cli": "^3.3.0",
     "jsdom": "^25.0.1",
@@ -56,6 +79,7 @@
     "prettier": "^3.1.1",
     "prettier-plugin-svelte": "^3.1.2",
     "sort-json": "^2.0.1",
+    "semantic-release": "^24.1.2",
     "storybook": "^8.3.2",
     "svelte": "5.0.0-next.259",
     "svelte-check": "^4.0.2",
@@ -66,7 +90,7 @@
     "tslib": "^2.7.0",
     "typescript": "^5.6.2",
     "vite": "^5.4.7",
-    "vite-plugin-dts": "^4.2.1",
+    "vite-plugin-static-copy": "^1.0.6",
     "vitest": "^2.1.1"
   },
   "files": [
