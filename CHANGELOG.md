@@ -1,3 +1,17 @@
+# [1.1.0](https://github.com/sesamyab/sesamy-components/compare/v1.0.0...v1.1.0) (2024-10-10)
+
+
+### Bug Fixes
+
+* better types ([da9948a](https://github.com/sesamyab/sesamy-components/commit/da9948a1903e652cef628468b380f0c1deaabb9b))
+
+
+### Features
+
+* added prettier ([a23224d](https://github.com/sesamyab/sesamy-components/commit/a23224dea94b86194c015c63ee291c8913218401))
+* first pass on the lang ([a358160](https://github.com/sesamyab/sesamy-components/commit/a358160098eeee2bba959a0481fd23c5083860a9))
+* icons implementation + some markup for paywall ([2294d3b](https://github.com/sesamyab/sesamy-components/commit/2294d3b76065e6b3655f92de6a14cfe06de20530))
+
 # 1.0.0 (2024-10-10)
 
 
