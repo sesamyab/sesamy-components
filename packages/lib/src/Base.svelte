@@ -13,8 +13,6 @@
 
   const translator = initTransaltor(lang || htmlLang || 'en')
 
-  console.log('lang', lang, htmlLang)
-
   let sesamyDesignTokens = `
     * {
       --s-main-color: var(--sesamy-main-color, #E71104);
