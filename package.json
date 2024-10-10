@@ -24,7 +24,10 @@
     "prepublishOnly": "yarn run build:lib",
     "semantic-release": "semantic-release",
     "storybook": "yarn run build:lib && storybook dev -p 6006",
-    "build:storybook": "yarn run build:lib && storybook build"
+    "build:storybook": "yarn run build:lib && storybook build",
+    "svg:generate": "svgo -f ./packages/lib/src/icons -o ./packages/lib/src/icons && node ./scripts/icon.js ./packages/lib/src/icons --generate-types",
+    "pull-translations": "i18nexus pull -k UqoFFUDIqHedrUA4OlDXwg --path ./packages/lib/src/locales && prettier --write ./packages/lib/src/locales/**/*.json && yarn sort-translations",
+    "sort-translations": "sort-json ./packages/lib/src/locales/**/*.json"
   },
   "release": {
     "branches": [
@@ -68,15 +71,20 @@
     "@tsconfig/svelte": "^5.0.4",
     "@types/node": "^22.5.5",
     "autoprefixer": "^10.4.20",
+    "i18nexus-cli": "^3.3.0",
     "jsdom": "^25.0.1",
     "lit": "^3.2.0",
     "lit-html": "^3.2.0",
     "postcss": "^8.4.47",
+    "prettier": "^3.1.1",
+    "prettier-plugin-svelte": "^3.1.2",
+    "sort-json": "^2.0.1",
     "semantic-release": "^24.1.2",
     "storybook": "^8.3.2",
     "svelte": "5.0.0-next.259",
     "svelte-check": "^4.0.2",
     "svelte-preprocess": "^6.0.2",
+    "svgo": "^3.0.2",
     "tailwind-merge": "^2.5.2",
     "tailwindcss": "^3.4.13",
     "tslib": "^2.7.0",
@@ -89,6 +97,7 @@
     "dist/lib"
   ],
   "dependencies": {
+    "@ape-egg/tailwind-rows-columns": "^1.0.2",
     "@sesamy/sesamy-js": "^1.22.0",
     "lucide-svelte": "^0.445.0"
   }
