@@ -1,92 +1,64 @@
 <svelte:options customElement="sesamy-button" />
 
 <script lang="ts">
-  export let outline = true;
+  import { twMerge } from "tailwind-merge";
+  import Base from "./Base.svelte";
+
+  export let variant: "primary" | "secondary" = "primary";
   export let loading = false;
   export let disabled = false;
-  export let size: "sm" | "md" | "lg" | "" = "";
+  export let outline = false;
+  export let size: "sm" | "md" | "lg" = "md";
   export let part;
   export let onclick = () => {};
   export let href = "";
+
+  const baseClasses =
+    "inline-flex items-center justify-center font-medium rounded-md transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2";
+
+  const sizeClasses = {
+    sm: "px-3 py-1.5 text-sm",
+    md: "px-4 py-2 text-base",
+    lg: "px-6 py-3 text-lg",
+  };
+
+  const variantClasses = {
+    primary: {
+      solid:
+        "bg-[var(--sesamy-button-bg)] text-[var(--sesamy-button-text)] hover:bg-[var(--sesamy-button-bg-hover)] focus:ring-[var(--sesamy-button-ring)]",
+      outline:
+        "bg-transparent border border-[var(--sesamy-button-border)] text-[var(--sesamy-button-text)] hover:bg-[var(--sesamy-button-bg-hover)] hover:text-[var(--sesamy-button-text-hover)] focus:ring-[var(--sesamy-button-ring)]",
+    },
+    secondary: {
+      solid:
+        "bg-[var(--sesamy-button-secondary-bg)] text-[var(--sesamy-button-secondary-text)] hover:bg-[var(--sesamy-button-secondary-bg-hover)] focus:ring-[var(--sesamy-button-secondary-ring)]",
+      outline:
+        "bg-transparent border border-[var(--sesamy-button-secondary-border)] text-[var(--sesamy-button-secondary-text)] hover:bg-[var(--sesamy-button-secondary-bg-hover)] hover:text-[var(--sesamy-button-secondary-text-hover)] focus:ring-[var(--sesamy-button-secondary-ring)]",
+    },
+  };
+
+  $: classes = twMerge(
+    baseClasses,
+    sizeClasses[size],
+    variantClasses[variant][outline ? "outline" : "solid"],
+    disabled && "opacity-50 cursor-not-allowed",
+  );
 </script>
 
-{#if href && !disabled && !loading}
-  <a {href} class="button" class:outline {onclick}><slot /></a>
-{:else}
-  <button
-    class="button bg-yellow-500 {size}"
-    class:outline
-    class:disabled
-    {part}
-    {disabled}
-    {onclick}
-  >
-    {#if loading}
-      <span class="loader"></span>
-    {/if}
-    <slot />
-  </button>
-{/if}
-
-<style>
-  .button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 6px 16px;
-    font-size: 14px;
-    font-weight: normal;
-    line-height: 1.5;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    cursor: pointer;
-    user-select: none;
-    border: 1px solid #d1d5db;
-    border-radius: 4px;
-    transition: all 0.2s ease-in-out;
-  }
-
-  .button:not(.outline) {
-    color: #ffffff;
-    background-color: #374151;
-    border-color: #374151;
-  }
-
-  .button:not(.outline):hover:not(.disabled) {
-    background-color: #4b5563;
-    border-color: #4b5563;
-  }
-
-  .button.outline {
-    color: #d1d5db;
-    background-color: transparent;
-    border-color: #d1d5db;
-  }
-
-  .button.outline:hover:not(.disabled) {
-    background-color: rgba(243, 244, 246, 0.1);
-  }
-
-  .button.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .loader {
-    display: inline-block;
-    width: 1em;
-    height: 1em;
-    margin-right: 0.5em;
-    border: 2px solid currentColor;
-    border-right-color: transparent;
-    border-radius: 50%;
-    animation: spin 0.75s linear infinite;
-  }
-
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-</style>
+<Base>
+  {#if href && !disabled && !loading}
+    <a {href} class={classes} {onclick}>
+      <slot />
+    </a>
+  {:else}
+    <button class={classes} {disabled} {onclick} {part}>
+      {#if loading}
+        <span
+          class="inline-block w-4 h-4 mr-2 border-2 border-current border-r-transparent rounded-full animate-spin"
+          aria-hidden="true"
+        ></span>
+      {/if}
+      <slot />
+    </button>
+  {/if}
+</Base>
