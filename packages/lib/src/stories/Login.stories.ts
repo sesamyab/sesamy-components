@@ -2,10 +2,12 @@
 import { html } from "lit-html";
 import type { Meta, StoryObj } from "@storybook/web-components";
 import { Login } from "@sesamy/sesamy-components";
+import { ifDefined } from "lit-html/directives/if-defined.js";
 
 type LoginProps = {
   buttonText?: string;
   onLogin?: (event: CustomEvent) => void;
+  lang?: string;
 };
 
 const meta: Meta<LoginProps> = {
@@ -15,12 +17,14 @@ const meta: Meta<LoginProps> = {
   render: (args) => html`
     <sesamy-login
       .buttonText=${args.buttonText}
+      .outline=${ifDefined(args.lang)}
       @login=${args.onLogin}
     ></sesamy-login>
   `,
   argTypes: {
     buttonText: { control: "text" },
     onLogin: { action: "login" },
+    lang: { control: "text" },  
   },
 };
 

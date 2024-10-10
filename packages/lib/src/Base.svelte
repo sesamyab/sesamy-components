@@ -2,25 +2,16 @@
   // @ts-ignore
   import libstyles from './app.css?inline';
   import { getApi } from './api';
-  import cs from './locales/cs/default.json';
-  import en from './locales/en/default.json';
-  import fi from './locales/fi/default.json';
-  import it from './locales/it/default.json';
-  import nb from './locales/nb/default.json';
-  import pl from './locales/pl/default.json';
-  import sv from './locales/sv/default.json';
+  import initTransaltor from './i18n';
 
+  let {
+    lang
+  }: { lang?: string  } = $props();  
+  const htmlLang = document.querySelector('html')?.getAttribute('lang');
+  
   const apiPromise = getApi();
 
-  let translator = {
-    cs,
-    en,
-    fi,
-    it,
-    nb,
-    pl,
-    sv
-  };
+  const translator = initTransaltor(lang || htmlLang || 'en')
 
   let sesamyDesignTokens = `
     * {
@@ -38,17 +29,12 @@
     }
   `;
 
-  // Prio order of localization
-  // 1. explicit lang property on component
-  // 2. html-tag lang
-  // 3. english fallback
-
   let style = '<sty' + 'le>' + libstyles + sesamyDesignTokens + '</style>';
 </script>
 
 <div class="base">
   {#await apiPromise then api}
-    <slot {api} t={translator.sv}></slot>
+    <slot {api} t={translator}></slot>
   {:catch error}
     <p style="color: red">{error.message}</p>
   {/await}
