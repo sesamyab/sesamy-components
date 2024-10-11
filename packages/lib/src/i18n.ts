@@ -10,19 +10,19 @@ export type Key = keyof typeof en;
 type Languages = { [lang: string]: { [key in Key]: string } };
 
 const languages: Languages = {
-    cs,
-    en,
-    fi,
-    it,
-    nb,
-    pl,
-    sv
+  cs,
+  en,
+  fi,
+  it,
+  nb,
+  pl,
+  sv
 };
 
 export interface TranslationFunction {
-(key: Key): string;
+  (key: Key): string;
 }
-  
+
 export default function init(language: string): TranslationFunction {
-  return (key: Key) => languages[language][key]; 
+  return (key: Key) => languages[language][key];
 }

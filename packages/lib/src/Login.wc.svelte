@@ -7,7 +7,7 @@
   import Button from "./Button.wc.svelte";
   import type { LoginProps } from "./types";
 
-  let { loading, loggedIn, userAvatar, t }: LoginProps = $props();
+  let { loading, loggedIn, userAvatar}: LoginProps = $props();
 
   const login = async (api: SesamyAPI) => {
     loading = true;
