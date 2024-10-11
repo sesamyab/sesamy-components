@@ -9,12 +9,14 @@
 
   let { loading, loggedIn, userAvatar }: LoginProps = $props();
 
+  let disabled = $state(false);
+
   const login = async (api: SesamyAPI) => {
-    loading = true;
+    disabled = true;
     try {
       await api.auth.loginWithRedirect();
     } catch (error) {
-      loading = false;
+      disabled = false;
       console.error("Login failed:", error);
     }
   };
@@ -48,7 +50,7 @@
       <Avatar {loading} onclick={() => logout(api)} size="sm"></Avatar>
     {:else}
       <slot name="loginButton">
-        <Button part="loginButton" {loading} onclick={() => login(api)}>
+        <Button part="loginButton" {disabled} onclick={() => login(api)}>
           Login
         </Button>
       </slot>

@@ -8,7 +8,7 @@ type ButtonProps = {
   disabled?: boolean;
   loading?: boolean;
   outline?: boolean;
-  variant?: "primary" | "secondary";
+  variant?: "default" | "primary" | "success" | "neutral" | "warning" | "danger";
   onClick?: () => void;
 };
 
@@ -18,15 +18,18 @@ const meta: Meta<ButtonProps> = {
   component: "sesamy-button",
   render: (args) => html`
     <sesamy-button
+      variant="primary"
       .disabled=${ifDefined(args.disabled)}
       .loading=${ifDefined(args.loading)}
       .outline=${ifDefined(args.outline)}
+      .variant=${ifDefined(args.variant)}
       @click=${args.onClick}
       >${args.buttonText}</sesamy-button
     >
   `,
   argTypes: {
     buttonText: { control: "text" },
+    variant: { control: { type: "select" }, options: ["default", "primary", "success", "neutral", "warning", "danger"] },
     disabled: { control: "boolean", defaultValue: false },
     loading: { control: "boolean", defaultValue: false },
     outline: { control: "boolean", defaultValue: true },

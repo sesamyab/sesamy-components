@@ -4,7 +4,6 @@
   import { twMerge } from "tailwind-merge";
   import Base from "./Base.svelte";
 
-  export let variant: "primary" | "secondary" = "primary";
   export let loading = false;
   export let disabled = false;
   export let outline = false;
@@ -22,25 +21,16 @@
     lg: "px-6 py-3 text-lg",
   };
 
-  const variantClasses = {
-    primary: {
-      solid:
-        "bg-[var(--sesamy-button-bg)] text-[var(--sesamy-button-text)] hover:bg-[var(--sesamy-button-bg-hover)] focus:ring-[var(--sesamy-button-ring)]",
-      outline:
-        "bg-transparent border border-[var(--sesamy-button-border)] text-[var(--sesamy-button-text)] hover:bg-[var(--sesamy-button-bg-hover)] hover:text-[var(--sesamy-button-text-hover)] focus:ring-[var(--sesamy-button-ring)]",
-    },
-    secondary: {
-      solid:
-        "bg-[var(--sesamy-button-secondary-bg)] text-[var(--sesamy-button-secondary-text)] hover:bg-[var(--sesamy-button-secondary-bg-hover)] focus:ring-[var(--sesamy-button-secondary-ring)]",
-      outline:
-        "bg-transparent border border-[var(--sesamy-button-secondary-border)] text-[var(--sesamy-button-secondary-text)] hover:bg-[var(--sesamy-button-secondary-bg-hover)] hover:text-[var(--sesamy-button-secondary-text-hover)] focus:ring-[var(--sesamy-button-secondary-ring)]",
-    },
+  const getButtonClasses = (isOutline: boolean) => {
+    return isOutline
+      ? "bg-transparent border border-blue-500 text-blue-500 hover:bg-blue-50 hover:text-blue-600 focus:ring-blue-300"
+      : "bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-300";
   };
 
   $: classes = twMerge(
     baseClasses,
     sizeClasses[size],
-    variantClasses[variant][outline ? "outline" : "solid"],
+    getButtonClasses(outline),
     disabled && "opacity-50 cursor-not-allowed",
   );
 </script>

@@ -17,7 +17,7 @@
     <button
       type="button"
       class={twMerge(
-        "relative inline-block rounded-full overflow-hidden bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500",
+        "relative inline-block rounded-full overflow-hidden bg-purple-700",
         size === "sm" && "w-8 h-8",
         size === "md" && "w-12 h-12",
         size === "lg" && "w-16 h-16",
@@ -26,16 +26,6 @@
       onkeydown={(e) => e.key === "Enter" && onclick}
       aria-label={alt}
     >
-      {#if src}
-        <img {src} {alt} class="w-full h-full object-cover" />
-      {:else}
-        <div
-          class="flex items-center justify-center w-full h-full text-gray-500"
-        >
-          {alt.charAt(0).toUpperCase()}
-        </div>
-      {/if}
-    </button>
     {#if loading}
       <div
         class="absolute left-[50%] -translate-x-[50%] top-[50%] -translate-y-[50%]"
@@ -44,7 +34,7 @@
           class={twMerge(
             "animate-spin",
             size === "sm" && "w-7 h-7",
-            size === "md" && "w-10 h-10",
+            size === "md" && "w-12 h-12",
             size === "lg" && "w-14 h-14",
           )}
           viewBox="0 0 125 125"
@@ -52,10 +42,19 @@
         >
           <path
             d="M0 62.5C0 28 28 0 62.5 0v18.8c-24.2 0-43.8 19.6-43.8 43.8H0z"
-            style="fill:black;"
+            style="fill:white;"
           />
         </svg>
       </div>
+    {:else if src}
+      <img {src} {alt} class="w-full h-full object-cover" />
+    {:else}
+      <div
+        class="flex items-center justify-center w-full h-full text-white"
+      >
+        {alt.charAt(0).toUpperCase()}
+      </div>
     {/if}
+    </button>
   </div>
 </Base>
