@@ -9,7 +9,7 @@
   import type { IconName } from './../icons/types';
   import Features from './../components/Features.svelte';
   import { twMerge } from 'tailwind-merge';
-  import type { Translate } from '../i18n';
+  import type { TranslationFunction } from '../i18n';
 
   const paymentMethods = [
     'visa',
@@ -23,7 +23,7 @@
   ] as IconName[];
 
   type Props = {
-    t: Translate;
+    t: TranslationFunction;
     horizontal?: boolean;
     paywall: { [key: string]: any }; // TODO: type define paywall props
   };

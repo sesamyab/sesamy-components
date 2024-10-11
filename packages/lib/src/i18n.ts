@@ -24,5 +24,5 @@ export interface TranslationFunction {
 }
   
 export default function init(language: string): TranslationFunction {
-  return (key: Key) => languages[language][key] || languages.en[key]; 
+  return (key: Key) => languages[language][key]; 
 }
