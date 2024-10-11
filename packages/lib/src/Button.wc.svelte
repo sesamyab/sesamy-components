@@ -3,16 +3,9 @@
 <script lang="ts">
   import { twMerge } from "tailwind-merge";
   import Base from "./Base.svelte";
+  import type { ButtonProps, Variant } from "./types";
 
-  type Variant = "text" | "contained" | "outlined";
-
-  export let loading = false;
-  export let variant: Variant = "contained"
-  export let disabled = false;  
-  export let size: "sm" | "md" | "lg" = "md";
-  export let part;
-  export let onclick = () => {};
-  export let href = "";
+  let { loading = false, variant = "primary",disabled = false, size = "md", part, onclick, href }: ButtonProps = $props();
 
   const baseClasses =
     "inline-flex items-center justify-center font-medium rounded-md transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2";
@@ -25,21 +18,26 @@
 
   const getButtonClasses = (variant: Variant) => {
     switch (variant) {
-      case "text":
-        return "text-blue-500 hover:text-blue-600 focus:ring-blue-300";
-      case "contained":
+      case "primary":
         return "bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-300";
-      case "outlined":
+      case "secondary":
         return "bg-transparent border border-blue-500 text-blue-500 hover:bg-blue-50 hover:text-blue-600 focus:ring-blue-300";
+      case "tertiary":
+        return "text-blue-500 hover:text-blue-600 focus:ring-blue-300";
     }
   };
 
-  $: classes = twMerge(
-    baseClasses,
-    sizeClasses[size],
-    getButtonClasses(variant),
-    disabled && "opacity-50 cursor-not-allowed",
-  );
+  // Define reactive state for classes
+  let classes = $state("");
+
+  $effect(() => {
+    classes = twMerge(
+      baseClasses,
+      sizeClasses[size],
+      getButtonClasses(variant),
+      disabled && "opacity-50 cursor-not-allowed"
+    );
+  });
 </script>
 
 <Base>

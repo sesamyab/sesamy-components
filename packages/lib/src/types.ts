@@ -14,11 +14,15 @@ export interface PaywallProps extends HTMLElement {
   template: 'ARTICLE' | 'BOXES';
 }
 
+export type Variant = 'primary' | 'secondary' | 'tertiary';
+export type Size = 'sm' | 'md' | 'lg';
+
 export type ButtonProps = HTMLButtonAttributes & {
-  loading: boolean;
-  disabled: boolean;
-  size: 'sm' | 'md' | 'lg';
-  variant: 'text' | 'contained' | 'outlined';
-  onclick: () => {};
-  href: string;
+  loading?: boolean;
+  variant?: Variant;
+  disabled?: boolean;
+  size?: Size;
+  part?: string;
+  onclick?: () => void;
+  href?: string;
 };
