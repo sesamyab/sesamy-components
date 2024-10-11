@@ -9,6 +9,7 @@
   import type { IconName } from './../icons/types';
   import Features from './../components/Features.svelte';
   import { twMerge } from 'tailwind-merge';
+  import type { TranslationFunction } from '../i18n';
 
   const paymentMethods = [
     'visa',
@@ -22,7 +23,7 @@
   ] as IconName[];
 
   type Props = {
-    t: { [key: string]: string };
+    t: TranslationFunction;
     horizontal?: boolean;
     paywall: { [key: string]: any }; // TODO: type define paywall props
   };
@@ -34,7 +35,7 @@
 
 <Column class="w-full shadow-lg pt-6 bg-[var(--s-bg-color,purple)] rounded-3xl">
   <Row class="text-sm gap-1 pt-2 font-bold">
-    {t['already_subscribing']} <a href="/" class="text-[var(--s-main-color,purple)]"> Logga in </a>
+    {t('already_subscribing')} <a href="/" class="text-[var(--s-main-color,purple)]"> Logga in </a>
   </Row>
 
   <Column class={twMerge('gap-4 px-16 pb-16 pt-6 w-full', horizontal && 'px-6 pb-4')} up left>
