@@ -22,7 +22,7 @@
 
 "@analytics/activity-utils@^0.1.16":
   version "0.1.16"
-  resolved "https://registry.npmjs.org/@analytics/activity-utils/-/activity-utils-0.1.16.tgz"
+  resolved "https://registry.yarnpkg.com/@analytics/activity-utils/-/activity-utils-0.1.16.tgz#5a6e3771d51edff9fc202186d266b54c0e4783de"
   integrity sha512-RjMBIKcIZfOCn2wFiUCBsyvEMLZ+CfPiB4TRDgVYoYEQfyrBoiTwQRZmZjXP+fakikUzuOUJRB3mlD8V4+6uWg==
   dependencies:
     "@analytics/listener-utils" "^0.4.0"
@@ -30,14 +30,14 @@
 
 "@analytics/cookie-utils@^0.2.12":
   version "0.2.12"
-  resolved "https://registry.npmjs.org/@analytics/cookie-utils/-/cookie-utils-0.2.12.tgz"
+  resolved "https://registry.yarnpkg.com/@analytics/cookie-utils/-/cookie-utils-0.2.12.tgz#acc38dd76ead968050776fb8e57e571e6d37cbc7"
   integrity sha512-2h/yuIu3kmu+ZJlKmlT6GoRvUEY2k1BbQBezEv5kGhnn9KpmzPz715Y3GmM2i+m7Y0QmBdVUoA260dQZkofs2A==
   dependencies:
     "@analytics/global-storage-utils" "^0.1.7"
 
 "@analytics/core@^0.12.15":
   version "0.12.15"
-  resolved "https://registry.npmjs.org/@analytics/core/-/core-0.12.15.tgz"
+  resolved "https://registry.yarnpkg.com/@analytics/core/-/core-0.12.15.tgz#e363cdc681d419d27b8170ce286e095f212e3576"
   integrity sha512-Y+zxTNIbONXKxeEUOtcXs4b3uuiGjF5sy1zHl8ZNkIBwrOpTM8ZGNhi0xGL8ZhaQLGbi03BrT6DaoNNG3sBQOg==
   dependencies:
     "@analytics/global-storage-utils" "^0.1.7"
@@ -46,28 +46,28 @@
 
 "@analytics/global-storage-utils@^0.1.7":
   version "0.1.7"
-  resolved "https://registry.npmjs.org/@analytics/global-storage-utils/-/global-storage-utils-0.1.7.tgz"
+  resolved "https://registry.yarnpkg.com/@analytics/global-storage-utils/-/global-storage-utils-0.1.7.tgz#c6a12eb133a6e44101b7c3529c82e3e89ac9ce46"
   integrity sha512-V+spzGLZYm4biZT4uefaylm80SrLXf8WOTv9hCgA46cLcyxx3LD4GCpssp1lj+RcWLl/uXJQBRO4Mnn/o1x6Gw==
   dependencies:
     "@analytics/type-utils" "^0.6.2"
 
 "@analytics/listener-utils@^0.4.0":
   version "0.4.0"
-  resolved "https://registry.npmjs.org/@analytics/listener-utils/-/listener-utils-0.4.0.tgz"
+  resolved "https://registry.yarnpkg.com/@analytics/listener-utils/-/listener-utils-0.4.0.tgz#061242426f5affd48c9e447a66e8c10945955867"
   integrity sha512-sBgtBqXtdAwidyE+g/bddVdabaHdW2PIauzyIvG2Gy2qb4poWfHXm3GscDZSqQqe2o9uIUcS8x5MGpJPXveARA==
   dependencies:
     "@analytics/type-utils" "^0.6.2"
 
 "@analytics/localstorage-utils@^0.1.10":
   version "0.1.10"
-  resolved "https://registry.npmjs.org/@analytics/localstorage-utils/-/localstorage-utils-0.1.10.tgz"
+  resolved "https://registry.yarnpkg.com/@analytics/localstorage-utils/-/localstorage-utils-0.1.10.tgz#8e9b03604e79a530e9a5ab6748c8ceb96153b95c"
   integrity sha512-uJS+Jp1yLG5VFCgA5T82ZODYBS0xuDQx0NtAZrgbqt9j51BX3TcgmOez5LVkrUNu/lpbxjCLq35I4TKj78VmOQ==
   dependencies:
     "@analytics/global-storage-utils" "^0.1.7"
 
 "@analytics/scroll-utils@^0.1.22":
   version "0.1.22"
-  resolved "https://registry.npmjs.org/@analytics/scroll-utils/-/scroll-utils-0.1.22.tgz"
+  resolved "https://registry.yarnpkg.com/@analytics/scroll-utils/-/scroll-utils-0.1.22.tgz#82a1af342d2b8133f8c93e5c0a8e92da9c643937"
   integrity sha512-BBlU89Yt/GqAsTVC4/5+Vpjne8UW4qEq6ODq+xt+azYOU+B5TUPgGSWIO2j9LKWxFZvA3fj3Vi3ZdX/4fx3/jw==
   dependencies:
     "@analytics/type-utils" "^0.6.2"
@@ -75,14 +75,14 @@
 
 "@analytics/session-storage-utils@^0.0.7":
   version "0.0.7"
-  resolved "https://registry.npmjs.org/@analytics/session-storage-utils/-/session-storage-utils-0.0.7.tgz"
+  resolved "https://registry.yarnpkg.com/@analytics/session-storage-utils/-/session-storage-utils-0.0.7.tgz#e355c60b14d4fbcf20983e5cfcb7cb838b4c57ab"
   integrity sha512-PSv40UxG96HVcjY15e3zOqU2n8IqXnH8XvTkg1X43uXNTKVSebiI2kUjA3Q7ESFbw5DPwcLbJhV7GforpuBLDw==
   dependencies:
     "@analytics/global-storage-utils" "^0.1.7"
 
 "@analytics/storage-utils@^0.4.2":
   version "0.4.2"
-  resolved "https://registry.npmjs.org/@analytics/storage-utils/-/storage-utils-0.4.2.tgz"
+  resolved "https://registry.yarnpkg.com/@analytics/storage-utils/-/storage-utils-0.4.2.tgz#222717832a533a1a2516aa3a22d5db80d14a881b"
   integrity sha512-AXObwyVQw9h2uJh1t2hUgabtVxzYpW+7uKVbdHQK80vr3Td5rrmCxrCxarh7HUuAgSDZ0bZWqmYxVgmwKceaLg==
   dependencies:
     "@analytics/cookie-utils" "^0.2.12"
@@ -93,7 +93,7 @@
 
 "@analytics/type-utils@^0.6.2":
   version "0.6.2"
-  resolved "https://registry.npmjs.org/@analytics/type-utils/-/type-utils-0.6.2.tgz"
+  resolved "https://registry.yarnpkg.com/@analytics/type-utils/-/type-utils-0.6.2.tgz#60d706603a98a95681d4b1e9726c703fdd541a9e"
   integrity sha512-TD+xbmsBLyYy/IxFimW/YL/9L2IEnM7/EoV9Aeh56U64Ify8o27HJcKjo38XY9Tcn0uOq1AX3thkKgvtWvwFQg==
 
 "@ape-egg/tailwind-rows-columns@^1.0.2":
@@ -103,7 +103,7 @@
 
 "@auth0/auth0-spa-js@^2.1.3":
   version "2.1.3"
-  resolved "https://registry.npmjs.org/@auth0/auth0-spa-js/-/auth0-spa-js-2.1.3.tgz"
+  resolved "https://registry.yarnpkg.com/@auth0/auth0-spa-js/-/auth0-spa-js-2.1.3.tgz#aabf6f439e41edbeef0cf4766ad754e5b47616e5"
   integrity sha512-NMTBNuuG4g3rame1aCnNS5qFYIzsTUV5qTFPRfTyYFS1feS6jsCBR+eTq9YkxCp1yuoM2UIcjunPaoPl77U9xQ==
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.10.4", "@babel/code-frame@^7.22.13":
@@ -348,7 +348,7 @@
 
 "@jridgewell/sourcemap-codec@^1.4.10", "@jridgewell/sourcemap-codec@^1.4.14", "@jridgewell/sourcemap-codec@^1.4.15", "@jridgewell/sourcemap-codec@^1.5.0":
   version "1.5.0"
-  resolved "https://registry.npmjs.org/@jridgewell/sourcemap-codec/-/sourcemap-codec-1.5.0.tgz"
+  resolved "https://registry.yarnpkg.com/@jridgewell/sourcemap-codec/-/sourcemap-codec-1.5.0.tgz#3188bcb273a414b0d215fd22a58540b989b9409a"
   integrity sha512-gv3ZRaISU3fjPAgNsriBRqGWQL6quFx04YMPW/zD8XMLsU32mhCCbfbO6KZFLjvYpCZ8zyDEgqsgf+PwPaM7GQ==
 
 "@jridgewell/trace-mapping@^0.3.24", "@jridgewell/trace-mapping@^0.3.25":
@@ -898,9 +898,9 @@
     read-package-up "^11.0.0"
 
 "@sesamy/sesamy-js@^1.22.0":
-  version "1.22.0"
-  resolved "https://registry.yarnpkg.com/@sesamy/sesamy-js/-/sesamy-js-1.22.0.tgz#18ca7b041318560bc4a21a5d199d68cb2fea9e7b"
-  integrity sha512-ZliGWBklHJ8qYo3ABFYbYVKY6Alh9+MbRjoaq/iyla4v4qJQSpwxCn/QLsS3T2bAyjEyyK/VvT3BZPgr1np8bg==
+  version "1.22.6"
+  resolved "https://registry.yarnpkg.com/@sesamy/sesamy-js/-/sesamy-js-1.22.6.tgz#cf108acdb79c8e1d3efc8314c9981bcaa530d220"
+  integrity sha512-EefPJhLfVcWrGf8AWbhUc6S0FKfy/RWrDYuE/SUTi9C80zsQVGE84LHbT96J1KoS/UA+c/gYjAdnyPPWZcsXlQ==
   dependencies:
     "@analytics/activity-utils" "^0.1.16"
     "@analytics/scroll-utils" "^0.1.22"
@@ -1298,12 +1298,12 @@
     debug "^4.3.5"
 
 "@sveltejs/vite-plugin-svelte@^4.0.0-next.6":
-  version "4.0.0-next.7"
-  resolved "https://registry.yarnpkg.com/@sveltejs/vite-plugin-svelte/-/vite-plugin-svelte-4.0.0-next.7.tgz#2139be5083d2b1d117740c69e4e700156b1abeb2"
-  integrity sha512-yMUnAqquoayvBDztk1rWUgdtvjv7YcHgopCAB7sWl9SQht8U/7lqwTlJU0ZTAY09pFFRe6bbakd7YoiyyIvJiA==
+  version "4.0.0-next.8"
+  resolved "https://registry.yarnpkg.com/@sveltejs/vite-plugin-svelte/-/vite-plugin-svelte-4.0.0-next.8.tgz#66a4f2f7803b0ee69f1ea0e3001c6f852f53c2d7"
+  integrity sha512-gUw2Kb9x4PlaJuPoMqIiD5bShlO4mSKpAxZMix1pFOq9pt8vaPUIzmHaXN4xeDT4psbZZVh2aeubMPFzRCgIyA==
   dependencies:
     "@sveltejs/vite-plugin-svelte-inspector" "^3.0.0-next.0||^3.0.0"
-    debug "^4.3.6"
+    debug "^4.3.7"
     deepmerge "^4.3.1"
     kleur "^4.1.5"
     magic-string "^0.30.11"
@@ -1703,12 +1703,12 @@ ajv@^6.10.0, ajv@^6.12.4:
 
 analytics-plugin-tab-events@^0.2.1:
   version "0.2.1"
-  resolved "https://registry.npmjs.org/analytics-plugin-tab-events/-/analytics-plugin-tab-events-0.2.1.tgz"
+  resolved "https://registry.yarnpkg.com/analytics-plugin-tab-events/-/analytics-plugin-tab-events-0.2.1.tgz#41361c320ba2d2703879ae811b42d04f0418c239"
   integrity sha512-jGZNw3HncKYs4lBO7cUcwKWnwO08KpoxAT7CYESxtsTfl1KRVqTiDv1Wne/cDvq5+rOpmxY4z6lNbV6T4E/WJQ==
 
 analytics-utils@^1.0.12:
   version "1.0.12"
-  resolved "https://registry.npmjs.org/analytics-utils/-/analytics-utils-1.0.12.tgz"
+  resolved "https://registry.yarnpkg.com/analytics-utils/-/analytics-utils-1.0.12.tgz#07bd63471d238e80f42d557fba039365f09c50db"
   integrity sha512-WvV2YWgsnXLxaY0QYux0crpBAg/0JA763NmbMVz22jKhMPo7dpTBet8G2IlF7ixTjLDzGlkHk1ZaKqqQmjJ+4w==
   dependencies:
     "@analytics/type-utils" "^0.6.2"
@@ -1716,7 +1716,7 @@ analytics-utils@^1.0.12:
 
 analytics@^0.8.13:
   version "0.8.14"
-  resolved "https://registry.npmjs.org/analytics/-/analytics-0.8.14.tgz"
+  resolved "https://registry.yarnpkg.com/analytics/-/analytics-0.8.14.tgz#84b6e7e0308c8db318bea1149ea550db7e677324"
   integrity sha512-ZKpqWHEHBrN0lvIsrUKmt0fcXNyQuKa0JUWDRAz7LgJ+Sf4ZX+a66/ai28W4H8kJJlLeItCrhIi/xvdbV08RlA==
   dependencies:
     "@analytics/core" "^0.12.15"
@@ -2344,7 +2344,7 @@ cookie@0.6.0:
 
 core-js@^3.37.1:
   version "3.38.1"
-  resolved "https://registry.npmjs.org/core-js/-/core-js-3.38.1.tgz"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.38.1.tgz#aa375b79a286a670388a1a363363d53677c0383e"
   integrity sha512-OP35aUorbU3Zvlx7pjsFdu1rGNnD4pgw/CWoYzRY3t2EzoVT7shKHY1dlAy3f41cGIO7ZDPQimhGFTlEYkG/Hw==
 
 core-util-is@~1.0.0:
@@ -2454,7 +2454,7 @@ debug@2.6.9:
   dependencies:
     ms "2.0.0"
 
-debug@4, debug@^4.0.0, debug@^4.1.1, debug@^4.3.2, debug@^4.3.4, debug@^4.3.5, debug@^4.3.6:
+debug@4, debug@^4.0.0, debug@^4.1.1, debug@^4.3.2, debug@^4.3.4, debug@^4.3.5, debug@^4.3.6, debug@^4.3.7:
   version "4.3.7"
   resolved "https://registry.npmjs.org/debug/-/debug-4.3.7.tgz"
   integrity sha512-Er2nc/H7RrMXZBFCEim6TCmMk02Z8vLC2Rbi1KEBggpo0fS6l0S1nnapwmIi3yW/+GOJap1Krg4w0Hg80oCqgQ==
@@ -2488,7 +2488,7 @@ deep-is@^0.1.3:
 
 deepmerge@^4.3.1:
   version "4.3.1"
-  resolved "https://registry.npmjs.org/deepmerge/-/deepmerge-4.3.1.tgz"
+  resolved "https://registry.yarnpkg.com/deepmerge/-/deepmerge-4.3.1.tgz#44b5f2147cd3b00d4b56137685966f26fd25dd4a"
   integrity sha512-3sUqbMEc77XqpdNO7FRyRog+eW3ph+GYCbj+rK+uYyRMuwsVy0rMiVtPn+QJlKFvWP/1PYpapqYn0Me2knFn+A==
 
 define-data-property@^1.1.4:
@@ -2559,7 +2559,7 @@ dir-glob@^3.0.0, dir-glob@^3.0.1:
 
 dlv@^1.1.3:
   version "1.1.3"
-  resolved "https://registry.npmjs.org/dlv/-/dlv-1.1.3.tgz"
+  resolved "https://registry.yarnpkg.com/dlv/-/dlv-1.1.3.tgz#5c198a8a11453596e751494d49874bc7732f2e79"
   integrity sha512-+HlytyjlPKnIG8XuRG8WvmBP8xs8P71y+SKKS6ZXWoEgLuePxtDoUEiH7WkdePWrQ5JBpE6aoVqfZfJUQkjXwA==
 
 doctrine@^3.0.0:
@@ -4050,7 +4050,7 @@ keyv@^4.5.3:
 
 kleur@^4.1.5:
   version "4.1.5"
-  resolved "https://registry.npmjs.org/kleur/-/kleur-4.1.5.tgz"
+  resolved "https://registry.yarnpkg.com/kleur/-/kleur-4.1.5.tgz#95106101795f7050c6c650f350c683febddb1780"
   integrity sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==
 
 levn@^0.4.1:
@@ -4617,7 +4617,7 @@ ms@2.0.0:
 
 ms@2.1.3, ms@^2.1.2, ms@^2.1.3:
   version "2.1.3"
-  resolved "https://registry.npmjs.org/ms/-/ms-2.1.3.tgz"
+  resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.3.tgz#574c8138ce1d2b5861f0b44579dbadd60c6615b2"
   integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
 
 mute-stream@^2.0.0:
@@ -5784,7 +5784,7 @@ sander@^0.5.0:
 
 saturated@^1.0.0:
   version "1.0.0"
-  resolved "https://registry.npmjs.org/saturated/-/saturated-1.0.0.tgz"
+  resolved "https://registry.yarnpkg.com/saturated/-/saturated-1.0.0.tgz#52b2a83f462394420f3ee78b85888c7475219199"
   integrity sha512-n6X3iXP8ZYcXzPdDEnOTSmKhIOnY52+oXscYRtjnKOZMPI6qZMoDXqv9/sl/6P/4FHALczUvIDOTY3SlZ/EJgw==
 
 saxes@^6.0.0:
@@ -6300,9 +6300,9 @@ svelte-preprocess@^5.1.1:
     strip-indent "^3.0.0"
 
 svelte-preprocess@^6.0.2:
-  version "6.0.2"
-  resolved "https://registry.npmjs.org/svelte-preprocess/-/svelte-preprocess-6.0.2.tgz"
-  integrity sha512-OvDTLfaOkkhjprbDKO0SOCkjNYuHy16dbD4SpqbIi6QiabOMHxRT4km5/dzbFFkmW1L0E2INF3MFltG2pgOyKQ==
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/svelte-preprocess/-/svelte-preprocess-6.0.3.tgz#fdc1f9dc41b6f22bf8b1f059e9f21eaaae181eeb"
+  integrity sha512-PLG2k05qHdhmRG7zR/dyo5qKvakhm8IJ+hD2eFRQmMLHp7X3eJnjeupUtvuRpbNiF31RjVw45W+abDwHEmP5OA==
 
 svelte@5.0.0-next.259:
   version "5.0.0-next.259"
@@ -7007,7 +7007,7 @@ wrappy@1:
 
 wretch@^2.9.0:
   version "2.10.0"
-  resolved "https://registry.npmjs.org/wretch/-/wretch-2.10.0.tgz"
+  resolved "https://registry.yarnpkg.com/wretch/-/wretch-2.10.0.tgz#07bf3c2ceb1e43330ae46955b455d2b1034e3e55"
   integrity sha512-umAgGsgEfWVm2GT9Gl+Uyl2AI0q1P8WqXMGiDbSf5QImZW7bdnUbTUrgXYzYH+VmtlM6RqwJQH7JNizSNwt6kw==
 
 write-file-atomic@^6.0.0:

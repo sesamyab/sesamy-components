@@ -4,9 +4,11 @@
   import { twMerge } from "tailwind-merge";
   import Base from "./Base.svelte";
 
+  type Variant = "text" | "contained" | "outlined";
+
   export let loading = false;
-  export let disabled = false;
-  export let outline = false;
+  export let variant: Variant = "contained"
+  export let disabled = false;  
   export let size: "sm" | "md" | "lg" = "md";
   export let part;
   export let onclick = () => {};
@@ -21,16 +23,21 @@
     lg: "px-6 py-3 text-lg",
   };
 
-  const getButtonClasses = (isOutline: boolean) => {
-    return isOutline
-      ? "bg-transparent border border-blue-500 text-blue-500 hover:bg-blue-50 hover:text-blue-600 focus:ring-blue-300"
-      : "bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-300";
+  const getButtonClasses = (variant: Variant) => {
+    switch (variant) {
+      case "text":
+        return "text-blue-500 hover:text-blue-600 focus:ring-blue-300";
+      case "contained":
+        return "bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-300";
+      case "outlined":
+        return "bg-transparent border border-blue-500 text-blue-500 hover:bg-blue-50 hover:text-blue-600 focus:ring-blue-300";
+    }
   };
 
   $: classes = twMerge(
     baseClasses,
     sizeClasses[size],
-    getButtonClasses(outline),
+    getButtonClasses(variant),
     disabled && "opacity-50 cursor-not-allowed",
   );
 </script>
