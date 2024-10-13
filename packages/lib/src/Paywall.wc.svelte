@@ -3,7 +3,7 @@
 <script lang="ts">
   import Base from './Base.svelte';
   import type { IconName } from './icons/types';
-  import type { Translate } from './i18n';
+  import type { TranslationFunction } from './i18n';
   import type { PaywallProps } from './types';
   import PaywallRenderer from './components/PaywallRenderer.svelte';
 
@@ -22,7 +22,7 @@
     'settings-url': settingsUrl,
     template = 'ARTICLE',
     t
-  }: PaywallProps & { t: Translate  } = $props();
+  }: PaywallProps & { t: TranslationFunction  } = $props();
   let paywall = $state<{ [key: string]: any } | undefined>(undefined);
 
   $effect(() => {

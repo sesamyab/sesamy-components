@@ -1,8 +1,8 @@
 // File: packages/lib/src/stories/Login.stories.ts
-import { html } from "lit-html";
-import type { Meta, StoryObj } from "@storybook/web-components";
-import { Login } from "@sesamy/sesamy-components";
-import { ifDefined } from "lit-html/directives/if-defined.js";
+import { html } from 'lit-html';
+import type { Meta, StoryObj } from '@storybook/web-components';
+import { Login } from '@sesamy/sesamy-components';
+import { ifDefined } from 'lit-html/directives/if-defined.js';
 
 type LoginProps = {
   buttonText?: string;
@@ -11,9 +11,9 @@ type LoginProps = {
 };
 
 const meta: Meta<LoginProps> = {
-  title: "Components/Login",
-  tags: ["autodocs"],
-  component: "sesamy-login",
+  title: 'Components/Login',
+  tags: ['autodocs'],
+  component: 'sesamy-login',
   render: (args) => html`
     <sesamy-login
       .buttonText=${args.buttonText}
@@ -22,10 +22,10 @@ const meta: Meta<LoginProps> = {
     ></sesamy-login>
   `,
   argTypes: {
-    buttonText: { control: "text" },
-    onLogin: { action: "login" },
-    lang: { control: "text" },  
-  },
+    buttonText: { control: 'text' },
+    onLogin: { action: 'login' },
+    lang: { control: 'text' }
+  }
 };
 
 export default meta;
@@ -34,12 +34,12 @@ type Story = StoryObj<LoginProps>;
 
 export const Default: Story = {
   args: {
-    buttonText: "Log In",
-  },
+    buttonText: 'Log In'
+  }
 };
 
 export const CustomText: Story = {
   args: {
-    buttonText: "Sign In Now",
-  },
+    buttonText: 'Sign In Now'
+  }
 };

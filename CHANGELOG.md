@@ -1,3 +1,20 @@
+## [1.1.3](https://github.com/sesamyab/sesamy-components/compare/v1.1.2...v1.1.3) (2024-10-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @sesamy/sesamy-js to v1.22.6 ([6b4536f](https://github.com/sesamyab/sesamy-components/commit/6b4536f21f561c264e3a9818a27852e1f012bcaf))
+* moved translate to a function ([b6e1232](https://github.com/sesamyab/sesamy-components/commit/b6e1232170315efd1429db25b5879b3bdc8ebf79))
+* prettier ([95bb529](https://github.com/sesamyab/sesamy-components/commit/95bb5297af847d6adc3510b38e523b5a01336ea7))
+* review comments ([c5c9659](https://github.com/sesamyab/sesamy-components/commit/c5c9659ce1c298701398a3cb7e98d6c9363a9179))
+
+## [1.1.2](https://github.com/sesamyab/sesamy-components/compare/v1.1.1...v1.1.2) (2024-10-10)
+
+
+### Bug Fixes
+
+* add settings-url in storybook ([d33c75d](https://github.com/sesamyab/sesamy-components/commit/d33c75d98a4c2e71c2d56785e8e30b06816dd2da))
+
 ## [1.1.1](https://github.com/sesamyab/sesamy-components/compare/v1.1.0...v1.1.1) (2024-10-10)
 
 

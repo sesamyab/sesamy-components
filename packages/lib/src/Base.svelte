@@ -4,14 +4,12 @@
   import { getApi } from './api';
   import initTransaltor from './i18n';
 
-  let {
-    lang
-  }: { lang?: string  } = $props();  
+  let { lang }: { lang?: string } = $props();
   const htmlLang = document.querySelector('html')?.getAttribute('lang');
-  
+
   const apiPromise = getApi();
 
-  const translator = initTransaltor(lang || htmlLang || 'en')
+  const translator = initTransaltor(lang || htmlLang || 'en');
 
   let sesamyDesignTokens = `
     * {
