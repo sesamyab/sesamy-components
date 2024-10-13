@@ -96,3 +96,16 @@ export const Loading: Story = {
     </div>
   `
 };
+
+export const color: Story = {
+  parameters: {
+    layout: 'centered'
+  },
+  render: () => html`
+    <div id="color" style="display: flex; gap: 10px; padding: 10px; --s-main-color: green;">
+      <sesamy-button variant="primary">Primary</sesamy-button>
+      <sesamy-button variant="secondary">Secondary</sesamy-button>
+      <sesamy-button variant="tertiary">Tertiary</sesamy-button>
+    </div>
+  `
+};
