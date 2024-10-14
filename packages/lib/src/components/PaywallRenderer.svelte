@@ -10,7 +10,7 @@
   import Features from './../components/Features.svelte';
   import { twMerge } from 'tailwind-merge';
   import type { TranslationFunction } from '../i18n';
-  import { hexToHsl } from './../utils/color';
+  import { hexToHsl, hslArrayToCSS } from './../utils/color';
 
   const paymentMethods = [
     'visa',
@@ -34,18 +34,21 @@
   const {
     subscriptions,
     currency,
+    mainColor,
     features,
     settings: {
       styling: { showBackground, dropShadow, backgroundColor }
     }
   } = paywall;
 
-  const paywallBgColor = hexToHsl(backgroundColor || '#F6DFDC');
+  const paywallBgColor = hexToHsl(backgroundColor || '#FFFFFF');
 
   let sesamyPaywallDesignTokens = `
-    .base {
+    .base > div {
       --s-paywall-bg-start-color: var(--sesamy-paywall-bg-start-color, ${paywallBgColor[0]},${paywallBgColor[1]}%,${paywallBgColor[2]}%);
       --s-paywall-bg-end-color: var(--sesamy-paywall-bg-end-color, ${paywallBgColor[0]},${paywallBgColor[1]}%,${paywallBgColor[2] + (100 - paywallBgColor[2]) * 0.5}%);
+      
+      --s-main-color: var(--sesamy-paywall-main-color, ${hslArrayToCSS(hexToHsl(mainColor))});
     }
   `;
 
