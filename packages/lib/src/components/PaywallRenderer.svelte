@@ -34,7 +34,7 @@
 </script>
 
 <Column
-  class="w-full shadow-lg pt-6 bg-white bg-gradient-to-b from-[hsla(var(--s-bg-color),var(--s-bg-opacity,1))] to-[hsla(var(--s-bg-color),var(--s-bg-opacity,0.5))] rounded-3xl"
+  class="w-full shadow-lg pt-6 bg-[hsla(0,0%,100%,var(--s-bg-opacity,1))] bg-gradient-to-b from-[hsla(var(--s-bg-color),var(--s-bg-opacity,1))] to-[hsla(var(--s-bg-color),var(--s-bg-opacity,0.5))] rounded-3xl"
 >
   <Row class="text-sm gap-1 pt-2 font-bold">
     {t('already_subscribing')} <a href="/" class="text-[hsl(var(--s-main-color))]"> Logga in </a>
