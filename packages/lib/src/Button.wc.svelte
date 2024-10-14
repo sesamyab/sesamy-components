@@ -3,7 +3,7 @@
 <script lang="ts">
   import { twMerge } from 'tailwind-merge';
   import Base from './Base.svelte';
-  import type { ButtonProps, Variant } from './types';
+  import type { ButtonProps } from './types';
 
   let {
     loading = false,
@@ -33,17 +33,12 @@
       'text-[rgb(var(--s-main-color))] hover:brightness-75 focus:ring-[rgb(var(--s-main-color)/0.5)]'
   };
 
-  // Define reactive state for classes
-  let classes = $state('');
-
-  $effect(() => {
-    classes = twMerge(
-      baseClasses,
-      sizeClasses[size],
-      variantClasses[variant],
-      disabled && 'opacity-50 cursor-not-allowed'
-    );
-  });
+  const classes = twMerge(
+    baseClasses,
+    sizeClasses[size],
+    variantClasses[variant],
+    disabled && 'opacity-50 cursor-not-allowed'
+  );
 </script>
 
 <Base>
