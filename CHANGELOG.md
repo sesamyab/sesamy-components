@@ -1,3 +1,14 @@
+## [1.1.4](https://github.com/sesamyab/sesamy-components/compare/v1.1.3...v1.1.4) (2024-10-14)
+
+
+### Bug Fixes
+
+* button opacity ([eea6c27](https://github.com/sesamyab/sesamy-components/commit/eea6c272bed7908bd70bb71888b459ea48f6a68a))
+* refactor button ([c2ea119](https://github.com/sesamyab/sesamy-components/commit/c2ea1198d60f4e1863e26cb1e7347393da916319))
+* review comments and prettier ([6ff7c21](https://github.com/sesamyab/sesamy-components/commit/6ff7c210ad20c94a5bd5ca3485f7f435746d2e82))
+* update logic for the button ([7466e5b](https://github.com/sesamyab/sesamy-components/commit/7466e5ba1f180a7a0f3030e3964df7f86e9b678e))
+* updated variants ([ecdd547](https://github.com/sesamyab/sesamy-components/commit/ecdd547d03286a7f95782f599dc1776c824e1ea6))
+
 ## [1.1.3](https://github.com/sesamyab/sesamy-components/compare/v1.1.2...v1.1.3) (2024-10-11)
 
 
