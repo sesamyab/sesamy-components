@@ -3,6 +3,7 @@
   import libstyles from './app.css?inline';
   import { getApi } from './api';
   import initTransaltor from './i18n';
+  import hexToHsl from './utils/hexToHsl';
 
   let { lang }: { lang?: string } = $props();
   const htmlLang = document.querySelector('html')?.getAttribute('lang');
@@ -13,9 +14,9 @@
 
   let sesamyDesignTokens = `
     * {
-      --s-main-color: var(--sesamy-main-color, 59 130 246);
-      --s-popular-color: var(--sesamy-popular-color, #ff5557);
-      --s-bg-color: var(--sesamy-bg-color, #F6DFDC);
+      --s-main-color: var(--sesamy-main-color, ${hexToHsl('#7D68F4')});
+      --s-bg-color: var(--sesamy-bg-color, ${hexToHsl('#F6DFDC')});
+      --s-bg-opacity: var(--sesamy-bg-opacity, unset);
       --s-font-family: var(--sesamy-font-family, Helvetica);
     }
 
@@ -24,6 +25,7 @@
       -webkit-font-smoothing: antialiased;
       color: black;
       text-align: left;
+      display: contents;
     }
   `;
 

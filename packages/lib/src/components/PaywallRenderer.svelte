@@ -5,7 +5,7 @@
   import Icon from './../components/Icon.svelte';
   import PaymentMethod from './../components/PaymentMethod.svelte';
   import Row from './../components/Row.svelte';
-  import Button from './../components/Button.svelte';
+  import Button from './../Button.wc.svelte';
   import type { IconName } from './../icons/types';
   import Features from './../components/Features.svelte';
   import { twMerge } from 'tailwind-merge';
@@ -33,9 +33,11 @@
   const { subscriptions, currency, features } = paywall;
 </script>
 
-<Column class="w-full shadow-lg pt-6 bg-[var(--s-bg-color,purple)] rounded-3xl">
+<Column
+  class="w-full shadow-lg pt-6 bg-white bg-gradient-to-b from-[hsla(var(--s-bg-color),var(--s-bg-opacity,1))] to-[hsla(var(--s-bg-color),var(--s-bg-opacity,0.5))] rounded-3xl"
+>
   <Row class="text-sm gap-1 pt-2 font-bold">
-    {t('already_subscribing')} <a href="/" class="text-[var(--s-main-color,purple)]"> Logga in </a>
+    {t('already_subscribing')} <a href="/" class="text-[hsl(var(--s-main-color))]"> Logga in </a>
   </Row>
 
   <Column class={twMerge('gap-4 px-16 pb-16 pt-6 w-full', horizontal && 'px-6 pb-4')} up left>
@@ -43,7 +45,7 @@
       class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-[#00000020] mb-4"
     ></div>
     <div class={twMerge('w-full', horizontal && 'column text-center')}>
-      <Icon class="text-[120px] text-[var(--s-main-color,purple)] font-bold" name="fokus" />
+      <Icon class="text-[120px] text-[hsl(var(--s-main-color))] font-bold" name="fokus" />
       <div class="text-3xl mt-6 font-bold">
         Läs Fokus Digital i 6 månader<br /> för bara 79kr!
       </div>
@@ -70,12 +72,12 @@
           <Column
             class={twMerge(
               'border bg-white border-gray-300 rounded',
-              selected && 'border-[var(--s-popular-color,purple)] mt-0 border-2 '
+              selected && 'border-[hsla(var(--s-main-color),0.75)] mt-0 border-2 '
             )}
           >
             {#if selected}
               <Row
-                class="w-full bg-[var(--s-popular-color,purple)] h-8 text-white text-sm font-bold"
+                class="w-full bg-[hsla(var(--s-main-color),0.75)] h-8 text-white text-sm font-bold"
               >
                 Mest populärt
               </Row>
@@ -92,7 +94,7 @@
                 <Features {features} />
               </Column>
 
-              <Button secondary>Gå vidare</Button>
+              <Button class="w-full mt-2" variant="secondary">Gå vidare</Button>
             </Column>
           </Column>
         {:else}
@@ -127,7 +129,7 @@
         </PurchaseOption>
       </PurchaseOptions>
 
-      <Button class="mt-2" onclick={() => alert('continue')}>Continue</Button>
+      <Button class="mt-2 w-full" onclick={() => alert('continue')}>Continue</Button>
     {/if}
 
     <Row class="!justify-between w-full mt-8">
