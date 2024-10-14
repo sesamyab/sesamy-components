@@ -4,18 +4,16 @@
   import { getApi } from './api';
   import initTransaltor from './i18n';
 
-  let {
-    lang
-  }: { lang?: string  } = $props();  
+  let { lang }: { lang?: string } = $props();
   const htmlLang = document.querySelector('html')?.getAttribute('lang');
-  
+
   const apiPromise = getApi();
 
-  const translator = initTransaltor(lang || htmlLang || 'en')
+  const translator = initTransaltor(lang || htmlLang || 'en');
 
   let sesamyDesignTokens = `
     * {
-      --s-main-color: var(--sesamy-main-color, #E71104);
+      --s-main-color: var(--sesamy-main-color, 59 130 246);
       --s-popular-color: var(--sesamy-popular-color, #ff5557);
       --s-bg-color: var(--sesamy-bg-color, #F6DFDC);
       --s-font-family: var(--sesamy-font-family, Helvetica);
