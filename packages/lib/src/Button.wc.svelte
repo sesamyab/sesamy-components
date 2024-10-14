@@ -26,11 +26,11 @@
 
   const variantClasses = {
     primary:
-      'bg-[var(--s-main-color,#3b82f6)] text-white hover:brightness-90 focus:ring-[color:var(--s-main-color,#3b82f6)] focus:ring-opacity-50',
+      'bg-[rgb(var(--s-main-color))] text-white hover:brightness-90 focus:ring-[rgb(var(--s-main-color)/0.5)]',
     secondary:
-      'bg-transparent border border-[var(--s-main-color,#3b82f6)] text-[var(--s-main-color,#3b82f6)] hover:bg-[var(--s-main-color,#3b82f6)] hover:bg-opacity-10 focus:ring-[color:var(--s-main-color,#3b82f6)] focus:ring-opacity-50',
+      'bg-transparent border border-[rgb(var(--s-main-color))] text-[rgb(var(--s-main-color))] hover:bg-[rgb(var(--s-main-color)/0.1)] focus:ring-[rgb(var(--s-main-color)/0.5)]',
     tertiary:
-      'text-[var(--s-main-color,#3b82f6)] hover:brightness-75 focus:ring-[color:var(--s-main-color,#3b82f6)] focus:ring-opacity-50'
+      'text-[rgb(var(--s-main-color))] hover:brightness-75 focus:ring-[rgb(var(--s-main-color)/0.5)]'
   };
 
   // Define reactive state for classes

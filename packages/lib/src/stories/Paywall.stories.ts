@@ -10,7 +10,11 @@ const meta: Meta<PaywallProps> = {
   title: 'Components/Paywall',
   tags: ['autodocs'],
   component: 'sesamy-paywall',
-  render: (args) => html` <sesamy-paywall settings-url=${args['settings-url']}></sesamy-paywall> `,
+  render: (args) =>
+    html` <div style="display: flex; gap: 10px; padding: 10px; --sesamy-main-color: #E71104;">
+      <sesamy-paywall settings-url=${args['settings-url']}></sesamy-paywall>
+      <div></div>
+    </div>`,
   argTypes: {
     'settings-url': {
       control: 'text',
