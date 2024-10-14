@@ -3,7 +3,7 @@
   import libstyles from './app.css?inline';
   import { getApi } from './api';
   import initTransaltor from './i18n';
-  import hexToHsl from './utils/hexToHsl';
+  import { hexToHsl, hslArrayToCSS } from './utils/color';
 
   let { lang }: { lang?: string } = $props();
   const htmlLang = document.querySelector('html')?.getAttribute('lang');
@@ -13,19 +13,15 @@
   const translator = initTransaltor(lang || htmlLang || 'en');
 
   let sesamyDesignTokens = `
-    * {
-      --s-main-color: var(--sesamy-main-color, ${hexToHsl('#7D68F4')});
-      --s-bg-color: var(--sesamy-bg-color, ${hexToHsl('#F6DFDC')});
-      --s-bg-opacity: var(--sesamy-bg-opacity, unset);
-      --s-font-family: var(--sesamy-font-family, Helvetica);
-    }
-
     .base {
       font-family: var(--s-font-family);
       -webkit-font-smoothing: antialiased;
       color: black;
       text-align: left;
       display: contents;
+
+      --s-main-color: var(--sesamy-main-color, ${hslArrayToCSS(hexToHsl('#7D68F4'))});
+      --s-font-family: var(--sesamy-font-family, Helvetica);
     }
   `;
 

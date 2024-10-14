@@ -1,4 +1,8 @@
-export default (hexColor: string) => {
+type HSLArray = [number, number, number];
+
+export const hexToHsl = (hexColor: string): HSLArray => {
+  if (![4, 7].includes(hexColor.length)) return [0, 0, 100]; // Invalid hex return white
+
   // Convert hex to RGB first
   let r: any = 0;
   let g: any = 0;
@@ -37,5 +41,8 @@ export default (hexColor: string) => {
   s = +(s * 100).toFixed(1);
   l = +(l * 100).toFixed(1);
 
-  return [h, `${s}%`, `${l}%`];
+  return [h, s, l];
 };
+
+export const hslArrayToCSS = (hslArray: HSLArray): string =>
+  hslArray.map((color, i) => (i ? `${color}%` : color)).join(',');

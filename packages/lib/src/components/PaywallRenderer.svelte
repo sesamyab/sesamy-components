@@ -10,6 +10,7 @@
   import Features from './../components/Features.svelte';
   import { twMerge } from 'tailwind-merge';
   import type { TranslationFunction } from '../i18n';
+  import { hexToHsl } from './../utils/color';
 
   const paymentMethods = [
     'visa',
@@ -30,11 +31,36 @@
 
   let { t, horizontal = false, paywall }: Props = $props();
 
-  const { subscriptions, currency, features } = paywall;
+  const {
+    subscriptions,
+    currency,
+    features,
+    settings: {
+      styling: { showBackground, dropShadow, backgroundColor }
+    }
+  } = paywall;
+
+  const paywallBgColor = hexToHsl(backgroundColor || '#F6DFDC');
+
+  let sesamyPaywallDesignTokens = `
+    .base {
+      --s-paywall-bg-start-color: var(--sesamy-paywall-bg-start-color, ${paywallBgColor[0]},${paywallBgColor[1]}%,${paywallBgColor[2]}%);
+      --s-paywall-bg-end-color: var(--sesamy-paywall-bg-end-color, ${paywallBgColor[0]},${paywallBgColor[1]}%,${paywallBgColor[2] + (100 - paywallBgColor[2]) * 0.5}%);
+    }
+  `;
+
+  let style = '<sty' + 'le>' + sesamyPaywallDesignTokens + '</style>';
 </script>
 
 <Column
-  class="w-full shadow-lg pt-6 bg-[hsla(0,0%,100%,var(--s-bg-opacity,1))] bg-gradient-to-b from-[hsla(var(--s-bg-color),var(--s-bg-opacity,1))] to-[hsla(var(--s-bg-color),var(--s-bg-opacity,0.5))] rounded-3xl"
+  class={twMerge(
+    'w-full shadow-lg pt-6 rounded-3xl',
+    showBackground &&
+      'bg-gradient-to-b from-[hsla(var(--s-paywall-bg-start-color,0,0,0,0))] to-[hsla(var(--s-paywall-bg-end-color,0,0,0,0))]',
+    showBackground &&
+      dropShadow &&
+      'bg-gradient-to-b from-[hsla(var(--s-paywall-bg-start-color,0,0,0,0))] to-[hsla(var(--s-paywall-bg-end-color,0,0,0,0))]'
+  )}
 >
   <Row class="text-sm gap-1 pt-2 font-bold">
     {t('already_subscribing')} <a href="/" class="text-[hsl(var(--s-main-color))]"> Logga in </a>
@@ -144,6 +170,7 @@
     </Row>
   </Column>
 </Column>
+{@html style}
 <pre class="text-xs">
     {JSON.stringify(paywall, null, 2)}
   </pre>
