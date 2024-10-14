@@ -54,12 +54,10 @@
 
 <Column
   class={twMerge(
-    'w-full shadow-lg pt-6 rounded-3xl',
+    'w-full pt-6 rounded-3xl',
     showBackground &&
-      'bg-gradient-to-b from-[hsla(var(--s-paywall-bg-start-color,0,0,0,0))] to-[hsla(var(--s-paywall-bg-end-color,0,0,0,0))]',
-    showBackground &&
-      dropShadow &&
-      'bg-gradient-to-b from-[hsla(var(--s-paywall-bg-start-color,0,0,0,0))] to-[hsla(var(--s-paywall-bg-end-color,0,0,0,0))]'
+      'bg-gradient-to-b from-[hsla(var(--s-paywall-bg-start-color))] to-[hsla(var(--s-paywall-bg-end-color))]',
+    showBackground && dropShadow && 'shadow-lg'
   )}
 >
   <Row class="text-sm gap-1 pt-2 font-bold">
