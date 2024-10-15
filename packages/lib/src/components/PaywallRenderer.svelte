@@ -44,7 +44,7 @@
   const paywallBgColor = hexToHsl(backgroundColor || '#FFFFFF');
 
   let sesamyPaywallDesignTokens = `
-    .base > div {
+    :host {
       --s-paywall-bg-start-color: var(--sesamy-paywall-bg-start-color, ${paywallBgColor[0]},${paywallBgColor[1]}%,${paywallBgColor[2]}%);
       --s-paywall-bg-end-color: var(--sesamy-paywall-bg-end-color, ${paywallBgColor[0]},${paywallBgColor[1]}%,${paywallBgColor[2] + (100 - paywallBgColor[2]) * 0.5}%);
       
@@ -172,6 +172,6 @@
   </Column>
 </Column>
 {@html style}
-<pre class="text-xs">
+<!-- <pre class="text-xs">
     {JSON.stringify(paywall, null, 2)}
-  </pre>
+  </pre> -->

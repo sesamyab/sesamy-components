@@ -17,7 +17,7 @@
   }: ButtonProps & { class?: string } = $props();
 
   const baseClasses =
-    'inline-flex active:enabled:translate-y-px items-center justify-center font-medium rounded-md transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2';
+    'inline-flex enabled:active:translate-y-px items-center justify-center font-medium rounded-md transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2';
 
   const sizeClasses = {
     sm: 'px-3 py-1.5 text-sm',

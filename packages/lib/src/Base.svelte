@@ -13,7 +13,7 @@
   const translator = initTransaltor(lang || htmlLang || 'en');
 
   let sesamyDesignTokens = `
-    .base {
+    :host {
       font-family: var(--s-font-family);
       -webkit-font-smoothing: antialiased;
       color: black;
@@ -28,12 +28,10 @@
   let style = '<sty' + 'le>' + libstyles + sesamyDesignTokens + '</style>';
 </script>
 
-<div class="base">
-  {#await apiPromise then api}
-    <slot {api} t={translator}></slot>
-  {:catch error}
-    <p style="color: red">{error.message}</p>
-  {/await}
-</div>
+{#await apiPromise then api}
+  <slot {api} t={translator}></slot>
+{:catch error}
+  <p style="color: red">{error.message}</p>
+{/await}
 
 {@html style}
