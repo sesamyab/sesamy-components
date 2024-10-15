@@ -59,12 +59,12 @@
   class={twMerge(
     'w-full pt-6 rounded-3xl',
     showBackground &&
-      'bg-gradient-to-b from-[hsla(var(--s-paywall-bg-start-color))] to-[hsla(var(--s-paywall-bg-end-color))]',
+      'bg-gradient-to-b from-[hsl(var(--s-paywall-bg-start-color))] to-[hsl(var(--s-paywall-bg-end-color))]',
     showBackground && dropShadow && 'shadow-lg'
   )}
 >
   <Row class="text-sm gap-1 pt-2 font-bold">
-    {t('already_subscribing')} <a href="/" class="text-[hsl(var(--s-main-color))]"> Logga in </a>
+    {t('already_subscribing')} <a href="/" class="text-main"> Logga in </a>
   </Row>
 
   <Column class={twMerge('gap-4 px-16 pb-16 pt-6 w-full', horizontal && 'px-6 pb-4')} up left>
@@ -72,7 +72,7 @@
       class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-[#00000020] mb-4"
     ></div>
     <div class={twMerge('w-full', horizontal && 'column text-center')}>
-      <Icon class="text-[120px] text-[hsl(var(--s-main-color))] font-bold" name="fokus" />
+      <Icon class="text-[120px] text-main font-bold" name="fokus" />
       <div class="text-3xl mt-6 font-bold">
         Läs Fokus Digital i 6 månader<br /> för bara 79kr!
       </div>
@@ -99,15 +99,11 @@
           <Column
             class={twMerge(
               'border bg-white border-gray-300 rounded',
-              selected && 'border-[hsla(var(--s-main-color),0.75)] mt-0 border-2 '
+              selected && 'border-main/75 mt-0 border-2 '
             )}
           >
             {#if selected}
-              <Row
-                class="w-full bg-[hsla(var(--s-main-color),0.75)] h-8 text-white text-sm font-bold"
-              >
-                Mest populärt
-              </Row>
+              <Row class="w-full bg-main/75 h-8 text-white text-sm font-bold">Mest populärt</Row>
             {/if}
 
             <Column class="p-4 flex-1 w-full !justify-between gap-8" left up>

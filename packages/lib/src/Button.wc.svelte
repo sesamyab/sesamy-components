@@ -26,12 +26,9 @@
   };
 
   const variantClasses = {
-    primary:
-      'bg-[hsl(var(--s-main-color))] text-white hover:brightness-90 focus:ring-[hsla(var(--s-main-color),0.5)]',
-    secondary:
-      'bg-transparent border border-[hsl(var(--s-main-color))] text-[hsl(var(--s-main-color))] hover:bg-[hsla(var(--s-main-color),0.1)] focus:ring-[hsl(var(--s-main-color))]/0.5',
-    tertiary:
-      'text-[hsl(var(--s-main-color))] hover:brightness-75 focus:ring-[hsla(var(--s-main-color),0.5)]'
+    primary: 'bg-main text-white hover:brightness-90 focus:ring-main/50',
+    secondary: 'bg-transparent border border-main text-main hover:bg-main/10 focus:ring-main/0.5',
+    tertiary: 'text-main hover:brightness-75 focus:ring-main/50'
   };
 
   let mergedClasses = $derived.by(() =>
