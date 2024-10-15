@@ -26,3 +26,10 @@ export type ButtonProps = HTMLButtonAttributes & {
   onclick?: () => void;
   href?: string;
 };
+
+export type AccessLevel = 'logged-in';
+
+export type ContentContainerProps = HTMLButtonAttributes & {
+  pass?: string;
+  'access-level'?: AccessLevel;
+};

@@ -3,7 +3,7 @@
 <script lang="ts">
   import { twMerge } from 'tailwind-merge';
   import Base from './Base.svelte';
-  import type { ButtonProps, Variant } from './types';
+  import type { ButtonProps } from './types';
 
   let {
     loading = false,
