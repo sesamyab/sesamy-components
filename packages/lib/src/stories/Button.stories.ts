@@ -102,7 +102,7 @@ export const color: Story = {
     layout: 'centered'
   },
   render: () => html`
-    <div style="display: flex; gap: 10px; padding: 10px; --sesamy-main-color: 249,86.4%,68.2%;">
+    <div style="display: flex; gap: 10px; padding: 10px; --sesamy-main-color: 357, 95.9%, 48.2%;">
       <sesamy-button variant="primary">Primary</sesamy-button>
       <sesamy-button variant="secondary">Secondary</sesamy-button>
       <sesamy-button variant="tertiary">Tertiary</sesamy-button>

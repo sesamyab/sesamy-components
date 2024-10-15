@@ -19,7 +19,6 @@
       -webkit-font-smoothing: antialiased;
       color: black;
       text-align: left;
-      display: contents;
 
       --s-main-color: var(--sesamy-main-color, ${hslArrayToCSS(hexToHsl('#7D68F4'))});
       --s-font-family: var(--sesamy-font-family, Helvetica);
