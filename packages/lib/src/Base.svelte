@@ -4,7 +4,6 @@
   import { getApi } from './api';
   import initTransaltor from './i18n';
   import { hexToHsl, hslArrayToCSS } from './utils/color';
-  import type { Snippet } from 'svelte';
 
   let { lang }: { lang?: string } = $props();
   const htmlLang = document.querySelector('html')?.getAttribute('lang');
