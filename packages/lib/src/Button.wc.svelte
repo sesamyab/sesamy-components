@@ -3,7 +3,7 @@
 <script lang="ts">
   import { twMerge } from 'tailwind-merge';
   import Base from './Base.svelte';
-  import type { ButtonProps, Variant } from './types';
+  import type { ButtonProps } from './types';
 
   let {
     loading = false,
@@ -12,11 +12,12 @@
     size = 'md',
     part,
     onclick,
-    href
-  }: ButtonProps = $props();
+    href,
+    class: classes
+  }: ButtonProps & { class?: string } = $props();
 
   const baseClasses =
-    'inline-flex items-center justify-center font-medium rounded-md transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2';
+    'inline-flex enabled:active:translate-y-px items-center justify-center font-medium rounded-md transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2';
 
   const sizeClasses = {
     sm: 'px-3 py-1.5 text-sm',
@@ -26,33 +27,31 @@
 
   const variantClasses = {
     primary:
-      'bg-[rgb(var(--s-main-color))] text-white hover:brightness-90 focus:ring-[rgb(var(--s-main-color)/0.5)]',
+      'bg-[hsl(var(--s-main-color))] text-white hover:brightness-90 focus:ring-[hsla(var(--s-main-color),0.5)]',
     secondary:
-      'bg-transparent border border-[rgb(var(--s-main-color))] text-[rgb(var(--s-main-color))] hover:bg-[rgb(var(--s-main-color)/0.1)] focus:ring-[rgb(var(--s-main-color)/0.5)]',
+      'bg-transparent border border-[hsl(var(--s-main-color))] text-[hsl(var(--s-main-color))] hover:bg-[hsla(var(--s-main-color),0.1)] focus:ring-[hsl(var(--s-main-color))]/0.5',
     tertiary:
-      'text-[rgb(var(--s-main-color))] hover:brightness-75 focus:ring-[rgb(var(--s-main-color)/0.5)]'
+      'text-[hsl(var(--s-main-color))] hover:brightness-75 focus:ring-[hsla(var(--s-main-color),0.5)]'
   };
 
-  // Define reactive state for classes
-  let classes = $state('');
-
-  $effect(() => {
-    classes = twMerge(
+  let mergedClasses = $derived.by(() =>
+    twMerge(
       baseClasses,
       sizeClasses[size],
       variantClasses[variant],
-      disabled && 'opacity-50 cursor-not-allowed'
-    );
-  });
+      disabled && 'opacity-50 cursor-not-allowed',
+      classes
+    )
+  );
 </script>
 
 <Base>
   {#if href && !disabled && !loading}
-    <a {href} class={classes} {onclick}>
+    <a {href} class={mergedClasses} {onclick}>
       <slot />
     </a>
   {:else}
-    <button class={classes} {disabled} {onclick} {part}>
+    <button class={mergedClasses} {disabled} {onclick} {part}>
       {#if loading}
         <span
           class="inline-block w-4 h-4 mr-2 border-2 border-current border-r-transparent rounded-full animate-spin"

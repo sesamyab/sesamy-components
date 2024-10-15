@@ -3,6 +3,7 @@
   import libstyles from './app.css?inline';
   import { getApi } from './api';
   import initTransaltor from './i18n';
+  import { hexToHsl, hslArrayToCSS } from './utils/color';
 
   let { lang }: { lang?: string } = $props();
   const htmlLang = document.querySelector('html')?.getAttribute('lang');
@@ -12,30 +13,25 @@
   const translator = initTransaltor(lang || htmlLang || 'en');
 
   let sesamyDesignTokens = `
-    * {
-      --s-main-color: var(--sesamy-main-color, 59 130 246);
-      --s-popular-color: var(--sesamy-popular-color, #ff5557);
-      --s-bg-color: var(--sesamy-bg-color, #F6DFDC);
-      --s-font-family: var(--sesamy-font-family, Helvetica);
-    }
-
-    .base {
+    :host {
       font-family: var(--s-font-family);
       -webkit-font-smoothing: antialiased;
       color: black;
       text-align: left;
+      display: contents;
+
+      --s-main-color: var(--sesamy-main-color, ${hslArrayToCSS(hexToHsl('#7D68F4'))});
+      --s-font-family: var(--sesamy-font-family, Helvetica);
     }
   `;
 
   let style = '<sty' + 'le>' + libstyles + sesamyDesignTokens + '</style>';
 </script>
 
-<div class="base">
-  {#await apiPromise then api}
-    <slot {api} t={translator}></slot>
-  {:catch error}
-    <p style="color: red">{error.message}</p>
-  {/await}
-</div>
+{#await apiPromise then api}
+  <slot {api} t={translator}></slot>
+{:catch error}
+  <p style="color: red">{error.message}</p>
+{/await}
 
 {@html style}

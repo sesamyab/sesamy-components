@@ -6,6 +6,7 @@ export interface LoginProps {
   loggedIn?: boolean;
   userAvatar?: string;
   lang?: string;
+  variant?: Variant;
   onLogin?: (event: CustomEvent) => void;
 }
 

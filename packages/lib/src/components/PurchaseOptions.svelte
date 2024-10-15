@@ -12,7 +12,7 @@
     'transition-colors grid rounded-lg w-full auto-rows-fr',
     horizontal && 'gap-4',
     !horizontal &&
-      'bg-white border-gray-200 border-2 has-[input:checked]:border-[var(--s-main-color,purple)]',
+      'bg-white border-gray-200 border-2 has-[input:checked]:border-[hsl(var(--s-main-color))]',
     classes
   )}
 >

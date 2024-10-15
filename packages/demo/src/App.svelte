@@ -27,6 +27,8 @@
         {template}
         settings-url="https://api.sesamy.dev/paywall/paywalls/kvartal/1idkV75XtXSVQAXtTp2dL"
       ></sesamy-paywall>
+
+      <sesamy-login></sesamy-login>
     </div>
 
     <article>

@@ -6,6 +6,7 @@
   import type { TranslationFunction } from './i18n';
   import type { PaywallProps } from './types';
   import PaywallRenderer from './components/PaywallRenderer.svelte';
+  import { hexToHsl } from './utils/color';
 
   const paymentMethods = [
     'visa',
@@ -22,7 +23,7 @@
     'settings-url': settingsUrl,
     template = 'ARTICLE',
     t
-  }: PaywallProps & { t: TranslationFunction  } = $props();
+  }: PaywallProps & { t: TranslationFunction } = $props();
   let paywall = $state<{ [key: string]: any } | undefined>(undefined);
 
   $effect(() => {

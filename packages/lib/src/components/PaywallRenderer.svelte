@@ -5,11 +5,12 @@
   import Icon from './../components/Icon.svelte';
   import PaymentMethod from './../components/PaymentMethod.svelte';
   import Row from './../components/Row.svelte';
-  import Button from './../components/Button.svelte';
+  import Button from './../Button.wc.svelte';
   import type { IconName } from './../icons/types';
   import Features from './../components/Features.svelte';
   import { twMerge } from 'tailwind-merge';
   import type { TranslationFunction } from '../i18n';
+  import { hexToHsl, hslArrayToCSS } from './../utils/color';
 
   const paymentMethods = [
     'visa',
@@ -30,12 +31,40 @@
 
   let { t, horizontal = false, paywall }: Props = $props();
 
-  const { subscriptions, currency, features } = paywall;
+  const {
+    subscriptions,
+    currency,
+    mainColor,
+    features,
+    settings: {
+      styling: { showBackground, dropShadow, backgroundColor }
+    }
+  } = paywall;
+
+  const paywallBgColor = hexToHsl(backgroundColor || '#FFFFFF');
+
+  let sesamyPaywallDesignTokens = `
+    :host {
+      --s-paywall-bg-start-color: var(--sesamy-paywall-bg-start-color, ${paywallBgColor[0]},${paywallBgColor[1]}%,${paywallBgColor[2]}%);
+      --s-paywall-bg-end-color: var(--sesamy-paywall-bg-end-color, ${paywallBgColor[0]},${paywallBgColor[1]}%,${paywallBgColor[2] + (100 - paywallBgColor[2]) * 0.5}%);
+      
+      --s-main-color: var(--sesamy-paywall-main-color, ${hslArrayToCSS(hexToHsl(mainColor))});
+    }
+  `;
+
+  let style = '<sty' + 'le>' + sesamyPaywallDesignTokens + '</style>';
 </script>
 
-<Column class="w-full shadow-lg pt-6 bg-[var(--s-bg-color,purple)] rounded-3xl">
+<Column
+  class={twMerge(
+    'w-full pt-6 rounded-3xl',
+    showBackground &&
+      'bg-gradient-to-b from-[hsla(var(--s-paywall-bg-start-color))] to-[hsla(var(--s-paywall-bg-end-color))]',
+    showBackground && dropShadow && 'shadow-lg'
+  )}
+>
   <Row class="text-sm gap-1 pt-2 font-bold">
-    {t('already_subscribing')} <a href="/" class="text-[var(--s-main-color,purple)]"> Logga in </a>
+    {t('already_subscribing')} <a href="/" class="text-[hsl(var(--s-main-color))]"> Logga in </a>
   </Row>
 
   <Column class={twMerge('gap-4 px-16 pb-16 pt-6 w-full', horizontal && 'px-6 pb-4')} up left>
@@ -43,7 +72,7 @@
       class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-[#00000020] mb-4"
     ></div>
     <div class={twMerge('w-full', horizontal && 'column text-center')}>
-      <Icon class="text-[120px] text-[var(--s-main-color,purple)] font-bold" name="fokus" />
+      <Icon class="text-[120px] text-[hsl(var(--s-main-color))] font-bold" name="fokus" />
       <div class="text-3xl mt-6 font-bold">
         Läs Fokus Digital i 6 månader<br /> för bara 79kr!
       </div>
@@ -70,12 +99,12 @@
           <Column
             class={twMerge(
               'border bg-white border-gray-300 rounded',
-              selected && 'border-[var(--s-popular-color,purple)] mt-0 border-2 '
+              selected && 'border-[hsla(var(--s-main-color),0.75)] mt-0 border-2 '
             )}
           >
             {#if selected}
               <Row
-                class="w-full bg-[var(--s-popular-color,purple)] h-8 text-white text-sm font-bold"
+                class="w-full bg-[hsla(var(--s-main-color),0.75)] h-8 text-white text-sm font-bold"
               >
                 Mest populärt
               </Row>
@@ -92,7 +121,7 @@
                 <Features {features} />
               </Column>
 
-              <Button secondary>Gå vidare</Button>
+              <Button class="w-full mt-2" variant="secondary">Gå vidare</Button>
             </Column>
           </Column>
         {:else}
@@ -127,7 +156,7 @@
         </PurchaseOption>
       </PurchaseOptions>
 
-      <Button class="mt-2" onclick={() => alert('continue')}>Continue</Button>
+      <Button class="mt-2 w-full" onclick={() => alert('continue')}>Continue</Button>
     {/if}
 
     <Row class="!justify-between w-full mt-8">
@@ -142,6 +171,7 @@
     </Row>
   </Column>
 </Column>
-<pre class="text-xs">
+{@html style}
+<!-- <pre class="text-xs">
     {JSON.stringify(paywall, null, 2)}
-  </pre>
+  </pre> -->
