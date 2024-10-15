@@ -6,7 +6,7 @@
   import { hexToHsl, hslArrayToCSS } from './utils/color';
   import type { Snippet } from 'svelte';
 
-  let { lang, children }: { lang?: string; children: Snippet } = $props();
+  let { lang }: { lang?: string } = $props();
   const htmlLang = document.querySelector('html')?.getAttribute('lang');
 
   const apiPromise = getApi();
