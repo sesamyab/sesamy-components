@@ -158,7 +158,9 @@
         </PurchaseOption>
       </PurchaseOptions>
 
-      <Button class="mt-2 w-full" onclick={() => alert('continue')}>Continue</Button>
+      <Button class="mt-2 w-full shadow-md" onclick={() => console.info('continue')}
+        >Continue</Button
+      >
     {/if}
 
     <Row class="!justify-between w-full mt-8">
