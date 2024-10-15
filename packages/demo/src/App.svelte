@@ -27,14 +27,10 @@
         {template}
         settings-url="https://api.sesamy.dev/paywall/paywalls/kvartal/1idkV75XtXSVQAXtTp2dL"
       ></sesamy-paywall>
-
-      <sesamy-login></sesamy-login>
     </div>
 
     <article>
       <h1>Sesamy Components Demo Page</h1>
-
-      <sesamy-avatar size="md" loading></sesamy-avatar>
 
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sed elit sollicitudin nisl

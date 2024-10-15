@@ -45,11 +45,13 @@
 </script>
 
 <Base let:api let:t>
-  {#await checkLoggedIn(api) then _}
+  {#await checkLoggedIn(api)}
+    <Avatar loading={true} size="sm"></Avatar>
+  {:then _}
     {#if loading || loggedIn}
       <Avatar {loading} onclick={() => logout(api)} size="sm"></Avatar>
     {:else}
-      <Button {variant} {disabled} onclick={() => login(api)}>
+      <Button {variant} {disabled} onclick={() => login(api)} size="sm">
         {t('login')}
       </Button>
     {/if}
