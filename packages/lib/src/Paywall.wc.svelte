@@ -2,16 +2,11 @@
 
 <script lang="ts">
   import Base from './Base.svelte';
-  import type { TranslationFunction } from './i18n';
   import type { PaywallProps } from './types';
   import PaywallRenderer from './components/PaywallRenderer.svelte';
   import type { Paywall } from './types/monorepo';
 
-  let {
-    'settings-url': settingsUrl,
-    template = 'ARTICLE',
-    t
-  }: PaywallProps & { t: TranslationFunction } = $props();
+  let { 'settings-url': settingsUrl, template = 'ARTICLE' }: PaywallProps = $props();
 
   let paywall = $state<Paywall>();
 
