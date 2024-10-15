@@ -3,6 +3,7 @@
 <script lang="ts">
   import { twMerge } from 'tailwind-merge';
   import Base from './Base.svelte';
+  import Row from './components/Row.svelte';
 
   export let src = '';
   export let alt = 'Avatar';
@@ -13,7 +14,7 @@
 </script>
 
 <Base>
-  <div class="relative inline-block">
+  <Row class="relative inline-block">
     <button
       type="button"
       class={twMerge(
@@ -47,10 +48,10 @@
       {:else if src}
         <img {src} {alt} class="w-full h-full object-cover" />
       {:else}
-        <div class="flex items-center justify-center w-full h-full text-white">
+        <Row class="absolute top-0 left-0 w-full h-full text-white">
           {alt.charAt(0).toUpperCase()}
-        </div>
+        </Row>
       {/if}
     </button>
-  </div>
+  </Row>
 </Base>
