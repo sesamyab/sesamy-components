@@ -46,19 +46,31 @@
 </script>
 
 <Base>
-  {#if href && !disabled && !loading}
-    <a {href} class={mergedClasses} {onclick}>
-      <slot />
-    </a>
-  {:else}
-    <button class={mergedClasses} {disabled} {onclick} {part}>
-      {#if loading}
-        <span
-          class="inline-block w-4 h-4 mr-2 border-2 border-current border-r-transparent rounded-full animate-spin"
-          aria-hidden="true"
-        ></span>
-      {/if}
-      <slot />
-    </button>
-  {/if}
+  <Clickable
+    class={twMerge(
+      'inline-flex ring-2 ring-transparent focus:ring-[hsla(var(--s-main-color),0.25)] active:enabled:translate-y-px border border-transparent items-center justify-center outline-none font-medium rounded-md transition-colors duration-200 ease-in-out',
+      size == 'sm' && 'px-3 py-1.5 text-sm',
+      size == 'md' && 'px-4 py-2 text-base',
+      size == 'lg' && 'px-6 py-3 text-lg',
+      variant === 'primary' &&
+        'bg-[hsl(var(--s-main-color))] text-white enabled:hover:bg-[hsla(var(--s-main-color),0.9)]',
+      variant === 'secondary' &&
+        'bg-transparent border-[hsl(var(--s-main-color))] text-[hsl(var(--s-main-color))] enabled:hover:bg-[hsla(var(--s-main-color),0.1)]',
+      variant === 'tertiary' &&
+        'text-[hsl(var(--s-main-color))] enabled:hover:bg-[hsla(var(--s-main-color),0.1)]',
+      disabled && 'opacity-50 cursor-not-allowed',
+      classes
+    )}
+    {href}
+    {onclick}
+    {part}
+    {disabled}
+  >
+    {#if loading}
+      <span
+        class="inline-block w-4 h-4 mr-2 border-2 border-current border-r-transparent rounded-full animate-spin"
+        aria-hidden="true"
+      ></span>
+    {/if}
+  </Clickable>
 </Base>
