@@ -49,7 +49,7 @@
       --s-paywall-bg-start-color: var(--sesamy-paywall-bg-start-color, ${paywallBgColor[0]},${paywallBgColor[1]}%,${paywallBgColor[2]}%);
       --s-paywall-bg-end-color: var(--sesamy-paywall-bg-end-color, ${paywallBgColor[0]},${paywallBgColor[1]}%,${paywallBgColor[2] + (100 - paywallBgColor[2]) * 0.5}%);
       
-      --s-main-color: var(--sesamy-paywall-main-color, ${hslArrayToCSS(hexToHsl(mainColor))});
+      --s-primary-color: var(--sesamy-paywall-primary-color, ${hslArrayToCSS(hexToHsl(mainColor))});
     }
   `;
 
@@ -66,15 +66,15 @@
 >
   <Row class="text-sm gap-1 pt-2 font-bold">
     {t('already_subscribing')}
-    <Clickable href="/" class="text-main">Logga in</Clickable>
+    <Clickable href="/" class="text-primary">Logga in</Clickable>
   </Row>
 
   <Column class={twMerge('gap-4 px-16 pb-16 pt-6 w-full', horizontal && 'px-6 pb-4')} up left>
     <div
-      class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-main/30 mb-4"
+      class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-primary/30 mb-4"
     ></div>
     <div class={twMerge('w-full', horizontal && 'column text-center')}>
-      <Icon class="text-[120px] text-main font-bold" name="fokus" />
+      <Icon class="text-[120px] text-primary font-bold" name="fokus" />
       <div class="text-3xl mt-6 font-bold">
         Läs Fokus Digital i 6 månader<br /> för bara 79kr!
       </div>
@@ -101,11 +101,11 @@
           <Column
             class={twMerge(
               'border bg-white border-gray-300 rounded',
-              selected && 'border-main/75 mt-0 border-2 '
+              selected && 'border-primary/75 mt-0 border-2 '
             )}
           >
             {#if selected}
-              <Row class="w-full bg-main/75 h-8 text-white text-sm font-bold">Mest populärt</Row>
+              <Row class="w-full bg-primary/75 h-8 text-white text-sm font-bold">Mest populärt</Row>
             {/if}
 
             <Column class="p-4 flex-1 w-full !justify-between gap-8" left up>
