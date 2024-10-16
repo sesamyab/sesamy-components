@@ -15,7 +15,7 @@
     onclick,
     href,
     class: classes
-  }: ButtonProps & { class?: string } = $props();
+  }: ButtonProps & { loading?: boolean; disabled?: boolean; class?: string } = $props();
 </script>
 
 <Base>

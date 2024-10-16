@@ -31,7 +31,7 @@ const meta: Meta<ButtonProps & { loading: boolean; disabled: boolean; buttonText
 
 export default meta;
 
-type Story = StoryObj<ButtonProps & { buttonText: string }>;
+type Story = StoryObj<ButtonProps & { loading: boolean; disabled: boolean; buttonText: string }>;
 
 export const Default: Story = {
   parameters: {
