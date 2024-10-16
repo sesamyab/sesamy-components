@@ -13,7 +13,7 @@ const meta: Meta<PaywallProps> = {
   component: 'sesamy-paywall',
   render: (args) =>
     html` <div
-      style="display: flex; gap: 10px; padding: 10px; --sesamy-main-color: 249,86.4%,68.2%;"
+      style="display: flex; gap: 10px; padding: 10px; --sesamy-primary-color: 249 86.4% 68.2%;"
     >
       <sesamy-paywall
         template=${args['template']}

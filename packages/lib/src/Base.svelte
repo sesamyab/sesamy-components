@@ -19,7 +19,7 @@
       color: black;
       text-align: left;
 
-      --s-main-color: var(--sesamy-main-color, ${hslArrayToCSS(hexToHsl('#7D68F4'))});
+      --s-primary-color: var(--sesamy-primary-color, ${hslArrayToCSS(hexToHsl('#7D68F4'))});
       --s-font-family: var(--sesamy-font-family, Helvetica);
     }
   `;

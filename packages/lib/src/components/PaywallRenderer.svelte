@@ -42,7 +42,7 @@
       --s-paywall-bg-start-color: var(--sesamy-paywall-bg-start-color, ${paywallBgColor[0]},${paywallBgColor[1]}%,${paywallBgColor[2]}%);
       --s-paywall-bg-end-color: var(--sesamy-paywall-bg-end-color, ${paywallBgColor[0]},${paywallBgColor[1]}%,${paywallBgColor[2] + (100 - paywallBgColor[2]) * 0.5}%);
       
-      --s-main-color: var(--sesamy-paywall-main-color, ${hslArrayToCSS(hexToHsl(mainColor))}) !important;
+      --s-primary-color: var(--sesamy-paywall-primary-color, ${hslArrayToCSS(hexToHsl(mainColor))}) !important;
     }
   `;
 
@@ -53,21 +53,21 @@
   class={twMerge(
     'w-full pt-6 rounded-3xl',
     showBackground &&
-      'bg-gradient-to-b from-[hsla(var(--s-paywall-bg-start-color))] to-[hsla(var(--s-paywall-bg-end-color))]',
+      'bg-gradient-to-b from-[hsl(var(--s-paywall-bg-start-color))] to-[hsl(var(--s-paywall-bg-end-color))]',
     showBackground && dropShadow && 'shadow-lg'
   )}
 >
   <Row class="text-sm gap-1 pt-2 font-bold">
     {t('already_subscribing')}
-    <Clickable href="/" class="text-[hsl(var(--s-main-color))]">{t('login')}</Clickable>
+    <Clickable href="/" class="text-primary">{t('login')}</Clickable>
   </Row>
 
   <Column class={twMerge('gap-4 px-16 pb-16 pt-6 w-full', horizontal && 'px-6 pb-4')} up left>
     <div
-      class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-[hsla(var(--s-main-color),0.3)] mb-4"
+      class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-primary/30 mb-4"
     ></div>
     <div class={twMerge('w-full', horizontal && 'column text-center')}>
-      <Icon class="text-[120px] text-[hsl(var(--s-main-color))] font-bold" name="fokus" />
+      <Icon class="text-[120px] text-primary font-bold" name="fokus" />
       <div class="text-3xl mt-6 font-bold max-w-[440px]">
         {headline}
       </div>
@@ -95,11 +95,11 @@
             <Column
               class={twMerge(
                 'border bg-white border-gray-300 rounded',
-                selected && 'border-[hsl(var(--s-main-color))] mt-0 border-2'
+                selected && 'border-primary mt-0 border-2'
               )}
             >
               {#if selected}
-                <Row class="w-full bg-[hsl(var(--s-main-color))] h-8 text-white text-sm font-bold">
+                <Row class="w-full bg-primary h-8 text-white text-sm font-bold">
                   {t('most_popular')}
                 </Row>
               {/if}
