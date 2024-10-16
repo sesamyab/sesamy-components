@@ -45,4 +45,4 @@ export const hexToHsl = (hexColor: string): HSLArray => {
 };
 
 export const hslArrayToCSS = (hslArray: HSLArray): string =>
-  hslArray.map((color, i) => (i ? `${color}%` : color)).join(',');
+  hslArray.map((color, i) => (i ? `${color}%` : color)).join(' ');

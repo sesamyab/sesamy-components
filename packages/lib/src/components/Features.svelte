@@ -13,7 +13,7 @@
 <ul class="text-black column-left gap-2">
   {#each features as feature}
     <li class="row-up-left gap-2">
-      <Icon class="text-xs text-[hsl(var(--s-main-color))] mt-1.5" name="checkmark" />
+      <Icon class="text-xs text-primary mt-1.5" name="checkmark" />
       <div class={twMerge('flex-1 leading-snug', bold && 'font-bold')}>{feature}</div>
     </li>
   {/each}
