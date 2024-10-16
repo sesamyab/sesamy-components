@@ -36,7 +36,7 @@
       styling: { showBackground, dropShadow, backgroundColor }
     }
   } = paywall;
-  $inspect(paywall);
+
   const selectPurchaseOption = (option: any) => {
     // console.log(option);
     // TODO: decide if we should remove "features" from shallow paywall. And if so, if we should add it to singlePurchase.
@@ -78,7 +78,7 @@
     </Row>
   {/if}
 
-  <Column class={twMerge('gap-4 px-16 pb-16 pt-6 w-full', horizontal && 'px-6 pb-4')} up left>
+  <Column class={twMerge('gap-4 px-16 pb-8 pt-6 w-full', horizontal && 'px-6 pb-4')} up left>
     <div
       class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-primary/30 mb-4"
     ></div>
@@ -110,7 +110,7 @@
           {#if horizontal}
             <Column
               class={twMerge(
-                'border bg-white border-gray-300 rounded',
+                'border bg-white border-gray-300 rounded-lg',
                 selected && 'border-primary mt-0 border-2'
               )}
             >
@@ -157,6 +157,20 @@
                 {/if}
               </Column>
               <div class="text-base font-bold">{price} {currency} / {periodText}</div>
+              {#if selected}
+                <div class="absolute top-2 left-5 h-1 w-1 bg-green-500 -rotate-6">
+                  <div
+                    class="absolute bg-primary bottom-0 rounded left-1/2 -translate-x-1/2 px-2 py-1 text-white text-xs font-bold whitespace-nowrap"
+                  >
+                    <div
+                      class="absolute top-full left-1/2 -translate-x-1/2 w-4 h-4 bg-primary rotate-45 -translate-y-3.5 rounded-sm"
+                    ></div>
+                    <div class="relative">
+                      {t('most_popular')}
+                    </div>
+                  </div>
+                </div>
+              {/if}
             </PurchaseOption>
           {/if}
         {/each}
