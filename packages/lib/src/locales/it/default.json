@@ -1,4 +1,8 @@
 {
   "already_subscribing": "Siete già abbonati?",
-  "login": "Accesso"
+  "continue": "Continua",
+  "login": "Accesso",
+  "most_popular": "I più popolari",
+  "proceed": "Procedere",
+  "secure_payment": "Pagamento sicuro con crittografia SSL"
 }

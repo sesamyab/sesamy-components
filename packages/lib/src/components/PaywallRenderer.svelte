@@ -6,37 +6,30 @@
   import PaymentMethod from './../components/PaymentMethod.svelte';
   import Row from './../components/Row.svelte';
   import Button from './../Button.wc.svelte';
-  import type { IconName } from './../icons/types';
   import Features from './../components/Features.svelte';
   import { twMerge } from 'tailwind-merge';
   import type { TranslationFunction } from '../i18n';
   import { hexToHsl, hslArrayToCSS } from './../utils/color';
   import Clickable from './Clickable.svelte';
-
-  const paymentMethods = [
-    'visa',
-    'apple-pay',
-    'google-pay',
-    'klarna',
-    'amex',
-    'mastercard',
-    'vipps',
-    'swish'
-  ] as IconName[];
+  import type { Paywall } from 'src/types/monorepo';
+  import type { IconName } from 'src/icons/types';
 
   type Props = {
     t: TranslationFunction;
     horizontal?: boolean;
-    paywall: { [key: string]: any }; // TODO: type define paywall props
+    paywall: Paywall;
   };
 
   let { t, horizontal = false, paywall }: Props = $props();
 
-  const {
+  let {
     subscriptions,
+    singlePurchase,
+    headline,
     currency,
     mainColor,
     features,
+    footerPaymentMethods,
     settings: {
       styling: { showBackground, dropShadow, backgroundColor }
     }
@@ -49,7 +42,7 @@
       --s-paywall-bg-start-color: var(--sesamy-paywall-bg-start-color, ${paywallBgColor[0]},${paywallBgColor[1]}%,${paywallBgColor[2]}%);
       --s-paywall-bg-end-color: var(--sesamy-paywall-bg-end-color, ${paywallBgColor[0]},${paywallBgColor[1]}%,${paywallBgColor[2] + (100 - paywallBgColor[2]) * 0.5}%);
       
-      --s-main-color: var(--sesamy-paywall-main-color, ${hslArrayToCSS(hexToHsl(mainColor))});
+      --s-main-color: var(--sesamy-paywall-main-color, ${hslArrayToCSS(hexToHsl(mainColor))}) !important;
     }
   `;
 
@@ -66,7 +59,7 @@
 >
   <Row class="text-sm gap-1 pt-2 font-bold">
     {t('already_subscribing')}
-    <Clickable href="/" class="text-[hsl(var(--s-main-color))]">Logga in</Clickable>
+    <Clickable href="/" class="text-[hsl(var(--s-main-color))]">{t('login')}</Clickable>
   </Row>
 
   <Column class={twMerge('gap-4 px-16 pb-16 pt-6 w-full', horizontal && 'px-6 pb-4')} up left>
@@ -75,8 +68,8 @@
     ></div>
     <div class={twMerge('w-full', horizontal && 'column text-center')}>
       <Icon class="text-[120px] text-[hsl(var(--s-main-color))] font-bold" name="fokus" />
-      <div class="text-3xl mt-6 font-bold">
-        Läs Fokus Digital i 6 månader<br /> för bara 79kr!
+      <div class="text-3xl mt-6 font-bold max-w-[440px]">
+        {headline}
       </div>
     </div>
 
@@ -84,91 +77,96 @@
       <Features {features} bold />
     {/if}
 
-    <PurchaseOptions
-      class={twMerge(
-        'mt-4',
-        !horizontal && 'column-left',
-        horizontal && 'grid-cols-3',
-        horizontal && subscriptions.length === 2 && 'grid-cols-2',
-        horizontal && subscriptions.length === 1 && 'flex justify-center'
-      )}
-      {horizontal}
-    >
-      {#each subscriptions as subscription, i}
-        {@const { id, title, description, price, periodText, features, selected } = subscription}
+    {#if subscriptions.length}
+      <PurchaseOptions
+        class={twMerge(
+          'mt-4',
+          !horizontal && 'column-left',
+          horizontal && 'grid-cols-3',
+          horizontal && subscriptions.length === 2 && 'grid-cols-2',
+          horizontal && subscriptions.length === 1 && 'flex justify-center'
+        )}
+        {horizontal}
+      >
+        {#each subscriptions as subscription, i}
+          {@const { id, title, description, price, periodText, features, selected } = subscription}
 
-        {#if horizontal}
-          <Column
-            class={twMerge(
-              'border bg-white border-gray-300 rounded',
-              selected && 'border-[hsla(var(--s-main-color),0.75)] mt-0 border-2 '
-            )}
-          >
-            {#if selected}
-              <Row
-                class="w-full bg-[hsla(var(--s-main-color),0.75)] h-8 text-white text-sm font-bold"
-              >
-                Mest populärt
-              </Row>
-            {/if}
-
-            <Column class="p-4 flex-1 w-full !justify-between gap-8" left up>
-              <Column class="gap-1" left>
-                <div class="text-sm text-gray-600">{title}</div>
-                <div class="text-2xl font-bold mb-4 leading-none">
-                  {price}
-                  {currency} / {periodText}
-                </div>
-
-                <Features {features} />
-              </Column>
-
-              <Button class="w-full mt-2" variant="secondary">Gå vidare</Button>
-            </Column>
-          </Column>
-        {:else}
-          {#if i}
-            <hr class="w-full border-gray-100" />
-          {/if}
-          <PurchaseOption {id} name="purchase-option" checked>
-            <Column left>
-              <div class="text-base font-bold">{title}</div>
-              {#if description}
-                <div class="text-sm">
-                  {description}
-                </div>
+          {#if horizontal}
+            <Column
+              class={twMerge(
+                'border bg-white border-gray-300 rounded',
+                selected && 'border-[hsl(var(--s-main-color))] mt-0 border-2'
+              )}
+            >
+              {#if selected}
+                <Row class="w-full bg-[hsl(var(--s-main-color))] h-8 text-white text-sm font-bold">
+                  {t('most_popular')}
+                </Row>
               {/if}
-            </Column>
-            <div class="text-base font-bold">{price} {currency} / {periodText}</div>
-          </PurchaseOption>
-        {/if}
-      {/each}
-    </PurchaseOptions>
 
-    {#if !horizontal}
+              <Column class="p-4 flex-1 w-full !justify-between gap-8" left up>
+                <Column class="gap-1" left>
+                  <div class="text-sm text-gray-600">{title}</div>
+                  <div class="text-2xl font-bold mb-4 leading-none">
+                    {price}
+                    {currency} / {periodText}
+                  </div>
+
+                  {#if features}
+                    <Features {features} />
+                  {/if}
+                </Column>
+
+                <Button class="w-full mt-2" variant="secondary">
+                  {t('proceed')}
+                </Button>
+              </Column>
+            </Column>
+          {:else}
+            {#if i}
+              <hr class="w-full border-gray-100" />
+            {/if}
+            <PurchaseOption {id} name="purchase-option" checked>
+              <Column left>
+                <div class="text-base font-bold">{title}</div>
+                {#if description}
+                  <div class="text-sm">
+                    {description}
+                  </div>
+                {/if}
+              </Column>
+              <div class="text-base font-bold">{price} {currency} / {periodText}</div>
+            </PurchaseOption>
+          {/if}
+        {/each}
+      </PurchaseOptions>
+    {/if}
+
+    {#if singlePurchase && singlePurchase.enabled && !horizontal}
+      {@const { title, description } = singlePurchase}
       <PurchaseOptions>
         <PurchaseOption id="five" name="purchase-option">
           <Column left>
-            <div class="text-base font-bold">Lås upp artikeln</div>
+            <div class="text-base font-bold">{title}</div>
             <div class="text-sm">
-              Betala snabbt och smidigt med och få tillgång til artikeln direkt.
+              {description}
             </div>
           </Column>
-          <div class="text-base font-bold">19 kr</div>
+          <div class="text-base font-bold">TODO</div>
         </PurchaseOption>
       </PurchaseOptions>
 
-      <Button class="mt-2 w-full shadow-md" onclick={() => console.info('continue')}
-        >Continue</Button
-      >
+      <Button class="mt-2 w-full shadow-md" onclick={() => console.info('continue')}>
+        {t('continue')}
+      </Button>
     {/if}
 
     <Row class="!justify-between w-full mt-8">
       <Row class="gap-2 text-[#5F6D85] text-xs">
-        <Icon name="lock" />Säker SSL-krypterad betalning
+        <Icon name="lock" />{t('secure_payment')}
       </Row>
       <Row class="gap-2">
-        {#each paymentMethods as paymentMethod}
+        {#each footerPaymentMethods as IconName[] as paymentMethod}
           <PaymentMethod name={paymentMethod} />
         {/each}
       </Row>

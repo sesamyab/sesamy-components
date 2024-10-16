@@ -13,7 +13,7 @@
 
 <Row
   class={twMerge(
-    'w-10 aspect-[4/3] px-1 rounded bg-white',
+    'w-10 aspect-[4/3] px-1 rounded bg-white shadow-sm',
     name === 'klarna' && 'bg-[#FEB4C7]',
     name === 'amex' && 'bg-[#1F72CD]',
     name === 'vipps' && 'text-4xl'

@@ -1,4 +1,8 @@
 {
   "already_subscribing": "Už jste se přihlásili k odběru?",
-  "login": "Přihlášení"
+  "continue": "Pokračovat",
+  "login": "Přihlášení",
+  "most_popular": "Nejoblíbenější",
+  "proceed": "Postupujte podle",
+  "secure_payment": "Bezpečná platba šifrovaná pomocí SSL"
 }

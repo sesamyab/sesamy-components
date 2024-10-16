@@ -1,4 +1,8 @@
 {
   "already_subscribing": "Prenumererar du redan?",
-  "login": "Logga in"
+  "continue": "Fortsätt",
+  "login": "Logga in",
+  "most_popular": "Mest populära",
+  "proceed": "Fortsätt",
+  "secure_payment": "Säker SSL-krypterad betalning"
 }
