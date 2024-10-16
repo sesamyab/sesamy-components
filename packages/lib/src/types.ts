@@ -6,6 +6,7 @@ export interface LoginProps {
   loggedIn?: boolean;
   userAvatar?: string;
   lang?: string;
+  variant?: Variant;
   onLogin?: (event: CustomEvent) => void;
 }
 
@@ -27,9 +28,13 @@ export type ButtonProps = HTMLButtonAttributes & {
   href?: string;
 };
 
-export type AccessLevel = 'logged-in';
+export type AccessLevel = 'public' | 'logged-in' | 'entitlement';
+export type LockMode = 'embed' | 'encode' | 'signedUrl' | 'event';
 
 export type ContentContainerProps = HTMLButtonAttributes & {
+  'item-src'?: string;
   pass?: string;
   'access-level'?: AccessLevel;
+  'publisher-content-id'?: string;
+  'lock-mode'?: LockMode;
 };

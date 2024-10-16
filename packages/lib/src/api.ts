@@ -1,4 +1,4 @@
-import type { Config, SesamyAPI } from "@sesamy/sesamy-js";
+import type { Config, SesamyAPI } from '@sesamy/sesamy-js';
 
 interface SesamyWindow {
   sesamy?: SesamyAPI;
@@ -19,25 +19,21 @@ export async function getApi(): Promise<SesamyAPI> {
       if (window.sesamy) {
         resolve(window.sesamy);
       } else {
-        reject(
-          new Error(
-            "sesamyReady event did not occur within the expected time.",
-          ),
-        );
+        reject(new Error('sesamyReady event did not occur within the expected time.'));
       }
-    }, 5000);
+    }, 1000);
 
     function onSesamyJsReady() {
       if (!window.sesamy) {
-        reject(new Error("Sesamy API is not available"));
+        reject(new Error('Sesamy API is not available'));
       } else {
         clearTimeout(timeout);
-        window.removeEventListener("sesamyJsReady", onSesamyJsReady);
+        window.removeEventListener('sesamyJsReady', onSesamyJsReady);
 
         resolve(window.sesamy);
       }
     }
 
-    window.addEventListener("sesamyJsReady", onSesamyJsReady);
+    window.addEventListener('sesamyJsReady', onSesamyJsReady);
   });
 }
