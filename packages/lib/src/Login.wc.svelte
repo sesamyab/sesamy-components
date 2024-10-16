@@ -7,8 +7,11 @@
   import Button from './Button.wc.svelte';
   import type { LoginProps } from './types';
 
-  let { loading, loggedIn, userAvatar, variant = 'primary' }: LoginProps = $props();
+  let { variant = 'primary', 'button-text': buttonText }: LoginProps = $props();
 
+  let loading = $state(false);
+  let userAvatar = $state('');
+  let loggedIn = $state(false);
   let disabled = $state(false);
 
   const login = async (api: SesamyAPI) => {
@@ -36,7 +39,7 @@
       loggedIn = await api.auth.isAuthenticated();
       if (loggedIn) {
         const user = await api.auth.getUser();
-        userAvatar = user?.picture;
+        userAvatar = user?.picture || '';
       }
     } catch (error) {
       console.error('Error checking login status:', error);
@@ -48,11 +51,13 @@
   {#await checkLoggedIn(api)}
     <Avatar loading={true} size="sm"></Avatar>
   {:then _}
-    {#if loading || loggedIn}
+    {#if loading}
+      <Avatar {loading} onclick={() => logout(api)} size="sm"></Avatar>
+    {:else if loggedIn}
       <Avatar {loading} onclick={() => logout(api)} size="sm"></Avatar>
     {:else}
       <Button {variant} {disabled} onclick={() => login(api)} size="sm">
-        {t('login')}
+        {buttonText || t('login')}
       </Button>
     {/if}
   {/await}

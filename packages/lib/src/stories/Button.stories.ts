@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from '@storybook/web-components';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import type { ButtonProps } from '../types';
 
-const meta: Meta<ButtonProps & { buttonText: string }> = {
+const meta: Meta<ButtonProps & { loading: boolean; disabled: boolean; buttonText: string }> = {
   title: 'Components/Button',
   tags: ['autodocs'],
   component: 'sesamy-button',

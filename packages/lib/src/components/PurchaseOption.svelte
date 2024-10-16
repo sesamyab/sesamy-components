@@ -10,11 +10,11 @@
     [key: string]: any;
   };
 
-  let { id, name, checked, children, ...rest }: Props = $props();
+  let { id, name, checked, children, onchange, ...rest }: Props = $props();
 </script>
 
 <label class="p-4 row-left gap-4 w-full" for={id} {...rest}>
-  <input type="radio" class="hidden peer" {checked} {name} {id} />
+  <input {onchange} type="radio" class="hidden peer" {checked} {name} {id} />
   <div
     class="w-4 h-4 rounded-full transition-all bg-white border border-[#E7E7EC] relative peer-checked:border-primary peer-checked:bg-primary"
   >

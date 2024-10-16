@@ -21,6 +21,7 @@
   };
 
   let { t, horizontal = false, paywall }: Props = $props();
+  let selectedFeatures = $state([]);
 
   let {
     subscriptions,
@@ -28,12 +29,24 @@
     headline,
     currency,
     mainColor,
+    showLoginButton,
     features,
     footerPaymentMethods,
     settings: {
       styling: { showBackground, dropShadow, backgroundColor }
     }
   } = paywall;
+  $inspect(paywall);
+  const selectPurchaseOption = (option: any) => {
+    // console.log(option);
+    // TODO: decide if we should remove "features" from shallow paywall. And if so, if we should add it to singlePurchase.
+    selectedFeatures = option?.features || features;
+  };
+
+  if (subscriptions.length) {
+    const selected = subscriptions.find(({ selected }) => selected);
+    selectPurchaseOption(selected);
+  }
 
   const paywallBgColor = hexToHsl(backgroundColor || '#FFFFFF');
 
@@ -57,10 +70,13 @@
     showBackground && dropShadow && 'shadow-lg'
   )}
 >
-  <Row class="text-sm gap-1 pt-2 font-bold">
-    {t('already_subscribing')}
-    <Clickable href="/" class="text-primary">{t('login')}</Clickable>
-  </Row>
+  {#if showLoginButton}
+    <Row class="text-sm gap-1 pt-2 font-bold">
+      {t('already_subscribing')}
+
+      <Clickable href="/" class="text-primary">{t('login')}</Clickable>
+    </Row>
+  {/if}
 
   <Column class={twMerge('gap-4 px-16 pb-16 pt-6 w-full', horizontal && 'px-6 pb-4')} up left>
     <div
@@ -74,13 +90,13 @@
     </div>
 
     {#if !horizontal}
-      <Features {features} bold />
+      <Features features={selectedFeatures} bold />
     {/if}
 
     {#if subscriptions.length}
       <PurchaseOptions
         class={twMerge(
-          'mt-4',
+          'mt-2',
           !horizontal && 'column-left',
           horizontal && 'grid-cols-3',
           horizontal && subscriptions.length === 2 && 'grid-cols-2',
@@ -126,7 +142,12 @@
             {#if i}
               <hr class="w-full border-gray-100" />
             {/if}
-            <PurchaseOption {id} name="purchase-option" checked>
+            <PurchaseOption
+              {id}
+              name="purchase-option"
+              checked={selected}
+              onchange={() => selectPurchaseOption(subscription)}
+            >
               <Column left>
                 <div class="text-base font-bold">{title}</div>
                 {#if description}
@@ -145,7 +166,11 @@
     {#if singlePurchase && singlePurchase.enabled && !horizontal}
       {@const { title, description } = singlePurchase}
       <PurchaseOptions>
-        <PurchaseOption id="five" name="purchase-option">
+        <PurchaseOption
+          id="five"
+          name="purchase-option"
+          onchange={() => selectPurchaseOption(singlePurchase)}
+        >
           <Column left>
             <div class="text-base font-bold">{title}</div>
             <div class="text-sm">

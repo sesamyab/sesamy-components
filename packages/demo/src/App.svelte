@@ -3,7 +3,7 @@
   import NavBar from './components/NavBar.svelte';
   import { init } from '@sesamy/sesamy-js';
 
-  let template = $state('BOXES');
+  let template = $state('ARTICLE');
 
   init({
     clientId: 'demo',
