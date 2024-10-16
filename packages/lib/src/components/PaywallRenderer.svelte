@@ -158,7 +158,7 @@
               </Column>
               <div class="text-base font-bold">{price} {currency} / {periodText}</div>
               {#if selected}
-                <div class="absolute top-2 left-5 h-1 w-1 bg-green-500 -rotate-6">
+                <div class="absolute top-1 right-5 h-1 w-1 bg-green-500 rotate-6">
                   <div
                     class="absolute bg-primary bottom-0 rounded left-1/2 -translate-x-1/2 px-2 py-1 text-white text-xs font-bold whitespace-nowrap"
                   >
