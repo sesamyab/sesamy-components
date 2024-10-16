@@ -11,6 +11,7 @@
   import { twMerge } from 'tailwind-merge';
   import type { TranslationFunction } from '../i18n';
   import { hexToHsl, hslArrayToCSS } from './../utils/color';
+  import Clickable from './Clickable.svelte';
 
   const paymentMethods = [
     'visa',
@@ -64,12 +65,13 @@
   )}
 >
   <Row class="text-sm gap-1 pt-2 font-bold">
-    {t('already_subscribing')} <a href="/" class="text-main"> Logga in </a>
+    {t('already_subscribing')}
+    <Clickable href="/" class="text-main">Logga in</Clickable>
   </Row>
 
   <Column class={twMerge('gap-4 px-16 pb-16 pt-6 w-full', horizontal && 'px-6 pb-4')} up left>
     <div
-      class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-[#00000020] mb-4"
+      class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-main/30 mb-4"
     ></div>
     <div class={twMerge('w-full', horizontal && 'column text-center')}>
       <Icon class="text-[120px] text-main font-bold" name="fokus" />
@@ -152,7 +154,9 @@
         </PurchaseOption>
       </PurchaseOptions>
 
-      <Button class="mt-2 w-full" onclick={() => alert('continue')}>Continue</Button>
+      <Button class="mt-2 w-full shadow-md" onclick={() => console.info('continue')}
+        >Continue</Button
+      >
     {/if}
 
     <Row class="!justify-between w-full mt-8">
