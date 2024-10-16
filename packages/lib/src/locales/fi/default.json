@@ -1,4 +1,8 @@
 {
   "already_subscribing": "Oletko jo tilannut?",
-  "login": "Kirjaudu sisään"
+  "continue": "Jatka",
+  "login": "Kirjaudu sisään",
+  "most_popular": "Suosituimmat",
+  "proceed": "Jatka",
+  "secure_payment": "Turvallinen SSL-salattu maksu"
 }

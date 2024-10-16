@@ -23,7 +23,7 @@ const meta: Meta<PaywallProps> = {
   argTypes: {
     'settings-url': {
       control: 'text',
-      defaultValue: 'https://api.sesamy.dev/paywall/paywalls/kvartal/1idkV75XtXSVQAXtTp2dL'
+      defaultValue: 'https://api.sesamy.dev/paywall/paywalls/test-fokus/ONh_7gBRk8U_L060YMUr2L'
     },
     template: {
       control: {
@@ -40,14 +40,15 @@ type Story = StoryObj<PaywallProps>;
 
 export const Default: Story = {
   args: {
-    'settings-url': 'https://api.sesamy.dev/paywall/paywalls/kvartal/1idkV75XtXSVQAXtTp2dL',
+    'settings-url': 'https://api.sesamy.dev/paywall/paywalls/test-fokus/ONh_7gBRk8U_L060YMUr2',
     template: 'ARTICLE'
   }
 };
 
 export const MobileView: Story = {
   args: {
-    'settings-url': 'https://api.sesamy.dev/paywall/paywalls/kvartal/1idkV75XtXSVQAXtTp2dL'
+    'settings-url': 'https://api.sesamy.dev/paywall/paywalls/test-fokus/ONh_7gBRk8U_L060YMUr2L',
+    template: 'ARTICLE'
   },
   parameters: {
     viewport: {
@@ -58,7 +59,8 @@ export const MobileView: Story = {
 
 export const TabletView: Story = {
   args: {
-    'settings-url': 'https://api.sesamy.dev/paywall/paywalls/kvartal/1idkV75XtXSVQAXtTp2dL'
+    'settings-url': 'https://api.sesamy.dev/paywall/paywalls/test-fokus/ONh_7gBRk8U_L060YMUr2L',
+    template: 'ARTICLE'
   },
   parameters: {
     viewport: {

@@ -10,7 +10,7 @@ export enum PaywallTemplate {
 }
 
 export type PaywallSubscription = {
-  id?: string;
+  id: string;
   sku: string;
   poId: string;
   title?: string;
@@ -37,7 +37,7 @@ export type PaywallSettings = {
 };
 
 export type Paywall = {
-  id: string; // id: uniqueId of the paywall
+  id: string; // id: uniqueId of the paywall. THIS WAS CHANGED TO REQUIRED
   vendorId: string; // id: uniqueId of the paywall
   name: string; // Paywall name (used internally for the admin list)
   currency: string; // Currency code (USD, EUR, SEK)
@@ -46,7 +46,7 @@ export type Paywall = {
   headline?: string; // free text
   logoUrl?: string;
   features: string[]; // a list of free strings
-  mainColor?: string; // Color picker
+  mainColor: string; // Color picker. THIS WAS CHANGED TO REQUIRED
   showLoginButton: boolean;
   singlePurchase?: {
     enabled: boolean;
@@ -57,5 +57,14 @@ export type Paywall = {
   subscriptions: PaywallSubscription[];
   version?: number;
   settings: PaywallSettings;
-  footerPaymentMethods?: string[];
+  footerPaymentMethods?: (
+    | 'visa'
+    | 'apple-pay'
+    | 'google-pay'
+    | 'klarna'
+    | 'amex'
+    | 'mastercard'
+    | 'vipps'
+    | 'swish'
+  )[];
 };

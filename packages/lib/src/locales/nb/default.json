@@ -1,4 +1,8 @@
 {
   "already_subscribing": "Abonnerer du allerede?",
-  "login": "Logg inn"
+  "continue": "Fortsett",
+  "login": "Logg inn",
+  "most_popular": "Mest populære",
+  "proceed": "Gå videre",
+  "secure_payment": "Sikker SSL-kryptert betaling"
 }

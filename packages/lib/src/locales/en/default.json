@@ -1,4 +1,8 @@
 {
   "already_subscribing": "Already subscribing?",
-  "login": "Login"
+  "continue": "Continue",
+  "login": "Login",
+  "most_popular": "Most popular",
+  "proceed": "Proceed",
+  "secure_payment": "Secure SSL encrypted payment"
 }
