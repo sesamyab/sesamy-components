@@ -6,7 +6,11 @@ export default {
     './packages/lib/src/**/*.{svelte,js,ts,jsx,tsx}'
   ],
   theme: {
-    extend: {}
+    extend: {
+      colors: {
+        main: 'hsl(var(--s-primary-color))'
+      }
+    }
   },
   plugins: [require('@ape-egg/tailwind-rows-columns')]
 };

@@ -6,13 +6,14 @@ export interface LoginProps {
   loggedIn?: boolean;
   userAvatar?: string;
   lang?: string;
+  variant?: Variant;
   onLogin?: (event: CustomEvent) => void;
 }
 
-export interface PaywallProps extends HTMLElement {
+export type PaywallProps = HTMLElement & {
   ['settings-url']: string;
   template: 'ARTICLE' | 'BOXES';
-}
+};
 
 export type Variant = 'primary' | 'secondary' | 'tertiary';
 export type Size = 'sm' | 'md' | 'lg';

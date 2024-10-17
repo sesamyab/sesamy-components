@@ -1,5 +1,5 @@
 <nav>
-  <ul>
+  <ul class="row">
     <li><a href="/">Home</a></li>
     <li><a href="/about">About</a></li>
     <li><a href="/contact">Contact</a></li>
@@ -9,9 +9,9 @@
 
 <style>
   nav {
-    background-color: #333;
     padding: 1em;
     text-align: center;
+    background: lightgray;
   }
 
   ul {
@@ -27,7 +27,7 @@
   }
 
   a {
-    color: white;
+    color: black;
     text-decoration: none;
     font-size: 1.2em;
   }
