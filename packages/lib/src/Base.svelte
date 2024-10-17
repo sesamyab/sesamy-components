@@ -5,7 +5,7 @@
   import initTransaltor from './i18n';
   import { hexToHsl, hslArrayToCSS } from './utils/color';
 
-  let { lang }: { lang?: string } = $props();
+  let { lang, applyStyles = true }: { lang?: string; applyStyles?: boolean } = $props();
   const htmlLang = document.querySelector('html')?.getAttribute('lang');
 
   const apiPromise = getApi();
@@ -24,7 +24,7 @@
     }
   `;
 
-  let style = '<sty' + 'le>' + libstyles + sesamyDesignTokens + '</style>';
+  let style = applyStyles ? '<sty' + 'le>' + libstyles + sesamyDesignTokens + '</style>' : '';
 </script>
 
 {#await apiPromise then api}

@@ -27,3 +27,14 @@ export type ButtonProps = HTMLButtonAttributes & {
   onclick?: () => void;
   href?: string;
 };
+
+export type AccessLevel = 'public' | 'logged-in' | 'entitlement';
+export type LockMode = 'embed' | 'encode' | 'signedUrl' | 'event';
+
+export type ContentContainerProps = HTMLElement & {
+  'item-src'?: string;
+  pass?: string;
+  'access-level'?: AccessLevel;
+  'publisher-content-id'?: string;
+  'lock-mode'?: LockMode;
+};
