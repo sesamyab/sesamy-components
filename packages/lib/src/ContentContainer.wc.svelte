@@ -1,13 +1,28 @@
 <svelte:options customElement={{ tag: 'sesamy-content-container', shadow: 'open' }} />
 
 <script lang="ts">
+  import type { SesamyAPI } from '@sesamy/sesamy-js';
   import Base from './Base.svelte';
   import type { ContentContainerProps } from './types';
   let {
     'item-src': itemSrc = '',
     pass = '',
+    'access-level': accessLevel = 'entitlement',
     'lock-mode': lockMode = 'embed'
   }: ContentContainerProps = $props();
+
+  async function checkAccess(api: SesamyAPI) {
+    switch (accessLevel) {
+      case 'public':
+        return true;
+      case 'logged-in':
+        return api.auth.isAuthenticated();
+      case 'entitlement':
+      default:
+        return api.entitlements.hasAccess(itemSrc, pass.split(','));
+    }
+  }
+
   function getContent() {
     const content = $host().querySelector('div[slot="content"]');
     switch (lockMode) {
@@ -26,9 +41,9 @@
 </script>
 
 <Base let:api applyStyles={false}>
-  {#await api.entitlements.hasAccess(itemSrc, pass.split(',')) then hasAccess}
+  {#await checkAccess(api) then hasAccess}
     {#if hasAccess}
-      {getContent()}
+      {@html getContent()}
     {:else}
       <slot name="preview"></slot>
     {/if}

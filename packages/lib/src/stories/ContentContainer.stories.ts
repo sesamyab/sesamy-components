@@ -42,7 +42,7 @@ export const EncodedContent: Story = {
   },
   args: {},
   render: (args) =>
-    html` <div style="color: red;">
+    html` <div>
       <sesamy-login></sesamy-login>
       <sesamy-content-container
         item-src="https://sesamy-js.sesamy.dev/article.html"
@@ -50,6 +50,36 @@ export const EncodedContent: Story = {
       >
         <div slot="preview">This is a preview of locked content</div>
         <div slot="content">VGhpcyBpcyB0aGUgZW5jb2RlZCBsb2NrZWQgY29udGVudA==</div>
+      </sesamy-content-container>
+    </div>`
+};
+
+export const AuthenticatedUsers: Story = {
+  parameters: {
+    layout: 'centered'
+  },
+  args: {},
+  render: (args) =>
+    html` <div>
+      <sesamy-login></sesamy-login>
+      <sesamy-content-container access-level="logged-in">
+        <div slot="preview">This is visisble for unauthenticated users</div>
+        <div slot="content">This is visisble for authenticated users</div>
+      </sesamy-content-container>
+    </div>`
+};
+
+export const PublicContent: Story = {
+  parameters: {
+    layout: 'centered'
+  },
+  args: {},
+  render: (args) =>
+    html` <div>
+      <sesamy-login></sesamy-login>
+      <sesamy-content-container access-level="public">
+        <div slot="preview">This is should not be visible</div>
+        <div slot="content">This is visisble all users</div>
       </sesamy-content-container>
     </div>`
 };
