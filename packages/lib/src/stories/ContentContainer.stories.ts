@@ -83,3 +83,33 @@ export const PublicContent: Story = {
       </sesamy-content-container>
     </div>`
 };
+
+export const ContentEvents: Story = {
+  parameters: {
+    layout: 'centered'
+  },
+  args: {},
+  render: (args) =>
+    html` <div>
+      <script>
+        window.addEventListener('sesamyUnlocked', (event) => {
+          const container = document.getElementById('event-container');
+          container.innerHTML =
+            'Event emitted with item-src: ' +
+            event.detail.itemSrc +
+            ' and publisher-content-id: ' +
+            event.detail.publisherContentId;
+        });
+      </script>
+      <sesamy-login></sesamy-login>
+      <sesamy-content-container
+        access-level="logged-in"
+        item-src="https://example.com/article"
+        publisher-content-id="1234"
+        lock-mode="event"
+      >
+        <div slot="preview">This is visible to unauthenticated users</div>
+      </sesamy-content-container>
+      <div id="event-container"></div>
+    </div>`
+};

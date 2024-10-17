@@ -35,6 +35,7 @@ export type ContentContainerProps = HTMLElement & {
   'item-src'?: string;
   pass?: string;
   'access-level'?: AccessLevel;
+  'access-url'?: string;
   'publisher-content-id'?: string;
   'lock-mode'?: LockMode;
 };
