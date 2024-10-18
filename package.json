@@ -24,7 +24,7 @@
     "prepublishOnly": "yarn run build:lib",
     "semantic-release": "semantic-release",
     "storybook": "yarn run build:lib && storybook dev -p 6006",
-    "test": "yarn build:lib && playwright test",
+    "test": "yarn build:storybook && playwright test",
     "build:storybook": "yarn run build:lib && storybook build",
     "svg:generate": "svgo -f ./packages/lib/src/icons -o ./packages/lib/src/icons && node ./scripts/icon.js ./packages/lib/src/icons --generate-types",
     "pull-translations": "i18nexus pull -k UqoFFUDIqHedrUA4OlDXwg --path ./packages/lib/src/locales && prettier --write ./packages/lib/src/locales/**/*.json && yarn sort-translations",
