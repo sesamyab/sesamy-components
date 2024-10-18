@@ -23,12 +23,14 @@
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "prepublishOnly": "yarn run build:lib",
     "semantic-release": "semantic-release",
+    "storybook:serve": "npx http-server storybook-static",
     "storybook": "yarn run build:lib && storybook dev -p 6006",
     "test": "yarn build:storybook && playwright test",
     "build:storybook": "yarn run build:lib && storybook build",
     "svg:generate": "svgo -f ./packages/lib/src/icons -o ./packages/lib/src/icons && node ./scripts/icon.js ./packages/lib/src/icons --generate-types",
     "pull-translations": "i18nexus pull -k UqoFFUDIqHedrUA4OlDXwg --path ./packages/lib/src/locales && prettier --write ./packages/lib/src/locales/**/*.json && yarn sort-translations",
-    "sort-translations": "sort-json ./packages/lib/src/locales/**/*.json"
+    "sort-translations": "sort-json ./packages/lib/src/locales/**/*.json",
+    "e2e:open-docker": "docker run --rm --network host -v $(pwd):/work/ -w /work/ -it mcr.microsoft.com/playwright:v1.48.1-focal /bin/bash"
   },
   "release": {
     "branches": [
