@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { filterStories, navigate } from './utils';
 import manifest from '../storybook-static/index.json' assert { type: 'json' };
 
-const storybookUrl = 'localhost:6006';
+const storybookUrl = 'localhost:8080';
 
 test.beforeEach(async ({ page }, meta) => {
   /**
@@ -25,6 +25,8 @@ visualStories.forEach((story) => {
   test(story.id, async ({ page }, meta) => {
     await navigate(page, storybookUrl, meta.title);
     const upstreamScreenshot = `${meta.title}-upstream-${process.platform}.png`;
+
+    await page.waitForTimeout(1000);
 
     const screenshot = await page.screenshot({
       path: `tests/${meta.title}-current-${process.platform}.png`,
