@@ -6,13 +6,14 @@ export interface LoginProps {
   loggedIn?: boolean;
   userAvatar?: string;
   lang?: string;
+  variant?: Variant;
   onLogin?: (event: CustomEvent) => void;
 }
 
-export interface PaywallProps extends HTMLElement {
+export type PaywallProps = HTMLElement & {
   ['settings-url']: string;
   template: 'ARTICLE' | 'BOXES';
-}
+};
 
 export type Variant = 'primary' | 'secondary' | 'tertiary';
 export type Size = 'sm' | 'md' | 'lg';
@@ -25,4 +26,16 @@ export type ButtonProps = HTMLButtonAttributes & {
   part?: string;
   onclick?: () => void;
   href?: string;
+};
+
+export type AccessLevel = 'public' | 'logged-in' | 'entitlement';
+export type LockMode = 'embed' | 'encode' | 'signedUrl' | 'event';
+
+export type ContentContainerProps = HTMLElement & {
+  'item-src'?: string;
+  pass?: string;
+  'access-level'?: AccessLevel;
+  'access-url'?: string;
+  'publisher-content-id'?: string;
+  'lock-mode'?: LockMode;
 };

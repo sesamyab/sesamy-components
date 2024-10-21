@@ -32,8 +32,6 @@
     <article>
       <h1>Sesamy Components Demo Page</h1>
 
-      <sesamy-avatar size="md" loading></sesamy-avatar>
-
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sed elit sollicitudin nisl
         condimentum suscipit vitae sed lacus. Nullam venenatis vestibulum eros vitae rutrum. Donec

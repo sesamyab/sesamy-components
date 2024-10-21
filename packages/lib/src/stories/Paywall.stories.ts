@@ -4,6 +4,7 @@ import { Paywall } from '@sesamy/sesamy-components';
 
 interface PaywallProps {
   'settings-url': string;
+  template: 'ARTICLE' | 'BOXES';
 }
 
 const meta: Meta<PaywallProps> = {
@@ -11,14 +12,25 @@ const meta: Meta<PaywallProps> = {
   tags: ['autodocs'],
   component: 'sesamy-paywall',
   render: (args) =>
-    html` <div style="display: flex; gap: 10px; padding: 10px; --sesamy-main-color: #E71104;">
-      <sesamy-paywall settings-url=${args['settings-url']}></sesamy-paywall>
-      <div></div>
+    html` <div
+      style="display: flex; gap: 10px; padding: 10px; --sesamy-primary-color: 249 86.4% 68.2%;"
+    >
+      <sesamy-paywall
+        template=${args['template']}
+        settings-url=${args['settings-url']}
+      ></sesamy-paywall>
     </div>`,
   argTypes: {
     'settings-url': {
       control: 'text',
       defaultValue: 'https://api.sesamy.dev/paywall/paywalls/kvartal/1idkV75XtXSVQAXtTp2dL'
+    },
+    template: {
+      control: {
+        type: 'select'
+      },
+      options: ['ARTICLE', 'BOXES'],
+      defaultValue: 'ARTICLE'
     }
   }
 };
@@ -28,7 +40,8 @@ type Story = StoryObj<PaywallProps>;
 
 export const Default: Story = {
   args: {
-    'settings-url': 'https://api.sesamy.dev/paywall/paywalls/kvartal/1idkV75XtXSVQAXtTp2dL'
+    'settings-url': 'https://api.sesamy.dev/paywall/paywalls/kvartal/1idkV75XtXSVQAXtTp2dL',
+    template: 'ARTICLE'
   }
 };
 

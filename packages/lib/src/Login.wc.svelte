@@ -1,13 +1,13 @@
 <svelte:options customElement="sesamy-login" />
 
 <script lang="ts">
-  import type { SesamyAPI } from "@sesamy/sesamy-js";
-  import Avatar from "./Avatar.wc.svelte";
-  import Base from "./Base.svelte";
-  import Button from "./Button.wc.svelte";
-  import type { LoginProps } from "./types";
+  import type { SesamyAPI } from '@sesamy/sesamy-js';
+  import Avatar from './Avatar.wc.svelte';
+  import Base from './Base.svelte';
+  import Button from './Button.wc.svelte';
+  import type { LoginProps } from './types';
 
-  let { loading, loggedIn, userAvatar}: LoginProps = $props();
+  let { loading, loggedIn, userAvatar, variant = 'primary' }: LoginProps = $props();
 
   let disabled = $state(false);
 
@@ -17,7 +17,7 @@
       await api.auth.loginWithRedirect();
     } catch (error) {
       disabled = false;
-      console.error("Login failed:", error);
+      console.error('Login failed:', error);
     }
   };
 
@@ -27,7 +27,7 @@
       await api.auth.logout();
       loggedIn = false;
     } catch (error) {
-      console.error("Logout failed:", error);
+      console.error('Logout failed:', error);
     }
   };
 
@@ -39,21 +39,21 @@
         userAvatar = user?.picture;
       }
     } catch (error) {
-      console.error("Error checking login status:", error);
+      console.error('Error checking login status:', error);
     }
   };
 </script>
 
 <Base let:api let:t>
-  {#await checkLoggedIn(api) then _}
+  {#await checkLoggedIn(api)}
+    <Avatar loading={true} size="sm"></Avatar>
+  {:then _}
     {#if loading || loggedIn}
       <Avatar {loading} onclick={() => logout(api)} size="sm"></Avatar>
     {:else}
-      <slot name="loginButton">
-        <Button part="loginButton" {disabled} onclick={() => login(api)}>
-          {t('login')}
-        </Button>
-      </slot>
+      <Button {variant} {disabled} onclick={() => login(api)} size="sm">
+        {t('login')}
+      </Button>
     {/if}
   {/await}
 </Base>
