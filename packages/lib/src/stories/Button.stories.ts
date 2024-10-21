@@ -6,7 +6,7 @@ import type { ButtonProps } from '../types';
 
 const meta: Meta<ButtonProps & { buttonText: string }> = {
   title: 'Components/Button',
-  tags: ['autodocs'],
+  tags: ['autodocs', 'visual:check', 'story'],
   component: 'sesamy-button',
   render: (args) => html`
     <sesamy-button
@@ -42,7 +42,8 @@ export const Default: Story = {
     disabled: false,
     loading: false,
     variant: 'primary'
-  }
+  },
+  tags: []
 };
 
 export const variants: Story = {
