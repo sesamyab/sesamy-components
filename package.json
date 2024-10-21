@@ -109,7 +109,7 @@
   ],
   "dependencies": {
     "@ape-egg/tailwind-rows-columns": "^1.0.2",
-    "@sesamy/sesamy-js": "^1.22.0",
+    "@sesamy/sesamy-js": "^1.22.9",
     "lucide-svelte": "^0.445.0"
   }
 }
