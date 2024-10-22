@@ -2,28 +2,13 @@
 
 <script lang="ts">
   import Base from './Base.svelte';
-  import type { IconName } from './icons/types';
-  import type { TranslationFunction } from './i18n';
   import type { PaywallProps } from './types';
   import PaywallRenderer from './components/PaywallRenderer.svelte';
+  import type { Paywall } from './types/monorepo';
 
-  const paymentMethods = [
-    'visa',
-    'apple-pay',
-    'google-pay',
-    'klarna',
-    'amex',
-    'mastercard',
-    'vipps',
-    'swish'
-  ] as IconName[];
+  let { 'settings-url': settingsUrl, template = 'ARTICLE' }: PaywallProps = $props();
 
-  let {
-    'settings-url': settingsUrl,
-    template = 'ARTICLE',
-    t
-  }: PaywallProps & { t: TranslationFunction  } = $props();
-  let paywall = $state<{ [key: string]: any } | undefined>(undefined);
+  let paywall = $state<Paywall>();
 
   $effect(() => {
     (async () => {

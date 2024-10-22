@@ -6,7 +6,7 @@ import type { ButtonProps } from '../types';
 
 const meta: Meta<ButtonProps & { buttonText: string }> = {
   title: 'Components/Button',
-  tags: ['autodocs'],
+  tags: ['autodocs', 'visual:check', 'story'],
   component: 'sesamy-button',
   render: (args) => html`
     <sesamy-button
@@ -42,7 +42,8 @@ export const Default: Story = {
     disabled: false,
     loading: false,
     variant: 'primary'
-  }
+  },
+  tags: []
 };
 
 export const variants: Story = {
@@ -77,7 +78,7 @@ export const disabled: Story = {
   },
   render: () => html`
     <div style="display: flex; gap: 10px; padding: 10px;">
-      <sesamy-button disabled variant="primary">primary</sesamy-button>
+      <sesamy-button disabled variant="primary">Primary</sesamy-button>
       <sesamy-button disabled variant="secondary">Secondary</sesamy-button>
       <sesamy-button disabled variant="tertiary">Tertiary</sesamy-button>
     </div>
@@ -90,7 +91,7 @@ export const Loading: Story = {
   },
   render: () => html`
     <div style="display: flex; gap: 10px; padding: 10px;">
-      <sesamy-button loading variant="primary">primary</sesamy-button>
+      <sesamy-button loading variant="primary">Primary</sesamy-button>
       <sesamy-button loading variant="secondary">Secondary</sesamy-button>
       <sesamy-button loading variant="tertiary">Tertiary</sesamy-button>
     </div>
@@ -102,7 +103,9 @@ export const color: Story = {
     layout: 'centered'
   },
   render: () => html`
-    <div style="display: flex; gap: 10px; padding: 10px; --sesamy-main-color: 34 197 94;">
+    <div
+      style="display: flex; gap: 10px; padding: 10px; --sesamy-primary-color: 357, 95.9%, 48.2%;"
+    >
       <sesamy-button variant="primary">Primary</sesamy-button>
       <sesamy-button variant="secondary">Secondary</sesamy-button>
       <sesamy-button variant="tertiary">Tertiary</sesamy-button>
