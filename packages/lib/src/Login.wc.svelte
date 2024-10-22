@@ -4,10 +4,10 @@
   import type { SesamyAPI } from '@sesamy/sesamy-js';
   import Avatar from './Avatar.wc.svelte';
   import Base from './Base.svelte';
-  import Button from './Button.wc.svelte';
   import type { LoginProps } from './types';
+  import ButtonRenderer from './components/ButtonRenderer.svelte';
 
-  let { loading, loggedIn, userAvatar, variant = 'primary' }: LoginProps = $props();
+  let { loading, loggedIn, userAvatar, variant = 'text' }: LoginProps = $props();
 
   let disabled = $state(false);
 
@@ -51,9 +51,9 @@
     {#if loading || loggedIn}
       <Avatar {loading} onclick={() => logout(api)} size="sm"></Avatar>
     {:else}
-      <Button {variant} {disabled} onclick={() => login(api)} size="sm">
+      <ButtonRenderer variant="secondary" {disabled} onclick={() => login(api)} size="sm">
         {t('login')}
-      </Button>
+      </ButtonRenderer>
     {/if}
   {/await}
 </Base>
