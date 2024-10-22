@@ -26,8 +26,6 @@ visualStories.forEach((story) => {
     await navigate(page, storybookUrl, meta.title);
     const upstreamScreenshot = `${meta.title}-upstream-${process.platform}.png`;
 
-    await page.waitForTimeout(1000);
-
     const screenshot = await page.screenshot({
       path: `tests/${meta.title}-current-${process.platform}.png`,
       animations: 'disabled',
