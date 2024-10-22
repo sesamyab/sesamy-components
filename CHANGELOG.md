@@ -1,3 +1,34 @@
+# [1.2.0](https://github.com/sesamyab/sesamy-components/compare/v1.1.4...v1.2.0) (2024-10-22)
+
+
+### Bug Fixes
+
+* add snapshots ([ddedb35](https://github.com/sesamyab/sesamy-components/commit/ddedb351f22e4f5e7b834f0e158326e59958ba52))
+* build storybook in playwright tests ([4548df3](https://github.com/sesamyab/sesamy-components/commit/4548df366331c8648d333c56865c67fc6d209a12))
+* button style ([ca4dc07](https://github.com/sesamyab/sesamy-components/commit/ca4dc07e031aee772f75a9d91ce8607e8eeff479))
+* change port ([ff2d96f](https://github.com/sesamyab/sesamy-components/commit/ff2d96f0b860cca2c906c58a83cac58db9a241a4))
+* first tests ([1029f7f](https://github.com/sesamyab/sesamy-components/commit/1029f7f998451832ad17bff19b1f8f8a38359227))
+* lock modes ([61d6003](https://github.com/sesamyab/sesamy-components/commit/61d6003499a20ce072769fa3ca4b16b44a989d7d))
+* made bg-white on paywall to also care for opacity ([1769ec0](https://github.com/sesamyab/sesamy-components/commit/1769ec0134f819649f9b5af0d38b5ae4918625b0))
+* prevent fouc ([63eaadb](https://github.com/sesamyab/sesamy-components/commit/63eaadb2683974be50b843a778b09e92c736159a))
+* removed unused vars ([1e363c7](https://github.com/sesamyab/sesamy-components/commit/1e363c7936053d81bcccddf2cd71946faeb5ac7b))
+* removed unused vars ([61227e7](https://github.com/sesamyab/sesamy-components/commit/61227e7be15d69774d5b6d8157f1899920b04a86))
+* replaced new occurance of -[hsl( ([7e6a675](https://github.com/sesamyab/sesamy-components/commit/7e6a675fd96bcd594ba5442b27ba9c134ca01ddb))
+* run for dev as well ([74481f6](https://github.com/sesamyab/sesamy-components/commit/74481f6823d3d83dcc928247cc4b054bb5af86d1))
+* support encode and embed ([e8ba1cd](https://github.com/sesamyab/sesamy-components/commit/e8ba1cd8aef15d46ae5672d87f6d6ceb96862b7a))
+
+
+### Features
+
+* added event and fetch lock modes ([e8f3e10](https://github.com/sesamyab/sesamy-components/commit/e8f3e10646bd339b1c008f4a5ba8234e1b3d2385))
+* added overrides ([a920ad6](https://github.com/sesamyab/sesamy-components/commit/a920ad6ecaa1034f05d4e38ae07aeef3bd1e319c))
+* button enhancements ([1e6d172](https://github.com/sesamyab/sesamy-components/commit/1e6d17261b85c4511379c62bbfc36c3996382d6d))
+* changes to colors. rgb > hsl ([ff72fea](https://github.com/sesamyab/sesamy-components/commit/ff72fea15d17fcd2a4fe739e7739bad271325e6d))
+* color "main" changed name to "primary" ([c5fe8d8](https://github.com/sesamyab/sesamy-components/commit/c5fe8d88d4bbcdada453a0aa4e91e86108ec8c8e))
+* implement suggestion boilerplate ([b5dd393](https://github.com/sesamyab/sesamy-components/commit/b5dd393e24d169cdf5fee8edc9a61977f8b32111))
+* quality of life changes to button ([3c6833b](https://github.com/sesamyab/sesamy-components/commit/3c6833ba8bc6019727a02602c0b9305139f3fe8f))
+* tailwind color handling ([10cbfe3](https://github.com/sesamyab/sesamy-components/commit/10cbfe3dfcba1330e222f42a2ae12d121e383138))
+
 ## [1.1.4](https://github.com/sesamyab/sesamy-components/compare/v1.1.3...v1.1.4) (2024-10-14)
 
 
