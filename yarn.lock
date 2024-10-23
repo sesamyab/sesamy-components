@@ -143,11 +143,14 @@
   dependencies:
     regenerator-runtime "^0.14.0"
 
-"@chromatic-com/storybook@^1.9.0":
-  version "1.9.0"
-  resolved "https://registry.npmjs.org/@chromatic-com/storybook/-/storybook-1.9.0.tgz"
-  integrity sha512-vYQ+TcfktEE3GHnLZXHCzXF/sN9dw+KivH8a5cmPyd9YtQs7fZtHrEgsIjWpYycXiweKMo1Lm1RZsjxk8DH3rA==
+"@chromatic-com/storybook@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@chromatic-com/storybook/-/storybook-3.0.0.tgz#e23f125ab7f66f15cf94609a1684a6a96eba438e"
+  integrity sha512-6o2/RRs59vcPFehnFC/phX+SZK3ByPN3ix7jr+v+pZAMwliDppFF0GEJ4+SKTaoKY8NtPs0JTFDSQnY1YWgK3Q==
   dependencies:
+    "@storybook/channels" "^8.3.0"
+    "@storybook/telemetry" "^8.3.0"
+    "@storybook/types" "^8.3.0"
     chromatic "^11.4.0"
     filesize "^10.0.12"
     jsonfile "^6.1.0"
@@ -1262,6 +1265,11 @@
     magic-string "^0.30.0"
     ts-dedent "^2.0.0"
 
+"@storybook/channels@^8.3.0":
+  version "8.3.6"
+  resolved "https://registry.yarnpkg.com/@storybook/channels/-/channels-8.3.6.tgz#b19b1b00773ff1fbabf0e1bd7e00e1784f599a2e"
+  integrity sha512-6ahY0n1A19diR5cI63lhDEpMaDsq7LFtMOgWab2NwCsdXoEAl6anvDptyPWW60umN3HrDzSKFdpRx4imOEjlWw==
+
 "@storybook/components@^8.3.6":
   version "8.3.6"
   resolved "https://registry.yarnpkg.com/@storybook/components/-/components-8.3.6.tgz#2f5e9a755a964c94f0bab3cd400cc7a71d0489d2"
@@ -1360,6 +1368,11 @@
     ts-dedent "^2.0.0"
     type-fest "~2.19"
 
+"@storybook/telemetry@^8.3.0":
+  version "8.3.6"
+  resolved "https://registry.yarnpkg.com/@storybook/telemetry/-/telemetry-8.3.6.tgz#8c108312fd6809a8d9d0a0e8553d067089d89ae2"
+  integrity sha512-fhpbZok7mPeujjFxAKo2vuqhfjhv5BO/mHH7Z8QtgsYqeR7px56arDRgV6CngBZWgFvrQ2wBS0HPV4nB6YWvJQ==
+
 "@storybook/test@8.3.6", "@storybook/test@^8.3.2":
   version "8.3.6"
   resolved "https://registry.yarnpkg.com/@storybook/test/-/test-8.3.6.tgz#a1b92be405004f479319127bba833a52e8d075b1"
@@ -1384,6 +1397,11 @@
   version "8.3.2"
   resolved "https://registry.npmjs.org/@storybook/types/-/types-8.3.2.tgz"
   integrity sha512-4GnGjt5Q4W+hctROyCoLiTUSVIMdaSqaNigg0TkkN/6XKqcUDtuKLZVU8NuGPdUtyo5+18WdVgbU1DXlFe+aDA==
+
+"@storybook/types@^8.3.0":
+  version "8.3.6"
+  resolved "https://registry.yarnpkg.com/@storybook/types/-/types-8.3.6.tgz#8c5c15e8869dd3218a73748db75bb7ef709262b9"
+  integrity sha512-EY+bjIxxmKkFrL7CyDQb3EXbmy0+Y9OieaPrNNM7QXTfGgp81lXhfqMX3HLMMjplk+rcxVJLyzXSBx0nIn91fQ==
 
 "@storybook/web-components-vite@^8.3.2":
   version "8.3.6"
