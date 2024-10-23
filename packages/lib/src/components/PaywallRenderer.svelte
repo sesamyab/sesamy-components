@@ -5,7 +5,7 @@
   import Icon from './../components/Icon.svelte';
   import PaymentMethod from './../components/PaymentMethod.svelte';
   import Row from './../components/Row.svelte';
-  import Button from './ButtonRenderer.svelte';
+  import Button from './Button.svelte';
   import type { IconName } from './../icons/types';
   import Features from './../components/Features.svelte';
   import { twMerge } from 'tailwind-merge';
