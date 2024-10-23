@@ -5,7 +5,7 @@
   import Avatar from './Avatar.wc.svelte';
   import Base from './Base.svelte';
   import type { LoginProps } from './types';
-  import ButtonRenderer from './components/ButtonRenderer.svelte';
+  import Button from './components/Button.svelte';
 
   let { loading, loggedIn, userAvatar, variant = 'text' }: LoginProps = $props();
 
@@ -51,9 +51,9 @@
     {#if loading || loggedIn}
       <Avatar {loading} onclick={() => logout(api)} size="sm"></Avatar>
     {:else}
-      <ButtonRenderer variant="secondary" {disabled} onclick={() => login(api)} size="sm">
+      <Button variant="secondary" {disabled} onclick={() => login(api)} size="sm">
         {t('login')}
-      </ButtonRenderer>
+      </Button>
     {/if}
   {/await}
 </Base>
