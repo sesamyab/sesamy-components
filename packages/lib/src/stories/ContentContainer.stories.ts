@@ -4,7 +4,7 @@ import type { ContentContainerProps } from '../types';
 
 const meta: Meta<ContentContainerProps> = {
   title: 'Components/ContentContainer',
-  tags: ['autodocs'],
+  tags: ['autodocs', 'visual:check', 'story'],
   component: 'sesamy-content-container',
   render: (args) =>
     html`<div>
