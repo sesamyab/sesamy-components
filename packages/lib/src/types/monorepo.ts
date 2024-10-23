@@ -22,6 +22,8 @@ export type PaywallSubscription = {
   price?: number;
   discountPrice?: number;
   features?: string[];
+  url?: string;
+  buttonText?: string;
 };
 
 export type PaywallSettings = {

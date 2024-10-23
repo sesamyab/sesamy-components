@@ -11,11 +11,13 @@
   let { features, bold = false }: Props = $props();
 </script>
 
-<ul class="text-black space-y-2">
+<ul class="text-black space-y-1.5">
   {#each features as feature}
     <li class="row-up-left gap-2" transition:slide>
       <Icon class="text-xs text-primary mt-1.5" name="checkmark" />
-      <div class={twMerge('flex-1 leading-snug', bold && 'font-bold')}>{feature}</div>
+      <div class={twMerge('flex-1 leading-snug text-gray-600', bold && 'font-bold text-black')}>
+        {feature}
+      </div>
     </li>
   {/each}
 </ul>

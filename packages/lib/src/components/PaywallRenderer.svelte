@@ -13,6 +13,7 @@
   import Clickable from './Clickable.svelte';
   import type { Paywall } from 'src/types/monorepo';
   import type { IconName } from 'src/icons/types';
+  import Tag from './Tag.svelte';
 
   type Props = {
     t: TranslationFunction;
@@ -32,7 +33,10 @@
     showLoginButton,
     features,
     footerPaymentMethods,
+    logoUrl,
+    vendorId,
     settings: {
+      useDefaultLogo,
       styling: { showBackground, dropShadow, backgroundColor }
     }
   } = paywall;
@@ -70,21 +74,23 @@
     showBackground && dropShadow && 'shadow-lg'
   )}
 >
-  {#if showLoginButton}
-    <Row class="text-sm gap-1 pt-2 font-bold">
-      {t('already_subscribing')}
+  <Column class={twMerge('gap-4 px-16 pb-8 pt-0 w-full', horizontal && 'px-6 pb-4')} up left>
+    {#if showLoginButton}
+      <Row class="text-sm gap-1 font-bold w-full">
+        {t('already_subscribing')}
 
-      <Clickable href="/" class="text-primary">{t('login')}</Clickable>
-    </Row>
-  {/if}
+        <Clickable href="/" class="text-primary">{t('login')}</Clickable>
+      </Row>
+      <div
+        class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-primary/30"
+      ></div>
+    {/if}
 
-  <Column class={twMerge('gap-4 px-16 pb-8 pt-6 w-full', horizontal && 'px-6 pb-4')} up left>
-    <div
-      class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-primary/30 mb-4"
-    ></div>
-    <div class={twMerge('w-full', horizontal && 'column text-center')}>
-      <Icon class="text-[120px] text-primary font-bold" name="fokus" />
-      <div class="text-3xl mt-6 font-bold max-w-[440px]">
+    <div class={twMerge('w-full pt-4', horizontal && 'column text-center mb-4')}>
+      {#if useDefaultLogo}
+        <img class="h-7 mb-6" src={logoUrl} alt={`${t('logo_of')} ${vendorId}`} />
+      {/if}
+      <div class="text-3xl font-bold max-w-[440px]">
         {headline}
       </div>
     </div>
@@ -105,36 +111,49 @@
         {horizontal}
       >
         {#each subscriptions as subscription, i}
-          {@const { id, title, description, price, periodText, features, selected } = subscription}
+          {@const {
+            id,
+            title,
+            description,
+            price,
+            periodText,
+            features,
+            selected,
+            tag,
+            buttonText,
+            url
+          } = subscription}
 
           {#if horizontal}
             <Column
               class={twMerge(
-                'border bg-white border-gray-300 rounded-lg',
-                selected && 'border-primary mt-0 border-2'
+                'border bg-white border-gray-300 rounded-lg relative',
+                tag && 'border-primary mt-0 border-2'
               )}
             >
-              {#if selected}
-                <Row class="w-full bg-primary h-8 text-white text-sm font-bold">
-                  {t('most_popular')}
-                </Row>
+              {#if tag}
+                <Tag text={tag} {t} chunky />
               {/if}
 
-              <Column class="p-4 flex-1 w-full !justify-between gap-8" left up>
-                <Column class="gap-1" left>
-                  <div class="text-sm text-gray-600">{title}</div>
-                  <div class="text-2xl font-bold mb-4 leading-none">
-                    {price}
-                    {currency} / {periodText}
-                  </div>
+              <Column class="p-4 flex-1 w-full !justify-between gap-8 shadow-md" left up>
+                <Column class="gap-1 p-2" left>
+                  <div class="text-lg font-bold mb-1">{title}</div>
+                  {#if typeof price === 'number'}
+                    <div class="d mb-4 leading-none">
+                      <span class="font-bold text-4xl">
+                        {price}
+                        {currency}
+                      </span> <span class="text-2xl">/ {periodText}</span>
+                    </div>
+                  {/if}
 
                   {#if features}
                     <Features {features} />
                   {/if}
                 </Column>
 
-                <Button class="w-full mt-2" variant="secondary">
-                  {t('proceed')}
+                <Button href={url} class="w-full mt-2" variant={tag ? 'primary' : 'secondary'}>
+                  {buttonText || t('continue')}
                 </Button>
               </Column>
             </Column>
@@ -157,19 +176,8 @@
                 {/if}
               </Column>
               <div class="text-base font-bold">{price} {currency} / {periodText}</div>
-              {#if selected}
-                <div class="absolute top-1 right-5 h-1 w-1 bg-green-500 rotate-6">
-                  <div
-                    class="absolute bg-primary bottom-0 rounded left-1/2 -translate-x-1/2 px-2 py-1 text-white text-xs font-bold whitespace-nowrap"
-                  >
-                    <div
-                      class="absolute top-full left-1/2 -translate-x-1/2 w-4 h-4 bg-primary rotate-45 -translate-y-3.5 rounded-sm"
-                    ></div>
-                    <div class="relative">
-                      {t('most_popular')}
-                    </div>
-                  </div>
-                </div>
+              {#if tag}
+                <Tag text={tag} {t} />
               {/if}
             </PurchaseOption>
           {/if}
