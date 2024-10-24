@@ -3,7 +3,7 @@
   import NavBar from './components/NavBar.svelte';
   import { init } from '@sesamy/sesamy-js';
 
-  let template = $state('BOXES');
+  let template = $state('ARTICLE');
 
   init({
     clientId: 'demo',
@@ -25,7 +25,7 @@
     <div style="width: 800px;">
       <sesamy-paywall
         {template}
-        settings-url="https://api.sesamy.dev/paywall/paywalls/kvartal/1idkV75XtXSVQAXtTp2dL"
+        settings-url="https://api.sesamy.dev/paywall/paywalls/test-fokus/ONh_7gBRk8U_L060YMUr2"
       ></sesamy-paywall>
     </div>
 

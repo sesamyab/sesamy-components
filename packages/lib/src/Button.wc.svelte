@@ -15,13 +15,13 @@
     onclick,
     href,
     class: classes
-  }: ButtonProps & { class?: string } = $props();
+  }: ButtonProps & { loading?: boolean; disabled?: boolean; class?: string } = $props();
 </script>
 
 <Base>
   <Clickable
     class={twMerge(
-      'inline-flex ring-2 ring-transparent focus:ring-primary/25 active:enabled:translate-y-px border border-transparent items-center justify-center outline-none font-medium rounded-md transition-colors duration-200 ease-in-out',
+      'inline-flex font-bold ring-2 ring-transparent focus:ring-primary/25 active:enabled:translate-y-px border border-transparent items-center justify-center outline-none rounded-md transition-colors duration-200 ease-in-out',
       size == 'sm' && 'px-3 py-1.5 text-sm',
       size == 'md' && 'px-4 py-2 text-base',
       size == 'lg' && 'px-6 py-3 text-lg',

@@ -1,27 +1,29 @@
 import type { HTMLButtonAttributes } from 'svelte/elements';
 
-export interface LoginProps {
-  buttonText?: string;
-  loading?: boolean;
-  loggedIn?: boolean;
-  userAvatar?: string;
-  lang?: string;
-  variant?: Variant;
-  onLogin?: (event: CustomEvent) => void;
-}
-
-export type PaywallProps = HTMLElement & {
-  ['settings-url']: string;
-  template: 'ARTICLE' | 'BOXES';
-};
-
+// NOTE: (important!)
+// These types are what we expose to the end user of our web-components
 export type Variant = 'primary' | 'secondary' | 'tertiary';
 export type Size = 'sm' | 'md' | 'lg';
 
-export type ButtonProps = HTMLButtonAttributes & {
-  loading?: boolean;
+export type LoginProps = {
+  ['button-text']?: string;
+  lang?: string;
   variant?: Variant;
-  disabled?: boolean;
+};
+
+export type PaywallProps = {
+  template: 'ARTICLE' | 'BOXES';
+  ['settings-url']: string;
+  ['redirect-url']: string;
+  ['utm-source']: string;
+  ['utm-medium']: string;
+  ['utm-campaign']: string;
+  ['utm-term']: string;
+  ['utm-content']: string;
+};
+
+export type ButtonProps = HTMLButtonAttributes & {
+  variant?: Variant;
   size?: Size;
   part?: string;
   onclick?: () => void;

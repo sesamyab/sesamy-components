@@ -6,17 +6,20 @@
 
   type Props = {
     name: IconName;
+    size?: 'sm' | 'md' | 'lg';
   };
 
-  let { name }: Props = $props();
+  let { name, size = 'md' }: Props = $props();
 </script>
 
 <Row
   class={twMerge(
-    'w-10 aspect-[4/3] px-1 rounded bg-white',
+    'aspect-[4/3] px-1 rounded bg-white border border-transparent',
     name === 'klarna' && 'bg-[#FEB4C7]',
     name === 'amex' && 'bg-[#1F72CD]',
-    name === 'vipps' && 'text-4xl'
+    size === 'sm' && 'w-8 border-gray-300',
+    size === 'md' && 'w-10 shadow-sm',
+    size === 'lg' && 'w-12 shadow'
   )}
 >
   <Icon {name} multiColor />

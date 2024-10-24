@@ -1,4 +1,13 @@
 {
   "already_subscribing": "Abonnerer du allerede?",
-  "login": "Logg inn"
+  "continue": "Fortsett",
+  "country": "Land",
+  "email": "E-post",
+  "invalid_email": "Ugyldig e-postadresse",
+  "login": "Logg inn",
+  "logo_of": "Logoen til",
+  "pay_now": "Betal nå",
+  "phone_number": "Telefonnummer",
+  "secure_payment": "Sikker SSL-kryptert betaling",
+  "something_went_wrong": "Noe gikk galt"
 }
