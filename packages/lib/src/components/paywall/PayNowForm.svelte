@@ -12,8 +12,7 @@
   import type { IconName } from '../../icons/types';
   import Icon from '../Icon.svelte';
   import Row from '../Row.svelte';
-
-  const countries = getCountriesOptions(); // TODO: grab this from lang preferences (see Base.svelte)
+  import { isValidEmail } from '../../utils/email';
 
   type Props = {
     t: TranslationFunction;
@@ -73,12 +72,40 @@
     redirectUrl: 'http://localhost:5173/'
   };
 
+  const countries = getCountriesOptions(checkout.language); // TODO: grab this from lang preferences (see Base.svelte)
+
   let email = $state('');
   let phoneNumber = $state('');
-  let country = $state(countries[0].value);
+  let country = $state(checkout.country);
   let loading = $state(false);
+  let errors = $state<{ [key: string]: any }>();
+
+  const validate = () => {
+    const tempErrors = [];
+
+    if (!isValidEmail(email)) {
+      tempErrors.push(['email', 'invalid_email']);
+    }
+
+    if (!phoneNumber) {
+      tempErrors.push(['phoneNumber', 'phone_number_required']);
+    }
+
+    errors = tempErrors.length
+      ? tempErrors.reduce(
+          (acc, [key, value]) => ({
+            ...acc,
+            [key]: value
+          }),
+          {}
+        )
+      : undefined;
+  };
 
   const goToCheckout = () => {
+    validate();
+    if (errors) return;
+
     alert('Go to checkout');
   };
 
@@ -96,15 +123,27 @@
 </script>
 
 <InputGroup>
-  <Input bind:value={email} compact placeholder={t('email')} />
+  <Input
+    onkeyup={() => (errors = undefined)}
+    bind:value={email}
+    compact
+    placeholder={t('email')}
+    hasError={errors?.email}
+  />
   <Select options={countries} bind:value={country} compact placeholder={t('country')} />
-  <Input bind:value={phoneNumber} compact placeholder={t('phone_number')} />
+  <Input
+    onkeyup={() => (errors = undefined)}
+    bind:value={phoneNumber}
+    compact
+    placeholder={t('phone_number')}
+    hasError={errors?.phoneNumber}
+  />
 </InputGroup>
 
 <div class="grid grid-cols-2 w-full gap-2 auto-rows-fr">
-  {#each paymentMethods as paymentMethod}
+  {#each paymentMethods as paymentMethod, i (paymentMethod)}
     <SelectionGroup>
-      <Selection id={paymentMethod} name="payment-method">
+      <Selection checked={!i} id={paymentMethod} name="payment-method">
         <Icon multiColor name={paymentMethod as IconName} />
         {#if ['card', 'google-pay', 'apple-pay'].includes(paymentMethod)}
           <Row class="gap-1">

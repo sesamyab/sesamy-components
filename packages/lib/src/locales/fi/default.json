@@ -3,6 +3,7 @@
   "continue": "Jatka",
   "country": "Maa",
   "email": "Sähköposti",
+  "invalid_email": "Virheellinen sähköpostiosoite",
   "login": "Kirjaudu sisään",
   "logo_of": "Logo of",
   "pay_now": "Maksa nyt",

@@ -3,6 +3,7 @@
   "continue": "Continue",
   "country": "Country",
   "email": "Email",
+  "invalid_email": "Invalid email address",
   "login": "Login",
   "logo_of": "Logo of",
   "pay_now": "Pay now",
