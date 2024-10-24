@@ -1,8 +1,12 @@
 {
   "already_subscribing": "Already subscribing?",
   "continue": "Continue",
+  "country": "Country",
+  "email": "Email",
   "login": "Login",
   "logo_of": "Logo of",
+  "pay_now": "Pay now",
+  "phone_number": "Phone number",
   "secure_payment": "Secure SSL encrypted payment",
   "something_went_wrong": "Something went wrong"
 }

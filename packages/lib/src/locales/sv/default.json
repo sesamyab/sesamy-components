@@ -1,8 +1,12 @@
 {
   "already_subscribing": "Prenumererar du redan?",
   "continue": "Fortsätt",
+  "country": "Land",
+  "email": "E-post",
   "login": "Logga in",
   "logo_of": "Logotyp för",
+  "pay_now": "Betala nu",
+  "phone_number": "Telefonnummer",
   "secure_payment": "Säker SSL-krypterad betalning",
   "something_went_wrong": "Något gick fel"
 }

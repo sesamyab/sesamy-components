@@ -1,8 +1,12 @@
 {
   "already_subscribing": "Už jste se přihlásili k odběru?",
   "continue": "Pokračovat",
+  "country": "Země",
+  "email": "E-mail",
   "login": "Přihlášení",
   "logo_of": "Logo společnosti",
+  "pay_now": "Zaplaťte nyní",
+  "phone_number": "Telefonní číslo",
   "secure_payment": "Bezpečná platba šifrovaná pomocí SSL",
   "something_went_wrong": "Něco se pokazilo"
 }

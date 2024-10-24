@@ -17,6 +17,7 @@
   import type { PaywallProps } from 'src/types';
   import type { DisplayCheckout } from 'src/types/Checkout';
   import Error from '../Error.svelte';
+  import PayNowForm from './PayNowForm.svelte';
 
   type Props = {
     api: SesamyAPI;
@@ -32,7 +33,7 @@
   let { api, t, horizontal = false, paywall, ...userProps }: Props = $props();
 
   let product = $state<Product>();
-  let checkout = $state<DisplayCheckout>();
+  let checkout = $state<DisplayCheckout>(true);
   let loading = $state(false);
   let error = $state('');
 
@@ -129,35 +130,38 @@
       ></div>
     {/if}
 
-    <div class={twMerge('w-full pt-4', horizontal && 'column text-center mb-4')}>
-      {#if useDefaultLogo}
-        <img class="h-7 mb-6" src={logoUrl} alt={`${t('logo_of')} ${vendorId}`} />
-      {/if}
-      <div class="text-3xl font-bold max-w-[440px]">
-        {headline}
+    {#if checkout}
+      <PayNowForm {t} />
+    {:else}
+      <div class={twMerge('w-full pt-4', horizontal && 'column text-center mb-4')}>
+        {#if useDefaultLogo}
+          <img class="h-7 mb-6" src={logoUrl} alt={`${t('logo_of')} ${vendorId}`} />
+        {/if}
+        <div class="text-3xl font-bold max-w-[440px]">
+          {headline}
+        </div>
       </div>
-    </div>
 
-    {#if product && !horizontal}
-      <Features features={product.features} bold />
+      {#if product && !horizontal}
+        <Features features={product.features} bold />
+      {/if}
+
+      {#if subscriptions.length}
+        <Subscriptions {horizontal} {subscriptions} {t} {currency} {selectProduct} />
+      {/if}
+
+      {#if singlePurchase && singlePurchase.enabled && !horizontal}
+        <SinglePurchase {singlePurchase} {t} {selectProduct} />
+      {/if}
+
+      {#if !horizontal}
+        <Button {loading} disabled={loading} class="mt-2 w-full shadow-md" onclick={createCheckout}>
+          {t('continue')}
+        </Button>
+      {/if}
     {/if}
-
-    {#if subscriptions.length}
-      <Subscriptions {horizontal} {subscriptions} {t} {currency} {selectProduct} />
-    {/if}
-
-    {#if singlePurchase && singlePurchase.enabled && !horizontal}
-      <SinglePurchase {singlePurchase} {t} {selectProduct} />
-    {/if}
-
     {#if error}
       <Error text={error} />
-    {/if}
-
-    {#if !horizontal}
-      <Button {loading} disabled={loading} class="mt-2 w-full shadow-md" onclick={createCheckout}>
-        {t('continue')}
-      </Button>
     {/if}
 
     <Row class="!justify-between w-full mt-8">
