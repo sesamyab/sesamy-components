@@ -3,5 +3,6 @@
   "continue": "Kontynuuj",
   "login": "Logowanie",
   "logo_of": "Logo",
-  "secure_payment": "Bezpieczna płatność szyfrowana SSL"
+  "secure_payment": "Bezpieczna płatność szyfrowana SSL",
+  "something_went_wrong": "Coś poszło nie tak"
 }

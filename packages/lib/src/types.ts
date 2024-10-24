@@ -11,9 +11,15 @@ export type LoginProps = {
   variant?: Variant;
 };
 
-export type PaywallProps = HTMLElement & {
-  ['settings-url']: string;
+export type PaywallProps = {
   template: 'ARTICLE' | 'BOXES';
+  ['settings-url']: string;
+  ['redirect-url']: string;
+  ['utm-source']: string;
+  ['utm-medium']: string;
+  ['utm-campaign']: string;
+  ['utm-term']: string;
+  ['utm-content']: string;
 };
 
 export type ButtonProps = HTMLButtonAttributes & {

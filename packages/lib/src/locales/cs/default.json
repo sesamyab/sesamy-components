@@ -3,5 +3,6 @@
   "continue": "Pokračovat",
   "login": "Přihlášení",
   "logo_of": "Logo společnosti",
-  "secure_payment": "Bezpečná platba šifrovaná pomocí SSL"
+  "secure_payment": "Bezpečná platba šifrovaná pomocí SSL",
+  "something_went_wrong": "Něco se pokazilo"
 }

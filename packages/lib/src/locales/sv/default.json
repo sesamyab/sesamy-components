@@ -3,5 +3,6 @@
   "continue": "Fortsätt",
   "login": "Logga in",
   "logo_of": "Logotyp för",
-  "secure_payment": "Säker SSL-krypterad betalning"
+  "secure_payment": "Säker SSL-krypterad betalning",
+  "something_went_wrong": "Något gick fel"
 }

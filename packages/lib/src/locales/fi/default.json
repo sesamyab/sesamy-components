@@ -3,5 +3,6 @@
   "continue": "Jatka",
   "login": "Kirjaudu sisään",
   "logo_of": "Logo of",
-  "secure_payment": "Turvallinen SSL-salattu maksu"
+  "secure_payment": "Turvallinen SSL-salattu maksu",
+  "something_went_wrong": "Jokin meni pieleen"
 }

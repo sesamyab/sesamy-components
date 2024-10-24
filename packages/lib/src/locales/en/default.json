@@ -3,5 +3,6 @@
   "continue": "Continue",
   "login": "Login",
   "logo_of": "Logo of",
-  "secure_payment": "Secure SSL encrypted payment"
+  "secure_payment": "Secure SSL encrypted payment",
+  "something_went_wrong": "Something went wrong"
 }

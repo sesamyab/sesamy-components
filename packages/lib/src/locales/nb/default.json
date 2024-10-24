@@ -3,5 +3,6 @@
   "continue": "Fortsett",
   "login": "Logg inn",
   "logo_of": "Logoen til",
-  "secure_payment": "Sikker SSL-kryptert betaling"
+  "secure_payment": "Sikker SSL-kryptert betaling",
+  "something_went_wrong": "Noe gikk galt"
 }

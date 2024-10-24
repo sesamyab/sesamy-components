@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import Row from './Row.svelte';
+  import Row from '../Row.svelte';
 
   type Props = {
     id: string;
