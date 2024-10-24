@@ -31,7 +31,7 @@
   <select
     bind:value
     class={twMerge(
-      'peer w-full appearance-none rounded-md border border-gray-300/50 bg-white p-4 text-base leading-snug text-gray-800 outline-0 transition-colors duration-150 placeholder:text-gray-400 focus:border-gray-300 disabled:opacity-[20%]',
+      'peer w-full appearance-none rounded-md border border-gray-200 bg-white p-4 text-base leading-snug text-gray-800 outline-0 transition-colors duration-150 placeholder:text-gray-400 focus:border-gray-300 disabled:opacity-[20%]',
       hasError && 'border-red focus:border-red',
       compact && 'pb-2 pt-6 placeholder:text-transparent',
       classes

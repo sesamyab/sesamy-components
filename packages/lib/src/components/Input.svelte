@@ -25,7 +25,7 @@
   <input
     {...props}
     class={twMerge(
-      'peer w-full rounded-md border border-gray-300/50 bg-white p-4 text-base leading-snug text-gray-800 outline-0 transition-colors duration-150 placeholder:text-gray-400 focus:border-gray-300 disabled:opacity-[20%]',
+      'peer w-full rounded-md border border-gray-200 bg-white p-4 text-base leading-snug text-gray-800 outline-0 transition-colors duration-150 placeholder:text-gray-400 focus:border-gray-300 disabled:opacity-[20%]',
       (hasError || !!error) && 'border-red focus:border-red',
       compact && 'pb-2 pt-6 placeholder:text-transparent',
       classes
@@ -38,7 +38,7 @@
       class={twMerge(
         'pointer-events-none absolute left-4 right-4 top-1/2 line-clamp-1 -translate-y-1/2 text-base font-medium text-gray-400 transition-[transform,font-size] peer-focus:-translate-y-[calc(50%+theme(space.3))] peer-focus:text-xs',
         !!value && '-translate-y-[calc(50%+theme(space.3))] text-xs sm:text-xs',
-        (hasError || !!error) && 'text-red'
+        (hasError || !!error) && 'text-red-500'
       )}
     >
       {placeholder}

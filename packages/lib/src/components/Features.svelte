@@ -5,17 +5,17 @@
 
   type Props = {
     features: string[];
-    bold?: boolean;
+    class?: string;
   };
 
-  let { features, bold = false }: Props = $props();
+  let { features, class: classes }: Props = $props();
 </script>
 
-<ul class="text-black space-y-1.5">
+<ul class={twMerge('text-gray-600 space-y-1.5', classes)}>
   {#each features as feature}
     <li class="row-up-left gap-2" transition:slide>
       <Icon class="text-xs text-primary mt-1.5" name="checkmark" />
-      <div class={twMerge('flex-1 leading-snug text-gray-600', bold && 'font-bold text-black')}>
+      <div class={twMerge('flex-1 leading-snug')}>
         {feature}
       </div>
     </li>

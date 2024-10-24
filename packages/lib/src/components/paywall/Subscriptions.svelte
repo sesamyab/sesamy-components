@@ -1,13 +1,13 @@
 <script lang="ts">
   import { twMerge } from 'tailwind-merge';
-  import PurchaseOptions from './PurchaseOptions.svelte';
+  import SelectionGroup from './SelectionGroup.svelte';
   import type { TranslationFunction } from 'src/i18n';
   import type { PaywallSubscription } from 'src/types/Paywall';
   import Column from '../Column.svelte';
   import Features from '../Features.svelte';
   import Button from '../../Button.wc.svelte';
   import Tag from '../Tag.svelte';
-  import PurchaseOption from './PurchaseOption.svelte';
+  import Selection from './Selection.svelte';
 
   type Props = {
     t: TranslationFunction;
@@ -20,9 +20,8 @@
   let { horizontal = false, subscriptions, currency, t, selectProduct }: Props = $props();
 </script>
 
-<PurchaseOptions
+<SelectionGroup
   class={twMerge(
-    'mt-2',
     !horizontal && 'column-left',
     horizontal && 'grid-cols-3',
     horizontal && subscriptions.length === 2 && 'grid-cols-2',
@@ -81,7 +80,7 @@
       {#if i}
         <hr class="w-full border-gray-100" />
       {/if}
-      <PurchaseOption
+      <Selection
         {id}
         name="purchase-option"
         checked={selected}
@@ -99,7 +98,7 @@
         {#if tag}
           <Tag text={tag} {t} />
         {/if}
-      </PurchaseOption>
+      </Selection>
     {/if}
   {/each}
-</PurchaseOptions>
+</SelectionGroup>

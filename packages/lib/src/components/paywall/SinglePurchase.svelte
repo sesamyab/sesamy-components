@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { TranslationFunction } from 'src/i18n';
   import Column from '../Column.svelte';
-  import PurchaseOption from './PurchaseOption.svelte';
-  import PurchaseOptions from './PurchaseOptions.svelte';
+  import PurchaseOption from './Selection.svelte';
+  import PurchaseOptions from './SelectionGroup.svelte';
 
   type Props = {
     t: TranslationFunction;

@@ -13,9 +13,8 @@
   import type { IconName } from 'src/icons/types';
   import Subscriptions from './Subscriptions.svelte';
   import SinglePurchase from './SinglePurchase.svelte';
-  import type { SesamyAPI } from '@sesamy/sesamy-js';
+  import type { SesamyAPI, Checkout } from '@sesamy/sesamy-js';
   import type { PaywallProps } from 'src/types';
-  import type { DisplayCheckout } from 'src/types/Checkout';
   import Error from '../Error.svelte';
   import PayNowForm from './PayNowForm.svelte';
 
@@ -33,7 +32,7 @@
   let { api, t, horizontal = false, paywall, ...userProps }: Props = $props();
 
   let product = $state<Product>();
-  let checkout = $state<DisplayCheckout>(true);
+  let checkout = $state<Checkout>(true); // TODO: replace any with proper type def
   let loading = $state(false);
   let error = $state('');
 
@@ -61,18 +60,26 @@
     loading = true;
 
     try {
-      const createdCheckout = await api.checkouts.create({
-        itemSrc: product.sku,
-        poId: product.poId ?? undefined,
+      checkout = await api.checkouts.create({
+        vendorId,
+        items: [
+          {
+            sku: product.sku,
+            purchaseOptionId: product.poId
+            // url: '', // TODO: implement this
+          }
+        ],
         discountCode: product.discountCode,
         redirectUrl: userProps?.['redirect-url'] || window.location.href,
         price: product.price,
         currency,
-        utmSource: userProps?.['utm-source'],
-        utmMedium: userProps?.['utm-medium'],
-        utmCampaign: userProps?.['utm-campaign'],
-        utmTerm: userProps?.['utm-term'],
-        utmContent: userProps?.['utm-content']
+        attribution: {
+          utmSource: userProps?.['utm-source'],
+          utmMedium: userProps?.['utm-medium'],
+          utmCampaign: userProps?.['utm-campaign'],
+          utmTerm: userProps?.['utm-term'],
+          utmContent: userProps?.['utm-content']
+        }
       });
     } catch (err) {
       console.error(err);
@@ -119,7 +126,7 @@
   )}
 >
   <Column class={twMerge('gap-4 px-16 pb-8 pt-0 w-full', horizontal && 'px-6 pb-4')} up left>
-    {#if showLoginButton}
+    {#if showLoginButton && !horizontal}
       <Row class="text-sm gap-1 font-bold w-full">
         {t('already_subscribing')}
 
@@ -130,22 +137,22 @@
       ></div>
     {/if}
 
-    {#if checkout}
-      <PayNowForm {t} />
-    {:else}
-      <div class={twMerge('w-full pt-4', horizontal && 'column text-center mb-4')}>
-        {#if useDefaultLogo}
-          <img class="h-7 mb-6" src={logoUrl} alt={`${t('logo_of')} ${vendorId}`} />
-        {/if}
-        <div class="text-3xl font-bold max-w-[440px]">
-          {headline}
-        </div>
-      </div>
-
-      {#if product && !horizontal}
-        <Features features={product.features} bold />
+    <div class={twMerge('w-full pt-4', horizontal && 'column text-center mb-4')}>
+      {#if useDefaultLogo}
+        <img class="h-7 mb-6" src={logoUrl} alt={`${t('logo_of')} ${vendorId}`} />
       {/if}
+      <div class="text-3xl font-bold max-w-[440px]">
+        {headline}
+      </div>
+    </div>
 
+    {#if product && !horizontal}
+      <Features features={product.features} class="font-bold text-black mb-2" />
+    {/if}
+
+    {#if checkout}
+      <PayNowForm {checkout} {t} />
+    {:else}
       {#if subscriptions.length}
         <Subscriptions {horizontal} {subscriptions} {t} {currency} {selectProduct} />
       {/if}

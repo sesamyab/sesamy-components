@@ -22,7 +22,7 @@
       class="content-[''] absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-white rounded-full"
     ></div>
   </div>
-  <Row class="flex-1 !justify-between" left up>
+  <Row class="flex-1 !justify-between" left>
     {@render children()}
   </Row>
 </label>
