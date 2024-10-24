@@ -12,7 +12,7 @@ type LoginProps = {
 
 const meta: Meta<LoginProps> = {
   title: 'Components/Login',
-  tags: ['autodocs'],
+  tags: ['autodocs', 'visual:check', 'story'],
   component: 'sesamy-login',
   render: (args) => html`
     <sesamy-login
