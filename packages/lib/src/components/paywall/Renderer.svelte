@@ -127,7 +127,11 @@
     showBackground && dropShadow && 'shadow-lg'
   )}
 >
-  <Column class={twMerge('gap-4 pb-8 pt-0 w-full px-16', horizontal && 'px-6 pb-4')} up left>
+  <Column
+    class={twMerge('gap-4 px-8 pb-8 pt-0 w-full @md:px-16', horizontal && 'px-6 pb-4')}
+    up
+    left
+  >
     {#if showLoginButton && !horizontal}
       <Row class="text-sm gap-1 font-bold w-full">
         {t('already_subscribing')}
