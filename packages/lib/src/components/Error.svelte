@@ -7,6 +7,6 @@
   let { text }: Props = $props();
 </script>
 
-<Row class="text-red-500 w-full">
-  {text}
+<Row class="text-red-500 w-full" left>
+  • {text}
 </Row>

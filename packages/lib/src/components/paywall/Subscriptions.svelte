@@ -75,9 +75,9 @@
                     {price}
                     {currency}
                   </span>
-                  <span class={twMerge('text-2xl', discountPrice && 'text-lg text-gray-400')}
-                    >/ {periodText}</span
-                  >
+                  <span class={twMerge('text-2xl', discountPrice && 'text-lg text-gray-400')}>
+                    / {periodText}
+                  </span>
                   <div
                     class={twMerge(
                       'hidden absolute top-1/2 left-0 right-0 h-px bg-gray-400',

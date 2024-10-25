@@ -8,6 +8,7 @@
   "logo_of": "Logotyp för",
   "pay_now": "Betala nu",
   "phone_number": "Telefonnummer",
+  "phone_number_required": "Telefonnummer är obligatoriskt",
   "secure_payment": "Säker SSL-krypterad betalning",
   "something_went_wrong": "Något gick fel"
 }

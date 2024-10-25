@@ -8,6 +8,7 @@
   "logo_of": "Logoen til",
   "pay_now": "Betal nå",
   "phone_number": "Telefonnummer",
+  "phone_number_required": "Telefonnummer er påkrevd",
   "secure_payment": "Sikker SSL-kryptert betaling",
   "something_went_wrong": "Noe gikk galt"
 }

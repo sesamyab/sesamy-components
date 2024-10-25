@@ -8,6 +8,7 @@
   "logo_of": "Logo společnosti",
   "pay_now": "Zaplaťte nyní",
   "phone_number": "Telefonní číslo",
+  "phone_number_required": "Vyžaduje se telefonní číslo",
   "secure_payment": "Bezpečná platba šifrovaná pomocí SSL",
   "something_went_wrong": "Něco se pokazilo"
 }

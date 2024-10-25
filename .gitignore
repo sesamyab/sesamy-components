@@ -26,3 +26,5 @@ TODO
 
 *storybook.log
 storybook-static
+.vercel
+.env*.local
