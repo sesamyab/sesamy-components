@@ -15,6 +15,7 @@
   import { isValidEmail } from '../../utils/email';
   import Error from '../Error.svelte';
   import Column from '../Column.svelte';
+  import { isSupportingApplePay, isSupportingGooglePay } from '../../utils/browser-support';
 
   // TODO: can we these dynamic (.com if built for prod, .dev if ran on local/preview)
   const API_URL = 'https://api.sesamy.dev';
@@ -128,11 +129,10 @@
     )
     .filter(({ method }) => method !== 'SWISH');
 
-  /Chrome/.test(navigator?.userAgent) &&
-    !/Edge|OPR/.test(navigator?.userAgent) &&
+  isSupportingGooglePay() &&
     paymentMethods.push({ provider: 'STRIPE', method: 'GOOGLE-PAY', icon: 'google-pay' });
 
-  window?.ApplePaySession &&
+  isSupportingApplePay() &&
     paymentMethods.push({ provider: 'STRIPE', method: 'APPLE-PAY', icon: 'apple-pay' });
 
   paymentMethods.length && selectPaymentMethod(paymentMethods[0]);
