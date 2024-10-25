@@ -98,7 +98,6 @@
       ...option,
       features: option?.features || features
     };
-    console.log(product);
   };
 
   if (subscriptions.length) {
@@ -122,13 +121,13 @@
 
 <Column
   class={twMerge(
-    'w-full pt-6 rounded-3xl',
+    'w-full pt-6 rounded-3xl @container',
     showBackground &&
       'bg-gradient-to-b from-[hsl(var(--s-paywall-bg-start-color))] to-[hsl(var(--s-paywall-bg-end-color))]',
     showBackground && dropShadow && 'shadow-lg'
   )}
 >
-  <Column class={twMerge('gap-4 px-16 pb-8 pt-0 w-full', horizontal && 'px-6 pb-4')} up left>
+  <Column class={twMerge('gap-4 pb-8 pt-0 w-full px-16', horizontal && 'px-6 pb-4')} up left>
     {#if showLoginButton && !horizontal}
       <Row class="text-sm gap-1 font-bold w-full">
         {t('already_subscribing')}

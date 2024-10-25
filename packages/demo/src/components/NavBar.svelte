@@ -12,6 +12,7 @@
     padding: 1em;
     text-align: center;
     background: lightgray;
+    position: relative;
   }
 
   ul {

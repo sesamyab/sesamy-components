@@ -6,14 +6,13 @@
   import Renderer from './components/paywall/Renderer.svelte';
   import type { Paywall } from './types/Paywall';
 
-  let props: PaywallProps = $props();
-  let { template = 'ARTICLE' } = props;
+  let { template = 'ARTICLE', ...restProps }: PaywallProps = $props();
 
   let paywall = $state<Paywall>();
 
   $effect(() => {
     (async () => {
-      const response = await fetch(props['settings-url']);
+      const response = await fetch(restProps['settings-url']);
       paywall = await response.json();
     })();
   });
@@ -21,6 +20,12 @@
 
 <Base let:api let:t>
   {#if paywall}
-    <Renderer {api} {paywall} horizontal={template === 'BOXES'} {t} {...props} />
+    <Renderer
+      {api}
+      {paywall}
+      horizontal={template === 'BOXES'}
+      {t}
+      {...{ ...restProps, template }}
+    />
   {/if}
 </Base>

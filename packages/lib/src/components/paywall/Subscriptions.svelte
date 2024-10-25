@@ -104,11 +104,12 @@
       {/if}
       <Selection
         {id}
+        class="gap-4"
         name="purchase-option"
         checked={selected}
         onchange={() => selectProduct(subscription)}
       >
-        <Column left>
+        <Column class="flex-1" left>
           <div class="text-base font-bold">{title}</div>
           {#if description}
             <div class="text-sm">

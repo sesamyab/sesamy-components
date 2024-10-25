@@ -1,16 +1,18 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import Row from '../Row.svelte';
+  import { twMerge } from 'tailwind-merge';
 
   type Props = {
     id: string;
     name: string;
     checked?: boolean;
     children: Snippet;
+    class?: string;
     [key: string]: any;
   };
 
-  let { id, name, checked, children, onchange, ...rest }: Props = $props();
+  let { id, name, checked, children, onchange, class: classes, ...rest }: Props = $props();
 </script>
 
 <label class="p-4 row-left gap-4 w-full relative" for={id} {...rest}>
@@ -22,7 +24,7 @@
       class="content-[''] absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-white rounded-full"
     ></div>
   </div>
-  <Row class="flex-1 !justify-between" left>
+  <Row class={twMerge('flex-1 !justify-between', classes)} left>
     {@render children()}
   </Row>
 </label>
