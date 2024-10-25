@@ -32,7 +32,7 @@
   let { api, t, horizontal = false, paywall, ...userProps }: Props = $props();
 
   let product = $state<Product>();
-  let checkout = $state<Checkout>(true); // TODO: replace any with proper type def
+  let checkout = $state<Checkout>(); // TODO: replace any with proper type def
   let loading = $state(false);
   let error = $state('');
 

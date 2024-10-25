@@ -115,11 +115,14 @@
       (acc, { provider, methods }) => [...acc, ...(methods.length ? methods : [provider])],
       [] as string[]
     )
-    .map((paymentMethod) => paymentMethod.toLocaleLowerCase());
+    .map((paymentMethod) => paymentMethod.toLocaleLowerCase())
+    .filter((paymentMethod) => !['swish'].includes(paymentMethod));
 
-  // TODO: add these programatically
-  paymentMethods.push('google-pay');
-  paymentMethods.push('apple-pay');
+  /Chrome/.test(navigator?.userAgent) &&
+    !/Edge|OPR/.test(navigator?.userAgent) &&
+    paymentMethods.push('google-pay');
+
+  window?.ApplePaySession && paymentMethods.push('apple-pay');
 </script>
 
 <InputGroup>
@@ -144,7 +147,9 @@
   {#each paymentMethods as paymentMethod, i (paymentMethod)}
     <SelectionGroup>
       <Selection checked={!i} id={paymentMethod} name="payment-method">
-        <Icon multiColor name={paymentMethod as IconName} />
+        <Row class="w-16" left>
+          <Icon class="text-3xl" multiColor name={paymentMethod as IconName} />
+        </Row>
         {#if ['card', 'google-pay', 'apple-pay'].includes(paymentMethod)}
           <Row class="gap-1">
             <PaymentMethod size="sm" name="visa" />

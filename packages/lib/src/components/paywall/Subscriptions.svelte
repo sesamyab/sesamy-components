@@ -40,7 +40,8 @@
       selected,
       tag,
       buttonText,
-      url
+      url,
+      discountPrice
     } = subscription}
 
     {#if horizontal}
@@ -58,12 +59,33 @@
           <Column class="gap-1 p-2" left>
             <div class="text-lg font-bold mb-1">{title}</div>
             {#if typeof price === 'number'}
-              <div class="d mb-4 leading-none">
-                <span class="font-bold text-4xl">
-                  {price}
-                  {currency}
-                </span> <span class="text-2xl">/ {periodText}</span>
-              </div>
+              <Column class="mb-4" left>
+                {#if discountPrice}
+                  <div class="leading-none">
+                    <span class="font-bold text-4xl">
+                      {discountPrice}
+                      {currency}
+                    </span> <span class="text-2xl">/ {periodText}</span>
+                  </div>
+                {/if}
+                <div class="relative leading-none">
+                  <span
+                    class={twMerge('font-bold text-4xl', discountPrice && 'text-2xl text-gray-400')}
+                  >
+                    {price}
+                    {currency}
+                  </span>
+                  <span class={twMerge('text-2xl', discountPrice && 'text-lg text-gray-400')}
+                    >/ {periodText}</span
+                  >
+                  <div
+                    class={twMerge(
+                      'hidden absolute top-1/2 left-0 right-0 h-px bg-gray-400',
+                      discountPrice && 'block'
+                    )}
+                  ></div>
+                </div>
+              </Column>
             {/if}
 
             {#if features}
@@ -94,7 +116,23 @@
             </div>
           {/if}
         </Column>
-        <div class="text-base font-bold">{price} {currency} / {periodText}</div>
+        <Column right>
+          {#if discountPrice}
+            <div class="text-base font-bold leading-none">
+              {discountPrice}
+              {currency} / {periodText}
+            </div>
+          {/if}
+          <div
+            class={twMerge(
+              'text-base font-bold leading-none',
+              discountPrice && 'line-through text-gray-400 text-sm'
+            )}
+          >
+            {price}
+            {currency} / {periodText}
+          </div>
+        </Column>
         {#if tag}
           <Tag text={tag} {t} />
         {/if}
