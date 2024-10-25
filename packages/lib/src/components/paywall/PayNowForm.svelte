@@ -31,64 +31,13 @@
     icon: IconName;
   };
 
-  let { t }: Props = $props();
-  const checkout = {
-    id: 'a4b11ff4-eae6-4281-8202-6a5033548772',
-    items: [
-      {
-        sku: 'sid:a1tdI9vbB6AEPhICVGQqD',
-        title: 'Physical Bundle',
-        purchaseOptionId: 'TNbgcuG_7XHXgatiAH9d3',
-        cover: 'https://sesamy.com/'
-      }
-    ],
-    address: {},
-    isBusiness: false,
-    status: 'PENDING',
-    type: 'SINGLE',
-    price: 100,
-    currency: 'SEK',
-    itemsOwned: [],
-    appliedDiscountCodes: [],
-    availablePaymentMethods: [
-      {
-        provider: 'KLARNA',
-        methods: []
-      },
-      {
-        provider: 'STRIPE',
-        methods: ['CARD', 'SWISH']
-      },
-      {
-        provider: 'BILLOGRAM',
-        methods: []
-      },
-      {
-        provider: 'SESAMY',
-        methods: []
-      },
-      {
-        provider: 'VIPPS',
-        methods: []
-      },
-      {
-        provider: 'DUMMY',
-        methods: ['FREE', 'TEST']
-      }
-    ],
-    country: 'SE',
-    language: 'en',
-    createdAt: '2024-10-24T12:00:59.835Z',
-    updatedAt: '2024-10-24T12:00:59.835Z',
-    checkoutUrl: 'https://checkout.sesamy.dev/checkouts/a4b11ff4-eae6-4281-8202-6a5033548772',
-    redirectUrl: 'http://localhost:5173/'
-  };
+  let { t, checkout }: Props = $props();
 
   const countries = getCountriesOptions(checkout.language); // TODO: grab this from lang preferences (see Base.svelte)
 
   let email = $state('');
   let phoneNumber = $state('');
-  let country = $state(checkout.country);
+  let country = $state(checkout.country || 'SE'); // Must provide a fallback value since `Checkout.country` is optional
   let loading = $state(false);
   let errors = $state<{ [key: string]: any }>();
   let paymentMethod = $state<PaymentMethod>();
@@ -167,7 +116,7 @@
     .reduce(
       (acc, { provider, methods }) => [
         ...acc,
-        ...(methods.length
+        ...(methods?.length
           ? methods.map((method) => ({
               provider,
               method,
@@ -213,7 +162,7 @@
     <SelectionGroup>
       <Selection
         checked={!i}
-        id={method}
+        id={`${provider}-${method}`}
         name="payment-method"
         onchange={() => selectPaymentMethod(paymentMethod)}
       >

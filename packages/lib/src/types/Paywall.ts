@@ -26,6 +26,12 @@ export type PaywallSubscription = {
   buttonText?: string;
 };
 
+export type PaywallSinglePurchase = {
+  enabled: boolean;
+  title?: string;
+  description?: string;
+  discountCode?: string;
+};
 export type PaywallSettings = {
   useDefaultLogo: boolean;
   useDefaultCurrency: boolean;
@@ -50,12 +56,7 @@ export type Paywall = {
   features: string[]; // a list of free strings
   mainColor: string; // Color picker. THIS WAS CHANGED TO REQUIRED
   showLoginButton: boolean;
-  singlePurchase?: {
-    enabled: boolean;
-    title?: string;
-    description?: string;
-    discountCode?: string;
-  };
+  singlePurchase?: PaywallSinglePurchase;
   subscriptions: PaywallSubscription[];
   version?: number;
   settings: PaywallSettings;

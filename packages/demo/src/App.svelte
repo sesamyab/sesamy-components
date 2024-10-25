@@ -14,6 +14,13 @@
   });
 </script>
 
+<svelte:head>
+  <meta property="sesamy:price" content="1337" />
+  <meta property="sesamy:currency" content="SEK" />
+  <meta property="sesamy:publisher-content-id" content="some-id" />
+  <meta property="sesamy:item-src" content="some-id" />
+</svelte:head>
+
 <main>
   <NavBar />
   <section class="content bg-gray-100">

@@ -32,7 +32,7 @@
   let { api, t, horizontal = false, paywall, ...userProps }: Props = $props();
 
   let product = $state<Product>();
-  let checkout = $state<Checkout>(true); // TODO: replace any with proper type def
+  let checkout = $state<Checkout>();
   let loading = $state(false);
   let error = $state('');
 
@@ -58,16 +58,19 @@
 
     loading = true;
 
+    const item = product?.url
+      ? {
+          url: product.url
+        }
+      : {
+          sku: product.sku,
+          purchaseOptionId: product.poId
+        };
+
     try {
       checkout = await api.checkouts.create({
         vendorId,
-        items: [
-          {
-            sku: product.sku,
-            purchaseOptionId: product.poId
-            // url: '', // TODO: implement this
-          }
-        ],
+        items: [item],
         discountCode: product.discountCode,
         redirectUrl: userProps?.['redirect-url'] || window.location.href,
         price: product.price,
@@ -88,13 +91,14 @@
     }
   };
 
-  const selectProduct = (option: any) => {
+  const selectProduct = (option: PaywallSubscription) => {
     error = '';
     // TODO: decide if we should remove "features" from shallow paywall. And if so, if we should add it to singlePurchase.
     product = {
       ...option,
       features: option?.features || features
     };
+    console.log(product);
   };
 
   if (subscriptions.length) {
