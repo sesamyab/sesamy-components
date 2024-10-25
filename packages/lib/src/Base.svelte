@@ -5,7 +5,7 @@
   import initTransaltor from './i18n';
   import { hexToHsl, hslArrayToCSS } from './utils/color';
 
-  let { lang }: { lang?: string } = $props();
+  let { lang, applyStyles = true }: { lang?: string; applyStyles?: boolean } = $props();
   const htmlLang = document.querySelector('html')?.getAttribute('lang');
 
   const apiPromise = getApi();
@@ -19,12 +19,12 @@
       color: black;
       text-align: left;
 
-      --s-primary-color: var(--sesamy-primary-color, ${hslArrayToCSS(hexToHsl('#7D68F4'))});
+      --s-primary-color: var(--sesamy-primary-color, ${hslArrayToCSS(hexToHsl('#000000'))});
       --s-font-family: var(--sesamy-font-family, Helvetica);
     }
   `;
 
-  let style = '<sty' + 'le>' + libstyles + sesamyDesignTokens + '</style>';
+  let style = applyStyles ? '<sty' + 'le>' + libstyles + sesamyDesignTokens + '</style>' : '';
 </script>
 
 {#await apiPromise then api}

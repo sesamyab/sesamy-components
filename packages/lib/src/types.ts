@@ -4,14 +4,19 @@ import type { HTMLButtonAttributes } from 'svelte/elements';
 // These types are what we expose to the end user of our web-components
 export type Variant = 'primary' | 'secondary' | 'tertiary';
 export type Size = 'sm' | 'md' | 'lg';
+export type LoginVariant = 'text' | 'picture' | 'link';
 
-export type LoginProps = {
+export interface LoginProps {
   ['button-text']?: string;
+  loading?: boolean;
+  loggedIn?: boolean;
+  userAvatar?: string;
   lang?: string;
-  variant?: Variant;
-};
+  variant?: LoginVariant;
+  onLogin?: (event: CustomEvent) => void;
+}
 
-export type PaywallProps = {
+export type PaywallProps = HTMLElement & {
   template: 'ARTICLE' | 'BOXES';
   ['settings-url']: string;
   ['redirect-url']: string;
@@ -22,10 +27,26 @@ export type PaywallProps = {
   ['utm-content']: string;
 };
 
+export type ButtonVariant = 'primary' | 'secondary' | 'tertiary';
+
 export type ButtonProps = HTMLButtonAttributes & {
-  variant?: Variant;
+  loading?: boolean;
+  variant?: ButtonVariant;
+  disabled?: boolean;
   size?: Size;
   part?: string;
   onclick?: () => void;
   href?: string;
+};
+
+export type AccessLevel = 'public' | 'logged-in' | 'entitlement';
+export type LockMode = 'embed' | 'encode' | 'signedUrl' | 'event';
+
+export type ContentContainerProps = HTMLElement & {
+  'item-src'?: string;
+  pass?: string;
+  'access-level'?: AccessLevel;
+  'access-url'?: string;
+  'publisher-content-id'?: string;
+  'lock-mode'?: LockMode;
 };

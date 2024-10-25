@@ -9,7 +9,7 @@ interface PaywallProps {
 
 const meta: Meta<PaywallProps> = {
   title: 'Components/Paywall',
-  tags: ['autodocs'],
+  tags: ['autodocs', 'visual:check', 'story'],
   component: 'sesamy-paywall',
   render: (args) =>
     html` <div
