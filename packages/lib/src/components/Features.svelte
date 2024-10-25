@@ -14,7 +14,7 @@
 <ul class={twMerge('text-gray-600 space-y-0.5 @md:space-y-1.5 text-sm @md:text-base', classes)}>
   {#each features as feature}
     <li class="row-up-left gap-2" transition:slide>
-      <Icon class="text-xs text-primary mt-1.5" name="checkmark" />
+      <Icon class="text-xs @md:text-sm text-primary mt-0.5 @md:mt-1" name="checkmark" />
       <div class={twMerge('flex-1 leading-snug')}>
         {feature}
       </div>
