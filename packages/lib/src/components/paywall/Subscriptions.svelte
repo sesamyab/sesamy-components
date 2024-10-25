@@ -23,8 +23,8 @@
 <SelectionGroup
   class={twMerge(
     !horizontal && 'column-left',
-    horizontal && 'grid-cols-3',
-    horizontal && subscriptions.length === 2 && 'grid-cols-2',
+    horizontal && '@xl:grid-cols-3',
+    horizontal && subscriptions.length === 2 && '@xl:grid-cols-2',
     horizontal && subscriptions.length === 1 && 'flex justify-center'
   )}
   {horizontal}
@@ -55,27 +55,35 @@
           <Tag text={tag} {t} chunky />
         {/if}
 
-        <Column class="p-4 flex-1 w-full !justify-between gap-8 shadow-md" left up>
-          <Column class="gap-1 p-2" left>
-            <div class="text-lg font-bold mb-1">{title}</div>
+        <Column class="p-4 flex-1 w-full !justify-between gap-2 @xl:gap-8 shadow-md" left up>
+          <Column class="gap-1 @xl:p-2" left>
+            <div class="text-base @xl:text-lg font-bold mb-1 leading-tight">{title}</div>
             {#if typeof price === 'number'}
-              <Column class="mb-4" left>
+              <Column class="mb-0 @xl:mb-4" left>
                 {#if discountPrice}
                   <div class="leading-none">
-                    <span class="font-bold text-4xl">
+                    <span class="font-bold text-2xl @xl:text-4xl">
                       {discountPrice}
                       {currency}
-                    </span> <span class="text-2xl">/ {periodText}</span>
+                    </span> <span class="text-xl @xl:text-2xl">/ {periodText}</span>
                   </div>
                 {/if}
-                <div class="relative leading-none">
+                <div class="relative leading-tight">
                   <span
-                    class={twMerge('font-bold text-4xl', discountPrice && 'text-2xl text-gray-400')}
+                    class={twMerge(
+                      'font-bold text-2xl @xl:text-4xl',
+                      discountPrice && 'text-xl @xl:text-2xl text-gray-400'
+                    )}
                   >
                     {price}
                     {currency}
                   </span>
-                  <span class={twMerge('text-2xl', discountPrice && 'text-lg text-gray-400')}>
+                  <span
+                    class={twMerge(
+                      'text-xl @xl:text-2xl',
+                      discountPrice && 'text-base @xl:text-lg text-gray-400'
+                    )}
+                  >
                     / {periodText}
                   </span>
                   <div
@@ -104,20 +112,20 @@
       {/if}
       <Selection
         {id}
-        class="gap-4"
+        class="gap-2 @md:gap-4"
         name="purchase-option"
         checked={selected}
         onchange={() => selectProduct(subscription)}
       >
         <Column class="flex-1" left>
-          <div class="text-base font-bold">{title}</div>
+          <div class="text-base font-bold leading-tight">{title}</div>
           {#if description}
-            <div class="text-sm">
+            <div class="leading-tight text-sm">
               {description}
             </div>
           {/if}
         </Column>
-        <Column right>
+        <div class="column-left @md:column-right">
           {#if discountPrice}
             <div class="text-base font-bold leading-none">
               {discountPrice}
@@ -133,7 +141,7 @@
             {price}
             {currency} / {periodText}
           </div>
-        </Column>
+        </div>
         {#if tag}
           <Tag text={tag} {t} />
         {/if}

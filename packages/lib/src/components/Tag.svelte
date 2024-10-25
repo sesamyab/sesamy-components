@@ -5,15 +5,12 @@
 </script>
 
 <div
-  class={twMerge(
-    'absolute top-1 right-5 h-1 w-1 bg-green-500 rotate-6',
-    chunky && 'right-12 top-3'
-  )}
+  class={twMerge('z-10 absolute top-1 right-8 @md:right-5 rotate-6', chunky && 'right-12 top-3')}
 >
   <div
     class={twMerge(
       'absolute bg-primary bottom-0 rounded left-1/2 -translate-x-1/2 px-2 text-white text-xs py-1 font-bold whitespace-nowrap',
-      chunky && 'px-3 text-base'
+      chunky && 'px-3 text-sm @xl:text-base bottom-1'
     )}
   >
     <div

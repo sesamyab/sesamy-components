@@ -52,11 +52,11 @@
       </p>
     </article>
   </section>
-  <aside>
-    <!-- <sesamy-paywall
+  <aside style="min-width: 319px;">
+    <sesamy-paywall
       {template}
       settings-url="https://api.sesamy.dev/paywall/paywalls/test-fokus/ONh_7gBRk8U_L060YMUr2"
-    ></sesamy-paywall> -->
+    ></sesamy-paywall>
   </aside>
 </main>
 
@@ -68,18 +68,15 @@
 
   aside {
     flex: 1;
+    padding: 24px;
   }
 
   section {
+    margin: 0 auto;
     max-width: 800px;
     padding: 40px;
     background: rgb(243 244 246);
     box-shadow: 0px 0px 24px rgba(0, 0, 0, 0.25);
-  }
-
-  article {
-    max-width: 800px;
-    margin: 0 auto;
   }
 
   h1 {

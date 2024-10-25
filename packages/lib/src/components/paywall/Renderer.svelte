@@ -119,75 +119,85 @@
   let style = '<sty' + 'le>' + sesamyPaywallDesignTokens + '</style>';
 </script>
 
-<Column
-  class={twMerge(
-    'w-full pt-6 rounded-3xl @container',
-    showBackground &&
-      'bg-gradient-to-b from-[hsl(var(--s-paywall-bg-start-color))] to-[hsl(var(--s-paywall-bg-end-color))]',
-    showBackground && dropShadow && 'shadow-lg'
-  )}
->
+<div class="@container">
   <Column
-    class={twMerge('gap-4 px-8 pb-8 pt-0 w-full @md:px-16', horizontal && 'px-6 pb-4')}
-    up
-    left
+    class={twMerge(
+      'w-full pt-4 @md:pt-6 rounded-lg @xl:rounded-3xl',
+      showBackground &&
+        'bg-gradient-to-b from-[hsl(var(--s-paywall-bg-start-color))] to-[hsl(var(--s-paywall-bg-end-color))]',
+      showBackground && dropShadow && 'shadow-md @xl:shadow-lg'
+    )}
   >
-    {#if showLoginButton && !horizontal}
-      <Row class="text-sm gap-1 font-bold w-full">
-        {t('already_subscribing')}
+    <Column
+      class={twMerge(
+        'gap-2 @xs:px-8 @md:gap-4 px-4 pb-6 @md:pb-8 pt-0 w-full @3xl:px-16',
+        horizontal && 'px-6 pb-4'
+      )}
+      up
+      left
+    >
+      {#if showLoginButton && !horizontal}
+        <Row class="text-sm gap-1 font-bold w-full">
+          {t('already_subscribing')}
 
-        <Clickable href="/" class="text-primary">{t('login')}</Clickable>
-      </Row>
-      <div
-        class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-primary/30"
-      ></div>
-    {/if}
-
-    <div class={twMerge('w-full pt-4', horizontal && 'column text-center mb-4')}>
-      {#if useDefaultLogo}
-        <img class="h-7 mb-6" src={logoUrl} alt={`${t('logo_of')} ${vendorId}`} />
+          <Clickable href="/" class="text-primary">{t('login')}</Clickable>
+        </Row>
+        <div
+          class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-primary/30"
+        ></div>
       {/if}
-      <div class="text-3xl font-bold max-w-[440px]">
-        {headline}
+
+      <div class={twMerge('w-full pt-2 @md:pt-4', horizontal && 'column text-center mb-4')}>
+        {#if useDefaultLogo}
+          <img class="h-7 mb-6" src={logoUrl} alt={`${t('logo_of')} ${vendorId}`} />
+        {/if}
+        <div class="text-2xl leading-tight @md:text-3xl font-bold max-w-[440px]">
+          {headline}
+        </div>
       </div>
-    </div>
 
-    {#if product && !horizontal}
-      <Features features={product.features} class="font-bold text-black mb-2" />
-    {/if}
-
-    {#if checkout}
-      <PayNowForm {checkout} {t} />
-    {:else}
-      {#if subscriptions.length}
-        <Subscriptions {horizontal} {subscriptions} {t} {currency} {selectProduct} />
+      {#if product && !horizontal}
+        <Features features={product.features} class="font-bold text-black mb-2" />
       {/if}
 
-      {#if singlePurchase && singlePurchase.enabled && !horizontal}
-        <SinglePurchase {singlePurchase} {t} {selectProduct} />
+      {#if checkout}
+        <PayNowForm {checkout} {t} />
+      {:else}
+        {#if subscriptions.length}
+          <Subscriptions {horizontal} {subscriptions} {t} {currency} {selectProduct} />
+        {/if}
+
+        {#if singlePurchase && singlePurchase.enabled && !horizontal}
+          <SinglePurchase {singlePurchase} {t} {selectProduct} />
+        {/if}
+
+        {#if !horizontal}
+          <Button
+            {loading}
+            disabled={loading}
+            class="mt-2 w-full shadow-md"
+            onclick={createCheckout}
+          >
+            {t('continue')}
+          </Button>
+        {/if}
+      {/if}
+      {#if error}
+        <Error text={error} />
       {/if}
 
-      {#if !horizontal}
-        <Button {loading} disabled={loading} class="mt-2 w-full shadow-md" onclick={createCheckout}>
-          {t('continue')}
-        </Button>
-      {/if}
-    {/if}
-    {#if error}
-      <Error text={error} />
-    {/if}
-
-    <Row class="!justify-between w-full mt-8">
-      <Row class="gap-2 text-[#5F6D85] text-xs">
-        <Icon name="lock" />{t('secure_payment')}
-      </Row>
-      <Row class="gap-2">
-        {#each footerPaymentMethods as IconName[] as paymentMethod}
-          <PaymentMethod name={paymentMethod} />
-        {/each}
-      </Row>
-    </Row>
+      <div class="column gap-4 @md:row !justify-between w-full mt-4 @md:mt-8">
+        <Row class="gap-2 text-[#5F6D85] text-xs">
+          <Icon name="lock" />{t('secure_payment')}
+        </Row>
+        <Row class="gap-2">
+          {#each footerPaymentMethods as IconName[] as paymentMethod}
+            <PaymentMethod name={paymentMethod} />
+          {/each}
+        </Row>
+      </div>
+    </Column>
   </Column>
-</Column>
+</div>
 
 {@html style}
