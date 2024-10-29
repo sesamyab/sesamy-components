@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { TranslationFunction } from 'src/i18n';
   import Column from '../Column.svelte';
-  import PurchaseOption from './Selection.svelte';
-  import PurchaseOptions from './SelectionGroup.svelte';
+  import Selection from './Selection.svelte';
+  import SelectionGroup from './SelectionGroup.svelte';
   import type { PaywallSinglePurchase } from 'src/types/Paywall';
 
   type Props = {
@@ -24,18 +24,19 @@
     ?.content;
 </script>
 
-<PurchaseOptions>
-  <PurchaseOption
+<SelectionGroup>
+  <Selection
     id="single-purchase"
     name="purchase-option"
+    class="gap-2 @md:gap-4"
     onchange={() => completeAndSelect(singlePurchase)}
   >
     <Column left>
-      <div class="text-base font-bold">{title}</div>
+      <div class="text-base font-bold leading-tight">{title}</div>
       <div class="text-sm">
         {description}
       </div>
     </Column>
     <div class="text-base font-bold">{price} {currency}</div>
-  </PurchaseOption>
-</PurchaseOptions>
+  </Selection>
+</SelectionGroup>
