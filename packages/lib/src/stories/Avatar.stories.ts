@@ -20,7 +20,7 @@ const meta: Meta<AvatarProps> = {
       alt=${ifDefined(args.alt)}
       size=${ifDefined(args.size)}
       ?loading=${args.loading}
-      @click=${() => console.log('Avatar clicked')}
+      @click=${() => console.info('Avatar clicked')}
     ></sesamy-avatar>
   `,
   argTypes: {

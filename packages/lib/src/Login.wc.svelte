@@ -7,7 +7,7 @@
   import type { LoginProps } from './types';
   import Button from './components/Button.svelte';
 
-  let { loading, loggedIn, userAvatar, variant = 'text' }: LoginProps = $props();
+  let { loading, loggedIn, userAvatar, 'button-text': buttonText }: LoginProps = $props();
 
   let disabled = $state(false);
 
@@ -36,7 +36,7 @@
       loggedIn = await api.auth.isAuthenticated();
       if (loggedIn) {
         const user = await api.auth.getUser();
-        userAvatar = user?.picture;
+        userAvatar = user?.picture || '';
       }
     } catch (error) {
       console.error('Error checking login status:', error);
@@ -48,11 +48,13 @@
   {#await checkLoggedIn(api)}
     <Avatar loading={true} size="sm"></Avatar>
   {:then _}
-    {#if loading || loggedIn}
+    {#if loading}
+      <Avatar {loading} onclick={() => logout(api)} size="sm"></Avatar>
+    {:else if loggedIn}
       <Avatar {loading} onclick={() => logout(api)} size="sm"></Avatar>
     {:else}
       <Button variant="secondary" {disabled} onclick={() => login(api)} size="sm">
-        {t('login')}
+        {buttonText || t('login')}
       </Button>
     {/if}
   {/await}

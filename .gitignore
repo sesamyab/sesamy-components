@@ -26,6 +26,8 @@ TODO
 
 *storybook.log
 storybook-static
+.vercel
+.env*.local
 /test-results/
 /playwright-report/
 /blob-report/

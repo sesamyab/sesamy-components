@@ -12,5 +12,5 @@ export default {
       }
     }
   },
-  plugins: [require('@ape-egg/tailwind-rows-columns')]
+  plugins: [require('@ape-egg/tailwind-rows-columns'), require('@tailwindcss/container-queries')]
 };

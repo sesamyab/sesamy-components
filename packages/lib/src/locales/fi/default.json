@@ -1,4 +1,14 @@
 {
   "already_subscribing": "Oletko jo tilannut?",
-  "login": "Kirjaudu sisään"
+  "continue": "Jatka",
+  "country": "Maa",
+  "email": "Sähköposti",
+  "invalid_email": "Virheellinen sähköpostiosoite",
+  "login": "Kirjaudu sisään",
+  "logo_of": "Logo of",
+  "pay_now": "Maksa nyt",
+  "phone_number": "Puhelinnumero",
+  "phone_number_required": "Puhelinnumero vaaditaan",
+  "secure_payment": "Turvallinen SSL-salattu maksu",
+  "something_went_wrong": "Jokin meni pieleen"
 }

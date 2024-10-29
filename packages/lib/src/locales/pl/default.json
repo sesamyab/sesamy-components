@@ -1,4 +1,14 @@
 {
   "already_subscribing": "Już subskrybujesz?",
-  "login": "Logowanie"
+  "continue": "Kontynuuj",
+  "country": "Kraj",
+  "email": "E-mail",
+  "invalid_email": "Nieprawidłowy adres e-mail",
+  "login": "Logowanie",
+  "logo_of": "Logo",
+  "pay_now": "Zapłać teraz",
+  "phone_number": "Numer telefonu",
+  "phone_number_required": "Numer telefonu jest wymagany",
+  "secure_payment": "Bezpieczna płatność szyfrowana SSL",
+  "something_went_wrong": "Coś poszło nie tak"
 }
