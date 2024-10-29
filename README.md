@@ -36,7 +36,7 @@ If you need unit tests, you can take a look at [Jest](https://jestjs.io) and [Je
 
 ### Using the built web components with the demo app
 
-The demo application is provided for development and testing of your components, that's why it imports the `.svelte` files from the `lib/` folder directly by default.
+The demo application is provided for development and testing of your components, that's why it imports the `.svelte` files from the `lib/` folder directly by default..
 
 If you prefer, you can import the built web components from the `dist/` folder instead, by editing `demo/src/App.svelte` and replacing the `import '../../lib';` statement with `import '../../../dist/lib';` if you have the `bundleComponents` option enabled, or individually import your components with `import import '../../dist/MyComponent.wc.js';` otherwise.
 
@@ -58,7 +58,7 @@ Any props accepted by your web component are automatically transformed to elemen
 
 ```html
 <script>
-  export let myvalue = "Default";
+  export let myvalue = 'Default';
 </script>
 ```
 
@@ -74,16 +74,14 @@ Here's an example:
 // MyComponent.wc.svelte
 <svelte:options tag="my-component" />
 <script>
-  import { get_current_component } from "svelte/internal";
+  import { get_current_component } from 'svelte/internal';
   const component = get_current_component();
 
   // example function for dispatching events
   const dispatchEvent = (name, detail) =>
     component.dispatchEvent(new CustomEvent(name, { detail }));
 </script>
-<button onclick={() => dispatchEvent("test", "Hello!")}>
-  Click to dispatch event
-</button>
+<button onclick="{()" ="">dispatchEvent("test", "Hello!")}> Click to dispatch event</button>
 ```
 
 ## Create a new component
