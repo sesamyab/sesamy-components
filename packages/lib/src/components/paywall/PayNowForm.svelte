@@ -91,12 +91,12 @@
       checkoutURL.searchParams.set('lang', checkout.language);
       checkoutURL.searchParams.set('redirect-url', checkout.redirectUrl);
 
-      const path = [checkout.vendorId, checkout.id]; // TODO: need `vendorId`
+      const path = [checkout.id];
       if (paymentMethod.method === 'GOOGLE-PAY' || paymentMethod.method === 'APPLE-PAY') {
         path.push('summary');
         checkoutURL.searchParams.set('paymentMethod', paymentMethod.method);
       } else if (paymentMethod.method === 'CARD') {
-        path.push('card');
+        path.push('payment');
       } else {
         path.push('summary');
       }

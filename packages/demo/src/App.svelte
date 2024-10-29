@@ -28,17 +28,16 @@
   <section>
     <article>
       <h1>Sesamy Components Demo Page</h1>
-
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sed elit sollicitudin nisl
         condimentum suscipit vitae sed lacus. Nullam venenatis vestibulum eros vitae rutrum. Donec
         vel purus tempus metus vehicula fringilla.
       </p>
-
       <select value={template} onchange={({ target: { value } }: any) => (template = value)}>
         <option value="ARTICLE">Article</option>
         <option value="BOXES">Boxes</option>
       </select>
+      <!-- https://portal-3p5j01f6y.vercel.sesamy.dev/test-fokus/paywalls/ONh_7gBRk8U_L060YMUr2 -->
       <sesamy-paywall
         {template}
         settings-url="https://api.sesamy.dev/paywall/paywalls/test-fokus/ONh_7gBRk8U_L060YMUr2"
