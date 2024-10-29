@@ -50,7 +50,7 @@ export const variants: Story = {
     layout: 'centered'
   },
   render: () => html`
-    <div style="display: flex; gap: 10px; padding: 10px;">
+    <div style="gap: 10px; padding: 10px;">
       <sesamy-button variant="primary">Primary</sesamy-button>
       <sesamy-button variant="secondary">Secondary</sesamy-button>
       <sesamy-button variant="tertiary">Tertiary</sesamy-button>
@@ -63,7 +63,7 @@ export const sizes: Story = {
     layout: 'centered'
   },
   render: () => html`
-    <div style="display: flex; gap: 10px; padding: 10px;">
+    <div style="gap: 10px; padding: 10px;">
       <sesamy-button size="lg">Large</sesamy-button>
       <sesamy-button size="md">Medium</sesamy-button>
       <sesamy-button size="sm">Small</sesamy-button>
@@ -76,7 +76,7 @@ export const disabled: Story = {
     layout: 'centered'
   },
   render: () => html`
-    <div style="display: flex; gap: 10px; padding: 10px;">
+    <div style="gap: 10px; padding: 10px;">
       <sesamy-button disabled variant="primary">Primary</sesamy-button>
       <sesamy-button disabled variant="secondary">Secondary</sesamy-button>
       <sesamy-button disabled variant="tertiary">Tertiary</sesamy-button>
@@ -89,7 +89,7 @@ export const Loading: Story = {
     layout: 'centered'
   },
   render: () => html`
-    <div style="display: flex; gap: 10px; padding: 10px;">
+    <div style="gap: 10px; padding: 10px;">
       <sesamy-button loading variant="primary">Primary</sesamy-button>
       <sesamy-button loading variant="secondary">Secondary</sesamy-button>
       <sesamy-button loading variant="tertiary">Tertiary</sesamy-button>
@@ -102,9 +102,7 @@ export const color: Story = {
     layout: 'centered'
   },
   render: () => html`
-    <div
-      style="display: flex; gap: 10px; padding: 10px; --sesamy-primary-color: 357, 95.9%, 48.2%;"
-    >
+    <div style="gap: 10px; padding: 10px; --sesamy-primary-color: 357, 95.9%, 48.2%;">
       <sesamy-button variant="primary">Primary</sesamy-button>
       <sesamy-button variant="secondary">Secondary</sesamy-button>
       <sesamy-button variant="tertiary">Tertiary</sesamy-button>
