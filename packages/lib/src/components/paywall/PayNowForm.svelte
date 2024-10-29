@@ -170,11 +170,11 @@
           <Icon class="text-3xl" multiColor name={icon} />
         </Row>
         {#if method && ['CARD', 'GOOGLE-PAY', 'APPLE-PAY'].includes(method)}
-          <Row class="gap-1">
+          <div class="gap-1 hidden @xl:row-left">
             <PaymentMethod size="sm" name="visa" />
             <PaymentMethod size="sm" name="amex" />
             <PaymentMethod size="sm" name="mastercard" />
-          </Row>
+          </div>
         {/if}
       </Selection>
     </SelectionGroup>
