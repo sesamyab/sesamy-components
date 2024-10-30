@@ -70,8 +70,6 @@
 
     try {
       checkout = await api.checkouts.create({
-        source: 'PAYWALL', // TODO: update sesamy-js when this prop is included (and no red squiggly)
-        'source-id': paywall.id,
         vendorId,
         items: [item],
         discountCode: product.discountCode,
@@ -83,7 +81,9 @@
           utmMedium: userProps?.['utm-medium'],
           utmCampaign: userProps?.['utm-campaign'],
           utmTerm: userProps?.['utm-term'],
-          utmContent: userProps?.['utm-content']
+          utmContent: userProps?.['utm-content'],
+          source: 'PAYWALL',
+          sourceId: paywall.id
         }
       });
     } catch (err) {

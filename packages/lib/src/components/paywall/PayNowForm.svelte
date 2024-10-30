@@ -17,6 +17,8 @@
   import Column from '../Column.svelte';
   import { isSupportingApplePay, isSupportingGooglePay } from '../../utils/browser-support';
   import type { SesamyAPI } from '@sesamy/sesamy-js';
+  import emailSpellChecker from '@zootools/email-spell-checker';
+  import Accordion from '../Accordion.svelte';
 
   // TODO: can we these dynamic (.com if built for prod, .dev if ran on local/preview)
   const CHECKOUT_URL = 'https://checkout3.sesamy.dev';
@@ -57,6 +59,7 @@
   let loading = $state(false);
   let errors = $state<{ [key: string]: any }>();
   let paymentMethod = $state<PaymentMethod>();
+  let emailSuggestion = $state('');
 
   const validate = () => {
     const tempErrors = [];
@@ -101,7 +104,7 @@
       await api.checkouts.update(checkout.id, {
         provider: paymentMethod.provider, // TODO: update sesamy-js when this prop is included (and no red squiggly)
         method: paymentMethod.method,
-        email: email
+        email
       });
 
       const checkoutURL = new URL(CHECKOUT_URL);
@@ -160,12 +163,24 @@
 <form class="contents" onsubmit={goToCheckout}>
   <InputGroup>
     <Input
-      onkeyup={() => (errors = undefined)}
+      onkeyup={() => {
+        emailSuggestion =
+          emailSpellChecker.run({
+            email
+          })?.full || '';
+
+        errors = undefined;
+      }}
       bind:value={email}
       compact
       placeholder={t('email')}
       hasError={errors?.email}
     />
+    <Accordion isOpen={!!emailSuggestion}>
+      <div>
+        Testing<br />accordion<br />functionality
+      </div>
+    </Accordion>
     <Select options={countries} bind:value={country} compact placeholder={t('country')} />
     {#if checkout?.settings?.phone?.enabled}
       <Input
