@@ -4,9 +4,9 @@ import type { Meta, StoryObj } from '@storybook/web-components';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import type { ButtonProps } from '../types';
 
-const meta: Meta<ButtonProps & { buttonText: string }> = {
+const meta: Meta<ButtonProps & { loading: boolean; disabled: boolean; buttonText: string }> = {
   title: 'Components/Button',
-  tags: ['autodocs', 'visual:check', 'story'],
+  tags: ['autodocs'],
   component: 'sesamy-button',
   render: (args) => html`
     <sesamy-button
@@ -31,7 +31,7 @@ const meta: Meta<ButtonProps & { buttonText: string }> = {
 
 export default meta;
 
-type Story = StoryObj<ButtonProps & { buttonText: string }>;
+type Story = StoryObj<ButtonProps & { loading: boolean; disabled: boolean; buttonText: string }>;
 
 export const Default: Story = {
   parameters: {
@@ -42,8 +42,7 @@ export const Default: Story = {
     disabled: false,
     loading: false,
     variant: 'primary'
-  },
-  tags: []
+  }
 };
 
 export const variants: Story = {
@@ -51,7 +50,7 @@ export const variants: Story = {
     layout: 'centered'
   },
   render: () => html`
-    <div style="display: flex; gap: 10px; padding: 10px;">
+    <div style="gap: 10px; padding: 10px;">
       <sesamy-button variant="primary">Primary</sesamy-button>
       <sesamy-button variant="secondary">Secondary</sesamy-button>
       <sesamy-button variant="tertiary">Tertiary</sesamy-button>
@@ -64,7 +63,7 @@ export const sizes: Story = {
     layout: 'centered'
   },
   render: () => html`
-    <div style="display: flex; gap: 10px; padding: 10px;">
+    <div style="gap: 10px; padding: 10px;">
       <sesamy-button size="lg">Large</sesamy-button>
       <sesamy-button size="md">Medium</sesamy-button>
       <sesamy-button size="sm">Small</sesamy-button>
@@ -77,7 +76,7 @@ export const disabled: Story = {
     layout: 'centered'
   },
   render: () => html`
-    <div style="display: flex; gap: 10px; padding: 10px;">
+    <div style="gap: 10px; padding: 10px;">
       <sesamy-button disabled variant="primary">Primary</sesamy-button>
       <sesamy-button disabled variant="secondary">Secondary</sesamy-button>
       <sesamy-button disabled variant="tertiary">Tertiary</sesamy-button>
@@ -90,7 +89,7 @@ export const Loading: Story = {
     layout: 'centered'
   },
   render: () => html`
-    <div style="display: flex; gap: 10px; padding: 10px;">
+    <div style="gap: 10px; padding: 10px;">
       <sesamy-button loading variant="primary">Primary</sesamy-button>
       <sesamy-button loading variant="secondary">Secondary</sesamy-button>
       <sesamy-button loading variant="tertiary">Tertiary</sesamy-button>
@@ -103,9 +102,7 @@ export const color: Story = {
     layout: 'centered'
   },
   render: () => html`
-    <div
-      style="display: flex; gap: 10px; padding: 10px; --sesamy-primary-color: 357, 95.9%, 48.2%;"
-    >
+    <div style="gap: 10px; padding: 10px; --sesamy-primary-color: 357, 95.9%, 48.2%;">
       <sesamy-button variant="primary">Primary</sesamy-button>
       <sesamy-button variant="secondary">Secondary</sesamy-button>
       <sesamy-button variant="tertiary">Tertiary</sesamy-button>

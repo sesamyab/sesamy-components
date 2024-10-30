@@ -1,11 +1,11 @@
 <script lang="ts">
-  import PurchaseOptions from './../components/PurchaseOptions.svelte';
-  import PurchaseOption from './../components/PurchaseOption.svelte';
+  import PurchaseOptions from './../components/paywall/SelectionGroup.svelte';
+  import PurchaseOption from './../components/paywall/Selection.svelte';
   import Column from './../components/Column.svelte';
   import Icon from './../components/Icon.svelte';
   import PaymentMethod from './../components/PaymentMethod.svelte';
   import Row from './../components/Row.svelte';
-  import Button from './../Button.wc.svelte';
+  import Button from './Button.svelte';
   import type { IconName } from './../icons/types';
   import Features from './../components/Features.svelte';
   import { twMerge } from 'tailwind-merge';
@@ -74,14 +74,13 @@
       class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-primary/30 mb-4"
     ></div>
     <div class={twMerge('w-full', horizontal && 'column text-center')}>
-      <Icon class="text-[120px] text-primary font-bold" name="fokus" />
       <div class="text-3xl mt-6 font-bold">
         Läs Fokus Digital i 6 månader<br /> för bara 79kr!
       </div>
     </div>
 
     {#if !horizontal}
-      <Features {features} bold />
+      <Features {features} />
     {/if}
 
     <PurchaseOptions

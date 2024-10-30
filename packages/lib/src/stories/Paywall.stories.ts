@@ -9,12 +9,10 @@ interface PaywallProps {
 
 const meta: Meta<PaywallProps> = {
   title: 'Components/Paywall',
-  tags: ['autodocs'],
+  tags: ['autodocs', 'visual:check', 'story'],
   component: 'sesamy-paywall',
   render: (args) =>
-    html` <div
-      style="display: flex; gap: 10px; padding: 10px; --sesamy-primary-color: 249 86.4% 68.2%;"
-    >
+    html` <div style="gap: 10px; padding: 10px; --sesamy-primary-color: 249 86.4% 68.2%;">
       <sesamy-paywall
         template=${args['template']}
         settings-url=${args['settings-url']}
@@ -23,7 +21,7 @@ const meta: Meta<PaywallProps> = {
   argTypes: {
     'settings-url': {
       control: 'text',
-      defaultValue: 'https://api.sesamy.dev/paywall/paywalls/kvartal/1idkV75XtXSVQAXtTp2dL'
+      defaultValue: 'https://api.sesamy.dev/paywall/paywalls/test-fokus/ONh_7gBRk8U_L060YMUr2'
     },
     template: {
       control: {
@@ -40,14 +38,15 @@ type Story = StoryObj<PaywallProps>;
 
 export const Default: Story = {
   args: {
-    'settings-url': 'https://api.sesamy.dev/paywall/paywalls/kvartal/1idkV75XtXSVQAXtTp2dL',
+    'settings-url': 'https://api.sesamy.dev/paywall/paywalls/test-fokus/ONh_7gBRk8U_L060YMUr2',
     template: 'ARTICLE'
   }
 };
 
 export const MobileView: Story = {
   args: {
-    'settings-url': 'https://api.sesamy.dev/paywall/paywalls/kvartal/1idkV75XtXSVQAXtTp2dL'
+    'settings-url': 'https://api.sesamy.dev/paywall/paywalls/test-fokus/ONh_7gBRk8U_L060YMUr2',
+    template: 'ARTICLE'
   },
   parameters: {
     viewport: {
@@ -58,7 +57,8 @@ export const MobileView: Story = {
 
 export const TabletView: Story = {
   args: {
-    'settings-url': 'https://api.sesamy.dev/paywall/paywalls/kvartal/1idkV75XtXSVQAXtTp2dL'
+    'settings-url': 'https://api.sesamy.dev/paywall/paywalls/test-fokus/ONh_7gBRk8U_L060YMUr2',
+    template: 'ARTICLE'
   },
   parameters: {
     viewport: {

@@ -12,7 +12,7 @@ type AvatarProps = {
 
 const meta: Meta<AvatarProps> = {
   title: 'Components/Avatar',
-  tags: ['autodocs'],
+  tags: ['autodocs', 'visual:check', 'story'],
   component: 'sesamy-avatar',
   render: (args) => html`
     <sesamy-avatar
@@ -20,7 +20,7 @@ const meta: Meta<AvatarProps> = {
       alt=${ifDefined(args.alt)}
       size=${ifDefined(args.size)}
       ?loading=${args.loading}
-      @click=${() => console.log('Avatar clicked')}
+      @click=${() => console.info('Avatar clicked')}
     ></sesamy-avatar>
   `,
   argTypes: {
@@ -56,29 +56,15 @@ export const WithImage: Story = {
   }
 };
 
-export const Small: Story = {
-  args: {
-    src: '',
-    alt: 'Small Avatar',
-    size: 'sm',
-    loading: false
-  }
-};
-
-export const Large: Story = {
-  args: {
-    src: '',
-    alt: 'Large Avatar',
-    size: 'lg',
-    loading: false
-  }
-};
-
-export const Loading: Story = {
-  args: {
-    src: '',
-    alt: 'Loading Avatar',
-    size: 'md',
-    loading: true
-  }
+export const sizes: Story = {
+  parameters: {
+    layout: 'centered'
+  },
+  render: () => html`
+    <div style="display: flex; gap: 10px; padding: 10px;">
+      <sesamy-avatar size="lg">Large</sesamy-avatar>
+      <sesamy-avatar size="md">Medium</sesamy-avatar>
+      <sesamy-avatar size="sm">Small</sesamy-avatar>
+    </div>
+  `
 };
