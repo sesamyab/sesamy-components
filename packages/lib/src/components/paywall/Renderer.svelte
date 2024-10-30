@@ -54,6 +54,7 @@
   } = paywall;
 
   const createCheckout = async (e: SubmitEvent) => {
+    error = '';
     e.preventDefault();
     if (!product) return;
 

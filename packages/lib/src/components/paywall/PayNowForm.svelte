@@ -48,6 +48,7 @@
   };
 
   let { api, t, checkout }: Props = $props();
+  console.log(checkout);
 
   const countries = getCountriesOptions(checkout.language); // TODO: grab this from lang preferences (see Base.svelte)
 

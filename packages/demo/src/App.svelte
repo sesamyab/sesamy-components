@@ -6,7 +6,7 @@
   let template = $state('ARTICLE');
 
   init({
-    clientId: 'demo',
+    clientId: 'test-fokus',
     environment: 'dev',
     api: {
       namespace: 'sesamy'
