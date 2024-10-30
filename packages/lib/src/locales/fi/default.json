@@ -1,7 +1,9 @@
 {
   "already_subscribing": "Oletko jo tilannut?",
+  "click_to_update": "Klikkaa päivittääksesi",
   "continue": "Jatka",
   "country": "Maa",
+  "did_you_mean": "Tarkoititko",
   "email": "Sähköposti",
   "first_name": "Etunimi",
   "first_name_required": "Etunimi vaaditaan",

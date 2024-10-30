@@ -48,7 +48,6 @@
   };
 
   let { api, t, checkout }: Props = $props();
-  console.log(checkout);
 
   const countries = getCountriesOptions(checkout.language); // TODO: grab this from lang preferences (see Base.svelte)
 
@@ -61,6 +60,7 @@
   let errors = $state<{ [key: string]: any }>();
   let paymentMethod = $state<PaymentMethod>();
   let emailSuggestion = $state('');
+  let suggestionTimeout: any;
 
   const validate = () => {
     const tempErrors = [];
@@ -93,6 +93,17 @@
   };
 
   const selectPaymentMethod = (option: PaymentMethod) => (paymentMethod = option);
+  const provideSuggestion = () => {
+    errors = undefined;
+    clearTimeout(suggestionTimeout);
+
+    suggestionTimeout = setTimeout(() => {
+      emailSuggestion =
+        emailSpellChecker.run({
+          email
+        })?.full || '';
+    }, 400);
+  };
 
   const goToCheckout = async (e: SubmitEvent) => {
     e.preventDefault();
@@ -164,23 +175,31 @@
 <form class="contents" onsubmit={goToCheckout}>
   <InputGroup>
     <Input
-      onkeyup={() => {
-        emailSuggestion =
-          emailSpellChecker.run({
-            email
-          })?.full || '';
-
-        errors = undefined;
-      }}
+      onkeyup={provideSuggestion}
       bind:value={email}
       compact
       placeholder={t('email')}
       hasError={errors?.email}
     />
     <Accordion isOpen={!!emailSuggestion}>
-      <div>
-        Testing<br />accordion<br />functionality
-      </div>
+      <Row
+        onclick={() => {
+          email = emailSuggestion;
+          emailSuggestion = '';
+        }}
+        class="bg-primary/10 gap-4 px-2 py-3 !justify-between active:bg-primary/10 text-sm border-x border-gray-200 text-gray-500 hover:cursor-pointer hover:bg-primary/15 transition-colors duration-75"
+      >
+        <Row class="gap-2">
+          <Icon class="text-primary text-xl" name="info" />
+          <div>
+            {t('did_you_mean')}
+            <span class="text-primary">{emailSuggestion}</span>?
+          </div>
+        </Row>
+        <div class="text-center whitespace-nowrap">
+          {t('click_to_update')}
+        </div>
+      </Row>
     </Accordion>
     <Select options={countries} bind:value={country} compact placeholder={t('country')} />
     {#if checkout?.settings?.phone?.enabled}
