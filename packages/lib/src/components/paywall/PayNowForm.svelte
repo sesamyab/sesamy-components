@@ -16,14 +16,28 @@
   import Error from '../Error.svelte';
   import Column from '../Column.svelte';
   import { isSupportingApplePay, isSupportingGooglePay } from '../../utils/browser-support';
+  import type { SesamyAPI } from '@sesamy/sesamy-js';
 
   // TODO: can we these dynamic (.com if built for prod, .dev if ran on local/preview)
-  const API_URL = 'https://api.sesamy.dev';
   const CHECKOUT_URL = 'https://checkout3.sesamy.dev';
 
   type Props = {
+    api: SesamyAPI;
     t: TranslationFunction;
-    checkout: Checkout;
+    checkout: Checkout & {
+      // TODO: this should be set on Checkout type in sesamy-js
+      settings?: {
+        firstName?: {
+          enabled: boolean;
+        };
+        lastName?: {
+          enabled: boolean;
+        };
+        phone?: {
+          enabled: boolean;
+        };
+      };
+    };
   };
 
   type PaymentMethod = {
@@ -32,11 +46,13 @@
     icon: IconName;
   };
 
-  let { t, checkout }: Props = $props();
+  let { api, t, checkout }: Props = $props();
 
   const countries = getCountriesOptions(checkout.language); // TODO: grab this from lang preferences (see Base.svelte)
 
   let email = $state('');
+  let firstName = $state('');
+  let lastName = $state('');
   let phoneNumber = $state('');
   let country = $state(checkout.country || 'SE'); // Must provide a fallback value since `Checkout.country` is optional
   let loading = $state(false);
@@ -50,8 +66,16 @@
       tempErrors.push(['email', 'invalid_email']);
     }
 
-    if (!phoneNumber) {
+    if (checkout?.settings?.phone?.enabled && !phoneNumber) {
       tempErrors.push(['phoneNumber', 'phone_number_required']);
+    }
+
+    if (checkout?.settings?.firstName?.enabled && !phoneNumber) {
+      tempErrors.push(['firstName', 'first_name_required']);
+    }
+
+    if (checkout?.settings?.lastName?.enabled && !phoneNumber) {
+      tempErrors.push(['lastName', 'last_name_required']);
     }
 
     errors = tempErrors.length
@@ -67,22 +91,18 @@
 
   const selectPaymentMethod = (option: PaymentMethod) => (paymentMethod = option);
 
-  const goToCheckout = async () => {
+  const goToCheckout = async (e: SubmitEvent) => {
+    e.preventDefault();
     validate();
     if (errors) return;
     if (!paymentMethod) return;
     loading = true;
 
     try {
-      await fetch(`${API_URL}/checkout/${checkout.id}/paymentMethod`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          provider: paymentMethod.provider,
-          method: paymentMethod.method
-        })
+      await api.checkouts.update(checkout.id, {
+        provider: paymentMethod.provider,
+        method: paymentMethod.method,
+        email: email
       });
 
       const checkoutURL = new URL(CHECKOUT_URL);
@@ -138,52 +158,74 @@
   paymentMethods.length && selectPaymentMethod(paymentMethods[0]);
 </script>
 
-<InputGroup>
-  <Input
-    onkeyup={() => (errors = undefined)}
-    bind:value={email}
-    compact
-    placeholder={t('email')}
-    hasError={errors?.email}
-  />
-  <Select options={countries} bind:value={country} compact placeholder={t('country')} />
-  <Input
-    onkeyup={() => (errors = undefined)}
-    bind:value={phoneNumber}
-    compact
-    placeholder={t('phone_number')}
-    hasError={errors?.phoneNumber}
-  />
-</InputGroup>
+<form onsubmit={goToCheckout}>
+  <InputGroup>
+    <Input
+      onkeyup={() => (errors = undefined)}
+      bind:value={email}
+      compact
+      placeholder={t('email')}
+      hasError={errors?.email}
+    />
+    <Select options={countries} bind:value={country} compact placeholder={t('country')} />
+    {#if checkout?.settings?.phone?.enabled}
+      <Input
+        onkeyup={() => (errors = undefined)}
+        bind:value={phoneNumber}
+        compact
+        placeholder={t('phone_number')}
+        hasError={errors?.phoneNumber}
+      />
+    {/if}
+    {#if checkout?.settings?.firstName?.enabled}
+      <Input
+        onkeyup={() => (errors = undefined)}
+        bind:value={firstName}
+        compact
+        placeholder={t('first_name')}
+        hasError={errors?.firstName}
+      />
+    {/if}
+    {#if checkout?.settings?.lastName?.enabled}
+      <Input
+        onkeyup={() => (errors = undefined)}
+        bind:value={lastName}
+        compact
+        placeholder={t('last_name')}
+        hasError={errors?.lastName}
+      />
+    {/if}
+  </InputGroup>
 
-<div class="grid grid-cols-2 w-full gap-2 auto-rows-fr">
-  {#each paymentMethods as paymentMethod, i (`${paymentMethod.provider}-${paymentMethod.method}`)}
-    {@const { provider, method, icon } = paymentMethod}
-    <SelectionGroup>
-      <Selection
-        checked={!i}
-        id={`${provider}-${method}`}
-        name="payment-method"
-        onchange={() => selectPaymentMethod(paymentMethod)}
-      >
-        <Row class="w-16" left>
-          <Icon class="text-3xl" multiColor name={icon} />
-        </Row>
-        {#if method && ['CARD', 'GOOGLE-PAY', 'APPLE-PAY'].includes(method)}
-          <div class="gap-1 hidden @xl:row-left">
-            <PaymentMethod size="sm" name="visa" />
-            <PaymentMethod size="sm" name="amex" />
-            <PaymentMethod size="sm" name="mastercard" />
-          </div>
-        {/if}
-      </Selection>
-    </SelectionGroup>
-  {/each}
-</div>
+  <div class="grid grid-cols-2 w-full gap-2 auto-rows-fr">
+    {#each paymentMethods as paymentMethod, i (`${paymentMethod.provider}-${paymentMethod.method}`)}
+      {@const { provider, method, icon } = paymentMethod}
+      <SelectionGroup>
+        <Selection
+          checked={!i}
+          id={`${provider}-${method}`}
+          name="payment-method"
+          onchange={() => selectPaymentMethod(paymentMethod)}
+        >
+          <Row class="w-16" left>
+            <Icon class="text-3xl" multiColor name={icon} />
+          </Row>
+          {#if method && ['CARD', 'GOOGLE-PAY', 'APPLE-PAY'].includes(method)}
+            <div class="gap-1 hidden @xl:row-left">
+              <PaymentMethod size="sm" name="visa" />
+              <PaymentMethod size="sm" name="amex" />
+              <PaymentMethod size="sm" name="mastercard" />
+            </div>
+          {/if}
+        </Selection>
+      </SelectionGroup>
+    {/each}
+  </div>
 
-<Button {loading} disabled={loading} class="mt-2 w-full shadow-md" onclick={goToCheckout}>
-  {t('pay_now')}
-</Button>
+  <Button {loading} disabled={loading} class="mt-2 w-full shadow-md" type="submit">
+    {t('pay_now')}
+  </Button>
+</form>
 
 {#if errors}
   <Column left>

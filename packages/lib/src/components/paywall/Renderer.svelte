@@ -53,7 +53,8 @@
     }
   } = paywall;
 
-  const createCheckout = async () => {
+  const createCheckout = async (e: SubmitEvent) => {
+    e.preventDefault();
     if (!product) return;
 
     loading = true;
@@ -161,26 +162,23 @@
       {/if}
 
       {#if checkout}
-        <PayNowForm {checkout} {t} />
+        <PayNowForm {api} {checkout} {t} />
       {:else}
-        {#if subscriptions.length}
-          <Subscriptions {horizontal} {subscriptions} {t} {currency} {selectProduct} />
-        {/if}
+        <form class="contents" onsubmit={createCheckout}>
+          {#if subscriptions.length}
+            <Subscriptions {horizontal} {subscriptions} {t} {currency} {selectProduct} />
+          {/if}
 
-        {#if singlePurchase && singlePurchase.enabled && !horizontal}
-          <SinglePurchase {singlePurchase} {t} {selectProduct} />
-        {/if}
+          {#if singlePurchase && singlePurchase.enabled && !horizontal}
+            <SinglePurchase {singlePurchase} {t} {selectProduct} />
+          {/if}
 
-        {#if !horizontal}
-          <Button
-            {loading}
-            disabled={loading}
-            class="mt-2 w-full shadow-md"
-            onclick={createCheckout}
-          >
-            {t('continue')}
-          </Button>
-        {/if}
+          {#if !horizontal}
+            <Button {loading} disabled={loading} class="mt-2 w-full shadow-md" type="submit">
+              {t('continue')}
+            </Button>
+          {/if}
+        </form>
       {/if}
       {#if error}
         <Error text={error} />

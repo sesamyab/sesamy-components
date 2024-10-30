@@ -1008,10 +1008,10 @@
     lodash-es "^4.17.21"
     read-package-up "^11.0.0"
 
-"@sesamy/sesamy-js@^1.25.0":
-  version "1.25.0"
-  resolved "https://registry.yarnpkg.com/@sesamy/sesamy-js/-/sesamy-js-1.25.0.tgz#d38007aad6d0e175a0d2c39d12f6c3503651a0b4"
-  integrity sha512-5ofUPDSm42pL6wcvgItx/BkgPApvNxly8rRAq2zffu5rue8KwlQcDJEyQM5w+fHpZvnNVajBoQIy7JS5GBq8uw==
+"@sesamy/sesamy-js@^1.25.2":
+  version "1.25.2"
+  resolved "https://registry.yarnpkg.com/@sesamy/sesamy-js/-/sesamy-js-1.25.2.tgz#2a1c3b9dad705e2e5a6e337ccd68c06b83a606aa"
+  integrity sha512-L9+n8SiK2WRNHPz+D5ygG3vQmeJRCGx/2/yJbdzcviK5dZufafuUQSMe7t0BN680xExdq4v25CzXTLY/wGcZqQ==
   dependencies:
     "@analytics/activity-utils" "^0.1.16"
     "@analytics/scroll-utils" "^0.1.22"
