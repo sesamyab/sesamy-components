@@ -27,14 +27,13 @@
     checkout: Checkout & {
       // TODO: this should be set on Checkout type in sesamy-js
       settings?: {
-        firstName?: {
+        name?: {
           enabled: boolean;
-        };
-        lastName?: {
-          enabled: boolean;
+          required: boolean;
         };
         phone?: {
           enabled: boolean;
+          required: boolean;
         };
       };
     };
@@ -66,15 +65,15 @@
       tempErrors.push(['email', 'invalid_email']);
     }
 
-    if (checkout?.settings?.phone?.enabled && !phoneNumber) {
+    if (checkout?.settings?.phone?.enabled && checkout?.settings?.phone?.required && !phoneNumber) {
       tempErrors.push(['phoneNumber', 'phone_number_required']);
     }
 
-    if (checkout?.settings?.firstName?.enabled && !phoneNumber) {
+    if (checkout?.settings?.name?.enabled && checkout?.settings?.name?.required && !firstName) {
       tempErrors.push(['firstName', 'first_name_required']);
     }
 
-    if (checkout?.settings?.lastName?.enabled && !phoneNumber) {
+    if (checkout?.settings?.name?.enabled && checkout?.settings?.name?.required && !lastName) {
       tempErrors.push(['lastName', 'last_name_required']);
     }
 
@@ -100,7 +99,7 @@
 
     try {
       await api.checkouts.update(checkout.id, {
-        provider: paymentMethod.provider,
+        provider: paymentMethod.provider, // TODO: update sesamy-js when this prop is included (and no red squiggly)
         method: paymentMethod.method,
         email: email
       });
@@ -158,7 +157,7 @@
   paymentMethods.length && selectPaymentMethod(paymentMethods[0]);
 </script>
 
-<form onsubmit={goToCheckout}>
+<form class="contents" onsubmit={goToCheckout}>
   <InputGroup>
     <Input
       onkeyup={() => (errors = undefined)}
@@ -177,7 +176,7 @@
         hasError={errors?.phoneNumber}
       />
     {/if}
-    {#if checkout?.settings?.firstName?.enabled}
+    {#if checkout?.settings?.name?.enabled}
       <Input
         onkeyup={() => (errors = undefined)}
         bind:value={firstName}
@@ -186,7 +185,7 @@
         hasError={errors?.firstName}
       />
     {/if}
-    {#if checkout?.settings?.lastName?.enabled}
+    {#if checkout?.settings?.name?.enabled}
       <Input
         onkeyup={() => (errors = undefined)}
         bind:value={lastName}
