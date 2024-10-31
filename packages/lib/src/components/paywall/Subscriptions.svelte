@@ -101,11 +101,9 @@
             {/if}
           </Column>
 
-          {#if url}
-            <Button href={url} class="w-full mt-2" variant={tag ? 'primary' : 'secondary'}>
-              {buttonText || t('continue')}
-            </Button>
-          {/if}
+          <Button href={url} class="w-full mt-2" variant={tag ? 'primary' : 'secondary'}>
+            {buttonText || t('continue')}
+          </Button>
         </Column>
       </Column>
     {:else}
