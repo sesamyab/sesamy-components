@@ -157,7 +157,7 @@
               method,
               icon: method.toLocaleLowerCase() as IconName
             }))
-          : [{ provider, method: undefined, icon: provider.toLocaleLowerCase() as IconName }])
+          : [])
       ],
       [] as PaymentMethod[]
     )
