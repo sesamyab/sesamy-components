@@ -101,9 +101,15 @@
     };
   };
 
-  if (subscriptions.length) {
+  const hasSubscriptions = subscriptions.length > 0;
+  if (hasSubscriptions) {
     const selected = subscriptions.find(({ selected }) => selected);
-    selected && selectProduct(selected);
+    if (selected) {
+      selectProduct(selected);
+    } else {
+      subscriptions[0].selected = true;
+      selectProduct(subscriptions[0]);
+    }
   }
 
   const paywallBgColor = hexToHsl(styling?.backgroundColor || '#FFFFFF');
@@ -175,7 +181,13 @@
           {/if}
 
           {#if singlePurchase && singlePurchase.enabled && !horizontal}
-            <SinglePurchase {singlePurchase} {t} {selectProduct} {...userProps} />
+            <SinglePurchase
+              {singlePurchase}
+              {t}
+              {selectProduct}
+              {hasSubscriptions}
+              {...userProps}
+            />
           {/if}
 
           {#if !horizontal}
