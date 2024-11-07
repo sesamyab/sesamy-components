@@ -16,7 +16,7 @@
   let { title, description } = singlePurchase;
 
   const completeAndSelect = (singlePurchase: PaywallSinglePurchase) => {
-    selectProduct({ ...singlePurchase, price, currency, url: itemSrc });
+    selectProduct({ ...singlePurchase, url: itemSrc });
   };
 
   // TODO: replace with sesamy-js logic
