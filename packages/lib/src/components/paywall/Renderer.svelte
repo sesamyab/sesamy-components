@@ -47,10 +47,7 @@
     footerPaymentMethods,
     logoUrl,
     vendorId,
-    settings: {
-      useDefaultLogo,
-      styling: { showBackground, dropShadow, backgroundColor }
-    }
+    settings: { useDefaultLogo, styling }
   } = paywall;
 
   const createCheckout = async (e: SubmitEvent) => {
@@ -109,13 +106,12 @@
     selected && selectProduct(selected);
   }
 
-  const paywallBgColor = hexToHsl(backgroundColor || '#FFFFFF');
+  const paywallBgColor = hexToHsl(styling?.backgroundColor || '#FFFFFF');
 
   let sesamyPaywallDesignTokens = `
     :host * {
       --s-paywall-bg-start-color: var(--sesamy-paywall-bg-start-color, ${paywallBgColor[0]},${paywallBgColor[1]}%,${paywallBgColor[2]}%);
       --s-paywall-bg-end-color: var(--sesamy-paywall-bg-end-color, ${paywallBgColor[0]},${paywallBgColor[1]}%,${paywallBgColor[2] + (100 - paywallBgColor[2]) * 0.5}%);
-      
       --s-primary-color: var(--sesamy-paywall-primary-color, ${hslArrayToCSS(hexToHsl(mainColor))}) !important;
     }
   `;
@@ -127,9 +123,9 @@
   <Column
     class={twMerge(
       'w-full pt-4 @md:pt-6 rounded-lg @xl:rounded-3xl',
-      showBackground &&
+      styling?.showBackground &&
         'bg-gradient-to-b from-[hsl(var(--s-paywall-bg-start-color))] to-[hsl(var(--s-paywall-bg-end-color))]',
-      showBackground && dropShadow && 'shadow-md @xl:shadow-lg'
+      styling?.showBackground && styling?.dropShadow && 'shadow-md @xl:shadow-lg'
     )}
   >
     <Column
