@@ -43,6 +43,13 @@ export const Default: Story = {
   }
 };
 
+export const TemplateBoxes: Story = {
+  args: {
+    'settings-url': 'https://api.sesamy.dev/paywall/paywalls/test-fokus/ONh_7gBRk8U_L060YMUr2',
+    template: 'BOXES'
+  }
+};
+
 export const MobileView: Story = {
   args: {
     'settings-url': 'https://api.sesamy.dev/paywall/paywalls/test-fokus/ONh_7gBRk8U_L060YMUr2',

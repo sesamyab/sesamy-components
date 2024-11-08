@@ -17,14 +17,17 @@ export interface LoginProps {
 }
 
 export type PaywallProps = HTMLElement & {
-  template: 'ARTICLE' | 'BOXES';
+  template?: 'ARTICLE' | 'BOXES';
   ['settings-url']: string;
-  ['redirect-url']: string;
-  ['utm-source']: string;
-  ['utm-medium']: string;
-  ['utm-campaign']: string;
-  ['utm-term']: string;
-  ['utm-content']: string;
+  ['item-src']?: string;
+  price?: string;
+  currency?: string;
+  ['redirect-url']?: string;
+  ['utm-source']?: string;
+  ['utm-medium']?: string;
+  ['utm-campaign']?: string;
+  ['utm-term']?: string;
+  ['utm-content']?: string;
 };
 
 export type ButtonVariant = 'primary' | 'secondary' | 'tertiary';

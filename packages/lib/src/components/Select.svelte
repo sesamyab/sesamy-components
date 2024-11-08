@@ -32,7 +32,7 @@
     bind:value
     class={twMerge(
       'peer w-full appearance-none rounded-md border border-gray-200 bg-white p-4 text-base leading-snug text-gray-800 outline-0 transition-colors duration-150 placeholder:text-gray-400 focus:border-gray-300 disabled:opacity-[20%]',
-      hasError && 'border-red focus:border-red',
+      hasError && 'border-red focus-visible:border-red',
       compact && 'pb-2 pt-6 placeholder:text-transparent',
       classes
     )}
@@ -55,7 +55,7 @@
     </div>
   {/if}
   <Icon
-    class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-xs text-gray-300 peer-focus:text-gray-400 sm:text-xs"
+    class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-xs text-gray-300 peer-focus-visible:text-gray-400 sm:text-xs"
     name="chevron-down"
   />
 </label>

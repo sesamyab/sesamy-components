@@ -6,7 +6,7 @@
   let template = $state('ARTICLE');
 
   init({
-    clientId: 'demo',
+    clientId: 'test-fokus',
     environment: 'dev',
     api: {
       namespace: 'sesamy'
@@ -52,10 +52,10 @@
     </article>
   </section>
   <aside style="min-width: 319px;">
-    <sesamy-paywall
+    <!-- <sesamy-paywall
       {template}
       settings-url="https://api.sesamy.dev/paywall/paywalls/test-fokus/ONh_7gBRk8U_L060YMUr2"
-    ></sesamy-paywall>
+    ></sesamy-paywall> -->
   </aside>
 </main>
 

@@ -7,7 +7,13 @@
   import type { LoginProps } from './types';
   import Button from './components/Button.svelte';
 
-  let { loading, loggedIn, userAvatar, 'button-text': buttonText }: LoginProps = $props();
+  let {
+    loading,
+    loggedIn,
+    userAvatar,
+    'button-text': buttonText,
+    class: classes = ''
+  }: LoginProps & { class?: string } = $props();
 
   let disabled = $state(false);
 
@@ -53,7 +59,7 @@
     {:else if loggedIn}
       <Avatar {loading} onclick={() => logout(api)} size="sm"></Avatar>
     {:else}
-      <Button variant="secondary" {disabled} onclick={() => login(api)} size="sm">
+      <Button class={classes} variant="secondary" {disabled} onclick={() => login(api)} size="sm">
         {buttonText || t('login')}
       </Button>
     {/if}

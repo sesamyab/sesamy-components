@@ -1008,10 +1008,10 @@
     lodash-es "^4.17.21"
     read-package-up "^11.0.0"
 
-"@sesamy/sesamy-js@^1.25.0":
-  version "1.25.0"
-  resolved "https://registry.yarnpkg.com/@sesamy/sesamy-js/-/sesamy-js-1.25.0.tgz#d38007aad6d0e175a0d2c39d12f6c3503651a0b4"
-  integrity sha512-5ofUPDSm42pL6wcvgItx/BkgPApvNxly8rRAq2zffu5rue8KwlQcDJEyQM5w+fHpZvnNVajBoQIy7JS5GBq8uw==
+"@sesamy/sesamy-js@^1.26.1":
+  version "1.26.1"
+  resolved "https://registry.yarnpkg.com/@sesamy/sesamy-js/-/sesamy-js-1.26.1.tgz#2284735448a957a3ff3c6116296637e728e8854b"
+  integrity sha512-I3NooT3xJF8GrtaKx1r+r50ldoUf7V3y9s1HguJZpfQwSvTcDMZDQhsvVEWv01hWatyjPHeEscEELY0goXFsmw==
   dependencies:
     "@analytics/activity-utils" "^0.1.16"
     "@analytics/scroll-utils" "^0.1.22"
@@ -1790,6 +1790,11 @@
     "@vitest/pretty-format" "2.1.3"
     loupe "^3.1.1"
     tinyrainbow "^1.2.0"
+
+"@zootools/email-spell-checker@^1.12.0":
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/@zootools/email-spell-checker/-/email-spell-checker-1.12.0.tgz#b69e14995b62c7405bb3e1ca5c92f7f4002dab3c"
+  integrity sha512-yM0lH4yjg+jZG5QubtvpHE+ahSnsHbw9ilnQgKgOF3fk6OBVQLRsEq4NR+/nRvrwG8Vo+29bzKwhXk5y1b/FwA==
 
 abbrev@^2.0.0:
   version "2.0.0"

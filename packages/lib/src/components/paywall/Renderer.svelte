@@ -8,7 +8,6 @@
   import { twMerge } from 'tailwind-merge';
   import type { TranslationFunction } from '../../i18n';
   import { hexToHsl, hslArrayToCSS } from '../../utils/color';
-  import Clickable from '../Clickable.svelte';
   import type { Paywall, PaywallSubscription } from 'src/types/Paywall';
   import type { IconName } from 'src/icons/types';
   import Subscriptions from './Subscriptions.svelte';
@@ -17,6 +16,7 @@
   import type { PaywallProps } from 'src/types';
   import Error from '../Error.svelte';
   import PayNowForm from './PayNowForm.svelte';
+  import NotLoggedIn from '../NotLoggedIn.svelte';
 
   type Props = {
     api: SesamyAPI;
@@ -53,7 +53,9 @@
     }
   } = paywall;
 
-  const createCheckout = async () => {
+  const createCheckout = async (e: SubmitEvent) => {
+    error = '';
+    e.preventDefault();
     if (!product) return;
 
     loading = true;
@@ -80,7 +82,9 @@
           utmMedium: userProps?.['utm-medium'],
           utmCampaign: userProps?.['utm-campaign'],
           utmTerm: userProps?.['utm-term'],
-          utmContent: userProps?.['utm-content']
+          utmContent: userProps?.['utm-content'],
+          source: 'PAYWALL',
+          sourceId: paywall.id
         }
       });
     } catch (err) {
@@ -108,7 +112,7 @@
   const paywallBgColor = hexToHsl(backgroundColor || '#FFFFFF');
 
   let sesamyPaywallDesignTokens = `
-    :host {
+    :host * {
       --s-paywall-bg-start-color: var(--sesamy-paywall-bg-start-color, ${paywallBgColor[0]},${paywallBgColor[1]}%,${paywallBgColor[2]}%);
       --s-paywall-bg-end-color: var(--sesamy-paywall-bg-end-color, ${paywallBgColor[0]},${paywallBgColor[1]}%,${paywallBgColor[2] + (100 - paywallBgColor[2]) * 0.5}%);
       
@@ -136,16 +140,22 @@
       up
       left
     >
-      {#if showLoginButton && !horizontal}
-        <Row class="text-sm gap-1 font-bold w-full">
-          {t('already_subscribing')}
+      <NotLoggedIn {api}>
+        {#if showLoginButton && !horizontal}
+          <Row class="text-sm gap-1 font-bold w-full">
+            <div>
+              {t('already_subscribing')}
+            </div>
 
-          <Clickable href="/" class="text-primary">{t('login')}</Clickable>
-        </Row>
-        <div
-          class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-primary/30"
-        ></div>
-      {/if}
+            <sesamy-login
+              class="p-0 border-none enabled:hover:bg-transparent hover:underline text-primary font-bold"
+            ></sesamy-login>
+          </Row>
+          <div
+            class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-primary/30"
+          ></div>
+        {/if}
+      </NotLoggedIn>
 
       <div class={twMerge('w-full pt-2 @md:pt-4', horizontal && 'column text-center mb-4')}>
         {#if useDefaultLogo}
@@ -161,26 +171,23 @@
       {/if}
 
       {#if checkout}
-        <PayNowForm {checkout} {t} />
+        <PayNowForm {api} {checkout} {t} />
       {:else}
-        {#if subscriptions.length}
-          <Subscriptions {horizontal} {subscriptions} {t} {currency} {selectProduct} />
-        {/if}
+        <form class="contents" onsubmit={createCheckout}>
+          {#if subscriptions.length}
+            <Subscriptions {horizontal} {subscriptions} {t} {currency} {selectProduct} />
+          {/if}
 
-        {#if singlePurchase && singlePurchase.enabled && !horizontal}
-          <SinglePurchase {singlePurchase} {t} {selectProduct} />
-        {/if}
+          {#if singlePurchase && singlePurchase.enabled && !horizontal}
+            <SinglePurchase {singlePurchase} {t} {selectProduct} {...userProps} />
+          {/if}
 
-        {#if !horizontal}
-          <Button
-            {loading}
-            disabled={loading}
-            class="mt-2 w-full shadow-md"
-            onclick={createCheckout}
-          >
-            {t('continue')}
-          </Button>
-        {/if}
+          {#if !horizontal}
+            <Button {loading} disabled={loading} class="mt-2 w-full shadow-md" type="submit">
+              {t('continue')}
+            </Button>
+          {/if}
+        </form>
       {/if}
       {#if error}
         <Error text={error} />
