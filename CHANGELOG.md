@@ -1,3 +1,35 @@
+# [1.3.0](https://github.com/sesamyab/sesamy-components/compare/v1.2.0...v1.3.0) (2024-11-08)
+
+
+### Bug Fixes
+
+* a bunch of changes ([3024903](https://github.com/sesamyab/sesamy-components/commit/3024903aba95a3a7817b89a0649010fe622ed3b6))
+* add a renderer for buttons ([ef7b25b](https://github.com/sesamyab/sesamy-components/commit/ef7b25ba44a6daf0ddf3a9b11fca59e85ab4a902))
+* made utility functions for support-detection of google-/apple-pay ([df5ad67](https://github.com/sesamyab/sesamy-components/commit/df5ad6772334a856c1ab8aa8663a46d98abfddc3))
+* minor css tweak ([1e49979](https://github.com/sesamyab/sesamy-components/commit/1e49979a6ef64e2545fbd148136f3070f2c1957b))
+* parent of inputs once again gets it border filled when a children is selected ([69c66fa](https://github.com/sesamyab/sesamy-components/commit/69c66fa3b840eb5bb7da9e51115062a9f7b9983f))
+* update snapshots ([e66cb92](https://github.com/sesamyab/sesamy-components/commit/e66cb922ddfe3bd1a5cd01e99beb75177edbe334))
+
+
+### Features
+
+* add sesamy meta tags to demo & read them in single purchase ([923995d](https://github.com/sesamyab/sesamy-components/commit/923995d9eb2fb5cf03a840fbc1bcee9c97cc0e08))
+* added accordion, moved source & sourceId to attribution and added email-spell-checker ([429e169](https://github.com/sesamyab/sesamy-components/commit/429e169bc5616ecd8f408dc27a308f5c318ed4d1))
+* added discount price support ([f53ac57](https://github.com/sesamyab/sesamy-components/commit/f53ac570fdf672a8ac6a437a9b37cea39045f90e))
+* added Input, Select, InputGroup & Countries constant ([ea9ed6e](https://github.com/sesamyab/sesamy-components/commit/ea9ed6e5b83aec4874178a4eb6be2abb19d4bbb5))
+* added most popular flag ([09b8eb8](https://github.com/sesamyab/sesamy-components/commit/09b8eb878611cd7e7c2c56dd4e68f0c5595e7e77))
+* added proper form-elements ([80396ab](https://github.com/sesamyab/sesamy-components/commit/80396ab0ea2569d81ead0a7a39be141a53fdef32))
+* added stuff ([fc35a4c](https://github.com/sesamyab/sesamy-components/commit/fc35a4c3060c1083f9a4c81402bad11920bbf363))
+* added tailwind container queries ([f1a9f0b](https://github.com/sesamyab/sesamy-components/commit/f1a9f0b77eb931477e6068d0565d0a2a7e45eab5))
+* added the email suggestor ([f934814](https://github.com/sesamyab/sesamy-components/commit/f93481404ec8655a6a833e616fcdecb1164d7689))
+* complete paywall ([e28a596](https://github.com/sesamyab/sesamy-components/commit/e28a5963ab6377c5c6cf7ff08ec2d1d94e3d1b58))
+* flow is complete, todos left in code before merging ([214938c](https://github.com/sesamyab/sesamy-components/commit/214938c6e1836f23d1cb44c6c5e7c19f47fc4dda))
+* last touches on paywall ([84ef32f](https://github.com/sesamyab/sesamy-components/commit/84ef32f0b1bdbe14a781263e87abb46a7233ee9f))
+* moved "most popular" to the right side ([3c57b28](https://github.com/sesamyab/sesamy-components/commit/3c57b28745a970c643b0d15a90e1d07bb95a43a1))
+* my last commit, will miss you guys <3 ([37181f9](https://github.com/sesamyab/sesamy-components/commit/37181f90ad4531dd8eba41f51a434e0a73b7f8f3))
+* responsiveness ([ce080ae](https://github.com/sesamyab/sesamy-components/commit/ce080aef996b6b03a1772c3170e215f5b508be75))
+* update ([1a2d185](https://github.com/sesamyab/sesamy-components/commit/1a2d1850a5fdd17c1f2aed17449b3512c33072f8))
+
 # [1.2.0](https://github.com/sesamyab/sesamy-components/compare/v1.1.4...v1.2.0) (2024-10-22)
 
 
