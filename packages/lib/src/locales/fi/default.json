@@ -1,4 +1,20 @@
 {
   "already_subscribing": "Oletko jo tilannut?",
-  "login": "Kirjaudu sisään"
+  "click_to_update": "Klikkaa päivittääksesi",
+  "continue": "Jatka",
+  "country": "Maa",
+  "did_you_mean": "Tarkoititko",
+  "email": "Sähköposti",
+  "first_name": "Etunimi",
+  "first_name_required": "Etunimi vaaditaan",
+  "invalid_email": "Virheellinen sähköpostiosoite",
+  "last_name": "Sukunimi",
+  "last_name_required": "Sukunimi vaaditaan",
+  "login": "Kirjaudu sisään",
+  "logo_of": "Logo of",
+  "pay_now": "Maksa nyt",
+  "phone_number": "Puhelinnumero",
+  "phone_number_required": "Puhelinnumero vaaditaan",
+  "secure_payment": "Turvallinen SSL-salattu maksu",
+  "something_went_wrong": "Jokin meni pieleen"
 }

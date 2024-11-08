@@ -4,10 +4,16 @@
   import type { SesamyAPI } from '@sesamy/sesamy-js';
   import Avatar from './Avatar.wc.svelte';
   import Base from './Base.svelte';
-  import Button from './Button.wc.svelte';
   import type { LoginProps } from './types';
+  import Button from './components/Button.svelte';
 
-  let { loading, loggedIn, userAvatar, variant = 'primary' }: LoginProps = $props();
+  let {
+    loading,
+    loggedIn,
+    userAvatar,
+    'button-text': buttonText,
+    class: classes = ''
+  }: LoginProps & { class?: string } = $props();
 
   let disabled = $state(false);
 
@@ -36,7 +42,7 @@
       loggedIn = await api.auth.isAuthenticated();
       if (loggedIn) {
         const user = await api.auth.getUser();
-        userAvatar = user?.picture;
+        userAvatar = user?.picture || '';
       }
     } catch (error) {
       console.error('Error checking login status:', error);
@@ -48,11 +54,13 @@
   {#await checkLoggedIn(api)}
     <Avatar loading={true} size="sm"></Avatar>
   {:then _}
-    {#if loading || loggedIn}
+    {#if loading}
+      <Avatar {loading} onclick={() => logout(api)} size="sm"></Avatar>
+    {:else if loggedIn}
       <Avatar {loading} onclick={() => logout(api)} size="sm"></Avatar>
     {:else}
-      <Button {variant} {disabled} onclick={() => login(api)} size="sm">
-        {t('login')}
+      <Button class={classes} variant="secondary" {disabled} onclick={() => login(api)} size="sm">
+        {buttonText || t('login')}
       </Button>
     {/if}
   {/await}

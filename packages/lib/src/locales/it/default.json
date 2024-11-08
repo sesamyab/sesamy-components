@@ -1,4 +1,20 @@
 {
   "already_subscribing": "Siete già abbonati?",
-  "login": "Accesso"
+  "click_to_update": "Fare clic per aggiornare",
+  "continue": "Continua",
+  "country": "Paese",
+  "did_you_mean": "Intendeva",
+  "email": "Email",
+  "first_name": "Nome",
+  "first_name_required": "Il nome è obbligatorio",
+  "invalid_email": "Indirizzo e-mail non valido",
+  "last_name": "Cognome",
+  "last_name_required": "Il cognome è obbligatorio",
+  "login": "Accesso",
+  "logo_of": "Logo di",
+  "pay_now": "Paga ora",
+  "phone_number": "Numero di telefono",
+  "phone_number_required": "Il numero di telefono è richiesto",
+  "secure_payment": "Pagamento sicuro con crittografia SSL",
+  "something_went_wrong": "Qualcosa è andato storto"
 }

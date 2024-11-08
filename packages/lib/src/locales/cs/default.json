@@ -1,4 +1,20 @@
 {
   "already_subscribing": "Už jste se přihlásili k odběru?",
-  "login": "Přihlášení"
+  "click_to_update": "Klikněte pro aktualizaci",
+  "continue": "Pokračovat",
+  "country": "Země",
+  "did_you_mean": "Měl jste na mysli",
+  "email": "E-mail",
+  "first_name": "Křestní jméno",
+  "first_name_required": "Křestní jméno je povinné",
+  "invalid_email": "Neplatná e-mailová adresa",
+  "last_name": "Příjmení",
+  "last_name_required": "Příjmení je povinné",
+  "login": "Přihlášení",
+  "logo_of": "Logo společnosti",
+  "pay_now": "Zaplaťte nyní",
+  "phone_number": "Telefonní číslo",
+  "phone_number_required": "Vyžaduje se telefonní číslo",
+  "secure_payment": "Bezpečná platba šifrovaná pomocí SSL",
+  "something_went_wrong": "Něco se pokazilo"
 }

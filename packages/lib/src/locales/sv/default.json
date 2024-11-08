@@ -1,4 +1,20 @@
 {
   "already_subscribing": "Prenumererar du redan?",
-  "login": "Logga in"
+  "click_to_update": "Klicka för att uppdatera",
+  "continue": "Fortsätt",
+  "country": "Land",
+  "did_you_mean": "Menade du",
+  "email": "E-post",
+  "first_name": "Förnamn",
+  "first_name_required": "Förnamn är obligatoriskt",
+  "invalid_email": "Ogiltig e-postadress",
+  "last_name": "Efternamn",
+  "last_name_required": "Efternamn är obligatoriskt",
+  "login": "Logga in",
+  "logo_of": "Logotyp för",
+  "pay_now": "Betala nu",
+  "phone_number": "Telefonnummer",
+  "phone_number_required": "Telefonnummer är obligatoriskt",
+  "secure_payment": "Säker SSL-krypterad betalning",
+  "something_went_wrong": "Något gick fel"
 }

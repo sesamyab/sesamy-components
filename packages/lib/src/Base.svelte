@@ -14,12 +14,13 @@
 
   let sesamyDesignTokens = `
     :host {
+      display: contents;
       font-family: var(--s-font-family);
       -webkit-font-smoothing: antialiased;
       color: black;
       text-align: left;
 
-      --s-primary-color: var(--sesamy-primary-color, ${hslArrayToCSS(hexToHsl('#7D68F4'))});
+      --s-primary-color: var(--sesamy-primary-color, ${hslArrayToCSS(hexToHsl('#000000'))});
       --s-font-family: var(--sesamy-font-family, Helvetica);
     }
   `;

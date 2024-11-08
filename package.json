@@ -61,6 +61,7 @@
     ]
   },
   "devDependencies": {
+    "@ape-egg/tailwind-rows-columns": "^1.0.2",
     "@chromatic-com/storybook": "^1.9.0",
     "@playwright/test": "^1.48.1",
     "@semantic-release/changelog": "^6.0.3",
@@ -77,6 +78,7 @@
     "@storybook/web-components": "^8.3.2",
     "@storybook/web-components-vite": "^8.3.2",
     "@sveltejs/vite-plugin-svelte": "^4.0.0-next.6",
+    "@tailwindcss/container-queries": "^0.1.1",
     "@testing-library/jest-dom": "^6.5.0",
     "@testing-library/svelte": "^5.2.1",
     "@tsconfig/svelte": "^5.0.4",
@@ -108,8 +110,8 @@
     "dist/lib"
   ],
   "dependencies": {
-    "@ape-egg/tailwind-rows-columns": "^1.0.2",
-    "@sesamy/sesamy-js": "^1.22.9",
+    "@sesamy/sesamy-js": "^1.26.1",
+    "@zootools/email-spell-checker": "^1.12.0",
     "lucide-svelte": "^0.445.0"
   }
 }

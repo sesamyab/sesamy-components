@@ -1,4 +1,20 @@
 {
   "already_subscribing": "Abonnerer du allerede?",
-  "login": "Logg inn"
+  "click_to_update": "Klikk for å oppdatere",
+  "continue": "Fortsett",
+  "country": "Land",
+  "did_you_mean": "Mente du",
+  "email": "E-post",
+  "first_name": "Fornavn",
+  "first_name_required": "Fornavn er påkrevd",
+  "invalid_email": "Ugyldig e-postadresse",
+  "last_name": "Etternavn",
+  "last_name_required": "Etternavn er påkrevd",
+  "login": "Logg inn",
+  "logo_of": "Logoen til",
+  "pay_now": "Betal nå",
+  "phone_number": "Telefonnummer",
+  "phone_number_required": "Telefonnummer er påkrevd",
+  "secure_payment": "Sikker SSL-kryptert betaling",
+  "something_went_wrong": "Noe gikk galt"
 }
