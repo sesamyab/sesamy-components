@@ -1009,15 +1009,16 @@
     read-package-up "^11.0.0"
 
 "@sesamy/sesamy-js@^1.26.1":
-  version "1.26.1"
-  resolved "https://registry.yarnpkg.com/@sesamy/sesamy-js/-/sesamy-js-1.26.1.tgz#2284735448a957a3ff3c6116296637e728e8854b"
-  integrity sha512-I3NooT3xJF8GrtaKx1r+r50ldoUf7V3y9s1HguJZpfQwSvTcDMZDQhsvVEWv01hWatyjPHeEscEELY0goXFsmw==
+  version "1.29.0"
+  resolved "https://registry.yarnpkg.com/@sesamy/sesamy-js/-/sesamy-js-1.29.0.tgz#db0e458d8a88b19df08170f0064cb457d9ba77b0"
+  integrity sha512-0cQno6QuLy8RaeyFIw4GxkuLhsadupUWFtn3wlLSymAGcHCzUO71QSeImiBW/7O9EsLDapFtwDMAKF3hgGBu4g==
   dependencies:
     "@analytics/activity-utils" "^0.1.16"
     "@analytics/scroll-utils" "^0.1.22"
     "@auth0/auth0-spa-js" "^2.1.3"
     analytics "^0.8.13"
     core-js "^3.37.1"
+    detectincognitojs "^1.3.5"
     saturated "^1.0.0"
     wretch "^2.9.0"
 
@@ -2511,9 +2512,9 @@ cookie@0.7.1:
   integrity sha512-6DnInpx7SJ2AK3+CTUE/ZM0vWTUboZCegxhC2xiIydHR9jNuTAASBrfEpHhiGOZw/nX51bHt6YQl8jsGo4y/0w==
 
 core-js@^3.37.1:
-  version "3.38.1"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.38.1.tgz#aa375b79a286a670388a1a363363d53677c0383e"
-  integrity sha512-OP35aUorbU3Zvlx7pjsFdu1rGNnD4pgw/CWoYzRY3t2EzoVT7shKHY1dlAy3f41cGIO7ZDPQimhGFTlEYkG/Hw==
+  version "3.39.0"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.39.0.tgz#57f7647f4d2d030c32a72ea23a0555b2eaa30f83"
+  integrity sha512-raM0ew0/jJUqkJ0E6e8UDtl+y/7ktFivgWvqw8dNSQeNWoSDLvQ1H/RN3aPXB9tBd4/FhyR4RDPGhsNIMsAn7g==
 
 core-util-is@~1.0.0:
   version "1.0.3"
@@ -2707,6 +2708,11 @@ detect-newline@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/detect-newline/-/detect-newline-2.1.0.tgz#f41f1c10be4b00e87b5f13da680759f2c5bfd3e2"
   integrity sha512-CwffZFvlJffUg9zZA0uqrjQayUTC8ob94pnr5sFwaVv3IOmkfUHcWH+jXaQK3askE51Cqe8/9Ql/0uXNwqZ8Zg==
+
+detectincognitojs@^1.3.5:
+  version "1.3.6"
+  resolved "https://registry.yarnpkg.com/detectincognitojs/-/detectincognitojs-1.3.6.tgz#08fddf53400a9280f2696a6b802e3b8fc1cc4124"
+  integrity sha512-Yp3mzWCG297XKGD47pCSI1TzSuGwDMAz1z3xEy7OWuf56TsOO1Ez9S/yQd0uiVb47X0Xo1M8PHb80Ls6wFgFdw==
 
 didyoumean@^1.2.2:
   version "1.2.2"
@@ -7245,9 +7251,9 @@ wrappy@1:
   integrity sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==
 
 wretch@^2.9.0:
-  version "2.10.0"
-  resolved "https://registry.yarnpkg.com/wretch/-/wretch-2.10.0.tgz#07bf3c2ceb1e43330ae46955b455d2b1034e3e55"
-  integrity sha512-umAgGsgEfWVm2GT9Gl+Uyl2AI0q1P8WqXMGiDbSf5QImZW7bdnUbTUrgXYzYH+VmtlM6RqwJQH7JNizSNwt6kw==
+  version "2.11.0"
+  resolved "https://registry.yarnpkg.com/wretch/-/wretch-2.11.0.tgz#cf48a1c3eb0a29c4eb9aa241cd06da95b06fedab"
+  integrity sha512-zbFW4PnPSS5RFQabHRkCAcMQjmFGrEQLcJwYe4YGXL9KWXneu03Dtaz2JUeqEkOwNDMjdfHEHPL+AIZJwE+y1g==
 
 write-file-atomic@^6.0.0:
   version "6.0.0"
