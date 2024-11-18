@@ -16,7 +16,8 @@
   let { title, description } = singlePurchase;
 
   const completeAndSelect = (singlePurchase: PaywallSinglePurchase) => {
-    selectProduct({ ...singlePurchase, url: itemSrc });
+    const parsedPrice = price ? parseFloat(price) : 0;
+    selectProduct({ ...singlePurchase, price: parsedPrice, url: itemSrc });
   };
 
   // TODO: replace with sesamy-js logic

@@ -75,6 +75,8 @@
         items: [item],
         discountCode: product.discountCode,
         redirectUrl: userProps?.['redirect-url'] || window.location.href,
+        price: product.price,
+        currency,
         attribution: {
           utmSource: userProps?.['utm-source'],
           utmMedium: userProps?.['utm-medium'],
