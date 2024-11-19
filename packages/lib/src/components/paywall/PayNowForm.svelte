@@ -114,8 +114,10 @@
 
     try {
       await api.checkouts.update(checkout.id, {
-        provider: paymentMethod.provider, // TODO: update sesamy-js when this prop is included (and no red squiggly)
-        method: paymentMethod.method,
+        paymentData: {
+          provider: paymentMethod.provider, // TODO: update sesamy-js when this prop is included (and no red squiggly)
+          method: paymentMethod.method
+        },
         email
       });
 
@@ -160,8 +162,7 @@
           : [])
       ],
       [] as PaymentMethod[]
-    )
-    .filter(({ method }) => method !== 'SWISH');
+    );
 
   isSupportingGooglePay() &&
     paymentMethods.push({ provider: 'STRIPE', method: 'GOOGLE-PAY', icon: 'google-pay' });
