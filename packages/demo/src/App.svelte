@@ -18,10 +18,6 @@
   <meta property="sesamy:price" content="1337" />
   <meta property="sesamy:currency" content="SEK" />
   <meta property="sesamy:publisher-content-id" content="some-id" />
-  <meta
-    property="sesamy:item-src"
-    content="https://stage.fokus.se/aktuellt/lorem-ipsum-dolor-sit-amet-consectetur/"
-  />
 </svelte:head>
 
 <NavBar />
@@ -44,6 +40,7 @@
       <sesamy-paywall
         {template}
         settings-url="https://api.sesamy.dev/paywall/paywalls/test-fokus/ONh_7gBRk8U_L060YMUr2"
+        item-src="https://stage.fokus.se/aktuellt/lorem-ipsum-dolor-sit-amet-consectetur/"
       ></sesamy-paywall>
 
       <p>
