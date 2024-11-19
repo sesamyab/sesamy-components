@@ -5,6 +5,7 @@ import { Paywall } from '@sesamy/sesamy-components';
 interface PaywallProps {
   'settings-url': string;
   template: 'ARTICLE' | 'BOXES';
+  'item-src'?: string;
 }
 
 const meta: Meta<PaywallProps> = {
@@ -16,6 +17,9 @@ const meta: Meta<PaywallProps> = {
       <sesamy-paywall
         template=${args['template']}
         settings-url=${args['settings-url']}
+        item-src=${args['item-src']}
+        price="99"
+        currency="SEK"
       ></sesamy-paywall>
     </div>`,
   argTypes: {
@@ -39,6 +43,7 @@ type Story = StoryObj<PaywallProps>;
 export const Default: Story = {
   args: {
     'settings-url': 'https://api.sesamy.dev/paywall/paywalls/test-fokus/ONh_7gBRk8U_L060YMUr2',
+    'item-src': 'https://stage.fokus.se/aktuellt/lorem-ipsum-dolor-sit-amet-consectetur/',
     template: 'ARTICLE'
   }
 };
