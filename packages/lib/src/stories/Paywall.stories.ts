@@ -5,18 +5,22 @@ import { Paywall } from '@sesamy/sesamy-components';
 interface PaywallProps {
   'settings-url': string;
   template: 'ARTICLE' | 'BOXES';
+  'item-src'?: string;
 }
 
 const meta: Meta<PaywallProps> = {
   title: 'Components/Paywall',
   tags: ['autodocs', 'visual:check', 'story'],
-  component: 'sesamy-paywall',
+  component: 'sesamy-paywall-beta',
   render: (args) =>
     html` <div style="gap: 10px; padding: 10px; --sesamy-primary-color: 249 86.4% 68.2%;">
-      <sesamy-paywall
+      <sesamy-paywall-beta
         template=${args['template']}
         settings-url=${args['settings-url']}
-      ></sesamy-paywall>
+        item-src=${args['item-src']}
+        price="99"
+        currency="SEK"
+      ></sesamy-paywall-beta>
     </div>`,
   argTypes: {
     'settings-url': {
@@ -39,6 +43,7 @@ type Story = StoryObj<PaywallProps>;
 export const Default: Story = {
   args: {
     'settings-url': 'https://api.sesamy.dev/paywall/paywalls/test-fokus/ONh_7gBRk8U_L060YMUr2',
+    'item-src': 'https://stage.fokus.se/aktuellt/lorem-ipsum-dolor-sit-amet-consectetur/',
     template: 'ARTICLE'
   }
 };

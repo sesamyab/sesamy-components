@@ -18,7 +18,6 @@
   <meta property="sesamy:price" content="1337" />
   <meta property="sesamy:currency" content="SEK" />
   <meta property="sesamy:publisher-content-id" content="some-id" />
-  <meta property="sesamy:item-src" content="some-id" />
 </svelte:head>
 
 <NavBar />
@@ -38,10 +37,11 @@
         <option value="BOXES">Boxes</option>
       </select>
       <!-- https://portal-3p5j01f6y.vercel.sesamy.dev/test-fokus/paywalls/ONh_7gBRk8U_L060YMUr2 -->
-      <sesamy-paywall
+      <sesamy-paywall-beta
         {template}
         settings-url="https://api.sesamy.dev/paywall/paywalls/test-fokus/ONh_7gBRk8U_L060YMUr2"
-      ></sesamy-paywall>
+        item-src="https://stage.fokus.se/aktuellt/lorem-ipsum-dolor-sit-amet-consectetur/"
+      ></sesamy-paywall-beta>
 
       <p>
         Aenean accumsan ultrices aliquam. Morbi euismod non eros vel pellentesque. Sed sed molestie
@@ -52,10 +52,10 @@
     </article>
   </section>
   <aside style="min-width: 319px;">
-    <!-- <sesamy-paywall
+    <!-- <sesamy-paywall-beta
       {template}
       settings-url="https://api.sesamy.dev/paywall/paywalls/test-fokus/ONh_7gBRk8U_L060YMUr2"
-    ></sesamy-paywall> -->
+    ></sesamy-paywall-beta> -->
   </aside>
 </main>
 

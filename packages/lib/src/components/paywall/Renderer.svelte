@@ -47,10 +47,7 @@
     footerPaymentMethods,
     logoUrl,
     vendorId,
-    settings: {
-      useDefaultLogo,
-      styling: { showBackground, dropShadow, backgroundColor }
-    }
+    settings: { useDefaultLogo, styling }
   } = paywall;
 
   const createCheckout = async (e: SubmitEvent) => {
@@ -104,18 +101,23 @@
     };
   };
 
-  if (subscriptions.length) {
+  const hasSubscriptions = subscriptions.length > 0;
+  if (hasSubscriptions) {
     const selected = subscriptions.find(({ selected }) => selected);
-    selected && selectProduct(selected);
+    if (selected) {
+      selectProduct(selected);
+    } else {
+      subscriptions[0].selected = true;
+      selectProduct(subscriptions[0]);
+    }
   }
 
-  const paywallBgColor = hexToHsl(backgroundColor || '#FFFFFF');
+  const paywallBgColor = hexToHsl(styling?.backgroundColor || '#FFFFFF');
 
   let sesamyPaywallDesignTokens = `
     :host * {
       --s-paywall-bg-start-color: var(--sesamy-paywall-bg-start-color, ${paywallBgColor[0]},${paywallBgColor[1]}%,${paywallBgColor[2]}%);
       --s-paywall-bg-end-color: var(--sesamy-paywall-bg-end-color, ${paywallBgColor[0]},${paywallBgColor[1]}%,${paywallBgColor[2] + (100 - paywallBgColor[2]) * 0.5}%);
-      
       --s-primary-color: var(--sesamy-paywall-primary-color, ${hslArrayToCSS(hexToHsl(mainColor))}) !important;
     }
   `;
@@ -127,9 +129,9 @@
   <Column
     class={twMerge(
       'w-full pt-4 @md:pt-6 rounded-lg @xl:rounded-3xl',
-      showBackground &&
+      styling?.showBackground &&
         'bg-gradient-to-b from-[hsl(var(--s-paywall-bg-start-color))] to-[hsl(var(--s-paywall-bg-end-color))]',
-      showBackground && dropShadow && 'shadow-md @xl:shadow-lg'
+      styling?.showBackground && styling?.dropShadow && 'shadow-md @xl:shadow-lg'
     )}
   >
     <Column
@@ -147,9 +149,9 @@
               {t('already_subscribing')}
             </div>
 
-            <sesamy-login
+            <sesamy-login-beta
               class="p-0 border-none enabled:hover:bg-transparent hover:underline text-primary font-bold"
-            ></sesamy-login>
+            ></sesamy-login-beta>
           </Row>
           <div
             class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-primary/30"
@@ -179,7 +181,13 @@
           {/if}
 
           {#if singlePurchase && singlePurchase.enabled && !horizontal}
-            <SinglePurchase {singlePurchase} {t} {selectProduct} {...userProps} />
+            <SinglePurchase
+              {singlePurchase}
+              {t}
+              {selectProduct}
+              {hasSubscriptions}
+              {...userProps}
+            />
           {/if}
 
           {#if !horizontal}

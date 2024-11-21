@@ -2,15 +2,16 @@
   // @ts-ignore
   import libstyles from './app.css?inline';
   import { getApi } from './api';
-  import initTransaltor from './i18n';
+  import initTranslator from './i18n';
   import { hexToHsl, hslArrayToCSS } from './utils/color';
 
   let { lang, applyStyles = true }: { lang?: string; applyStyles?: boolean } = $props();
-  const htmlLang = document.querySelector('html')?.getAttribute('lang');
+  const htmlLocale = document.querySelector('html')?.getAttribute('lang');
+  const htmlLang = htmlLocale?.split('-')[0];
 
   const apiPromise = getApi();
 
-  const translator = initTransaltor(lang || htmlLang || 'en');
+  const translator = initTranslator(lang || htmlLang || 'en');
 
   let sesamyDesignTokens = `
     :host {

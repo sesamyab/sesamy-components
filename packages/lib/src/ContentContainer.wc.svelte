@@ -1,4 +1,4 @@
-<svelte:options customElement={{ tag: 'sesamy-content-container', shadow: 'open' }} />
+<svelte:options customElement={{ tag: 'sesamy-content-container-beta', shadow: 'open' }} />
 
 <script lang="ts">
   import type { SesamyAPI, Entitlement } from '@sesamy/sesamy-js';
@@ -49,12 +49,12 @@
     const response = await fetch(url, { headers });
     const content = await response.text();
 
-    // Parse content and look for the div[slot="content"] on the <sesamy-content-container> tag
+    // Parse content and look for the div[slot="content"] on the <sesamy-content-container-beta> tag
     const parser = new DOMParser();
     const contentSlot = parser
       .parseFromString(content, 'text/html')
       .querySelector(
-        `sesamy-content-container[access-url='${accessUrl}'], sesamy-content-container[item-src='${itemSrc}'], sesamy-content-container[pass='${pass}']`
+        `sesamy-content-container-beta[access-url='${accessUrl}'], sesamy-content-container-beta[item-src='${itemSrc}'], sesamy-content-container-beta[pass='${pass}']`
       )
       ?.querySelector("div[slot='content']");
 
