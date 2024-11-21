@@ -23,6 +23,7 @@ export interface TranslationFunction {
   (key: Key): string;
 }
 
-export default function init(language: string): TranslationFunction {
-  return (key: Key) => languages[language][key];
+export default function init(langAttribute: string): TranslationFunction {
+  const lang = languages[langAttribute] ? langAttribute : 'en';
+  return (key: Key) => languages[lang]?.[key] || key;
 }
