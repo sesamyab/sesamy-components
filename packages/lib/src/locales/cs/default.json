@@ -16,5 +16,6 @@
   "phone_number": "Telefonní číslo",
   "phone_number_required": "Vyžaduje se telefonní číslo",
   "secure_payment": "Bezpečná platba šifrovaná pomocí SSL",
-  "something_went_wrong": "Něco se pokazilo"
+  "something_went_wrong": "Něco se pokazilo",
+  "user_already_owns_item": "Tento produkt již vlastníte"
 }

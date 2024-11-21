@@ -121,26 +121,20 @@
 
       const checkoutURL = new URL(CHECKOUT_URL);
 
+      checkoutURL.pathname = checkout.id;
       checkoutURL.searchParams.set('norecreate', 'true');
       checkoutURL.searchParams.set('lang', checkout.language);
       checkoutURL.searchParams.set('redirect-url', checkout.redirectUrl);
 
-      const path = [checkout.id];
-      if (paymentMethod.method === 'GOOGLE-PAY' || paymentMethod.method === 'APPLE-PAY') {
-        path.push('summary');
-        checkoutURL.searchParams.set('paymentMethod', paymentMethod.method);
-      } else if (paymentMethod.method === 'CARD') {
-        path.push('payment');
-      } else {
-        path.push('summary');
-      }
-
-      checkoutURL.pathname = path.join('/');
       window.location.href = checkoutURL.href;
       return;
-    } catch (err) {
-      console.error(err);
-      errors = { general: 'something_went_wrong' };
+    } catch (err: any) {
+      if (err?.message?.includes('User already owns item')) {
+        errors = { general: 'user_already_owns_item' };
+      } else {
+        console.error(err);
+        errors = { general: 'something_went_wrong' };
+      }
       loading = false;
       return;
     }
