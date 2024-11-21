@@ -42,7 +42,7 @@
     };
   };
 
-  type PaymentMethod = {
+  type PaymentMethodType = {
     provider: string;
     method?: string;
     icon: IconName;
@@ -59,7 +59,7 @@
   let country = $state(checkout.country || 'SE'); // Must provide a fallback value since `Checkout.country` is optional
   let loading = $state(false);
   let errors = $state<{ [key: string]: any }>();
-  let paymentMethod = $state<PaymentMethod>();
+  let paymentMethod = $state<PaymentMethodType>();
   let emailSuggestion = $state('');
   let suggestionTimeout: any;
 
@@ -93,7 +93,7 @@
       : undefined;
   };
 
-  const selectPaymentMethod = (option: PaymentMethod) => (paymentMethod = option);
+  const selectPaymentMethod = (option: PaymentMethodType) => (paymentMethod = option);
   const provideSuggestion = () => {
     errors = undefined;
     clearTimeout(suggestionTimeout);
@@ -162,7 +162,7 @@
             }))
           : [])
       ],
-      [] as PaymentMethod[]
+      [] as PaymentMethodType[]
     );
 
   isSupportingGooglePay() &&
