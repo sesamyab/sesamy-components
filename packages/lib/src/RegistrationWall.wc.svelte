@@ -1,17 +1,17 @@
-<svelte:options customElement="sesamy-registration-wall" />
+<svelte:options customElement="sesamy-registration-wall-beta" />
 
 <script lang="ts">
-  import type { SesamyAPI } from "@sesamy/sesamy-js";
-  import AppleLogo from "./assets/AppleLogo.svelte";
-  import FacebookLogo from "./assets/FacebookLogo.svelte";
-  import GoogleLogo from "./assets/GoogleLogo.svelte";
-  import Base from "./Base.svelte";
+  import type { SesamyAPI } from '@sesamy/sesamy-js';
+  import AppleLogo from './assets/AppleLogo.svelte';
+  import FacebookLogo from './assets/FacebookLogo.svelte';
+  import GoogleLogo from './assets/GoogleLogo.svelte';
+  import Base from './Base.svelte';
 
   const login = async (api: SesamyAPI) => {
     try {
       await api.auth.loginWithRedirect();
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error('Login failed:', error);
     }
   };
 </script>
@@ -21,14 +21,10 @@
     class="max-w-[800px] mx-auto p-5 text-center bg-[#f8f8f5] border border-[#e9e9da] rounded-lg font-sans"
   >
     <slot name="title">
-      <h1 class="text-2xl font-bold mb-2.5">
-        Skapa ett gratis konto eller logga in
-      </h1>
+      <h1 class="text-2xl font-bold mb-2.5">Skapa ett gratis konto eller logga in</h1>
     </slot>
     <slot name="description">
-      <p class="text-sm mb-5 text-gray-600">
-        Få tillgång till gratis artiklar och nyhetsbrev.
-      </p>
+      <p class="text-sm mb-5 text-gray-600">Få tillgång till gratis artiklar och nyhetsbrev.</p>
     </slot>
 
     <div class="w-full">
@@ -83,9 +79,8 @@
     </div>
 
     <p class="text-xs mt-5 text-gray-500">
-      Genom att logga in godkänner du våra <a
-        href="#terms"
-        class="text-[#4285f4] no-underline">Vilkor</a
+      Genom att logga in godkänner du våra <a href="#terms" class="text-[#4285f4] no-underline"
+        >Vilkor</a
       >
     </p>
   </div>

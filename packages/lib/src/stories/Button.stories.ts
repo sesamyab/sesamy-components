@@ -7,16 +7,16 @@ import type { ButtonProps } from '../types';
 const meta: Meta<ButtonProps & { loading: boolean; disabled: boolean; buttonText: string }> = {
   title: 'Components/Button',
   tags: ['autodocs'],
-  component: 'sesamy-button',
+  component: 'sesamy-button-beta',
   render: (args) => html`
-    <sesamy-button
+    <sesamy-button-beta
       variant="primary"
       .disabled=${ifDefined(args.disabled)}
       .loading=${ifDefined(args.loading)}
       .variant=${ifDefined(args.variant)}
       .size=${ifDefined(args.size)}
       @click=${args.onclick}
-      >${args.buttonText}</sesamy-button
+      >${args.buttonText}</sesamy-button-beta
     >
   `,
   argTypes: {
@@ -51,9 +51,9 @@ export const variants: Story = {
   },
   render: () => html`
     <div style="gap: 10px; padding: 10px;">
-      <sesamy-button variant="primary">Primary</sesamy-button>
-      <sesamy-button variant="secondary">Secondary</sesamy-button>
-      <sesamy-button variant="tertiary">Tertiary</sesamy-button>
+      <sesamy-button-beta variant="primary">Primary</sesamy-button-beta>
+      <sesamy-button-beta variant="secondary">Secondary</sesamy-button-beta>
+      <sesamy-button-beta variant="tertiary">Tertiary</sesamy-button-beta>
     </div>
   `
 };
@@ -64,9 +64,9 @@ export const sizes: Story = {
   },
   render: () => html`
     <div style="gap: 10px; padding: 10px;">
-      <sesamy-button size="lg">Large</sesamy-button>
-      <sesamy-button size="md">Medium</sesamy-button>
-      <sesamy-button size="sm">Small</sesamy-button>
+      <sesamy-button-beta size="lg">Large</sesamy-button-beta>
+      <sesamy-button-beta size="md">Medium</sesamy-button-beta>
+      <sesamy-button-beta size="sm">Small</sesamy-button-beta>
     </div>
   `
 };
@@ -77,9 +77,9 @@ export const disabled: Story = {
   },
   render: () => html`
     <div style="gap: 10px; padding: 10px;">
-      <sesamy-button disabled variant="primary">Primary</sesamy-button>
-      <sesamy-button disabled variant="secondary">Secondary</sesamy-button>
-      <sesamy-button disabled variant="tertiary">Tertiary</sesamy-button>
+      <sesamy-button-beta disabled variant="primary">Primary</sesamy-button-beta>
+      <sesamy-button-beta disabled variant="secondary">Secondary</sesamy-button-beta>
+      <sesamy-button-beta disabled variant="tertiary">Tertiary</sesamy-button-beta>
     </div>
   `
 };
@@ -90,9 +90,9 @@ export const Loading: Story = {
   },
   render: () => html`
     <div style="gap: 10px; padding: 10px;">
-      <sesamy-button loading variant="primary">Primary</sesamy-button>
-      <sesamy-button loading variant="secondary">Secondary</sesamy-button>
-      <sesamy-button loading variant="tertiary">Tertiary</sesamy-button>
+      <sesamy-button-beta loading variant="primary">Primary</sesamy-button-beta>
+      <sesamy-button-beta loading variant="secondary">Secondary</sesamy-button-beta>
+      <sesamy-button-beta loading variant="tertiary">Tertiary</sesamy-button-beta>
     </div>
   `
 };
@@ -103,9 +103,9 @@ export const color: Story = {
   },
   render: () => html`
     <div style="gap: 10px; padding: 10px; --sesamy-primary-color: 357, 95.9%, 48.2%;">
-      <sesamy-button variant="primary">Primary</sesamy-button>
-      <sesamy-button variant="secondary">Secondary</sesamy-button>
-      <sesamy-button variant="tertiary">Tertiary</sesamy-button>
+      <sesamy-button-beta variant="primary">Primary</sesamy-button-beta>
+      <sesamy-button-beta variant="secondary">Secondary</sesamy-button-beta>
+      <sesamy-button-beta variant="tertiary">Tertiary</sesamy-button-beta>
     </div>
   `
 };
