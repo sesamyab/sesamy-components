@@ -10,12 +10,20 @@
     t: TranslationFunction;
     singlePurchase: PaywallSinglePurchase;
     selectProduct: Function;
+    hasSubscriptions: boolean;
   } & PaywallProps;
 
-  let { singlePurchase, selectProduct, 'item-src': itemSrc, price, currency }: Props = $props();
+  let {
+    singlePurchase,
+    selectProduct,
+    hasSubscriptions,
+    'item-src': itemSrc,
+    price,
+    currency
+  }: Props = $props();
   let { title, description } = singlePurchase;
 
-  const completeAndSelect = (singlePurchase: PaywallSinglePurchase) => {
+  const completeAndSelect = () => {
     const parsedPrice = price ? parseFloat(price) : 0;
     selectProduct({ ...singlePurchase, price: parsedPrice, url: itemSrc });
   };
@@ -29,6 +37,10 @@
   if (!itemSrc)
     itemSrc = (document.querySelector('meta[property="sesamy:item-src"]') as HTMLMetaElement)
       ?.content;
+
+  if (itemSrc && !hasSubscriptions) {
+    completeAndSelect();
+  }
 </script>
 
 {#if itemSrc}
@@ -37,7 +49,8 @@
       id="single-purchase"
       name="purchase-option"
       class="gap-2 @md:gap-4"
-      onchange={() => completeAndSelect(singlePurchase)}
+      checked={!hasSubscriptions}
+      onchange={completeAndSelect}
     >
       <Column left>
         <div class="text-base font-bold leading-tight">{title}</div>

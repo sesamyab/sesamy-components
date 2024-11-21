@@ -6,6 +6,7 @@
     "module": "ESNext",
     "resolveJsonModule": true,
     "allowJs": true,
+    "allowArbitraryExtensions": true,
     "checkJs": true,
     "isolatedModules": true,
     "outDir": "./dist",
@@ -20,7 +21,7 @@
     "paths": {
       "*": ["*", "*.svelte", "*.wc.svelte"]
     },
-    "types": ["./packages/lib/src/sesamy-components.d.ts"],
+    "types": [],
     "typeRoots": ["./packages/lib/src", "./node_modules/@types"]
   },
   "include": [
@@ -30,10 +31,5 @@
     "packages/lib/**/*.svelte",
     "packages/lib/**/*.wc.svelte"
   ],
-  "exclude": [
-    "**/*.stories.ts",
-    "**/*.stories.js",
-    "**/*.stories.svelte",
-    "node_modules"
-  ]
+  "exclude": ["**/*.stories.ts", "**/*.stories.js", "**/*.stories.svelte", "node_modules"]
 }

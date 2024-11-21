@@ -20,8 +20,9 @@
   import emailSpellChecker from '@zootools/email-spell-checker';
   import Accordion from '../Accordion.svelte';
 
-  // TODO: can we these dynamic (.com if built for prod, .dev if ran on local/preview)
-  const CHECKOUT_URL = 'https://checkout3.sesamy.dev';
+  const ENV = import.meta.env.MODE;
+  const CHECKOUT_URL =
+    ENV === 'production' ? 'https://checkout3.sesamy.com' : 'https://checkout3.sesamy.dev';
 
   type Props = {
     api: SesamyAPI;
@@ -41,7 +42,7 @@
     };
   };
 
-  type PaymentMethod = {
+  type PaymentMethodType = {
     provider: string;
     method?: string;
     icon: IconName;
@@ -58,7 +59,7 @@
   let country = $state(checkout.country || 'SE'); // Must provide a fallback value since `Checkout.country` is optional
   let loading = $state(false);
   let errors = $state<{ [key: string]: any }>();
-  let paymentMethod = $state<PaymentMethod>();
+  let paymentMethod = $state<PaymentMethodType>();
   let emailSuggestion = $state('');
   let suggestionTimeout: any;
 
@@ -92,7 +93,7 @@
       : undefined;
   };
 
-  const selectPaymentMethod = (option: PaymentMethod) => (paymentMethod = option);
+  const selectPaymentMethod = (option: PaymentMethodType) => (paymentMethod = option);
   const provideSuggestion = () => {
     errors = undefined;
     clearTimeout(suggestionTimeout);
@@ -114,8 +115,10 @@
 
     try {
       await api.checkouts.update(checkout.id, {
-        provider: paymentMethod.provider, // TODO: update sesamy-js when this prop is included (and no red squiggly)
-        method: paymentMethod.method,
+        paymentData: {
+          provider: paymentMethod.provider, // TODO: update sesamy-js when this prop is included (and no red squiggly)
+          method: paymentMethod.method
+        },
         email
       });
 
@@ -151,11 +154,10 @@
               method,
               icon: method.toLocaleLowerCase() as IconName
             }))
-          : [{ provider, method: undefined, icon: provider.toLocaleLowerCase() as IconName }])
+          : [])
       ],
-      [] as PaymentMethod[]
-    )
-    .filter(({ method }) => method !== 'SWISH');
+      [] as PaymentMethodType[]
+    );
 
   isSupportingGooglePay() &&
     paymentMethods.push({ provider: 'STRIPE', method: 'GOOGLE-PAY', icon: 'google-pay' });
