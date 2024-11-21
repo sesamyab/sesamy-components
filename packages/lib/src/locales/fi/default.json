@@ -16,5 +16,6 @@
   "phone_number": "Puhelinnumero",
   "phone_number_required": "Puhelinnumero vaaditaan",
   "secure_payment": "Turvallinen SSL-salattu maksu",
-  "something_went_wrong": "Jokin meni pieleen"
+  "something_went_wrong": "Jokin meni pieleen",
+  "user_already_owns_item": "Omistat jo tämän tuotteen"
 }

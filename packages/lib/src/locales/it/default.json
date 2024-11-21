@@ -16,5 +16,6 @@
   "phone_number": "Numero di telefono",
   "phone_number_required": "Il numero di telefono è richiesto",
   "secure_payment": "Pagamento sicuro con crittografia SSL",
-  "something_went_wrong": "Qualcosa è andato storto"
+  "something_went_wrong": "Qualcosa è andato storto",
+  "user_already_owns_item": "Possiedi già questo prodotto"
 }

@@ -16,5 +16,6 @@
   "phone_number": "Telefonnummer",
   "phone_number_required": "Telefonnummer är obligatoriskt",
   "secure_payment": "Säker SSL-krypterad betalning",
-  "something_went_wrong": "Något gick fel"
+  "something_went_wrong": "Något gick fel",
+  "user_already_owns_item": "Du har redan köpt den här produkten"
 }
