@@ -1,4 +1,4 @@
-<svelte:options customElement="sesamy-login" />
+<svelte:options customElement="sesamy-login-beta" />
 
 <script lang="ts">
   import type { SesamyAPI } from '@sesamy/sesamy-js';

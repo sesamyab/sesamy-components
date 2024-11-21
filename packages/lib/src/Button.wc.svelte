@@ -1,4 +1,4 @@
-<svelte:options customElement="sesamy-button" />
+<svelte:options customElement="sesamy-button-beta" />
 
 <script lang="ts">
   import { twMerge } from 'tailwind-merge';
