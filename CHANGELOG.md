@@ -1,3 +1,26 @@
+# [1.4.0](https://github.com/sesamyab/sesamy-components/compare/v1.3.0...v1.4.0) (2024-11-21)
+
+
+### Bug Fixes
+
+* filter paymentmethods correctly ([1f92bfd](https://github.com/sesamyab/sesamy-components/commit/1f92bfd98ef64da4ad7d8a3f643a31f5fa36df0b))
+* handle undefined styling prop ([a23d55d](https://github.com/sesamyab/sesamy-components/commit/a23d55dc214c08087213ec49712d0a52a226845b))
+* typescript issues ([58f903f](https://github.com/sesamyab/sesamy-components/commit/58f903f44b09c208906e7b3b7a5c799bc12206fc))
+
+
+### Features
+
+* already owns item handling ([8e1a09a](https://github.com/sesamyab/sesamy-components/commit/8e1a09a5e475e0152ec1b1673eccc2967daa99db))
+* dynamic checkout domain dev/prod ([28f99ed](https://github.com/sesamyab/sesamy-components/commit/28f99ed15cae097307c3fce5c94f1c8d3520aca3))
+* initial selection ([c549123](https://github.com/sesamyab/sesamy-components/commit/c549123775541f0849bb2aa61b88a0890beb7f35))
+* language handling ([6900c1f](https://github.com/sesamyab/sesamy-components/commit/6900c1f69844d54863b90952a2d4d9934d574813))
+* only show single-purchase if item-src is defined ([0690fd3](https://github.com/sesamyab/sesamy-components/commit/0690fd3530adebe040baab2bfecb827f79b84830))
+* remove dark light mode confusion ([7f410ef](https://github.com/sesamyab/sesamy-components/commit/7f410efd53183251259484e3601841f2eac04654))
+* sesamy-js upgrade ([3c9020a](https://github.com/sesamyab/sesamy-components/commit/3c9020a76dd928df7cd7ae8fdc1d6e176fe5be91))
+* set paymentData prop correctly in checkout update ([8d25a47](https://github.com/sesamyab/sesamy-components/commit/8d25a479a7a450466c64a3c218aa470c2cdb0fcc))
+* single purchase ([aeaaf34](https://github.com/sesamyab/sesamy-components/commit/aeaaf349a3382cb9b9ea81a37e21b2e89bab386c))
+* singlepurchase price ([9a2a50f](https://github.com/sesamyab/sesamy-components/commit/9a2a50f21deda2d8721163ba9e6d3e51a96d63d0))
+
 # [1.3.0](https://github.com/sesamyab/sesamy-components/compare/v1.2.0...v1.3.0) (2024-11-08)
 
 
