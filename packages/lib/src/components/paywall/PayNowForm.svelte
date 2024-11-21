@@ -20,8 +20,9 @@
   import emailSpellChecker from '@zootools/email-spell-checker';
   import Accordion from '../Accordion.svelte';
 
-  // TODO: can we these dynamic (.com if built for prod, .dev if ran on local/preview)
-  const CHECKOUT_URL = 'https://checkout3.sesamy.dev';
+  const ENV = import.meta.env.MODE;
+  const CHECKOUT_URL =
+    ENV === 'production' ? 'https://checkout3.sesamy.com' : 'https://checkout3.sesamy.dev';
 
   type Props = {
     api: SesamyAPI;
