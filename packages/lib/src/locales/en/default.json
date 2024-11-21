@@ -16,5 +16,6 @@
   "phone_number": "Phone number",
   "phone_number_required": "Phone number is required",
   "secure_payment": "Secure SSL encrypted payment",
-  "something_went_wrong": "Something went wrong"
+  "something_went_wrong": "Something went wrong",
+  "user_already_owns_item": "You already own this product"
 }

@@ -16,5 +16,6 @@
   "phone_number": "Telefonnummer",
   "phone_number_required": "Telefonnummer er påkrevd",
   "secure_payment": "Sikker SSL-kryptert betaling",
-  "something_went_wrong": "Noe gikk galt"
+  "something_went_wrong": "Noe gikk galt",
+  "user_already_owns_item": "Du eier allerede dette produktet"
 }
