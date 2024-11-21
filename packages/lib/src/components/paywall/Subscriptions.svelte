@@ -18,6 +18,13 @@
   };
 
   let { horizontal = false, subscriptions, currency, t, selectProduct }: Props = $props();
+
+  const getCheckoutUrl = async (product: PaywallSubscription) =>
+    sesamy.generateLink({
+      target: 'checkout',
+      sku: product.sku,
+      purchaseOptionId: product.poId
+    });
 </script>
 
 <SelectionGroup
@@ -101,9 +108,15 @@
             {/if}
           </Column>
 
-          <Button href={url} class="w-full mt-2" variant={tag ? 'primary' : 'secondary'}>
-            {buttonText || t('continue')}
-          </Button>
+          {#await getCheckoutUrl(subscription) then checkoutUrl}
+            <Button
+              href={checkoutUrl.replace('poId', 'option')}
+              class="w-full mt-2"
+              variant={tag ? 'primary' : 'secondary'}
+            >
+              {buttonText || t('continue')}
+            </Button>
+          {/await}
         </Column>
       </Column>
     {:else}
