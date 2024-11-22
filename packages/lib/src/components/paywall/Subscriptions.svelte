@@ -29,10 +29,10 @@
 
 <SelectionGroup
   class={twMerge(
-    !horizontal && 'column-left',
     horizontal && '@xl:grid-cols-3',
+    horizontal && subscriptions.length === 4 && '@xl:grid-cols-2 @4xl:grid-cols-4',
     horizontal && subscriptions.length === 2 && '@xl:grid-cols-2',
-    horizontal && subscriptions.length === 1 && 'flex justify-center'
+    horizontal && subscriptions.length === 1 && 'flex'
   )}
   {horizontal}
 >
@@ -62,9 +62,9 @@
           <Tag text={tag} {t} chunky />
         {/if}
 
-        <Column class="p-4 flex-1 w-full !justify-between gap-2 @xl:gap-8 shadow-md" left up>
-          <Column class="gap-1 @xl:p-2" left>
-            <div class="text-base @xl:text-lg font-bold mb-1 leading-tight">{title}</div>
+        <Column class="p-4 flex-1 gap-2 w-full !justify-between shadow-md" left up>
+          <Column class="@xl:p-1" left>
+            <div class="text-base @xl:text-lg font-bold leading-tight">{title}</div>
             {#if typeof price === 'number'}
               <Column class="mb-0 @xl:mb-4" left>
                 {#if discountPrice}
@@ -87,7 +87,7 @@
                   </span>
                   <span
                     class={twMerge(
-                      'text-xl @xl:text-2xl',
+                      'text-xl @xl:text-2xl whitespace-nowrap',
                       discountPrice && 'text-base @xl:text-lg text-gray-400'
                     )}
                   >
@@ -103,7 +103,11 @@
               </Column>
             {/if}
 
-            {#if features}
+            {#if description && (!features || features.length < 1)}
+              <div class="text-sm text-gray-700">{description}</div>
+            {/if}
+
+            {#if features && features.length > 0}
               <Features {features} />
             {/if}
           </Column>
@@ -111,8 +115,8 @@
           {#await getCheckoutUrl(subscription) then checkoutUrl}
             <Button
               href={checkoutUrl.replace('poId', 'option')}
-              class="w-full mt-2"
-              variant={tag ? 'primary' : 'secondary'}
+              class="w-full mt-4"
+              variant={selected || tag ? 'primary' : 'secondary'}
             >
               {buttonText || t('continue')}
             </Button>
