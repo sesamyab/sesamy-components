@@ -128,7 +128,7 @@
 <div class="@container">
   <Column
     class={twMerge(
-      'w-full pt-4 @md:pt-6 rounded-lg @xl:rounded-3xl',
+      'w-full py-4 @md:py-6 rounded-lg @xl:rounded-3xl',
       styling?.showBackground &&
         'bg-gradient-to-b from-[hsl(var(--s-paywall-bg-start-color))] to-[hsl(var(--s-paywall-bg-end-color))]',
       styling?.showBackground && styling?.dropShadow && 'shadow-md @xl:shadow-lg'
@@ -136,8 +136,10 @@
   >
     <Column
       class={twMerge(
-        'gap-2 @xs:px-8 @md:gap-4 px-4 pb-6 @md:pb-8 pt-0 w-full @3xl:px-16',
-        horizontal && 'px-6 pb-4'
+        'gap-2 @md:gap-4 pt-0 w-full',
+        styling?.showBackground && 'px-2 pb-6 @xs:px-8 @md:pb-8 @3xl:px-16',
+        horizontal && styling?.showBackground && 'px-6 pb-4',
+        !horizontal && 'max-w-[800px]'
       )}
       up
       left
@@ -159,11 +161,11 @@
         {/if}
       </NotLoggedIn>
 
-      <div class={twMerge('w-full pt-2 @md:pt-4', horizontal && 'column text-center mb-4')}>
+      <div class={twMerge('w-full pt-2 @md:pt-4', horizontal && 'column text-center mb-6')}>
         {#if useDefaultLogo}
           <img class="h-7 mb-6" src={logoUrl} alt={`${t('logo_of')} ${vendorId}`} />
         {/if}
-        <div class="text-2xl leading-tight @md:text-3xl font-bold max-w-[440px]">
+        <div class="text-2xl leading-tight @md:text-3xl font-bold max-w-[600px]">
           {headline}
         </div>
       </div>
