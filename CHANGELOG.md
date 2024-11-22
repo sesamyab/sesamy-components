@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/sesamyab/sesamy-components/compare/v1.5.0...v1.6.0) (2024-11-22)
+
+
+### Features
+
+* boxes layout ([566dff7](https://github.com/sesamyab/sesamy-components/commit/566dff71e8e7f88daa45af24b7d7f9d18df9917b))
+
 # [1.5.0](https://github.com/sesamyab/sesamy-components/compare/v1.4.0...v1.5.0) (2024-11-22)
 
 
