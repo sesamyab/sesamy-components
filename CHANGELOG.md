@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/sesamyab/sesamy-components/compare/v1.4.0...v1.5.0) (2024-11-22)
+
+
+### Features
+
+* checkout url in boxes mode ([b7cd6c8](https://github.com/sesamyab/sesamy-components/commit/b7cd6c8dc2854503faacaf3d945630431c22795d))
+
 # [1.4.0](https://github.com/sesamyab/sesamy-components/compare/v1.3.0...v1.4.0) (2024-11-21)
 
 
