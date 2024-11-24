@@ -1,3 +1,15 @@
+# [1.7.0](https://github.com/sesamyab/sesamy-components/compare/v1.6.0...v1.7.0) (2024-11-24)
+
+
+### Bug Fixes
+
+* discoutnCode in checkout url ([d716db3](https://github.com/sesamyab/sesamy-components/commit/d716db357281cbf4322a94406271ad4d4e0bf3f0))
+
+
+### Features
+
+* paywall tag position ([ec24fde](https://github.com/sesamyab/sesamy-components/commit/ec24fde52a8ff0ca136fb1414120f7ab313ada96))
+
 # [1.6.0](https://github.com/sesamyab/sesamy-components/compare/v1.5.0...v1.6.0) (2024-11-22)
 
 
