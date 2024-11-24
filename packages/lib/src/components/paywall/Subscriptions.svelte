@@ -23,7 +23,8 @@
     sesamy.generateLink({
       target: 'checkout',
       sku: product.sku,
-      purchaseOptionId: product.poId
+      purchaseOptionId: product.poId,
+      discountCode: product.discountCode
     });
 </script>
 
