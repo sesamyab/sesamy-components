@@ -36,6 +36,8 @@
   let loading = $state(false);
   let error = $state('');
 
+  const redirectUrl = userProps?.['redirect-url'] || window.location.href;
+
   let {
     subscriptions,
     singlePurchase,
@@ -71,7 +73,7 @@
         vendorId,
         items: [item],
         discountCode: product.discountCode,
-        redirectUrl: userProps?.['redirect-url'] || window.location.href,
+        redirectUrl,
         price: product.price,
         currency,
         attribution: {
@@ -179,7 +181,14 @@
       {:else}
         <form class="contents" onsubmit={createCheckout}>
           {#if subscriptions.length}
-            <Subscriptions {horizontal} {subscriptions} {t} {currency} {selectProduct} />
+            <Subscriptions
+              {horizontal}
+              {subscriptions}
+              {t}
+              {currency}
+              {selectProduct}
+              {redirectUrl}
+            />
           {/if}
 
           {#if singlePurchase && singlePurchase.enabled && !horizontal}
