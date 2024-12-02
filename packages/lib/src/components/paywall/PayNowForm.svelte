@@ -114,10 +114,13 @@
     loading = true;
 
     try {
+      const isWallet = ['GOOGLE-PAY', 'APPLE-PAY'].includes(paymentMethod.method || '');
+
       await api.checkouts.update(checkout.id, {
         paymentData: {
           provider: paymentMethod.provider, // TODO: update sesamy-js when this prop is included (and no red squiggly)
-          method: paymentMethod.method
+          // Need to set CARD for Google Pay and Apple Pay
+          method: isWallet ? 'CARD' : paymentMethod.method || ''
         },
         email
       });
@@ -128,6 +131,7 @@
       checkoutURL.searchParams.set('norecreate', 'true');
       checkoutURL.searchParams.set('lang', checkout.language);
       checkoutURL.searchParams.set('redirect-url', checkout.redirectUrl);
+      checkoutURL.searchParams.set('payment-method', paymentMethod.method || '');
 
       window.location.href = checkoutURL.href;
       return;
