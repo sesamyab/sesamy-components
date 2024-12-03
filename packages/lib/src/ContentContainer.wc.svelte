@@ -28,6 +28,11 @@
   // TODO: This should be moved to sesamy-js
   async function getRemoteContent(api: SesamyAPI, entitlement: boolean | Entitlement) {
     if (!accessUrl) {
+      const contentSlot = $host().querySelector('div[slot="content"]');
+      if (contentSlot) {
+        const content = await api.content.unlock(contentSlot);
+        return content;
+      }
       return '';
     }
 
