@@ -41,6 +41,7 @@
         {template}
         settings-url="https://api.sesamy.dev/paywall/paywalls/test-fokus/ONh_7gBRk8U_L060YMUr2"
         item-src="https://stage.fokus.se/aktuellt/lorem-ipsum-dolor-sit-amet-consectetur/"
+        redirect-url="https://sesamy.com"
       ></sesamy-paywall-beta>
 
       <p>

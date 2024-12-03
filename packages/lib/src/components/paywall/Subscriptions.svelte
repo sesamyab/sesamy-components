@@ -15,16 +15,25 @@
     subscriptions: PaywallSubscription[];
     currency: string;
     selectProduct: Function;
+    redirectUrl: string;
   };
 
-  let { horizontal = false, subscriptions, currency, t, selectProduct }: Props = $props();
+  let {
+    horizontal = false,
+    subscriptions,
+    currency,
+    t,
+    selectProduct,
+    redirectUrl
+  }: Props = $props();
 
   const getCheckoutUrl = async (product: PaywallSubscription) =>
     sesamy.generateLink({
       target: 'checkout',
       sku: product.sku,
       purchaseOptionId: product.poId,
-      discountCode: product.discountCode
+      discountCode: product.discountCode,
+      redirectUrl
     });
 </script>
 
