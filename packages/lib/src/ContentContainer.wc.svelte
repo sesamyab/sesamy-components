@@ -99,9 +99,11 @@
 <Base let:api applyStyles={false}>
   {#await checkAccess(api) then entitlement}
     {#if entitlement}
-      {#await getContent(api, entitlement) then content}
-        {@html content}
-      {/await}
+      <slot name="content">
+        {#await getContent(api, entitlement) then content}
+          {@html content}
+        {/await}
+      </slot>
     {:else}
       <slot name="preview"></slot>
     {/if}
