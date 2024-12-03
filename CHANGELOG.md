@@ -1,3 +1,18 @@
+# [1.8.0](https://github.com/sesamyab/sesamy-components/compare/v1.7.0...v1.8.0) (2024-12-03)
+
+
+### Bug Fixes
+
+* correct PaymentMethodType ([bb0303b](https://github.com/sesamyab/sesamy-components/commit/bb0303b0b511ad97425c510f8fa603bd7aa73d32))
+
+
+### Features
+
+* content-container server-side unlock ([3daa223](https://github.com/sesamyab/sesamy-components/commit/3daa223def17808a908d452ca8ed39ba2dbcfb90))
+* maybe content slot needs to be rendered ([0c7299d](https://github.com/sesamyab/sesamy-components/commit/0c7299dd6a39dfe0c6deab63893e8eb2177dc23d))
+* redirect-url in checkout-params ([fd3b6e2](https://github.com/sesamyab/sesamy-components/commit/fd3b6e2474e3943214e8ddc1a7b79fb87daf513d))
+* set checkout paymentmethod correctly ([5d4b78a](https://github.com/sesamyab/sesamy-components/commit/5d4b78a3f2e7d1ff695f358f12a3e07ca032bd42))
+
 # [1.7.0](https://github.com/sesamyab/sesamy-components/compare/v1.6.0...v1.7.0) (2024-11-24)
 
 
