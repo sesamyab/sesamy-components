@@ -10,19 +10,6 @@
     environment: 'dev',
     api: {
       namespace: 'sesamy'
-    },
-    content: {
-      article: {
-        article: { selector: 'sesamy-article' },
-        image: { selector: 'img', attribute: 'src' },
-        title: { selector: 'h1', attribute: 'textContent' },
-        excerpt: { selector: 'p', attribute: 'textContent' },
-        price: { selector: 'sesamy-article', attribute: 'price' },
-        currency: { selector: 'sesamy-article', attribute: 'currency' },
-        url: { selector: 'sesamy-article', attribute: 'item-src' },
-        id: { selector: 'sesamy-article', attribute: 'publisher-content-id' },
-        pass: { selector: 'sesamy-article', attribute: 'pass' }
-      }
     }
   });
 </script>
