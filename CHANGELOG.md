@@ -1,3 +1,141 @@
+# [1.8.0](https://github.com/sesamyab/sesamy-components/compare/v1.7.0...v1.8.0) (2024-12-03)
+
+
+### Bug Fixes
+
+* correct PaymentMethodType ([bb0303b](https://github.com/sesamyab/sesamy-components/commit/bb0303b0b511ad97425c510f8fa603bd7aa73d32))
+
+
+### Features
+
+* content-container server-side unlock ([3daa223](https://github.com/sesamyab/sesamy-components/commit/3daa223def17808a908d452ca8ed39ba2dbcfb90))
+* maybe content slot needs to be rendered ([0c7299d](https://github.com/sesamyab/sesamy-components/commit/0c7299dd6a39dfe0c6deab63893e8eb2177dc23d))
+* redirect-url in checkout-params ([fd3b6e2](https://github.com/sesamyab/sesamy-components/commit/fd3b6e2474e3943214e8ddc1a7b79fb87daf513d))
+* set checkout paymentmethod correctly ([5d4b78a](https://github.com/sesamyab/sesamy-components/commit/5d4b78a3f2e7d1ff695f358f12a3e07ca032bd42))
+
+# [1.7.0](https://github.com/sesamyab/sesamy-components/compare/v1.6.0...v1.7.0) (2024-11-24)
+
+
+### Bug Fixes
+
+* discoutnCode in checkout url ([d716db3](https://github.com/sesamyab/sesamy-components/commit/d716db357281cbf4322a94406271ad4d4e0bf3f0))
+
+
+### Features
+
+* paywall tag position ([ec24fde](https://github.com/sesamyab/sesamy-components/commit/ec24fde52a8ff0ca136fb1414120f7ab313ada96))
+
+# [1.6.0](https://github.com/sesamyab/sesamy-components/compare/v1.5.0...v1.6.0) (2024-11-22)
+
+
+### Features
+
+* boxes layout ([566dff7](https://github.com/sesamyab/sesamy-components/commit/566dff71e8e7f88daa45af24b7d7f9d18df9917b))
+
+# [1.5.0](https://github.com/sesamyab/sesamy-components/compare/v1.4.0...v1.5.0) (2024-11-22)
+
+
+### Features
+
+* checkout url in boxes mode ([b7cd6c8](https://github.com/sesamyab/sesamy-components/commit/b7cd6c8dc2854503faacaf3d945630431c22795d))
+
+# [1.4.0](https://github.com/sesamyab/sesamy-components/compare/v1.3.0...v1.4.0) (2024-11-21)
+
+
+### Bug Fixes
+
+* filter paymentmethods correctly ([1f92bfd](https://github.com/sesamyab/sesamy-components/commit/1f92bfd98ef64da4ad7d8a3f643a31f5fa36df0b))
+* handle undefined styling prop ([a23d55d](https://github.com/sesamyab/sesamy-components/commit/a23d55dc214c08087213ec49712d0a52a226845b))
+* typescript issues ([58f903f](https://github.com/sesamyab/sesamy-components/commit/58f903f44b09c208906e7b3b7a5c799bc12206fc))
+
+
+### Features
+
+* already owns item handling ([8e1a09a](https://github.com/sesamyab/sesamy-components/commit/8e1a09a5e475e0152ec1b1673eccc2967daa99db))
+* dynamic checkout domain dev/prod ([28f99ed](https://github.com/sesamyab/sesamy-components/commit/28f99ed15cae097307c3fce5c94f1c8d3520aca3))
+* initial selection ([c549123](https://github.com/sesamyab/sesamy-components/commit/c549123775541f0849bb2aa61b88a0890beb7f35))
+* language handling ([6900c1f](https://github.com/sesamyab/sesamy-components/commit/6900c1f69844d54863b90952a2d4d9934d574813))
+* only show single-purchase if item-src is defined ([0690fd3](https://github.com/sesamyab/sesamy-components/commit/0690fd3530adebe040baab2bfecb827f79b84830))
+* remove dark light mode confusion ([7f410ef](https://github.com/sesamyab/sesamy-components/commit/7f410efd53183251259484e3601841f2eac04654))
+* sesamy-js upgrade ([3c9020a](https://github.com/sesamyab/sesamy-components/commit/3c9020a76dd928df7cd7ae8fdc1d6e176fe5be91))
+* set paymentData prop correctly in checkout update ([8d25a47](https://github.com/sesamyab/sesamy-components/commit/8d25a479a7a450466c64a3c218aa470c2cdb0fcc))
+* single purchase ([aeaaf34](https://github.com/sesamyab/sesamy-components/commit/aeaaf349a3382cb9b9ea81a37e21b2e89bab386c))
+* singlepurchase price ([9a2a50f](https://github.com/sesamyab/sesamy-components/commit/9a2a50f21deda2d8721163ba9e6d3e51a96d63d0))
+
+# [1.3.0](https://github.com/sesamyab/sesamy-components/compare/v1.2.0...v1.3.0) (2024-11-08)
+
+
+### Bug Fixes
+
+* a bunch of changes ([3024903](https://github.com/sesamyab/sesamy-components/commit/3024903aba95a3a7817b89a0649010fe622ed3b6))
+* add a renderer for buttons ([ef7b25b](https://github.com/sesamyab/sesamy-components/commit/ef7b25ba44a6daf0ddf3a9b11fca59e85ab4a902))
+* made utility functions for support-detection of google-/apple-pay ([df5ad67](https://github.com/sesamyab/sesamy-components/commit/df5ad6772334a856c1ab8aa8663a46d98abfddc3))
+* minor css tweak ([1e49979](https://github.com/sesamyab/sesamy-components/commit/1e49979a6ef64e2545fbd148136f3070f2c1957b))
+* parent of inputs once again gets it border filled when a children is selected ([69c66fa](https://github.com/sesamyab/sesamy-components/commit/69c66fa3b840eb5bb7da9e51115062a9f7b9983f))
+* update snapshots ([e66cb92](https://github.com/sesamyab/sesamy-components/commit/e66cb922ddfe3bd1a5cd01e99beb75177edbe334))
+
+
+### Features
+
+* add sesamy meta tags to demo & read them in single purchase ([923995d](https://github.com/sesamyab/sesamy-components/commit/923995d9eb2fb5cf03a840fbc1bcee9c97cc0e08))
+* added accordion, moved source & sourceId to attribution and added email-spell-checker ([429e169](https://github.com/sesamyab/sesamy-components/commit/429e169bc5616ecd8f408dc27a308f5c318ed4d1))
+* added discount price support ([f53ac57](https://github.com/sesamyab/sesamy-components/commit/f53ac570fdf672a8ac6a437a9b37cea39045f90e))
+* added Input, Select, InputGroup & Countries constant ([ea9ed6e](https://github.com/sesamyab/sesamy-components/commit/ea9ed6e5b83aec4874178a4eb6be2abb19d4bbb5))
+* added most popular flag ([09b8eb8](https://github.com/sesamyab/sesamy-components/commit/09b8eb878611cd7e7c2c56dd4e68f0c5595e7e77))
+* added proper form-elements ([80396ab](https://github.com/sesamyab/sesamy-components/commit/80396ab0ea2569d81ead0a7a39be141a53fdef32))
+* added stuff ([fc35a4c](https://github.com/sesamyab/sesamy-components/commit/fc35a4c3060c1083f9a4c81402bad11920bbf363))
+* added tailwind container queries ([f1a9f0b](https://github.com/sesamyab/sesamy-components/commit/f1a9f0b77eb931477e6068d0565d0a2a7e45eab5))
+* added the email suggestor ([f934814](https://github.com/sesamyab/sesamy-components/commit/f93481404ec8655a6a833e616fcdecb1164d7689))
+* complete paywall ([e28a596](https://github.com/sesamyab/sesamy-components/commit/e28a5963ab6377c5c6cf7ff08ec2d1d94e3d1b58))
+* flow is complete, todos left in code before merging ([214938c](https://github.com/sesamyab/sesamy-components/commit/214938c6e1836f23d1cb44c6c5e7c19f47fc4dda))
+* last touches on paywall ([84ef32f](https://github.com/sesamyab/sesamy-components/commit/84ef32f0b1bdbe14a781263e87abb46a7233ee9f))
+* moved "most popular" to the right side ([3c57b28](https://github.com/sesamyab/sesamy-components/commit/3c57b28745a970c643b0d15a90e1d07bb95a43a1))
+* my last commit, will miss you guys <3 ([37181f9](https://github.com/sesamyab/sesamy-components/commit/37181f90ad4531dd8eba41f51a434e0a73b7f8f3))
+* responsiveness ([ce080ae](https://github.com/sesamyab/sesamy-components/commit/ce080aef996b6b03a1772c3170e215f5b508be75))
+* update ([1a2d185](https://github.com/sesamyab/sesamy-components/commit/1a2d1850a5fdd17c1f2aed17449b3512c33072f8))
+
+# [1.2.0](https://github.com/sesamyab/sesamy-components/compare/v1.1.4...v1.2.0) (2024-10-22)
+
+
+### Bug Fixes
+
+* add snapshots ([ddedb35](https://github.com/sesamyab/sesamy-components/commit/ddedb351f22e4f5e7b834f0e158326e59958ba52))
+* build storybook in playwright tests ([4548df3](https://github.com/sesamyab/sesamy-components/commit/4548df366331c8648d333c56865c67fc6d209a12))
+* button style ([ca4dc07](https://github.com/sesamyab/sesamy-components/commit/ca4dc07e031aee772f75a9d91ce8607e8eeff479))
+* change port ([ff2d96f](https://github.com/sesamyab/sesamy-components/commit/ff2d96f0b860cca2c906c58a83cac58db9a241a4))
+* first tests ([1029f7f](https://github.com/sesamyab/sesamy-components/commit/1029f7f998451832ad17bff19b1f8f8a38359227))
+* lock modes ([61d6003](https://github.com/sesamyab/sesamy-components/commit/61d6003499a20ce072769fa3ca4b16b44a989d7d))
+* made bg-white on paywall to also care for opacity ([1769ec0](https://github.com/sesamyab/sesamy-components/commit/1769ec0134f819649f9b5af0d38b5ae4918625b0))
+* prevent fouc ([63eaadb](https://github.com/sesamyab/sesamy-components/commit/63eaadb2683974be50b843a778b09e92c736159a))
+* removed unused vars ([1e363c7](https://github.com/sesamyab/sesamy-components/commit/1e363c7936053d81bcccddf2cd71946faeb5ac7b))
+* removed unused vars ([61227e7](https://github.com/sesamyab/sesamy-components/commit/61227e7be15d69774d5b6d8157f1899920b04a86))
+* replaced new occurance of -[hsl( ([7e6a675](https://github.com/sesamyab/sesamy-components/commit/7e6a675fd96bcd594ba5442b27ba9c134ca01ddb))
+* run for dev as well ([74481f6](https://github.com/sesamyab/sesamy-components/commit/74481f6823d3d83dcc928247cc4b054bb5af86d1))
+* support encode and embed ([e8ba1cd](https://github.com/sesamyab/sesamy-components/commit/e8ba1cd8aef15d46ae5672d87f6d6ceb96862b7a))
+
+
+### Features
+
+* added event and fetch lock modes ([e8f3e10](https://github.com/sesamyab/sesamy-components/commit/e8f3e10646bd339b1c008f4a5ba8234e1b3d2385))
+* added overrides ([a920ad6](https://github.com/sesamyab/sesamy-components/commit/a920ad6ecaa1034f05d4e38ae07aeef3bd1e319c))
+* button enhancements ([1e6d172](https://github.com/sesamyab/sesamy-components/commit/1e6d17261b85c4511379c62bbfc36c3996382d6d))
+* changes to colors. rgb > hsl ([ff72fea](https://github.com/sesamyab/sesamy-components/commit/ff72fea15d17fcd2a4fe739e7739bad271325e6d))
+* color "main" changed name to "primary" ([c5fe8d8](https://github.com/sesamyab/sesamy-components/commit/c5fe8d88d4bbcdada453a0aa4e91e86108ec8c8e))
+* implement suggestion boilerplate ([b5dd393](https://github.com/sesamyab/sesamy-components/commit/b5dd393e24d169cdf5fee8edc9a61977f8b32111))
+* quality of life changes to button ([3c6833b](https://github.com/sesamyab/sesamy-components/commit/3c6833ba8bc6019727a02602c0b9305139f3fe8f))
+* tailwind color handling ([10cbfe3](https://github.com/sesamyab/sesamy-components/commit/10cbfe3dfcba1330e222f42a2ae12d121e383138))
+
+## [1.1.4](https://github.com/sesamyab/sesamy-components/compare/v1.1.3...v1.1.4) (2024-10-14)
+
+
+### Bug Fixes
+
+* button opacity ([eea6c27](https://github.com/sesamyab/sesamy-components/commit/eea6c272bed7908bd70bb71888b459ea48f6a68a))
+* refactor button ([c2ea119](https://github.com/sesamyab/sesamy-components/commit/c2ea1198d60f4e1863e26cb1e7347393da916319))
+* review comments and prettier ([6ff7c21](https://github.com/sesamyab/sesamy-components/commit/6ff7c210ad20c94a5bd5ca3485f7f435746d2e82))
+* update logic for the button ([7466e5b](https://github.com/sesamyab/sesamy-components/commit/7466e5ba1f180a7a0f3030e3964df7f86e9b678e))
+* updated variants ([ecdd547](https://github.com/sesamyab/sesamy-components/commit/ecdd547d03286a7f95782f599dc1776c824e1ea6))
+
 ## [1.1.3](https://github.com/sesamyab/sesamy-components/compare/v1.1.2...v1.1.3) (2024-10-11)
 
 
