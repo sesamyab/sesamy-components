@@ -63,7 +63,7 @@
   "devDependencies": {
     "@ape-egg/tailwind-rows-columns": "^1.0.2",
     "@chromatic-com/storybook": "^3.2.2",
-    "@playwright/test": "1.49.1",
+    "@playwright/test": "1.48.1",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@storybook/addon-controls": "^8.4.7",
