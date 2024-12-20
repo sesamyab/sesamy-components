@@ -43,13 +43,13 @@ export type ButtonProps = HTMLButtonAttributes & {
 };
 
 export type AccessLevel = 'public' | 'logged-in' | 'entitlement';
-export type LockMode = 'embed' | 'encode' | 'signedUrl' | 'event';
+export type LockMode = 'embed' | 'encode' | 'signedUrl' | 'event' | 'proxy';
 
 export type ContentContainerProps = HTMLElement & {
   'item-src'?: string;
   pass?: string;
   'access-level'?: AccessLevel;
-  'access-url'?: string;
   'publisher-content-id'?: string;
   'lock-mode'?: LockMode;
+  'locked-content-selector'?: string;
 };

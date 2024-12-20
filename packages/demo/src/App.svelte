@@ -25,32 +25,47 @@
 <main>
   <aside></aside>
   <section>
-    <article>
+    <sesamy-article
+      item-src="https://stage.fokus.se/aktuellt/lorem-ipsum-dolor-sit-amet-consectetur/"
+      pass="sid:a1tdI9vbB6AEPhICVGQqD"
+      price="19"
+      currency="SEK"
+      publisher-content-id="some-id"
+    >
       <h1>Sesamy Components Demo Page</h1>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sed elit sollicitudin nisl
-        condimentum suscipit vitae sed lacus. Nullam venenatis vestibulum eros vitae rutrum. Donec
-        vel purus tempus metus vehicula fringilla.
-      </p>
-      <select value={template} onchange={({ target: { value } }: any) => (template = value)}>
-        <option value="ARTICLE">Article</option>
-        <option value="BOXES">Boxes</option>
-      </select>
-      <!-- https://portal-3p5j01f6y.vercel.sesamy.dev/test-fokus/paywalls/ONh_7gBRk8U_L060YMUr2 -->
-      <sesamy-paywall-beta
-        {template}
-        settings-url="https://api.sesamy.dev/paywall/paywalls/test-fokus/ONh_7gBRk8U_L060YMUr2"
-        item-src="https://stage.fokus.se/aktuellt/lorem-ipsum-dolor-sit-amet-consectetur/"
-        redirect-url="https://sesamy.com"
-      ></sesamy-paywall-beta>
-
-      <p>
-        Aenean accumsan ultrices aliquam. Morbi euismod non eros vel pellentesque. Sed sed molestie
-        neque, eget fermentum ligula. Sed varius, libero vitae rutrum fringilla, nulla sem ultrices
-        turpis, sed porta ligula elit eu ipsum. Quisque eu egestas est. Pellentesque ut varius elit,
-        non luctus massa. Ut blandit velit at condimentum interdum.
-      </p>
-    </article>
+      <div class="article-body">
+        <sesamy-content-container-beta
+          item-src="https://stage.fokus.se/aktuellt/lorem-ipsum-dolor-sit-amet-consectetur/"
+          lock-mode="proxy"
+        >
+          <div slot="preview">
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sed elit sollicitudin
+              nisl condimentum suscipit vitae sed lacus. Nullam venenatis vestibulum eros vitae
+              rutrum. Donec vel purus tempus metus vehicula fringilla.
+            </p>
+            <select value={template} onchange={({ target: { value } }: any) => (template = value)}>
+              <option value="ARTICLE">Article</option>
+              <option value="BOXES">Boxes</option>
+            </select>
+            <!-- https://portal-3p5j01f6y.vercel.sesamy.dev/test-fokus/paywalls/ONh_7gBRk8U_L060YMUr2 -->
+            <sesamy-paywall-beta
+              {template}
+              settings-url="https://api.sesamy.dev/paywall/paywalls/test-fokus/ONh_7gBRk8U_L060YMUr2"
+              item-src="https://stage.fokus.se/aktuellt/lorem-ipsum-dolor-sit-amet-consectetur/"
+              redirect-url="https://sesamy.com"
+            ></sesamy-paywall-beta>
+          </div>
+        </sesamy-content-container-beta>
+      </div>
+    </sesamy-article>
+    <p>More text below the article</p>
+    <p>
+      Aenean accumsan ultrices aliquam. Morbi euismod non eros vel pellentesque. Sed sed molestie
+      neque, eget fermentum ligula. Sed varius, libero vitae rutrum fringilla, nulla sem ultrices
+      turpis, sed porta ligula elit eu ipsum. Quisque eu egestas est. Pellentesque ut varius elit,
+      non luctus massa. Ut blandit velit at condimentum interdum.
+    </p>
   </section>
   <aside style="min-width: 319px;">
     <!-- <sesamy-paywall-beta

@@ -1,4 +1,7 @@
 /** @type {import('tailwindcss').Config} */
+import tailwindRowsColumns from '@ape-egg/tailwind-rows-columns';
+import containerQueries from '@tailwindcss/container-queries';
+
 export default {
   darkMode: 'class',
   content: [
@@ -12,5 +15,5 @@ export default {
       }
     }
   },
-  plugins: [require('@ape-egg/tailwind-rows-columns'), require('@tailwindcss/container-queries')]
+  plugins: [tailwindRowsColumns, containerQueries]
 };
