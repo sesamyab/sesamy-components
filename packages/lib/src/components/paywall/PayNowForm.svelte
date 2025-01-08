@@ -27,19 +27,7 @@
   type Props = {
     api: SesamyAPI;
     t: TranslationFunction;
-    checkout: Checkout & {
-      // TODO: this should be set on Checkout type in sesamy-js
-      settings?: {
-        name?: {
-          enabled: boolean;
-          required: boolean;
-        };
-        phone?: {
-          enabled: boolean;
-          required: boolean;
-        };
-      };
-    };
+    checkout: Checkout;
   };
 
   type PaymentMethodType = {
@@ -70,15 +58,27 @@
       tempErrors.push(['email', 'invalid_email']);
     }
 
-    if (checkout?.settings?.phone?.enabled && checkout?.settings?.phone?.required && !phoneNumber) {
+    if (
+      checkout?.fieldSettings?.phone?.enabled &&
+      checkout?.fieldSettings?.phone?.required &&
+      !phoneNumber
+    ) {
       tempErrors.push(['phoneNumber', 'phone_number_required']);
     }
 
-    if (checkout?.settings?.name?.enabled && checkout?.settings?.name?.required && !firstName) {
+    if (
+      checkout?.fieldSettings?.name?.enabled &&
+      checkout?.fieldSettings?.name?.required &&
+      !firstName
+    ) {
       tempErrors.push(['firstName', 'first_name_required']);
     }
 
-    if (checkout?.settings?.name?.enabled && checkout?.settings?.name?.required && !lastName) {
+    if (
+      checkout?.fieldSettings?.name?.enabled &&
+      checkout?.fieldSettings?.name?.required &&
+      !lastName
+    ) {
       tempErrors.push(['lastName', 'last_name_required']);
     }
 
@@ -202,7 +202,7 @@
       </Row>
     </Accordion>
     <Select options={countries} bind:value={country} compact placeholder={t('country')} />
-    {#if checkout?.settings?.phone?.enabled}
+    {#if checkout?.fieldSettings?.phone?.enabled}
       <Input
         onkeyup={() => (errors = undefined)}
         bind:value={phoneNumber}
@@ -211,7 +211,7 @@
         hasError={errors?.phoneNumber}
       />
     {/if}
-    {#if checkout?.settings?.name?.enabled}
+    {#if checkout?.fieldSettings?.name?.enabled}
       <Input
         onkeyup={() => (errors = undefined)}
         bind:value={firstName}
@@ -219,8 +219,6 @@
         placeholder={t('first_name')}
         hasError={errors?.firstName}
       />
-    {/if}
-    {#if checkout?.settings?.name?.enabled}
       <Input
         onkeyup={() => (errors = undefined)}
         bind:value={lastName}
