@@ -1,3 +1,10 @@
+## [1.9.1](https://github.com/sesamyab/sesamy-components/compare/v1.9.0...v1.9.1) (2025-01-16)
+
+
+### Bug Fixes
+
+* catch script errors ([fb15c39](https://github.com/sesamyab/sesamy-components/commit/fb15c39107722da0bdcce57239b1a14b2e62f6a1))
+
 # [1.9.0](https://github.com/sesamyab/sesamy-components/compare/v1.8.1...v1.9.0) (2025-01-16)
 
 
