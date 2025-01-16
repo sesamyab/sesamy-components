@@ -1,9 +1,10 @@
 <svelte:options customElement={{ tag: 'sesamy-content-container-beta', shadow: 'open' }} />
 
 <script lang="ts">
-  import { type SesamyAPI, type Entitlement } from '@sesamy/sesamy-js';
+  import { type SesamyAPI } from '@sesamy/sesamy-js';
   import Base from './Base.svelte';
   import type { ContentContainerProps } from './types';
+
   let {
     'item-src': itemSrc = '',
     'publisher-content-id': publisherContentId,
@@ -38,21 +39,83 @@
     dispatchEvent(event);
   }
 
-  async function getContent(api: SesamyAPI) {
+  async function injectContent(contentHtml: string) {
+    if (!contentHtml) return;
+
+    const host = $host();
+    if (!host) return;
+
+    const lockedContentNode = document.createElement('div');
+    lockedContentNode.setAttribute('position', 'relative');
+
+    // Copy classes from the web component
+    const componentClasses = host.getAttribute('class');
+    if (componentClasses) {
+      lockedContentNode.setAttribute('class', componentClasses);
+    }
+
+    lockedContentNode.innerHTML = contentHtml;
+
+    // Handle scripts
+    const scripts = lockedContentNode.querySelectorAll('script');
+    const scriptContents: string[] = [];
+
+    scripts.forEach((script) => {
+      if (script.src) {
+        const newScript = document.createElement('script');
+        newScript.src = script.src;
+        document.head.appendChild(newScript);
+      } else {
+        scriptContents.push(script.textContent || '');
+      }
+      script.parentNode?.removeChild(script);
+    });
+
+    // Insert in light DOM
+    host.parentElement?.insertBefore(lockedContentNode, host);
+
+    // Execute inline scripts
+    scriptContents.forEach((code) => {
+      const script = document.createElement('script');
+      script.textContent = code;
+      document.head.appendChild(script);
+      document.head.removeChild(script);
+    });
+  }
+
+  async function fetchContent(api: SesamyAPI): Promise<string> {
     const content = $host().querySelector('div[slot="content"]');
+
     switch (lockMode) {
       case 'encode':
-        return atob(content?.innerHTML || '');
+        const base64 = content?.innerHTML || '';
+        // Convert base64 to UTF-8 string
+        try {
+          return new TextDecoder().decode(Uint8Array.from(atob(base64), (c) => c.charCodeAt(0)));
+        } catch (e) {
+          console.error('Error decoding content:', e);
+          return '';
+        }
       case 'event':
         emitUnlockEvent();
         return '';
       case 'proxy':
-      // @deprecated: use 'proxy' instead
       case 'signedUrl':
-        return api.content.unlock($host(), lockedContentSelector);
+        return api.content.unlock($host().parentElement!, lockedContentSelector);
       case 'embed':
+        return '';
       default:
-        return content?.innerHTML || '';
+        console.error('Invalid lock mode');
+        return '';
+    }
+  }
+
+  async function unlockAndRenderContent(api: SesamyAPI) {
+    try {
+      const contentHtml = await fetchContent(api);
+      await injectContent(contentHtml);
+    } catch (err) {
+      console.error('Error unlocking content:', err);
     }
   }
 </script>
@@ -60,11 +123,11 @@
 <Base let:api applyStyles={false}>
   {#await checkAccess(api) then entitlement}
     {#if entitlement}
-      <slot name="content">
-        {#await getContent(api) then content}
-          {@html content}
-        {/await}
-      </slot>
+      {#if lockMode === 'embed'}
+        <slot name="content"></slot>
+      {:else}
+        {#await unlockAndRenderContent(api)}{/await}
+      {/if}
     {:else}
       <slot name="preview"></slot>
     {/if}

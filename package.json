@@ -30,7 +30,7 @@
     "svg:generate": "svgo -f ./packages/lib/src/icons -o ./packages/lib/src/icons && node ./scripts/icon.js ./packages/lib/src/icons --generate-types",
     "pull-translations": "i18nexus pull -k UqoFFUDIqHedrUA4OlDXwg --path ./packages/lib/src/locales && prettier --write ./packages/lib/src/locales/**/*.json && yarn sort-translations",
     "sort-translations": "sort-json ./packages/lib/src/locales/**/*.json",
-    "e2e:open-docker": "docker run --rm --network host -v $(pwd):/work/ -w /work/ -it mcr.microsoft.com/playwright:v1.48.1-focal /bin/bash"
+    "e2e:open-docker": "docker run --rm --network host -v $(pwd):/work/ -w /work/ -it mcr.microsoft.com/playwright:v1.49.1-noble /bin/bash"
   },
   "release": {
     "branches": [
@@ -63,7 +63,7 @@
   "devDependencies": {
     "@ape-egg/tailwind-rows-columns": "^1.0.2",
     "@chromatic-com/storybook": "^3.2.2",
-    "@playwright/test": "1.48.1",
+    "@playwright/test": "1.49.1",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@storybook/addon-controls": "^8.4.7",
@@ -110,7 +110,7 @@
     "dist/lib"
   ],
   "dependencies": {
-    "@sesamy/sesamy-js": "1.32.6",
+    "@sesamy/sesamy-js": "1.33.0",
     "@zootools/email-spell-checker": "^1.12.0",
     "lucide-svelte": "^0.468.0"
   },
