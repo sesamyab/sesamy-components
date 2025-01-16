@@ -111,8 +111,12 @@
   }
 
   async function unlockAndRenderContent(api: SesamyAPI) {
-    const contentHtml = await fetchContent(api);
-    await injectContent(contentHtml);
+    try {
+      const contentHtml = await fetchContent(api);
+      await injectContent(contentHtml);
+    } catch (err) {
+      console.error('Error unlocking content:', err);
+    }
   }
 </script>
 
