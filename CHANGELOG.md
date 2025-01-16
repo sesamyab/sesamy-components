@@ -1,3 +1,16 @@
+# [1.9.0](https://github.com/sesamyab/sesamy-components/compare/v1.8.1...v1.9.0) (2025-01-16)
+
+
+### Bug Fixes
+
+* add try catch for unlocking content ([383d180](https://github.com/sesamyab/sesamy-components/commit/383d180e371fa4aff1515204749cfcaea5f0acbe))
+* fetch remote and execute scripts ([4fbdf88](https://github.com/sesamyab/sesamy-components/commit/4fbdf881b9a4940528e1e468274c73e53bf9a7db))
+
+
+### Features
+
+* handle fieldSettings correctly ([6035857](https://github.com/sesamyab/sesamy-components/commit/6035857ec1c708925874d542059d35836b4501af))
+
 ## [1.8.1](https://github.com/sesamyab/sesamy-components/compare/v1.8.0...v1.8.1) (2024-12-20)
 
 
