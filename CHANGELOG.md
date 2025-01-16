@@ -1,3 +1,13 @@
+## [1.8.1](https://github.com/sesamyab/sesamy-components/compare/v1.8.0...v1.8.1) (2024-12-20)
+
+
+### Bug Fixes
+
+* add locked-content-selector ([63c1f1f](https://github.com/sesamyab/sesamy-components/commit/63c1f1f2ebe319f67a394408930f1c0b20b2072d))
+* removed content config ([8660561](https://github.com/sesamyab/sesamy-components/commit/866056168a1b3b49e72331657e7696c7e31be09f))
+* revert playwright ([c6b512d](https://github.com/sesamyab/sesamy-components/commit/c6b512d8fd0f657cfc0c81f9818ab818232ff0fb))
+* update tailwind config ([03b9a1a](https://github.com/sesamyab/sesamy-components/commit/03b9a1a3b38e9f2783f8c18cdc14b3279dbe1137))
+
 # [1.8.0](https://github.com/sesamyab/sesamy-components/compare/v1.7.0...v1.8.0) (2024-12-03)
 
 
