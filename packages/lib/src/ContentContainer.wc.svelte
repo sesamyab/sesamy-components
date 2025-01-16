@@ -61,14 +61,18 @@
     const scriptContents: string[] = [];
 
     scripts.forEach((script) => {
-      if (script.src) {
-        const newScript = document.createElement('script');
-        newScript.src = script.src;
-        document.head.appendChild(newScript);
-      } else {
-        scriptContents.push(script.textContent || '');
+      try {
+        if (script.src) {
+          const newScript = document.createElement('script');
+          newScript.src = script.src;
+          document.head.appendChild(newScript);
+        } else {
+          scriptContents.push(script.textContent || '');
+        }
+        script.parentNode?.removeChild(script);
+      } catch (err) {
+        console.error('Failed to process script:', err, script);
       }
-      script.parentNode?.removeChild(script);
     });
 
     // Insert in light DOM
@@ -76,10 +80,14 @@
 
     // Execute inline scripts
     scriptContents.forEach((code) => {
-      const script = document.createElement('script');
-      script.textContent = code;
-      document.head.appendChild(script);
-      document.head.removeChild(script);
+      try {
+        const script = document.createElement('script');
+        script.textContent = code;
+        document.head.appendChild(script);
+        document.head.removeChild(script);
+      } catch (err) {
+        console.error('Failed to execute inline script:', err, code);
+      }
     });
   }
 
