@@ -1,7 +1,7 @@
 <svelte:options customElement={{ tag: 'sesamy-content-container-beta', shadow: 'open' }} />
 
 <script lang="ts">
-  import { type SesamyAPI } from '@sesamy/sesamy-js';
+  import type { SesamyAPI } from '@sesamy/sesamy-js';
   import Base from './Base.svelte';
   import type { ContentContainerProps } from './types';
 
