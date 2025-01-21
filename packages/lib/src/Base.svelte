@@ -23,6 +23,10 @@
 
       --s-primary-color: var(--sesamy-primary-color, ${hslArrayToCSS(hexToHsl('#000000'))});
       --s-font-family: var(--sesamy-font-family, Helvetica);
+
+      --s-login-button-color: var(--sesamy-login-button-color, #000000);
+      --s-login-avatar-bgcolor: var(--sesamy-login-avatar-bgcolor, var(--s-login-button-color));
+      --s-login-avatar-textcolor: var(--sesamy-login-avatar-textcolor, #ffffff);
     }
   `;
 
