@@ -1,3 +1,11 @@
+## [1.11.1](https://github.com/sesamyab/sesamy-components/compare/v1.11.0...v1.11.1) (2025-01-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency lucide-svelte to ^0.473.0 ([a1aebfb](https://github.com/sesamyab/sesamy-components/commit/a1aebfbda41413deda8d65b9500ec30b2bfb400c))
+* remove more type imports ([f7aca1e](https://github.com/sesamyab/sesamy-components/commit/f7aca1edeb4e23823027a267ca9f8b9482a36943))
+
 # [1.11.0](https://github.com/sesamyab/sesamy-components/compare/v1.10.0...v1.11.0) (2025-01-21)
 
 
