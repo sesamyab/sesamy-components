@@ -60,7 +60,13 @@
   {:then _}
     {#if loggedIn}
       <div class="relative">
-        <button class="block" onclick={() => (showPopupMenu = !showPopupMenu)} disabled={loading}>
+        <button
+          class="block"
+          onclick={() => (showPopupMenu = !showPopupMenu)}
+          disabled={loading}
+          aria-haspopup="true"
+          aria-expanded={showPopupMenu}
+        >
           <slot name="avatar">
             <Avatar src={userAvatar} {loading} size="sm"></Avatar>
           </slot>
@@ -68,6 +74,7 @@
         {#if showPopupMenu}
           <div
             class="absolute top-full mt-1.5 right-0 bg-white border border-gray-200 rounded-sm w-72"
+            role="menu"
           >
             <slot name="popup-menu">
               <ul>
