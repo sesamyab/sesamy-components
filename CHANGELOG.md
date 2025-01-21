@@ -1,3 +1,15 @@
+# [1.11.0](https://github.com/sesamyab/sesamy-components/compare/v1.10.0...v1.11.0) (2025-01-21)
+
+
+### Bug Fixes
+
+* correct sesamy-js type import ([87ca8e3](https://github.com/sesamyab/sesamy-components/commit/87ca8e3e8b15abdcac34690639e27830588e231f))
+
+
+### Features
+
+* supported countryCodes list ([e9a4b56](https://github.com/sesamyab/sesamy-components/commit/e9a4b56412ea3328e3b9d0580a485d0748feb82d))
+
 # [1.10.0](https://github.com/sesamyab/sesamy-components/compare/v1.9.1...v1.10.0) (2025-01-21)
 
 
