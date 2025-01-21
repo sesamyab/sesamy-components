@@ -97,8 +97,8 @@
     {:else}
       <Button
         class={twMerge(
-          classes,
-          'font-bold row gap-1.5 text-[color:--s-login-button-color] border-[color:--s-login-button-color]'
+          'font-bold row gap-1.5 text-[color:--s-login-button-color] border-[color:--s-login-button-color]',
+          classes
         )}
         variant="secondary"
         {disabled}
