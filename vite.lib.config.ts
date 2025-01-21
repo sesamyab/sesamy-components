@@ -1,61 +1,52 @@
-import { defineConfig } from "vite";
-import { svelte } from "@sveltejs/vite-plugin-svelte";
-import { sveltePreprocess } from "svelte-preprocess";
-import { viteStaticCopy } from "vite-plugin-static-copy";
+import { defineConfig } from 'vite';
+import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { sveltePreprocess } from 'svelte-preprocess';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 export default defineConfig({
   build: {
     lib: {
-      entry: "packages/lib/index.ts",
-      name: "@sesamy/sesamy-components",
+      entry: 'packages/lib/index.ts',
+      name: '@sesamy/sesamy-components',
       fileName: (format) => `sesamy-components.${format}.js`,
-      formats: ["es", "umd"],
+      formats: ['es', 'umd']
     },
-    outDir: "dist/lib",
+    outDir: 'dist/lib',
     rollupOptions: {
-      external: ["svelte"],
+      external: ['svelte', '@sesamy/sesamy-js'],
       output: {
         globals: {
-          svelte: "Svelte",
-        },
-      },
-    },
+          svelte: 'Svelte'
+        }
+      }
+    }
   },
   plugins: [
     svelte({
       preprocess: sveltePreprocess(),
       compilerOptions: {
-        customElement: true,
+        customElement: true
       },
-      include: ["packages/lib/**/*.wc.svelte"],
+      include: ['packages/lib/**/*.wc.svelte']
     }),
     svelte({
       preprocess: sveltePreprocess(),
       compilerOptions: {
-        customElement: false,
+        customElement: false
       },
-      exclude: ["**/*.wc.svelte"],
+      exclude: ['**/*.wc.svelte']
     }),
     viteStaticCopy({
       targets: [
         {
-          src: "packages/lib/src/sesamy-components.d.ts",
-          dest: "",
-        },
-      ],
-    }),
+          src: 'packages/lib/src/sesamy-components.d.ts',
+          dest: ''
+        }
+      ]
+    })
   ],
 
   resolve: {
-    extensions: [
-      ".mjs",
-      ".js",
-      ".ts",
-      ".jsx",
-      ".tsx",
-      ".json",
-      ".svelte",
-      ".wc.svelte",
-    ],
-  },
+    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.svelte', '.wc.svelte']
+  }
 });
