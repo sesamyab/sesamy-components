@@ -1,7 +1,7 @@
 <svelte:options customElement="sesamy-login-beta" />
 
 <script lang="ts">
-  import { type Profile, type SesamyAPI } from '@sesamy/sesamy-js';
+  import type { Profile, SesamyAPI } from '@sesamy/sesamy-js';
   import Avatar from './Avatar.wc.svelte';
   import Base from './Base.svelte';
   import type { LoginProps } from './types';

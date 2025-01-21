@@ -5,7 +5,7 @@
   import Input from '../Input.svelte';
   import InputGroup from '../InputGroup.svelte';
   import Select from '../Select.svelte';
-  import type { Checkout } from '@sesamy/sesamy-js';
+  import type { Checkout, SesamyAPI } from '@sesamy/sesamy-js';
   import Selection from './Selection.svelte';
   import SelectionGroup from './SelectionGroup.svelte';
   import PaymentMethod from '../PaymentMethod.svelte';
@@ -16,7 +16,6 @@
   import Error from '../Error.svelte';
   import Column from '../Column.svelte';
   import { isSupportingApplePay, isSupportingGooglePay } from '../../utils/browser-support';
-  import type { SesamyAPI } from '@sesamy/sesamy-js';
   import emailSpellChecker from '@zootools/email-spell-checker';
   import Accordion from '../Accordion.svelte';
 
