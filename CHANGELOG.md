@@ -1,3 +1,17 @@
+# [1.10.0](https://github.com/sesamyab/sesamy-components/compare/v1.9.1...v1.10.0) (2025-01-21)
+
+
+### Bug Fixes
+
+* add dev dependency ([ff382e1](https://github.com/sesamyab/sesamy-components/commit/ff382e1d84f1e4b1501312c0c3d85ee4faeb5309))
+* exclude sesamy-js ([630e2ff](https://github.com/sesamyab/sesamy-components/commit/630e2ff966c932375ebb6c187d62d9494b5e5151))
+
+
+### Features
+
+* login btn accessibility ([cbb405b](https://github.com/sesamyab/sesamy-components/commit/cbb405b0a9867e17b3660724b014944ab68f523f))
+* login component ([308e329](https://github.com/sesamyab/sesamy-components/commit/308e3298cd6c2db424dd5d880680b3816c8503d4))
+
 ## [1.9.1](https://github.com/sesamyab/sesamy-components/compare/v1.9.0...v1.9.1) (2025-01-16)
 
 
