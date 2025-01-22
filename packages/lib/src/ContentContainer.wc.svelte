@@ -129,12 +129,19 @@
 </script>
 
 <Base let:api applyStyles={false}>
-  {#await checkAccess(api) then entitlement}
+  {#await checkAccess(api)}
+    <!-- Show the preview until we know if the user has access -->
+    <slot name="preview"></slot>
+  {:then entitlement}
     {#if entitlement}
       {#if lockMode === 'embed'}
         <slot name="content"></slot>
       {:else}
-        {#await unlockAndRenderContent(api)}{/await}
+        {#await unlockAndRenderContent(api)}
+          <slot name="preview"></slot>
+        {:then}
+          <!-- Once the content is unlocked it will displayed outside the shadow DOM. -->
+        {/await}
       {/if}
     {:else}
       <slot name="preview"></slot>
