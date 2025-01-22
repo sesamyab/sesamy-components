@@ -1,3 +1,44 @@
+## [1.11.1](https://github.com/sesamyab/sesamy-components/compare/v1.11.0...v1.11.1) (2025-01-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency lucide-svelte to ^0.473.0 ([a1aebfb](https://github.com/sesamyab/sesamy-components/commit/a1aebfbda41413deda8d65b9500ec30b2bfb400c))
+* remove more type imports ([f7aca1e](https://github.com/sesamyab/sesamy-components/commit/f7aca1edeb4e23823027a267ca9f8b9482a36943))
+
+# [1.11.0](https://github.com/sesamyab/sesamy-components/compare/v1.10.0...v1.11.0) (2025-01-21)
+
+
+### Bug Fixes
+
+* correct sesamy-js type import ([87ca8e3](https://github.com/sesamyab/sesamy-components/commit/87ca8e3e8b15abdcac34690639e27830588e231f))
+
+
+### Features
+
+* supported countryCodes list ([e9a4b56](https://github.com/sesamyab/sesamy-components/commit/e9a4b56412ea3328e3b9d0580a485d0748feb82d))
+
+# [1.10.0](https://github.com/sesamyab/sesamy-components/compare/v1.9.1...v1.10.0) (2025-01-21)
+
+
+### Bug Fixes
+
+* add dev dependency ([ff382e1](https://github.com/sesamyab/sesamy-components/commit/ff382e1d84f1e4b1501312c0c3d85ee4faeb5309))
+* exclude sesamy-js ([630e2ff](https://github.com/sesamyab/sesamy-components/commit/630e2ff966c932375ebb6c187d62d9494b5e5151))
+
+
+### Features
+
+* login btn accessibility ([cbb405b](https://github.com/sesamyab/sesamy-components/commit/cbb405b0a9867e17b3660724b014944ab68f523f))
+* login component ([308e329](https://github.com/sesamyab/sesamy-components/commit/308e3298cd6c2db424dd5d880680b3816c8503d4))
+
+## [1.9.1](https://github.com/sesamyab/sesamy-components/compare/v1.9.0...v1.9.1) (2025-01-16)
+
+
+### Bug Fixes
+
+* catch script errors ([fb15c39](https://github.com/sesamyab/sesamy-components/commit/fb15c39107722da0bdcce57239b1a14b2e62f6a1))
+
 # [1.9.0](https://github.com/sesamyab/sesamy-components/compare/v1.8.1...v1.9.0) (2025-01-16)
 
 
