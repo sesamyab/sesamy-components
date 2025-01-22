@@ -1,3 +1,10 @@
+## [1.11.2](https://github.com/sesamyab/sesamy-components/compare/v1.11.1...v1.11.2) (2025-01-22)
+
+
+### Bug Fixes
+
+* show preview while loading remote content ([72da904](https://github.com/sesamyab/sesamy-components/commit/72da904a5df9651f7e3f743b105acac2cda1d1dd))
+
 ## [1.11.1](https://github.com/sesamyab/sesamy-components/compare/v1.11.0...v1.11.1) (2025-01-21)
 
 
