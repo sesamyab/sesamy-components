@@ -11,16 +11,16 @@ interface PaywallProps {
 const meta: Meta<PaywallProps> = {
   title: 'Components/Paywall',
   tags: ['autodocs', 'visual:check', 'story'],
-  component: 'sesamy-paywall-beta',
+  component: 'sesamy-paywall',
   render: (args) =>
     html` <div style="gap: 10px; padding: 10px; --sesamy-primary-color: 249 86.4% 68.2%;">
-      <sesamy-paywall-beta
+      <sesamy-paywall
         template=${args['template']}
         settings-url=${args['settings-url']}
         item-src=${args['item-src']}
         price="99"
         currency="SEK"
-      ></sesamy-paywall-beta>
+      ></sesamy-paywall>
     </div>`,
   argTypes: {
     'settings-url': {

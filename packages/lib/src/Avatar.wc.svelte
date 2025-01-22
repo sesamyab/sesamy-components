@@ -1,4 +1,4 @@
-<svelte:options customElement="sesamy-avatar-beta" />
+<svelte:options customElement="sesamy-avatar" />
 
 <script lang="ts">
   import { twMerge } from 'tailwind-merge';

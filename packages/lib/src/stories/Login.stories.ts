@@ -13,13 +13,13 @@ type LoginProps = {
 const meta: Meta<LoginProps> = {
   title: 'Components/Login',
   tags: ['autodocs', 'visual:check', 'story'],
-  component: 'sesamy-login-beta',
+  component: 'sesamy-login',
   render: (args) => html`
-    <sesamy-login-beta
+    <sesamy-login
       .buttonText=${args.buttonText}
       .outline=${ifDefined(args.lang)}
       @login=${args.onLogin}
-    ></sesamy-login-beta>
+    ></sesamy-login>
   `,
   argTypes: {
     buttonText: { control: 'text' },

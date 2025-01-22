@@ -13,15 +13,15 @@ type AvatarProps = {
 const meta: Meta<AvatarProps> = {
   title: 'Components/Avatar',
   tags: ['autodocs', 'visual:check', 'story'],
-  component: 'sesamy-avatar-beta',
+  component: 'sesamy-avatar',
   render: (args) => html`
-    <sesamy-avatar-beta
+    <sesamy-avatar
       src=${ifDefined(args.src)}
       alt=${ifDefined(args.alt)}
       size=${ifDefined(args.size)}
       ?loading=${args.loading}
       @click=${() => console.info('Avatar clicked')}
-    ></sesamy-avatar-beta>
+    ></sesamy-avatar>
   `,
   argTypes: {
     src: { control: 'text' },
@@ -62,9 +62,9 @@ export const sizes: Story = {
   },
   render: () => html`
     <div style="display: flex; gap: 10px; padding: 10px;">
-      <sesamy-avatar-beta size="lg">Large</sesamy-avatar-beta>
-      <sesamy-avatar-beta size="md">Medium</sesamy-avatar-beta>
-      <sesamy-avatar-beta size="sm">Small</sesamy-avatar-beta>
+      <sesamy-avatar size="lg">Large</sesamy-avatar>
+      <sesamy-avatar size="md">Medium</sesamy-avatar>
+      <sesamy-avatar size="sm">Small</sesamy-avatar>
     </div>
   `
 };
