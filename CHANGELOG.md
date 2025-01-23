@@ -1,3 +1,13 @@
+# [2.0.0](https://github.com/sesamyab/sesamy-components/compare/v1.11.2...v2.0.0) (2025-01-23)
+
+
+* Merge pull request [#148](https://github.com/sesamyab/sesamy-components/issues/148) from sesamyab/dev ([91f0688](https://github.com/sesamyab/sesamy-components/commit/91f06884768b812a6c46c1706c28a44c884c93d7))
+
+
+### BREAKING CHANGES
+
+* remove beta suffix
+
 ## [1.11.2](https://github.com/sesamyab/sesamy-components/compare/v1.11.1...v1.11.2) (2025-01-22)
 
 
