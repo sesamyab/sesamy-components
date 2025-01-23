@@ -6,6 +6,7 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: buildjet-8vcpu-ubuntu-2204
+    container: mcr.microsoft.com/playwright:v1.49.1-noble
     steps:
       - name: Checkout ref
         uses: actions/checkout@v4
@@ -13,7 +14,6 @@ jobs:
         uses: buildjet/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-          cache: yarn
       - name: Install dependencies
         run: yarn
       - name: Install Playwright Browsers
