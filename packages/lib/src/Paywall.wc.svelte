@@ -1,4 +1,4 @@
-<svelte:options customElement="sesamy-paywall-beta" />
+<svelte:options customElement="sesamy-paywall" />
 
 <script lang="ts">
   import Base from './Base.svelte';

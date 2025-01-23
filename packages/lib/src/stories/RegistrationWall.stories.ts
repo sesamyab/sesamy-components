@@ -15,14 +15,14 @@ type RegistrationWallProps = {
 const meta: Meta<RegistrationWallProps> = {
   title: 'Components/RegistrationWall',
   tags: ['autodocs'],
-  component: 'sesamy-registration-wall-beta',
+  component: 'sesamy-registration-wall',
   render: (args) => html`
-    <sesamy-registration-wall-beta>
+    <sesamy-registration-wall>
       ${args.title ? html`<h1 slot="title">${args.title}</h1>` : ''}
       ${args.description ? html`<p slot="description">${args.description}</p>` : ''}
-    </sesamy-registration-wall-beta>
+    </sesamy-registration-wall>
     <style>
-      sesamy-registration-wall-beta::part(continueButton) {
+      sesamy-registration-wall::part(continueButton) {
         background-color: ${args.buttonColor};
       }
     </style>
@@ -70,7 +70,7 @@ export const Default: Story = {
   decorators: [
     (story, { args }) => html`
       <style>
-        sesamy-registration-wall-beta {
+        sesamy-registration-wall {
           --max-width: ${args.maxWidth};
           --font-family: ${args.fontFamily};
         }
@@ -90,7 +90,7 @@ export const Slots: Story = {
   decorators: [
     (story, { args }) => html`
       <style>
-        sesamy-registration-wall-beta {
+        sesamy-registration-wall {
           --max-width: ${args.maxWidth};
           --font-family: ${args.fontFamily};
         }

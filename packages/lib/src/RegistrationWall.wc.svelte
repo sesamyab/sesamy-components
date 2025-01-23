@@ -1,4 +1,4 @@
-<svelte:options customElement="sesamy-registration-wall-beta" />
+<svelte:options customElement="sesamy-registration-wall" />
 
 <script lang="ts">
   import type { SesamyAPI } from '@sesamy/sesamy-js';

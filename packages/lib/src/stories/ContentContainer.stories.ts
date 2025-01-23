@@ -5,14 +5,14 @@ import type { ContentContainerProps } from '../types';
 const meta: Meta<ContentContainerProps> = {
   title: 'Components/ContentContainer',
   tags: ['autodocs', 'visual:check', 'story'],
-  component: 'sesamy-content-container-beta',
+  component: 'sesamy-content-container',
   render: (args) =>
     html`<div>
-      <sesamy-login-beta></sesamy-login-beta>
-      <sesamy-content-container-beta item-src="https://sesamy-js.sesamy.dev/article.html">
+      <sesamy-login></sesamy-login>
+      <sesamy-content-container item-src="https://sesamy-js.sesamy.dev/article.html">
         <div slot="preview">This is a preview of locked content</div>
         <div slot="content">This is the locked content</div>
-      </sesamy-content-container-beta>
+      </sesamy-content-container>
     </div>`,
   argTypes: {}
 };
@@ -28,11 +28,11 @@ export const Default: Story = {
   args: {},
   render: (args) =>
     html`<div style="color: red;">
-      <sesamy-login-beta></sesamy-login-beta>
-      <sesamy-content-container-beta item-src="https://sesamy-js.sesamy.dev/article.html">
+      <sesamy-login></sesamy-login>
+      <sesamy-content-container item-src="https://sesamy-js.sesamy.dev/article.html">
         <div slot="preview">This is a preview of locked content</div>
         <div slot="content">This is the locked content</div>
-      </sesamy-content-container-beta>
+      </sesamy-content-container>
     </div>`
 };
 
@@ -43,14 +43,14 @@ export const EncodedContent: Story = {
   args: {},
   render: (args) =>
     html` <div>
-      <sesamy-login-beta></sesamy-login-beta>
-      <sesamy-content-container-beta
+      <sesamy-login></sesamy-login>
+      <sesamy-content-container
         item-src="https://sesamy-js.sesamy.dev/article.html"
         lock-mode="encode"
       >
         <div slot="preview">This is a preview of locked content</div>
         <div slot="content">VGhpcyBpcyB0aGUgZW5jb2RlZCBsb2NrZWQgY29udGVudA==</div>
-      </sesamy-content-container-beta>
+      </sesamy-content-container>
     </div>`
 };
 
@@ -61,11 +61,11 @@ export const AuthenticatedUsers: Story = {
   args: {},
   render: (args) =>
     html` <div>
-      <sesamy-login-beta></sesamy-login-beta>
-      <sesamy-content-container-beta access-level="logged-in">
+      <sesamy-login></sesamy-login>
+      <sesamy-content-container access-level="logged-in">
         <div slot="preview">This is visisble for unauthenticated users</div>
         <div slot="content">This is visisble for authenticated users</div>
-      </sesamy-content-container-beta>
+      </sesamy-content-container>
     </div>`
 };
 
@@ -76,11 +76,11 @@ export const PublicContent: Story = {
   args: {},
   render: (args) =>
     html` <div>
-      <sesamy-login-beta></sesamy-login-beta>
-      <sesamy-content-container-beta access-level="public">
+      <sesamy-login></sesamy-login>
+      <sesamy-content-container access-level="public">
         <div slot="preview">This is should not be visible</div>
         <div slot="content">This is visisble all users</div>
-      </sesamy-content-container-beta>
+      </sesamy-content-container>
     </div>`
 };
 
@@ -101,15 +101,15 @@ export const ContentEvents: Story = {
             event.detail.publisherContentId;
         });
       </script>
-      <sesamy-login-beta></sesamy-login-beta>
-      <sesamy-content-container-beta
+      <sesamy-login></sesamy-login>
+      <sesamy-content-container
         access-level="logged-in"
         item-src="https://example.com/article"
         publisher-content-id="1234"
         lock-mode="event"
       >
         <div slot="preview">This is visible to unauthenticated users</div>
-      </sesamy-content-container-beta>
+      </sesamy-content-container>
       <div id="event-container"></div>
     </div>`
 };

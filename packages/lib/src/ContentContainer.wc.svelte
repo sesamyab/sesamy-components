@@ -1,4 +1,4 @@
-<svelte:options customElement={{ tag: 'sesamy-content-container-beta', shadow: 'open' }} />
+<svelte:options customElement={{ tag: 'sesamy-content-container', shadow: 'open' }} />
 
 <script lang="ts">
   import type { SesamyAPI } from '@sesamy/sesamy-js';
