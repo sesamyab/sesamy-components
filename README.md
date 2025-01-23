@@ -40,13 +40,13 @@ The demo application is provided for development and testing of your components,
 
 If you prefer, you can import the built web components from the `dist/` folder instead, by editing `demo/src/App.svelte` and replacing the `import '../../lib';` statement with `import '../../../dist/lib';` if you have the `bundleComponents` option enabled, or individually import your components with `import import '../../dist/MyComponent.wc.js';` otherwise.
 
-You'll also have to make sure to run the `npm run build` script to generate the `dist/lib/` folder first.
+You'll also have to make sure to run the `yarn build` script to generate the `dist/lib/` folder first.
 
 ## Building the library
 
-The command `npm run build` will create the web components library in the `dist/lib/` folder. It creates both an ES module (`dist/lib/<your-lib>.js`) suitable for bundler (non-minified), a minified ES module (`dist/lib/<your-lib>.min.js`) and a regular UMD script (`dist/lib/<your-lib>.umd.js`).
+The command `yarn build` will create the web components library in the `dist/lib/` folder. It creates both an ES module (`dist/lib/<your-lib>.js`) suitable for bundler (non-minified), a minified ES module (`dist/lib/<your-lib>.min.js`) and a regular UMD script (`dist/lib/<your-lib>.umd.js`).
 
-The build is automatically called when executing `npm publish` to distribute your library, thanks to the `prepublishOnly` script entry in `package.json`.
+The build is automatically called when executing `yarn publish` to distribute your library, thanks to the `prepublishOnly` script entry in `package.json`.
 
 ## Notes and limitations
 
@@ -58,7 +58,7 @@ Any props accepted by your web component are automatically transformed to elemen
 
 ```html
 <script>
-  export let myvalue = "Default";
+  export let myvalue = 'Default';
 </script>
 ```
 
@@ -74,16 +74,14 @@ Here's an example:
 // MyComponent.wc.svelte
 <svelte:options tag="my-component" />
 <script>
-  import { get_current_component } from "svelte/internal";
+  import { get_current_component } from 'svelte/internal';
   const component = get_current_component();
 
   // example function for dispatching events
   const dispatchEvent = (name, detail) =>
     component.dispatchEvent(new CustomEvent(name, { detail }));
 </script>
-<button onclick={() => dispatchEvent("test", "Hello!")}>
-  Click to dispatch event
-</button>
+<button onclick="{()" ="">dispatchEvent("test", "Hello!")}> Click to dispatch event</button>
 ```
 
 ## Create a new component

@@ -153,9 +153,9 @@
               {t('already_subscribing')}
             </div>
 
-            <sesamy-login-beta
+            <sesamy-login
               class="p-0 border-none enabled:hover:bg-transparent hover:underline text-primary font-bold"
-            ></sesamy-login-beta>
+            ></sesamy-login>
           </Row>
           <div
             class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-primary/30"
