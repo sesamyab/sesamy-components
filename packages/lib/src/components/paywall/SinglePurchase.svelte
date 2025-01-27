@@ -46,7 +46,7 @@
     selectProduct({ ...singlePurchase, price: getPrice(), url: articleUrl });
   };
 
-  if (itemSrc && !hasSubscriptions) {
+  if (articleUrl && !hasSubscriptions) {
     completeAndSelect();
   }
 </script>
