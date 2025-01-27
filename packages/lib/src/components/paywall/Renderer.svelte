@@ -39,8 +39,6 @@
 
   const redirectUrl = userProps?.['redirect-url'] || window.location.href;
 
-  const articleElement = host.closest('sesamy-article');
-
   let {
     subscriptions,
     singlePurchase,
@@ -198,10 +196,11 @@
             <SinglePurchase
               {api}
               {singlePurchase}
+              {currency}
               {t}
               {selectProduct}
               {hasSubscriptions}
-              {articleElement}
+              {host}
               {...userProps}
             />
           {/if}

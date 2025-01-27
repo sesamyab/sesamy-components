@@ -13,7 +13,7 @@
     singlePurchase: PaywallSinglePurchase;
     selectProduct: Function;
     hasSubscriptions: boolean;
-    articleElement: Element | null;
+    host: HTMLElement;
   } & PaywallProps;
 
   const props: Props = $props();
@@ -22,7 +22,7 @@
     singlePurchase,
     selectProduct,
     hasSubscriptions,
-    articleElement,
+    host,
     'item-src': itemSrc,
     price,
     currency
@@ -30,25 +30,20 @@
   let { title, description } = singlePurchase;
 
   const getPrice = () => {
-    if (articleElement && api.content.get(articleElement)?.price) {
-      const articlePrice = api.content.get(articleElement)?.price;
-      return typeof articlePrice === 'number' ? articlePrice : 0;
-    }
     if (price) {
       const parsedPrice = parseFloat(price);
       return isNaN(parsedPrice) ? 0 : parsedPrice;
     }
+    if (api.content.get(host)?.price) {
+      const articlePrice = api.content.get(host)?.price;
+      return typeof articlePrice === 'number' ? articlePrice : 0;
+    }
     return 0;
   };
-  const getArticleUrl = () => {
-    if (articleElement && api.content.get(articleElement)?.url) {
-      return api.content.get(articleElement)?.url;
-    }
-    return itemSrc;
-  };
+  const articleUrl = itemSrc || api.content.get(host)?.url;
 
   const completeAndSelect = () => {
-    selectProduct({ ...singlePurchase, price: getPrice(), url: getArticleUrl() });
+    selectProduct({ ...singlePurchase, price: getPrice(), url: articleUrl });
   };
 
   if (itemSrc && !hasSubscriptions) {
@@ -56,7 +51,7 @@
   }
 </script>
 
-{#if getArticleUrl()}
+{#if articleUrl}
   <SelectionGroup>
     <Selection
       id="single-purchase"
@@ -71,7 +66,7 @@
           {description}
         </div>
       </Column>
-      <div class="text-base font-bold">{price} {currency}</div>
+      <div class="text-base font-bold">{getPrice()} {currency}</div>
     </Selection>
   </SelectionGroup>
 {/if}
