@@ -31,10 +31,12 @@
 
   const getPrice = () => {
     if (articleElement && api.content.get(articleElement)?.price) {
-      return api.content.get(articleElement)?.price;
+      const articlePrice = api.content.get(articleElement)?.price;
+      return typeof articlePrice === 'number' ? articlePrice : 0;
     }
     if (price) {
-      return parseFloat(price) || 0;
+      const parsedPrice = parseFloat(price);
+      return isNaN(parsedPrice) ? 0 : parsedPrice;
     }
     return 0;
   };
