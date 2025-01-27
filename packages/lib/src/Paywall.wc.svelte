@@ -24,6 +24,7 @@
       {api}
       {paywall}
       horizontal={template === 'BOXES'}
+      host={$host()}
       {t}
       {...{ ...restProps, template }}
     />

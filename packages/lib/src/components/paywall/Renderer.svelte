@@ -20,16 +20,17 @@
 
   type Props = {
     api: SesamyAPI;
+    host: HTMLElement;
+    paywall: Paywall;
     t: TranslationFunction;
     horizontal?: boolean;
-    paywall: Paywall;
   } & PaywallProps;
 
   type Product = PaywallSubscription & {
     features: string[];
   };
 
-  let { api, t, horizontal = false, paywall, ...userProps }: Props = $props();
+  let { api, t, horizontal = false, host, paywall, ...userProps }: Props = $props();
 
   let product = $state<Product>();
   let checkout = $state<Checkout>();
@@ -37,6 +38,8 @@
   let error = $state('');
 
   const redirectUrl = userProps?.['redirect-url'] || window.location.href;
+
+  const articleElement = host.closest('sesamy-article');
 
   let {
     subscriptions,
@@ -193,10 +196,12 @@
 
           {#if singlePurchase && singlePurchase.enabled && !horizontal}
             <SinglePurchase
+              {api}
               {singlePurchase}
               {t}
               {selectProduct}
               {hasSubscriptions}
+              {articleElement}
               {...userProps}
             />
           {/if}
