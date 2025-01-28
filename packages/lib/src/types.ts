@@ -28,6 +28,7 @@ export type PaywallProps = HTMLElement & {
   ['utm-campaign']?: string;
   ['utm-term']?: string;
   ['utm-content']?: string;
+  pass?: string;
 };
 
 export type ButtonVariant = 'primary' | 'secondary' | 'tertiary';
