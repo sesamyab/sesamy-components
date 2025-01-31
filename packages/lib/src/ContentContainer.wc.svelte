@@ -15,6 +15,9 @@
   }: ContentContainerProps = $props();
 
   async function checkAccess(api: SesamyAPI) {
+    const articleUrl = itemSrc || api.content.get($host())?.url || '';
+    const passes = pass ? pass.split(';') : api.content.get($host())?.pass?.split(';');
+
     switch (accessLevel) {
       case 'public':
         return true;
@@ -22,7 +25,7 @@
         return api.auth.isAuthenticated();
       case 'entitlement':
       default:
-        return api.entitlements.hasAccess(itemSrc, pass.split(','));
+        return api.entitlements.hasAccess(articleUrl, passes);
     }
   }
 

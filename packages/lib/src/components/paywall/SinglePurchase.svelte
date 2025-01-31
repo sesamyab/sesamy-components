@@ -5,45 +5,40 @@
   import SelectionGroup from './SelectionGroup.svelte';
   import type { PaywallSinglePurchase } from 'src/types/Paywall';
   import type { PaywallProps } from 'src/types';
+  import type { SesamyAPI } from '@sesamy/sesamy-js';
 
   type Props = {
+    api: SesamyAPI;
     t: TranslationFunction;
     singlePurchase: PaywallSinglePurchase;
     selectProduct: Function;
     hasSubscriptions: boolean;
+    singlePurchasePrice: number;
+    articleUrl: string;
   } & PaywallProps;
 
+  const props: Props = $props();
   let {
+    api,
     singlePurchase,
     selectProduct,
     hasSubscriptions,
-    'item-src': itemSrc,
-    price,
+    articleUrl,
+    singlePurchasePrice,
     currency
-  }: Props = $props();
+  } = props;
   let { title, description } = singlePurchase;
 
   const completeAndSelect = () => {
-    const parsedPrice = price ? parseFloat(price) : 0;
-    selectProduct({ ...singlePurchase, price: parsedPrice, url: itemSrc });
+    selectProduct({ ...singlePurchase, price: singlePurchasePrice, url: articleUrl });
   };
 
-  // TODO: replace with sesamy-js logic
-  if (!price)
-    price = (document.querySelector('meta[property="sesamy:price"]') as HTMLMetaElement)?.content;
-  if (!currency)
-    currency = (document.querySelector('meta[property="sesamy:currency"]') as HTMLMetaElement)
-      ?.content;
-  if (!itemSrc)
-    itemSrc = (document.querySelector('meta[property="sesamy:item-src"]') as HTMLMetaElement)
-      ?.content;
-
-  if (itemSrc && !hasSubscriptions) {
+  if (articleUrl && !hasSubscriptions) {
     completeAndSelect();
   }
 </script>
 
-{#if itemSrc}
+{#if articleUrl}
   <SelectionGroup>
     <Selection
       id="single-purchase"
@@ -58,7 +53,7 @@
           {description}
         </div>
       </Column>
-      <div class="text-base font-bold">{price} {currency}</div>
+      <div class="text-base font-bold">{singlePurchasePrice} {currency}</div>
     </Selection>
   </SelectionGroup>
 {/if}
