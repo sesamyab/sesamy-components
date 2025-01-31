@@ -1,3 +1,18 @@
+# [2.1.0](https://github.com/sesamyab/sesamy-components/compare/v2.0.0...v2.1.0) (2025-01-31)
+
+
+### Bug Fixes
+
+* completeAndSelect if only single purchase ([327fe72](https://github.com/sesamyab/sesamy-components/commit/327fe7241996ef3fd8dc3f3f54bb1d3a54a817d1))
+
+
+### Features
+
+* get articleUrl & pass correctly in content-container ([58016fa](https://github.com/sesamyab/sesamy-components/commit/58016fa725c1e0593802f497124139d658e4a62e))
+* get itemSrc & price correctly for single purchase ([12e139c](https://github.com/sesamyab/sesamy-components/commit/12e139cc9860084ebc984fe03d7ee4ee05329a50))
+* get itemSrc & price correctly for single purchase ([47941f3](https://github.com/sesamyab/sesamy-components/commit/47941f3bd1d52918ec972879160d1cd09f5851d8))
+* hide paywall if has access ([708a69a](https://github.com/sesamyab/sesamy-components/commit/708a69ada9b09e9dec0374af53be1189eff5715e))
+
 # [2.0.0](https://github.com/sesamyab/sesamy-components/compare/v1.11.2...v2.0.0) (2025-01-23)
 
 
