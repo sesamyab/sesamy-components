@@ -17,6 +17,7 @@
   import Error from '../Error.svelte';
   import PayNowForm from './PayNowForm.svelte';
   import NotLoggedIn from '../NotLoggedIn.svelte';
+  import { parsePrice } from '../../utils/money';
 
   type Props = {
     api: SesamyAPI;
@@ -37,6 +38,10 @@
   let loading = $state(false);
   let error = $state('');
 
+  const singlePurchasePrice = userProps?.['price']
+    ? parsePrice(userProps['price'])
+    : api.content.get(host)?.price;
+  const articleUrl = userProps?.['item-src'] || api.content.get(host)?.url;
   const redirectUrl = userProps?.['redirect-url'] || window.location.href;
 
   let {
@@ -52,6 +57,16 @@
     vendorId,
     settings: { useDefaultLogo, styling }
   } = paywall;
+
+  const checkAccess = async () => {
+    if (horizontal) return false;
+
+    const passes = userProps?.pass
+      ? userProps.pass.split(';')
+      : api.content.get(host)?.pass?.split(';');
+
+    return api.entitlements.hasAccess(articleUrl || '', passes);
+  };
 
   const createCheckout = async (e: SubmitEvent) => {
     error = '';
@@ -128,106 +143,111 @@
   let style = '<sty' + 'le>' + sesamyPaywallDesignTokens + '</style>';
 </script>
 
-<div class="@container">
-  <Column
-    class={twMerge(
-      'w-full py-4 @md:py-6 rounded-lg @xl:rounded-3xl',
-      styling?.showBackground &&
-        'bg-gradient-to-b from-[hsl(var(--s-paywall-bg-start-color))] to-[hsl(var(--s-paywall-bg-end-color))]',
-      styling?.showBackground && styling?.dropShadow && 'shadow-md @xl:shadow-lg'
-    )}
-  >
-    <Column
-      class={twMerge(
-        'gap-2 @md:gap-4 pt-0 w-full',
-        styling?.showBackground && 'px-2 pb-6 @xs:px-8 @md:pb-8 @3xl:px-16',
-        horizontal && styling?.showBackground && 'px-6 pb-4',
-        !horizontal && 'max-w-[800px]'
-      )}
-      up
-      left
-    >
-      <NotLoggedIn {api}>
-        {#if showLoginButton && !horizontal}
-          <Row class="text-sm gap-1 font-bold w-full">
-            <div>
-              {t('already_subscribing')}
+{#await checkAccess() then hasAccess}
+  {#if !hasAccess}
+    <div class="@container">
+      <Column
+        class={twMerge(
+          'w-full py-4 @md:py-6 rounded-lg @xl:rounded-3xl',
+          styling?.showBackground &&
+            'bg-gradient-to-b from-[hsl(var(--s-paywall-bg-start-color))] to-[hsl(var(--s-paywall-bg-end-color))]',
+          styling?.showBackground && styling?.dropShadow && 'shadow-md @xl:shadow-lg'
+        )}
+      >
+        <Column
+          class={twMerge(
+            'gap-2 @md:gap-4 pt-0 w-full',
+            styling?.showBackground && 'px-2 pb-6 @xs:px-8 @md:pb-8 @3xl:px-16',
+            horizontal && styling?.showBackground && 'px-6 pb-4',
+            !horizontal && 'max-w-[800px]'
+          )}
+          up
+          left
+        >
+          <NotLoggedIn {api}>
+            {#if showLoginButton && !horizontal}
+              <Row class="text-sm gap-1 font-bold w-full">
+                <div>
+                  {t('already_subscribing')}
+                </div>
+
+                <sesamy-login
+                  class="p-0 border-none enabled:hover:bg-transparent hover:underline text-primary font-bold"
+                ></sesamy-login>
+              </Row>
+              <div
+                class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-primary/30"
+              ></div>
+            {/if}
+          </NotLoggedIn>
+
+          <div class={twMerge('w-full pt-2 @md:pt-4', horizontal && 'column text-center mb-6')}>
+            {#if useDefaultLogo}
+              <img class="h-7 mb-6" src={logoUrl} alt={`${t('logo_of')} ${vendorId}`} />
+            {/if}
+            <div class="text-2xl leading-tight @md:text-3xl font-bold max-w-[600px]">
+              {headline}
             </div>
+          </div>
 
-            <sesamy-login
-              class="p-0 border-none enabled:hover:bg-transparent hover:underline text-primary font-bold"
-            ></sesamy-login>
-          </Row>
-          <div
-            class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-primary/30"
-          ></div>
-        {/if}
-      </NotLoggedIn>
-
-      <div class={twMerge('w-full pt-2 @md:pt-4', horizontal && 'column text-center mb-6')}>
-        {#if useDefaultLogo}
-          <img class="h-7 mb-6" src={logoUrl} alt={`${t('logo_of')} ${vendorId}`} />
-        {/if}
-        <div class="text-2xl leading-tight @md:text-3xl font-bold max-w-[600px]">
-          {headline}
-        </div>
-      </div>
-
-      {#if product && !horizontal}
-        <Features features={product.features} class="font-bold text-black mb-2" />
-      {/if}
-
-      {#if checkout}
-        <PayNowForm {api} {checkout} {t} />
-      {:else}
-        <form class="contents" onsubmit={createCheckout}>
-          {#if subscriptions.length}
-            <Subscriptions
-              {horizontal}
-              {subscriptions}
-              {t}
-              {currency}
-              {selectProduct}
-              {redirectUrl}
-            />
+          {#if product && !horizontal}
+            <Features features={product.features} class="font-bold text-black mb-2" />
           {/if}
 
-          {#if singlePurchase && singlePurchase.enabled && !horizontal}
-            <SinglePurchase
-              {api}
-              {singlePurchase}
-              {currency}
-              {t}
-              {selectProduct}
-              {hasSubscriptions}
-              {host}
-              {...userProps}
-            />
+          {#if checkout}
+            <PayNowForm {api} {checkout} {t} />
+          {:else}
+            <form class="contents" onsubmit={createCheckout}>
+              {#if subscriptions.length}
+                <Subscriptions
+                  {horizontal}
+                  {subscriptions}
+                  {t}
+                  {currency}
+                  {selectProduct}
+                  {redirectUrl}
+                />
+              {/if}
+
+              {#if !horizontal && singlePurchase?.enabled && singlePurchasePrice && articleUrl}
+                <SinglePurchase
+                  {api}
+                  {singlePurchase}
+                  {currency}
+                  {singlePurchasePrice}
+                  {articleUrl}
+                  {t}
+                  {selectProduct}
+                  {hasSubscriptions}
+                  {...userProps}
+                />
+              {/if}
+
+              {#if !horizontal}
+                <Button {loading} disabled={loading} class="mt-2 w-full shadow-md" type="submit">
+                  {t('continue')}
+                </Button>
+              {/if}
+            </form>
+          {/if}
+          {#if error}
+            <Error text={error} />
           {/if}
 
-          {#if !horizontal}
-            <Button {loading} disabled={loading} class="mt-2 w-full shadow-md" type="submit">
-              {t('continue')}
-            </Button>
-          {/if}
-        </form>
-      {/if}
-      {#if error}
-        <Error text={error} />
-      {/if}
-
-      <div class="column gap-4 @md:row !justify-between w-full mt-4 @md:mt-8">
-        <Row class="gap-2 text-[#5F6D85] text-xs">
-          <Icon name="lock" />{t('secure_payment')}
-        </Row>
-        <Row class="gap-2">
-          {#each footerPaymentMethods as IconName[] as paymentMethod}
-            <PaymentMethod name={paymentMethod} />
-          {/each}
-        </Row>
-      </div>
-    </Column>
-  </Column>
-</div>
+          <div class="column gap-4 @md:row !justify-between w-full mt-4 @md:mt-8">
+            <Row class="gap-2 text-[#5F6D85] text-xs">
+              <Icon name="lock" />{t('secure_payment')}
+            </Row>
+            <Row class="gap-2">
+              {#each footerPaymentMethods as IconName[] as paymentMethod}
+                <PaymentMethod name={paymentMethod} />
+              {/each}
+            </Row>
+          </div>
+        </Column>
+      </Column>
+    </div>
+  {/if}
+{/await}
 
 {@html style}
