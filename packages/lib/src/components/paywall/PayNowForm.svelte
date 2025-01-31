@@ -117,7 +117,7 @@
 
       await api.checkouts.update(checkout.id, {
         paymentData: {
-          provider: paymentMethod.provider, // TODO: update sesamy-js when this prop is included (and no red squiggly)
+          provider: paymentMethod.provider,
           // Need to set CARD for Google Pay and Apple Pay
           method: isWallet ? 'CARD' : paymentMethod.method
         },
