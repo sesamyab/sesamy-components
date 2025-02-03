@@ -1,3 +1,16 @@
+# [2.2.0](https://github.com/sesamyab/sesamy-components/compare/v2.1.0...v2.2.0) (2025-02-03)
+
+
+### Bug Fixes
+
+* css var name ([6c43be2](https://github.com/sesamyab/sesamy-components/commit/6c43be27c716421e8bf7383fc0b3f4ee3cabb2b2))
+* icon color ([cf20cb7](https://github.com/sesamyab/sesamy-components/commit/cf20cb7cb20592aa2488de32badaf35f65f21b7f))
+
+
+### Features
+
+* paywall dark mode ([efcc204](https://github.com/sesamyab/sesamy-components/commit/efcc20442b61f9aa4ab60a05c61a2c15807d2017))
+
 # [2.1.0](https://github.com/sesamyab/sesamy-components/compare/v2.0.0...v2.1.0) (2025-01-31)
 
 
