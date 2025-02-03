@@ -162,6 +162,8 @@
       [] as PaymentMethodType[]
     );
 
+  const multiColoredIcons = ['vipps', 'google-pay'];
+
   isSupportingGooglePay() &&
     paymentMethods.push({ provider: 'STRIPE', method: 'GOOGLE-PAY', icon: 'google-pay' });
 
@@ -238,8 +240,8 @@
           name="payment-method"
           onchange={() => selectPaymentMethod(paymentMethod)}
         >
-          <Row class="w-16" left>
-            <Icon class="text-3xl" multiColor name={icon} />
+          <Row class="w-16 text-black dark:text-white" left>
+            <Icon class="text-3xl" multiColor={multiColoredIcons.includes(icon)} name={icon} />
           </Row>
           {#if method && ['CARD', 'GOOGLE-PAY', 'APPLE-PAY'].includes(method)}
             <div class="gap-1 hidden @xl:row-left">

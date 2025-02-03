@@ -11,7 +11,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: 'hsl(var(--s-primary-color))'
+        primary: 'var(--s-primary-color)'
       }
     }
   },

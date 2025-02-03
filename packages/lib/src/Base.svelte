@@ -3,7 +3,6 @@
   import libstyles from './app.css?inline';
   import { getApi } from './api';
   import initTranslator from './i18n';
-  import { hexToHsl, hslArrayToCSS } from './utils/color';
 
   let { lang, applyStyles = true }: { lang?: string; applyStyles?: boolean } = $props();
   const htmlLocale = document.querySelector('html')?.getAttribute('lang');
@@ -21,7 +20,7 @@
       color: black;
       text-align: left;
 
-      --s-primary-color: var(--sesamy-primary-color, ${hslArrayToCSS(hexToHsl('#000000'))});
+      --s-primary-color: var(--sesamy-primary-color, '#000000');
       --s-font-family: var(--sesamy-font-family, Helvetica);
 
       --s-login-button-color: var(--sesamy-login-button-color, #000000);
