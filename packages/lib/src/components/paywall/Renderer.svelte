@@ -131,7 +131,7 @@
   }
 
   const paywallBgColor = styling?.backgroundColor || '#FFFFFF';
-  const darkMode = hexToHsl(paywallBgColor)[2] < 50;
+  const darkMode = styling?.showBackground && hexToHsl(paywallBgColor)[2] < 50;
   const paywallTextColor = darkMode ? '#FFFFFF' : '#000000';
 
   let sesamyPaywallDesignTokens = `
