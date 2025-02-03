@@ -4,13 +4,24 @@
   import { init } from '@sesamy/sesamy-js';
 
   init({
-    clientId: 'kvartal',
+    clientId: 'test-fokus',
     environment: 'dev',
     api: {
       namespace: 'sesamy'
     }
   });
 </script>
+
+<svelte:head>
+  <meta property="sesamy:price" content="1337" />
+  <meta property="sesamy:currency" content="SEK" />
+  <meta property="sesamy:publisher-content-id" content="some-id" />
+  <meta
+    property="sesamy:item-src"
+    content="https://stage.fokus.se/aktuellt/lorem-ipsum-dolor-sit-amet-consectetur/"
+  />
+  <meta property="sesamy:pass" content="sid:a1tdI9vbB6AEPhICVGQqD" />
+</svelte:head>
 
 <NavBar />
 
@@ -20,11 +31,7 @@
     <article>
       <h1>Sesamy article with remote content</h1>
       <div class="article-body">
-        <sesamy-content-container
-          item-src="https://stage.fokus.se/aktuellt/lorem-ipsum-dolor-sit-amet-consectetur/"
-          lock-mode="proxy"
-          locked-content-selector="article"
-        >
+        <sesamy-content-container lock-mode="proxy" locked-content-selector="article">
           <div slot="preview">
             <p>
               Apples trådlösa hörlurar AirPods har kommit i en hel rad olika varianter och utgåvor
@@ -37,7 +44,8 @@
         </sesamy-content-container>
 
         <sesamy-paywall
-          settings-url="https://api.sesamy.dev/paywall/paywalls/kvartal/gzWoe_jBIGTLDpgS-K2dV"
+          settings-url="https://api.sesamy.dev/paywall/paywalls/test-fokus/ONh_7gBRk8U_L060YMUr2"
+          redirect-url="https://sesamy.com"
         ></sesamy-paywall>
       </div>
     </article>
