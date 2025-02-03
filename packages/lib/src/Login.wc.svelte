@@ -103,10 +103,8 @@
       </div>
     {:else}
       <Button
-        class={twMerge(
-          'font-bold row gap-1.5 text-[color:--s-login-button-color] border-[color:--s-login-button-color]',
-          classes
-        )}
+        class={twMerge('font-bold row gap-1.5', classes)}
+        style="color: var(--s-login-button-color);border-color: var(--s-login-button-color);border-width: var(--s-login-button-border-width)"
         variant="secondary"
         {disabled}
         onclick={() => login(api)}
