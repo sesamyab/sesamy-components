@@ -16,7 +16,7 @@
     hasError = false,
     placeholder = '',
     compact = false,
-    class: classes,
+    class: classes = '',
     ...props
   }: Props = $props();
 </script>
@@ -25,10 +25,10 @@
   <input
     {...props}
     class={twMerge(
-      'peer w-full rounded-md border border-gray-200 bg-white p-4 text-base leading-snug text-gray-800 outline-0 transition-colors duration-150 placeholder:text-gray-400 focus:border-gray-300 disabled:opacity-[20%]',
-      (hasError || !!error) && 'border-red-500 focus-visible:border-red',
+      'relative peer w-full rounded-md border border-gray-200 bg-white p-4 text-base leading-snug text-gray-800 outline-0 transition-colors duration-150 placeholder:text-gray-400 focus:border-gray-300 disabled:opacity-[20%] dark:border-gray-700 dark:bg-black/25 dark:text-gray-100',
+      (hasError || !!error) && '!border-red-500 z-10',
       compact && 'pb-2 pt-6 placeholder:text-transparent',
-      classes
+      String(classes)
     )}
     {placeholder}
     bind:value

@@ -130,13 +130,17 @@
     }
   }
 
-  const paywallBgColor = hexToHsl(styling?.backgroundColor || '#FFFFFF');
+  const paywallBgColor = styling?.backgroundColor || '#FFFFFF';
+  const darkMode = hexToHsl(paywallBgColor)[2] < 50;
+  const paywallTextColor = darkMode ? '#FFFFFF' : '#000000';
 
   let sesamyPaywallDesignTokens = `
     :host * {
-      --s-paywall-bg-start-color: var(--sesamy-paywall-bg-start-color, ${paywallBgColor[0]},${paywallBgColor[1]}%,${paywallBgColor[2]}%);
-      --s-paywall-bg-end-color: var(--sesamy-paywall-bg-end-color, ${paywallBgColor[0]},${paywallBgColor[1]}%,${paywallBgColor[2] + (100 - paywallBgColor[2]) * 0.5}%);
-      --s-primary-color: var(--sesamy-paywall-primary-color, ${hslArrayToCSS(hexToHsl(mainColor))}) !important;
+      --s-primary-color: var(--sesamy-paywall-primary-color, ${mainColor});
+      --s-paywall-bg-color: var(--sesamy-paywall-bg-color, ${paywallBgColor});
+      --s-paywall-text-color: var(--sesamy-paywall-text-color, ${paywallTextColor});
+      --s-paywall-border-radius: var(--sesamy-paywall-border-radius, 0.5rem);
+      --s-paywall-border-radius-desktop: var(--sesamy-paywall-border-radius-desktop, calc(var(--s-paywall-border-radius) * 3));
     }
   `;
 
@@ -148,10 +152,11 @@
     <div class="@container">
       <Column
         class={twMerge(
-          'w-full py-4 @md:py-6 rounded-lg @xl:rounded-3xl',
+          'w-full py-4 @md:py-6 rounded-[var(--s-paywall-border-radius)] @xl:rounded-[var(--s-paywall-border-radius-desktop)]',
           styling?.showBackground &&
-            'bg-gradient-to-b from-[hsl(var(--s-paywall-bg-start-color))] to-[hsl(var(--s-paywall-bg-end-color))]',
-          styling?.showBackground && styling?.dropShadow && 'shadow-md @xl:shadow-lg'
+            'bg-[var(--s-paywall-bg-color)] text-[var(--s-paywall-text-color)]',
+          styling?.showBackground && styling?.dropShadow && 'shadow-md @xl:shadow-lg',
+          darkMode && 'dark'
         )}
       >
         <Column
@@ -235,7 +240,7 @@
           {/if}
 
           <div class="column gap-4 @md:row !justify-between w-full mt-4 @md:mt-8">
-            <Row class="gap-2 text-[#5F6D85] text-xs">
+            <Row class="gap-2 text-[#5F6D85] dark:text-gray-400 text-xs">
               <Icon name="lock" />{t('secure_payment')}
             </Row>
             <Row class="gap-2">
