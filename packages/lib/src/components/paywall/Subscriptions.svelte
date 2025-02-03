@@ -135,7 +135,7 @@
       </Column>
     {:else}
       {#if i}
-        <hr class="w-full border-gray-100" />
+        <hr class={twMerge('w-full border-gray-10 dark:border-gray-800')} />
       {/if}
       <Selection
         {id}

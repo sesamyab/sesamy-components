@@ -14,7 +14,7 @@
 
 <Row
   class={twMerge(
-    'aspect-[4/3] px-1 rounded bg-white border border-transparent',
+    'aspect-[4/3] px-1 rounded bg-white text-black border border-transparent',
     name === 'klarna' && 'bg-[#FEB4C7]',
     name === 'amex' && 'bg-[#1F72CD]',
     size === 'sm' && 'w-8 border-gray-300',
