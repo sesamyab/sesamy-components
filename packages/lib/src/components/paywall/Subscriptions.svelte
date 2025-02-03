@@ -126,15 +126,25 @@
             {/if}
           </Column>
 
-          {#await getCheckoutUrl(subscription) then checkoutUrl}
+          {#if url}
             <Button
-              href={checkoutUrl.replace('poId', 'option')}
+              href={url}
               class="w-full mt-4"
               variant={selected || tag ? 'primary' : 'secondary'}
             >
               {buttonText || t('continue')}
             </Button>
-          {/await}
+          {:else}
+            {#await getCheckoutUrl(subscription) then checkoutUrl}
+              <Button
+                href={checkoutUrl.replace('poId', 'option')}
+                class="w-full mt-4"
+                variant={selected || tag ? 'primary' : 'secondary'}
+              >
+                {buttonText || t('continue')}
+              </Button>
+            {/await}
+          {/if}
         </Column>
       </Column>
     {:else}

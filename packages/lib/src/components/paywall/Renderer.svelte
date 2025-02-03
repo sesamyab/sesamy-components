@@ -235,9 +235,13 @@
               {/if}
 
               {#if !horizontal}
-                <Button {loading} disabled={loading} class="mt-2 w-full shadow-md" type="submit">
-                  {t('continue')}
-                </Button>
+                {#if product?.url}
+                  <Button href={product.url} class="mt-2 w-full shadow-md">{t('continue')}</Button>
+                {:else}
+                  <Button {loading} disabled={loading} class="mt-2 w-full shadow-md" type="submit">
+                    {t('continue')}
+                  </Button>
+                {/if}
               {/if}
             </form>
           {/if}
