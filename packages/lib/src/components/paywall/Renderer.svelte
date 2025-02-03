@@ -7,7 +7,7 @@
   import Features from '../Features.svelte';
   import { twMerge } from 'tailwind-merge';
   import type { TranslationFunction } from '../../i18n';
-  import { hexToHsl, hslArrayToCSS } from '../../utils/color';
+  import { hexToHsl } from '../../utils/color';
   import type { Paywall, PaywallSubscription } from 'src/types/Paywall';
   import type { IconName } from 'src/icons/types';
   import Subscriptions from './Subscriptions.svelte';
@@ -18,6 +18,7 @@
   import PayNowForm from './PayNowForm.svelte';
   import NotLoggedIn from '../NotLoggedIn.svelte';
   import { parsePrice } from '../../utils/money';
+  import { goToCheckout } from '../../utils/checkout';
 
   type Props = {
     api: SesamyAPI;
@@ -102,6 +103,10 @@
           sourceId: paywall.id
         }
       });
+
+      if (product.preferBusiness) {
+        goToCheckout(checkout, undefined, true);
+      }
     } catch (err) {
       console.error(err);
       error = t('something_went_wrong');
@@ -199,12 +204,13 @@
             <Features features={product.features} class="font-bold text-black mb-2" />
           {/if}
 
-          {#if checkout}
+          {#if checkout && !product?.preferBusiness}
             <PayNowForm {api} {checkout} {t} />
           {:else}
             <form class="contents" onsubmit={createCheckout}>
               {#if subscriptions.length}
                 <Subscriptions
+                  {api}
                   {horizontal}
                   {subscriptions}
                   {t}

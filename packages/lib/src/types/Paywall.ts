@@ -24,6 +24,7 @@ export type PaywallSubscription = {
   features?: string[];
   url?: string;
   buttonText?: string;
+  preferBusiness?: boolean;
 };
 
 export type PaywallSinglePurchase = {

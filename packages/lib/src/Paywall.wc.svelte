@@ -6,7 +6,7 @@
   import Renderer from './components/paywall/Renderer.svelte';
   import type { Paywall } from './types/Paywall';
 
-  let { template = 'ARTICLE', ...restProps }: PaywallProps = $props();
+  let { template, ...restProps }: PaywallProps = $props();
 
   let paywall = $state<Paywall>();
 
@@ -14,6 +14,9 @@
     (async () => {
       const response = await fetch(restProps['settings-url']);
       paywall = await response.json();
+      if (!template && paywall?.settings?.template) {
+        template = paywall.settings.template;
+      }
     })();
   });
 </script>
