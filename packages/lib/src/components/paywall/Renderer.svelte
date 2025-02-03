@@ -186,7 +186,7 @@
                 ></sesamy-login>
               </Row>
               <div
-                class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-primary/30"
+                class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-primary opacity-30"
               ></div>
             {/if}
           </NotLoggedIn>
@@ -201,7 +201,7 @@
           </div>
 
           {#if product && !horizontal}
-            <Features features={product.features} class="font-bold text-black mb-2" />
+            <Features features={product.features} class="font-bold mb-2" />
           {/if}
 
           {#if checkout && !product?.preferBusiness}
