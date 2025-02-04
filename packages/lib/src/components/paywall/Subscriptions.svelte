@@ -68,7 +68,7 @@
     {#if horizontal}
       <Column
         class={twMerge(
-          'border bg-white border-gray-300 rounded-lg relative',
+          'border bg-white dark:bg-black/25 border-gray-300 rounded-lg relative',
           tag && 'border-primary mt-0 border-2'
         )}
       >
