@@ -7,7 +7,7 @@
   import Features from '../Features.svelte';
   import { twMerge } from 'tailwind-merge';
   import type { TranslationFunction } from '../../i18n';
-  import { hexToHsl, hslArrayToCSS } from '../../utils/color';
+  import { hexToHsl } from '../../utils/color';
   import type { Paywall, PaywallSubscription } from 'src/types/Paywall';
   import type { IconName } from 'src/icons/types';
   import Subscriptions from './Subscriptions.svelte';
@@ -18,6 +18,7 @@
   import PayNowForm from './PayNowForm.svelte';
   import NotLoggedIn from '../NotLoggedIn.svelte';
   import { parsePrice } from '../../utils/money';
+  import { goToCheckout } from '../../utils/checkout';
 
   type Props = {
     api: SesamyAPI;
@@ -102,6 +103,10 @@
           sourceId: paywall.id
         }
       });
+
+      if (product.preferBusiness) {
+        goToCheckout(checkout, undefined, true);
+      }
     } catch (err) {
       console.error(err);
       error = t('something_went_wrong');
@@ -131,7 +136,7 @@
   }
 
   const paywallBgColor = styling?.backgroundColor || '#FFFFFF';
-  const darkMode = hexToHsl(paywallBgColor)[2] < 50;
+  const darkMode = styling?.showBackground && hexToHsl(paywallBgColor)[2] < 50;
   const paywallTextColor = darkMode ? '#FFFFFF' : '#000000';
 
   let sesamyPaywallDesignTokens = `
@@ -181,7 +186,7 @@
                 ></sesamy-login>
               </Row>
               <div
-                class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-primary/30"
+                class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-primary opacity-30"
               ></div>
             {/if}
           </NotLoggedIn>
@@ -196,15 +201,16 @@
           </div>
 
           {#if product && !horizontal}
-            <Features features={product.features} class="font-bold text-black mb-2" />
+            <Features features={product.features} class="font-bold mb-2" />
           {/if}
 
-          {#if checkout}
+          {#if checkout && !product?.preferBusiness}
             <PayNowForm {api} {checkout} {t} />
           {:else}
             <form class="contents" onsubmit={createCheckout}>
               {#if subscriptions.length}
                 <Subscriptions
+                  {api}
                   {horizontal}
                   {subscriptions}
                   {t}
@@ -229,9 +235,13 @@
               {/if}
 
               {#if !horizontal}
-                <Button {loading} disabled={loading} class="mt-2 w-full shadow-md" type="submit">
-                  {t('continue')}
-                </Button>
+                {#if product?.url}
+                  <Button href={product.url} class="mt-2 w-full shadow-md">{t('continue')}</Button>
+                {:else}
+                  <Button {loading} disabled={loading} class="mt-2 w-full shadow-md" type="submit">
+                    {t('continue')}
+                  </Button>
+                {/if}
               {/if}
             </form>
           {/if}

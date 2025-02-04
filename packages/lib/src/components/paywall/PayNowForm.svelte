@@ -18,21 +18,12 @@
   import { isSupportingApplePay, isSupportingGooglePay } from '../../utils/browser-support';
   import emailSpellChecker from '@zootools/email-spell-checker';
   import Accordion from '../Accordion.svelte';
-
-  const ENV = import.meta.env.MODE;
-  const CHECKOUT_URL =
-    ENV === 'production' ? 'https://checkout3.sesamy.com' : 'https://checkout3.sesamy.dev';
+  import { goToCheckout, type PaymentMethodType } from '../../utils/checkout';
 
   type Props = {
     api: SesamyAPI;
     t: TranslationFunction;
     checkout: Checkout;
-  };
-
-  type PaymentMethodType = {
-    provider: string;
-    method: string;
-    icon: IconName;
   };
 
   let { api, t, checkout }: Props = $props();
@@ -105,7 +96,7 @@
     }, 400);
   };
 
-  const goToCheckout = async (e: SubmitEvent) => {
+  const onSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
     validate();
     if (errors) return;
@@ -124,15 +115,7 @@
         email
       });
 
-      const checkoutURL = new URL(CHECKOUT_URL);
-
-      checkoutURL.pathname = checkout.id;
-      checkoutURL.searchParams.set('norecreate', 'true');
-      checkoutURL.searchParams.set('lang', checkout.language);
-      checkoutURL.searchParams.set('redirect-url', checkout.redirectUrl);
-      checkoutURL.searchParams.set('payment-method', paymentMethod.method);
-
-      window.location.href = checkoutURL.href;
+      goToCheckout(checkout, paymentMethod);
       return;
     } catch (err: any) {
       if (err?.message?.includes('User already owns item')) {
@@ -173,7 +156,7 @@
   paymentMethods.length && selectPaymentMethod(paymentMethods[0]);
 </script>
 
-<form class="contents" onsubmit={goToCheckout}>
+<form class="contents" onsubmit={onSubmit}>
   <InputGroup>
     <Input
       onkeyup={provideSuggestion}

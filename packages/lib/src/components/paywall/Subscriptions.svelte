@@ -8,8 +8,10 @@
   import Button from '../../Button.wc.svelte';
   import Tag from '../Tag.svelte';
   import Selection from './Selection.svelte';
+  import type { SesamyAPI } from '@sesamy/sesamy-js';
 
   type Props = {
+    api: SesamyAPI;
     t: TranslationFunction;
     horizontal?: boolean;
     subscriptions: PaywallSubscription[];
@@ -19,6 +21,7 @@
   };
 
   let {
+    api,
     horizontal = false,
     subscriptions,
     currency,
@@ -28,12 +31,13 @@
   }: Props = $props();
 
   const getCheckoutUrl = async (product: PaywallSubscription) =>
-    sesamy.generateLink({
+    api.generateLink({
       target: 'checkout',
       sku: product.sku,
       purchaseOptionId: product.poId,
       discountCode: product.discountCode,
-      redirectUrl
+      redirectUrl,
+      business: product.preferBusiness
     });
 </script>
 
@@ -122,15 +126,25 @@
             {/if}
           </Column>
 
-          {#await getCheckoutUrl(subscription) then checkoutUrl}
+          {#if url}
             <Button
-              href={checkoutUrl.replace('poId', 'option')}
+              href={url}
               class="w-full mt-4"
               variant={selected || tag ? 'primary' : 'secondary'}
             >
               {buttonText || t('continue')}
             </Button>
-          {/await}
+          {:else}
+            {#await getCheckoutUrl(subscription) then checkoutUrl}
+              <Button
+                href={checkoutUrl.replace('poId', 'option')}
+                class="w-full mt-4"
+                variant={selected || tag ? 'primary' : 'secondary'}
+              >
+                {buttonText || t('continue')}
+              </Button>
+            {/await}
+          {/if}
         </Column>
       </Column>
     {:else}
