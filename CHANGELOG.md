@@ -1,3 +1,19 @@
+# [2.3.0](https://github.com/sesamyab/sesamy-components/compare/v2.2.0...v2.3.0) (2025-02-04)
+
+
+### Bug Fixes
+
+* darkmode only when background enabled ([975fec1](https://github.com/sesamyab/sesamy-components/commit/975fec1ed509d49f35e360e0cae074e37a9f6e03))
+
+
+### Features
+
+* arbitrary vars ([e228fa9](https://github.com/sesamyab/sesamy-components/commit/e228fa97d6791fe386c9694468e0827d4a4df32f))
+* login btn border-width var ([cc58df1](https://github.com/sesamyab/sesamy-components/commit/cc58df1e7faa8a1458272da6369f082afe5a0620))
+* minor layout changes & updated snapshots ([a50520b](https://github.com/sesamyab/sesamy-components/commit/a50520b83caff309da607a536b6528d31cdc7311))
+* prefer business ([484dafe](https://github.com/sesamyab/sesamy-components/commit/484dafe1d9a57be8c2dedeecbeb553cbb2d3565c))
+* subscription go to url ([c1fca01](https://github.com/sesamyab/sesamy-components/commit/c1fca01096ac7380da73cb4c8630e503ebc4bb9b))
+
 # [2.2.0](https://github.com/sesamyab/sesamy-components/compare/v2.1.0...v2.2.0) (2025-02-03)
 
 
