@@ -1,3 +1,10 @@
+# [2.4.0](https://github.com/sesamyab/sesamy-components/compare/v2.3.0...v2.4.0) (2025-02-10)
+
+
+### Features
+
+* boxes dark mode ([304090c](https://github.com/sesamyab/sesamy-components/commit/304090c05146473e3051728e4fa9c19682a363cc))
+
 # [2.3.0](https://github.com/sesamyab/sesamy-components/compare/v2.2.0...v2.3.0) (2025-02-04)
 
 
