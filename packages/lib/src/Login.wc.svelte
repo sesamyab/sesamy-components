@@ -52,6 +52,13 @@
       console.error('Error checking login status:', error);
     }
   };
+
+  const handleClickOutside = (e: Event) => {
+    if (e.target !== $host()) {
+      showPopupMenu = false;
+    }
+  };
+  document.addEventListener('click', handleClickOutside);
 </script>
 
 <Base let:api let:t>
@@ -73,7 +80,7 @@
         </button>
         {#if showPopupMenu}
           <div
-            class="absolute top-full mt-1.5 right-0 bg-white border border-gray-200 rounded-sm w-72"
+            class="absolute top-full mt-1.5 right-0 bg-white text-black border border-gray-200 rounded-sm w-72"
             role="menu"
           >
             <slot name="popup-menu">
