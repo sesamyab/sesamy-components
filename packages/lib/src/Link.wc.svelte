@@ -10,8 +10,7 @@
   const htmlLang = htmlLocale?.split('-')[0];
   const t = initTranslator(lang || htmlLang || 'en');
 
-  const login = async (e: MouseEvent) => {
-    e.preventDefault();
+  const login = async () => {
     try {
       const api = await getApi();
       await api.auth.loginWithRedirect();
@@ -19,8 +18,7 @@
       console.error('Login failed:', error);
     }
   };
-  const logout = async (e: MouseEvent) => {
-    e.preventDefault();
+  const logout = async () => {
     try {
       const api = await getApi();
       await api.auth.logout();
@@ -41,19 +39,40 @@
 
 {#if target === 'login'}
   <sesamy-visibility>
-    <span slot="not-logged-in" role="button" on:click={login}>
+    <span
+      slot="not-logged-in"
+      role="button"
+      tabindex="0"
+      onclick={login}
+      onkeydown={(e: KeyboardEvent) => e.key === 'Enter' && login()}
+      aria-label={t('login')}
+    >
       <slot>{t('login')}</slot>
     </span>
   </sesamy-visibility>
 {:else if target === 'logout'}
   <sesamy-visibility>
-    <span slot="logged-in" role="button" on:click={logout}>
+    <span
+      slot="logged-in"
+      role="button"
+      tabindex="0"
+      onclick={logout}
+      onkeydown={(e: KeyboardEvent) => e.key === 'Enter' && logout()}
+      aria-label={t('logout')}
+    >
       <slot>{t('logout')}</slot>
     </span>
   </sesamy-visibility>
 {:else if target === 'account'}
   <sesamy-visibility>
-    <span slot="logged-in" role="button" on:click={goToAccount}>
+    <span
+      slot="logged-in"
+      role="button"
+      tabindex="0"
+      onclick={goToAccount}
+      onkeydown={(e: KeyboardEvent) => e.key === 'Enter' && goToAccount()}
+      aria-label={t('my_account')}
+    >
       <slot>{t('my_account')}</slot>
     </span>
   </sesamy-visibility>
