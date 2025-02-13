@@ -16,7 +16,6 @@
     :host {
       display: contents;
       font-family: var(--s-font-family);
-      -webkit-font-smoothing: antialiased;
       color: black;
       text-align: left;
 
