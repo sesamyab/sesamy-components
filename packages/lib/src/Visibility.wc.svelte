@@ -12,6 +12,7 @@
       return api.auth.isAuthenticated();
     } catch (error) {
       console.error('Error checking login status:', error);
+      return false;
     }
   };
 </script>
