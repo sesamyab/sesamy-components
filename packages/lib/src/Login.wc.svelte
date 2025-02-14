@@ -59,13 +59,7 @@
       showPopupMenu = false;
     }
   };
-
-  onMount(() => {
-    document.addEventListener('pointerdown', handleClickOutside);
-    return () => {
-      document.removeEventListener('pointerdown', handleClickOutside);
-    };
-  });
+  document.addEventListener('pointerdown', handleClickOutside);
 </script>
 
 <Base let:api let:t>
