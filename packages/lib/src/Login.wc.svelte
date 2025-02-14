@@ -7,6 +7,7 @@
   import type { LoginProps } from './types';
   import Button from './components/Button.svelte';
   import { twMerge } from 'tailwind-merge';
+  import { onMount } from 'svelte';
 
   let {
     loading,
@@ -58,7 +59,13 @@
       showPopupMenu = false;
     }
   };
-  document.addEventListener('click', handleClickOutside);
+
+  onMount(() => {
+    document.addEventListener('pointerdown', handleClickOutside);
+    return () => {
+      document.removeEventListener('pointerdown', handleClickOutside);
+    };
+  });
 </script>
 
 <Base let:api let:t>
