@@ -1,3 +1,16 @@
+# [2.5.0](https://github.com/sesamyab/sesamy-components/compare/v2.4.0...v2.5.0) (2025-02-14)
+
+
+### Bug Fixes
+
+* rem not needed eventListener cleanup ([3eca4ad](https://github.com/sesamyab/sesamy-components/commit/3eca4ad988bd1e8b1363e25a08cf66a6833e6148))
+
+
+### Features
+
+* close user menu on click outside ([39a60f9](https://github.com/sesamyab/sesamy-components/commit/39a60f95868256d2c59ffff8cf3c10f6b6a2f12e))
+* visibility component ([5007eb8](https://github.com/sesamyab/sesamy-components/commit/5007eb8be9900275aee37711f5da0fd3c298b39e))
+
 # [2.4.0](https://github.com/sesamyab/sesamy-components/compare/v2.3.0...v2.4.0) (2025-02-10)
 
 
