@@ -1,3 +1,84 @@
+# [2.5.0](https://github.com/sesamyab/sesamy-components/compare/v2.4.0...v2.5.0) (2025-02-14)
+
+
+### Bug Fixes
+
+* rem not needed eventListener cleanup ([3eca4ad](https://github.com/sesamyab/sesamy-components/commit/3eca4ad988bd1e8b1363e25a08cf66a6833e6148))
+
+
+### Features
+
+* close user menu on click outside ([39a60f9](https://github.com/sesamyab/sesamy-components/commit/39a60f95868256d2c59ffff8cf3c10f6b6a2f12e))
+* visibility component ([5007eb8](https://github.com/sesamyab/sesamy-components/commit/5007eb8be9900275aee37711f5da0fd3c298b39e))
+
+# [2.4.0](https://github.com/sesamyab/sesamy-components/compare/v2.3.0...v2.4.0) (2025-02-10)
+
+
+### Features
+
+* boxes dark mode ([304090c](https://github.com/sesamyab/sesamy-components/commit/304090c05146473e3051728e4fa9c19682a363cc))
+
+# [2.3.0](https://github.com/sesamyab/sesamy-components/compare/v2.2.0...v2.3.0) (2025-02-04)
+
+
+### Bug Fixes
+
+* darkmode only when background enabled ([975fec1](https://github.com/sesamyab/sesamy-components/commit/975fec1ed509d49f35e360e0cae074e37a9f6e03))
+
+
+### Features
+
+* arbitrary vars ([e228fa9](https://github.com/sesamyab/sesamy-components/commit/e228fa97d6791fe386c9694468e0827d4a4df32f))
+* login btn border-width var ([cc58df1](https://github.com/sesamyab/sesamy-components/commit/cc58df1e7faa8a1458272da6369f082afe5a0620))
+* minor layout changes & updated snapshots ([a50520b](https://github.com/sesamyab/sesamy-components/commit/a50520b83caff309da607a536b6528d31cdc7311))
+* prefer business ([484dafe](https://github.com/sesamyab/sesamy-components/commit/484dafe1d9a57be8c2dedeecbeb553cbb2d3565c))
+* subscription go to url ([c1fca01](https://github.com/sesamyab/sesamy-components/commit/c1fca01096ac7380da73cb4c8630e503ebc4bb9b))
+
+# [2.2.0](https://github.com/sesamyab/sesamy-components/compare/v2.1.0...v2.2.0) (2025-02-03)
+
+
+### Bug Fixes
+
+* css var name ([6c43be2](https://github.com/sesamyab/sesamy-components/commit/6c43be27c716421e8bf7383fc0b3f4ee3cabb2b2))
+* icon color ([cf20cb7](https://github.com/sesamyab/sesamy-components/commit/cf20cb7cb20592aa2488de32badaf35f65f21b7f))
+
+
+### Features
+
+* paywall dark mode ([efcc204](https://github.com/sesamyab/sesamy-components/commit/efcc20442b61f9aa4ab60a05c61a2c15807d2017))
+
+# [2.1.0](https://github.com/sesamyab/sesamy-components/compare/v2.0.0...v2.1.0) (2025-01-31)
+
+
+### Bug Fixes
+
+* completeAndSelect if only single purchase ([327fe72](https://github.com/sesamyab/sesamy-components/commit/327fe7241996ef3fd8dc3f3f54bb1d3a54a817d1))
+
+
+### Features
+
+* get articleUrl & pass correctly in content-container ([58016fa](https://github.com/sesamyab/sesamy-components/commit/58016fa725c1e0593802f497124139d658e4a62e))
+* get itemSrc & price correctly for single purchase ([12e139c](https://github.com/sesamyab/sesamy-components/commit/12e139cc9860084ebc984fe03d7ee4ee05329a50))
+* get itemSrc & price correctly for single purchase ([47941f3](https://github.com/sesamyab/sesamy-components/commit/47941f3bd1d52918ec972879160d1cd09f5851d8))
+* hide paywall if has access ([708a69a](https://github.com/sesamyab/sesamy-components/commit/708a69ada9b09e9dec0374af53be1189eff5715e))
+
+# [2.0.0](https://github.com/sesamyab/sesamy-components/compare/v1.11.2...v2.0.0) (2025-01-23)
+
+
+* Merge pull request [#148](https://github.com/sesamyab/sesamy-components/issues/148) from sesamyab/dev ([91f0688](https://github.com/sesamyab/sesamy-components/commit/91f06884768b812a6c46c1706c28a44c884c93d7))
+
+
+### BREAKING CHANGES
+
+* remove beta suffix
+
+## [1.11.2](https://github.com/sesamyab/sesamy-components/compare/v1.11.1...v1.11.2) (2025-01-22)
+
+
+### Bug Fixes
+
+* show preview while loading remote content ([72da904](https://github.com/sesamyab/sesamy-components/commit/72da904a5df9651f7e3f743b105acac2cda1d1dd))
+
 ## [1.11.1](https://github.com/sesamyab/sesamy-components/compare/v1.11.0...v1.11.1) (2025-01-21)
 
 

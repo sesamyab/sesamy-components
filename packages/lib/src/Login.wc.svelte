@@ -7,7 +7,6 @@
   import type { LoginProps } from './types';
   import Button from './components/Button.svelte';
   import { twMerge } from 'tailwind-merge';
-  import { onMount } from 'svelte';
 
   let {
     loading,
