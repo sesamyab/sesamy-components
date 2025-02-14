@@ -3,6 +3,11 @@
     <li><a href="/">Home</a></li>
     <li><a href="/about">About</a></li>
     <li><a href="/contact">Contact</a></li>
+    <li sesamy-visibility="logged-in"><a href="#" sesamy-link="account">Profile</a></li>
+    <sesamy-visibility>
+      <li slot="logged-in"><a href="#" sesamy-link="logout">Logout</a></li>
+      <li slot="not-logged-in"><a href="#" sesamy-link="login">Login</a></li>
+    </sesamy-visibility>
     <li><sesamy-login></sesamy-login></li>
   </ul>
 </nav>
