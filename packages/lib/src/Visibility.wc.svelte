@@ -21,6 +21,6 @@
   {#if loggedIn}
     <slot name="logged-in"></slot>
   {:else}
-    <slot name="logged-out"></slot>
+    <slot name="not-logged-in"></slot>
   {/if}
 {/await}
