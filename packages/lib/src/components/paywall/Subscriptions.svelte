@@ -83,10 +83,14 @@
               <Column class="mb-0 @xl:mb-4" left>
                 {#if discountPrice}
                   <div class="leading-none">
-                    <span class="font-bold text-2xl @xl:text-4xl">
+                    <span class="font-bold text-2xl @xl:text-4xl whitespace-nowrap">
                       {discountPrice}
                       {currency}
-                    </span> <span class="text-xl @xl:text-2xl">/ {periodText}</span>
+                    </span>
+                    {#if periodText}
+                      {' '}<span class="text-xl @xl:text-2xl whitespace-nowrap">/ {periodText}</span
+                      >
+                    {/if}
                   </div>
                 {/if}
                 <div class="relative leading-tight">
@@ -105,7 +109,7 @@
                       discountPrice && 'text-base @xl:text-lg text-gray-400'
                     )}
                   >
-                    / {periodText}
+                    {periodText && ` / ${periodText}`}
                   </span>
                   <div
                     class={twMerge(
@@ -170,18 +174,26 @@
           {#if discountPrice}
             <div class="text-base font-bold leading-none">
               {discountPrice}
-              {currency} / {periodText}
+              {currency}
+              {#if periodText}
+                {' '}/ {periodText}
+              {/if}
             </div>
           {/if}
-          <div
-            class={twMerge(
-              'text-base font-bold leading-none',
-              discountPrice && 'line-through text-gray-400 text-sm'
-            )}
-          >
-            {price}
-            {currency} / {periodText}
-          </div>
+          {#if price}
+            <div
+              class={twMerge(
+                'text-base font-bold leading-none',
+                discountPrice && 'line-through text-gray-400 text-sm'
+              )}
+            >
+              {price}
+              {currency}
+              {#if periodText}
+                {' '}/ {periodText}
+              {/if}
+            </div>
+          {/if}
         </div>
         {#if tag}
           <Tag text={tag} {t} />
