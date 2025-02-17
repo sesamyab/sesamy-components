@@ -1,3 +1,11 @@
+## [2.6.1](https://github.com/sesamyab/sesamy-components/compare/v2.6.0...v2.6.1) (2025-02-17)
+
+
+### Bug Fixes
+
+* consistent btn layout in boxes mode ([399b1ec](https://github.com/sesamyab/sesamy-components/commit/399b1ecd9cefa1b9a32aa5ef766534ec77b366af))
+* revert naming ([088efc3](https://github.com/sesamyab/sesamy-components/commit/088efc30ec92243ea63c855ede22e544c3b86848))
+
 # [2.6.0](https://github.com/sesamyab/sesamy-components/compare/v2.5.1...v2.6.0) (2025-02-14)
 
 
