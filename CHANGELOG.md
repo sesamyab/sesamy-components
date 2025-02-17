@@ -1,3 +1,10 @@
+## [2.5.1](https://github.com/sesamyab/sesamy-components/compare/v2.5.0...v2.5.1) (2025-02-14)
+
+
+### Bug Fixes
+
+* remove unused svelte import ([5cd5cd1](https://github.com/sesamyab/sesamy-components/commit/5cd5cd1ea73355134e7d7c9462a007fc6a22a3da))
+
 # [2.5.0](https://github.com/sesamyab/sesamy-components/compare/v2.4.0...v2.5.0) (2025-02-14)
 
 
