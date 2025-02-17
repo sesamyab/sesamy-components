@@ -131,11 +131,7 @@
           </Column>
 
           {#if url}
-            <Button
-              href={url}
-              class="w-full mt-4"
-              variant={selected || tag ? 'primary' : 'secondary'}
-            >
+            <Button href={url} class="w-full mt-4" variant="primary">
               {buttonText || t('continue')}
             </Button>
           {:else}
@@ -143,7 +139,7 @@
               <Button
                 href={checkoutUrl.replace('poId', 'option')}
                 class="w-full mt-4"
-                variant={selected || tag ? 'primary' : 'secondary'}
+                variant="primary"
               >
                 {buttonText || t('continue')}
               </Button>
