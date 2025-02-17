@@ -1,3 +1,10 @@
+# [2.6.0](https://github.com/sesamyab/sesamy-components/compare/v2.5.1...v2.6.0) (2025-02-14)
+
+
+### Features
+
+* conditional price display ([506dfa2](https://github.com/sesamyab/sesamy-components/commit/506dfa22a6380108142f99dbee401e11f376928d))
+
 ## [2.5.1](https://github.com/sesamyab/sesamy-components/compare/v2.5.0...v2.5.1) (2025-02-14)
 
 
