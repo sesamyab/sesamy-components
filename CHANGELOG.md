@@ -1,3 +1,10 @@
+## [2.6.2](https://github.com/sesamyab/sesamy-components/compare/v2.6.1...v2.6.2) (2025-02-20)
+
+
+### Bug Fixes
+
+* boxes layout description darkmode ([76b715a](https://github.com/sesamyab/sesamy-components/commit/76b715a3eaa82df9b7650616cc3b90535d20689d))
+
 ## [2.6.1](https://github.com/sesamyab/sesamy-components/compare/v2.6.0...v2.6.1) (2025-02-17)
 
 
