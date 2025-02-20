@@ -122,7 +122,7 @@
             {/if}
 
             {#if description && (!features || features.length < 1)}
-              <div class="text-sm text-gray-700">{description}</div>
+              <div class="text-sm text-gray-700 dark:text-gray-300">{description}</div>
             {/if}
 
             {#if features && features.length > 0}
