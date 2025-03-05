@@ -22,14 +22,23 @@
 </script>
 
 <Base let:api let:t>
+  {@const host = $host()}
+  {@const content = host ? api.content.get(host) : null}
+
   {#if paywall}
-    <Renderer
-      {api}
-      {paywall}
-      horizontal={template === 'BOXES'}
-      host={$host()}
-      {t}
-      {...{ ...restProps, template }}
-    />
+    {@const accessLevel = content?.accessLevel}
+
+    {#if accessLevel === 'entitlement'}
+      <Renderer
+        {api}
+        {paywall}
+        horizontal={template === 'BOXES'}
+        {host}
+        {t}
+        {...{ ...restProps, template }}
+      />
+    {:else if accessLevel === 'logged-in'}
+      <div>Registration wall</div>
+    {/if}
   {/if}
 </Base>
