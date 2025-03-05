@@ -5,6 +5,7 @@
   import type { PaywallProps } from './types';
   import Renderer from './components/paywall/Renderer.svelte';
   import type { Paywall } from './types/Paywall';
+  import LoginRenderer from './components/paywall/LoginRenderer.svelte';
 
   let { template, ...restProps }: PaywallProps = $props();
 
@@ -38,7 +39,7 @@
         {...{ ...restProps, template }}
       />
     {:else if accessLevel === 'logged-in'}
-      <div>Registration wall</div>
+      <LoginRenderer {api} {...{ ...restProps, template }} />
     {/if}
   {/if}
 </Base>
