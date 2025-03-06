@@ -1,3 +1,4 @@
+import type { SesamyAPI } from '@sesamy/sesamy-js';
 import type { HTMLButtonAttributes } from 'svelte/elements';
 
 // NOTE: (important!)
