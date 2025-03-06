@@ -57,7 +57,9 @@
     }, 400);
   };
 
-  const login = async (api: SesamyAPI) => {
+  const login = async (event: SubmitEvent, api: SesamyAPI) => {
+    event.preventDefault();
+
     try {
       await api.auth.loginWithRedirect({ authorizationParams: { login_hint: email } });
     } catch (error) {
@@ -69,7 +71,7 @@
 {#await api.auth.isAuthenticated() then isAuthenticated}
   {#if !isAuthenticated}
     <div class="@container">
-      <form onsubmit={() => login(api)}>
+      <form onsubmit={(e) => login(e, api)}>
         <Column
           class={twMerge(
             'w-full rounded-[var(--s-paywall-border-radius)] @xl:rounded-[var(--s-paywall-border-radius-desktop)]',
@@ -105,6 +107,7 @@
               />
               {#if emailSuggestion}
                 <button
+                  type="button"
                   class="text-sm gap-1 row"
                   onclick={() => {
                     email = emailSuggestion;
