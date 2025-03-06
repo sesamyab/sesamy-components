@@ -93,9 +93,12 @@
               {#if useDefaultLogo}
                 <img class="h-7" src={logoUrl} alt={`${t('logo_of')} ${vendorId}`} />
               {/if}
-              <div class="w-full text-2xl @md:text-3xl leading-tight font-bold">
-                {headline}
-              </div>
+              <Column left class="gap-3">
+                <div class="w-full text-2xl @md:text-3xl leading-tight font-bold">
+                  {headline}
+                </div>
+                <slot name="below-headline" />
+              </Column>
             </Column>
 
             <Column left class="w-full gap-1">

@@ -35,7 +35,7 @@
 
     {#if template === 'LOGIN'}
       <LoginRenderer {api} {t} {paywall} {...props}>
-        <div class="w-full" slot="below-headline">
+        <div slot="below-headline">
           <slot name="below-headline" />
         </div>
       </LoginRenderer>
