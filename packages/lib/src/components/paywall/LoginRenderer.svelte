@@ -3,14 +3,12 @@
   import emailSpellChecker from '@zootools/email-spell-checker';
   import type { TranslationFunction } from 'src/i18n';
   import Column from '../Column.svelte';
-  import Row from '../Row.svelte';
   import { twMerge } from 'tailwind-merge';
   import type { Paywall } from 'src/types/Paywall';
   import Button from '../Button.svelte';
   import Input from '../Input.svelte';
-  import Error from '../Error.svelte';
-  import Accordion from '../Accordion.svelte';
   import Icon from '../Icon.svelte';
+  import { hexToHsl } from '../../utils/color';
 
   type Props = {
     api: SesamyAPI;
@@ -22,14 +20,31 @@
 
   let {
     headline,
+    mainColor,
     logoUrl,
     vendorId,
-    settings: { useDefaultLogo }
+    settings: { useDefaultLogo, styling }
   } = paywall;
 
   let suggestionTimeout: any;
   let emailSuggestion = $state('');
   let email = $state('');
+
+  const paywallBgColor = styling?.backgroundColor || '#FFFFFF';
+  const darkMode = styling?.showBackground && hexToHsl(paywallBgColor)[2] < 50;
+  const paywallTextColor = darkMode ? '#FFFFFF' : '#000000';
+
+  let sesamyPaywallDesignTokens = `
+    :host * {
+      --s-primary-color: var(--sesamy-paywall-primary-color, ${mainColor});
+      --s-paywall-bg-color: var(--sesamy-paywall-bg-color, ${paywallBgColor});
+      --s-paywall-text-color: var(--sesamy-paywall-text-color, ${paywallTextColor});
+      --s-paywall-border-radius: var(--sesamy-paywall-border-radius, 0.5rem);
+      --s-paywall-border-radius-desktop: var(--sesamy-paywall-border-radius-desktop, calc(var(--s-paywall-border-radius) * 3));
+    }
+  `;
+
+  let style = '<sty' + 'le>' + sesamyPaywallDesignTokens + '</style>';
 
   const provideSuggestion = () => {
     clearTimeout(suggestionTimeout);
@@ -44,60 +59,73 @@
 
   const login = async (api: SesamyAPI) => {
     try {
-      // TODO: Pass the email here which isn't supported in sesamy-js yet
-      await api.auth.loginWithRedirect();
+      await api.auth.loginWithRedirect({ authorizationParams: { login_hint: email } });
     } catch (error) {
       console.error('Login failed:', error);
     }
   };
 </script>
 
-<Column>
-  <Row class="text-sm gap-1 font-bold w-full">
-    <div>
-      {t('already_subscribing')}
+{#await api.auth.isAuthenticated() then isAuthenticated}
+  {#if !isAuthenticated}
+    <div class="@container">
+      <form onsubmit={() => login(api)}>
+        <Column
+          class={twMerge(
+            'w-full rounded-[var(--s-paywall-border-radius)] @xl:rounded-[var(--s-paywall-border-radius-desktop)]',
+            styling?.showBackground &&
+              'bg-[var(--s-paywall-bg-color)] text-[var(--s-paywall-text-color)]',
+            styling?.showBackground && styling?.dropShadow && 'shadow-md @xl:shadow-lg',
+            darkMode && 'dark'
+          )}
+        >
+          <Column
+            class={twMerge(
+              'gap-2 @md:gap-4 pt-0 w-full max-w-[800px]',
+              styling?.showBackground && 'px-2.5 py-4 @sm:p-8 @sm:pb-10 @3xl:p-16 @3xl:pt-10'
+            )}
+            up
+            left
+          >
+            <Column left class="w-full gap-6">
+              {#if useDefaultLogo}
+                <img class="h-7" src={logoUrl} alt={`${t('logo_of')} ${vendorId}`} />
+              {/if}
+              <div class="w-full text-2xl @md:text-3xl leading-tight font-bold">
+                {headline}
+              </div>
+            </Column>
+
+            <Column left class="w-full gap-1">
+              <Input
+                onkeyup={provideSuggestion}
+                bind:value={email}
+                compact
+                placeholder={t('email')}
+              />
+              {#if emailSuggestion}
+                <button
+                  class="text-sm gap-1 row"
+                  onclick={() => {
+                    email = emailSuggestion;
+                    emailSuggestion = '';
+                  }}
+                >
+                  <Icon class="text-primary text-xl" name="info" />
+                  <span>
+                    {t('did_you_mean')}{' '}
+                    <span class="text-primary">{emailSuggestion}</span>?
+                  </span>
+                </button>
+              {/if}
+            </Column>
+
+            <Button type="submit" class="w-full shadow-md">{t('continue')}</Button>
+          </Column>
+        </Column>
+      </form>
     </div>
 
-    <sesamy-login
-      class="p-0 border-none enabled:hover:bg-transparent hover:underline text-primary font-bold"
-    ></sesamy-login>
-  </Row>
-  <div
-    class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-primary opacity-30"
-  ></div>
-  <div class={twMerge('w-full pt-2 @md:pt-4')}>
-    {#if useDefaultLogo}
-      <img class="h-7 mb-6" src={logoUrl} alt={`${t('logo_of')} ${vendorId}`} />
-    {/if}
-    <div class="text-2xl leading-tight @md:text-3xl font-bold max-w-[600px]">
-      {headline}
-    </div>
-  </div>
-
-  <Row>
-    <Input onkeyup={provideSuggestion} bind:value={email} compact placeholder={t('email')} />
-    <Accordion isOpen={!!emailSuggestion}>
-      <Row
-        onclick={() => {
-          email = emailSuggestion;
-          emailSuggestion = '';
-        }}
-        class="bg-primary/10 gap-4 px-2 py-3 !justify-between active:bg-primary/10 text-sm border-x border-gray-200 text-gray-500 hover:cursor-pointer hover:bg-primary/15 transition-colors duration-75"
-      >
-        <Row class="gap-2">
-          <Icon class="text-primary text-xl" name="info" />
-          <div>
-            {t('did_you_mean')}
-            <span class="text-primary">{emailSuggestion}</span>?
-          </div>
-        </Row>
-        <div class="text-center whitespace-nowrap">
-          {t('click_to_update')}
-        </div>
-      </Row>
-    </Accordion>
-  </Row>
-  <Row>
-    <Button onclick={() => login(api)} class="mt-2 w-full shadow-md">{t('continue')}</Button>
-  </Row>
-</Column>
+    {@html style}
+  {/if}
+{/await}
