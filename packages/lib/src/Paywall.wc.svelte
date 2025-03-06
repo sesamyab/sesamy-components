@@ -39,7 +39,7 @@
         {...{ ...restProps, template }}
       />
     {:else if accessLevel === 'logged-in'}
-      <LoginRenderer {api} {...{ ...restProps, template }} />
+      <LoginRenderer {api} {t} {paywall} {...{ ...restProps, template }} />
     {/if}
   {/if}
 </Base>
