@@ -64,9 +64,9 @@
         </sesamy-content-container>
 
         <sesamy-paywall
-          settings-url="https://api.sesamy.dev/paywall/paywalls/test-fokus/ONh_7gBRk8U_L060YMUr2"
-          redirect-url="https://sesamy.com"
-        ></sesamy-paywall>
+          settings-url="https://api.sesamy.dev/paywall/paywalls/acme/yn1wE5pJQgIXIfoQrLBqb"
+        >
+        </sesamy-paywall>
       </div>
     </sesamy-article>
   </section>
