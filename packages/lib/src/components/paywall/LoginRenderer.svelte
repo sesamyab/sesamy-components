@@ -1,0 +1,131 @@
+<script lang="ts">
+  import type { SesamyAPI } from '@sesamy/sesamy-js';
+  import emailSpellChecker from '@zootools/email-spell-checker';
+  import type { TranslationFunction } from 'src/i18n';
+  import Column from '../Column.svelte';
+  import { twMerge } from 'tailwind-merge';
+  import type { Paywall } from 'src/types/Paywall';
+  import Button from '../Button.svelte';
+  import Input from '../Input.svelte';
+  import Icon from '../Icon.svelte';
+  import { hexToHsl } from '../../utils/color';
+
+  type Props = {
+    api: SesamyAPI;
+    t: TranslationFunction;
+    paywall: Paywall;
+  };
+
+  let { api, t, paywall }: Props = $props();
+
+  let {
+    headline,
+    mainColor,
+    logoUrl,
+    vendorId,
+    settings: { useDefaultLogo, styling }
+  } = paywall;
+
+  let suggestionTimeout: any;
+  let emailSuggestion = $state('');
+  let email = $state('');
+
+  const paywallBgColor = styling?.backgroundColor || '#FFFFFF';
+  const darkMode = styling?.showBackground && hexToHsl(paywallBgColor)[2] < 50;
+  const paywallTextColor = darkMode ? '#FFFFFF' : '#000000';
+
+  let sesamyPaywallDesignTokens = `
+    :host * {
+      --s-primary-color: var(--sesamy-paywall-primary-color, ${mainColor});
+      --s-paywall-bg-color: var(--sesamy-paywall-bg-color, ${paywallBgColor});
+      --s-paywall-text-color: var(--sesamy-paywall-text-color, ${paywallTextColor});
+      --s-paywall-border-radius: var(--sesamy-paywall-border-radius, 0.5rem);
+      --s-paywall-border-radius-desktop: var(--sesamy-paywall-border-radius-desktop, calc(var(--s-paywall-border-radius) * 3));
+    }
+  `;
+
+  let style = '<sty' + 'le>' + sesamyPaywallDesignTokens + '</style>';
+
+  const provideSuggestion = () => {
+    clearTimeout(suggestionTimeout);
+
+    suggestionTimeout = setTimeout(() => {
+      emailSuggestion =
+        emailSpellChecker.run({
+          email
+        })?.full || '';
+    }, 400);
+  };
+
+  const login = async (api: SesamyAPI) => {
+    try {
+      await api.auth.loginWithRedirect({ authorizationParams: { login_hint: email } });
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
+  };
+</script>
+
+{#await api.auth.isAuthenticated() then isAuthenticated}
+  {#if !isAuthenticated}
+    <div class="@container">
+      <form onsubmit={() => login(api)}>
+        <Column
+          class={twMerge(
+            'w-full rounded-[var(--s-paywall-border-radius)] @xl:rounded-[var(--s-paywall-border-radius-desktop)]',
+            styling?.showBackground &&
+              'bg-[var(--s-paywall-bg-color)] text-[var(--s-paywall-text-color)]',
+            styling?.showBackground && styling?.dropShadow && 'shadow-md @xl:shadow-lg',
+            darkMode && 'dark'
+          )}
+        >
+          <Column
+            class={twMerge(
+              'gap-2 @md:gap-4 pt-0 w-full max-w-[800px]',
+              styling?.showBackground && 'px-2.5 py-4 @sm:p-8 @sm:pb-10 @3xl:p-16 @3xl:pt-10'
+            )}
+            up
+            left
+          >
+            <Column left class="w-full gap-6">
+              {#if useDefaultLogo}
+                <img class="h-7" src={logoUrl} alt={`${t('logo_of')} ${vendorId}`} />
+              {/if}
+              <div class="w-full text-2xl @md:text-3xl leading-tight font-bold">
+                {headline}
+              </div>
+            </Column>
+
+            <Column left class="w-full gap-1">
+              <Input
+                onkeyup={provideSuggestion}
+                bind:value={email}
+                compact
+                placeholder={t('email')}
+              />
+              {#if emailSuggestion}
+                <button
+                  class="text-sm gap-1 row"
+                  onclick={() => {
+                    email = emailSuggestion;
+                    emailSuggestion = '';
+                  }}
+                >
+                  <Icon class="text-primary text-xl" name="info" />
+                  <span>
+                    {t('did_you_mean')}{' '}
+                    <span class="text-primary">{emailSuggestion}</span>?
+                  </span>
+                </button>
+              {/if}
+            </Column>
+
+            <Button type="submit" class="w-full shadow-md">{t('continue')}</Button>
+          </Column>
+        </Column>
+      </form>
+    </div>
+
+    {@html style}
+  {/if}
+{/await}

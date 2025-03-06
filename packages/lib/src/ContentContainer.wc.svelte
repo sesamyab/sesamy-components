@@ -7,16 +7,17 @@
 
   let {
     'item-src': itemSrc = '',
-    'publisher-content-id': publisherContentId,
-    pass = '',
-    'access-level': accessLevel = 'entitlement',
+    'publisher-content-id': publisherContentIdProp,
+    pass: passProp,
+    'access-level': accessLevelProp,
     'lock-mode': lockMode = 'embed',
     'locked-content-selector': lockedContentSelector
   }: ContentContainerProps = $props();
 
   async function checkAccess(api: SesamyAPI) {
     const articleUrl = itemSrc || api.content.get($host())?.url || '';
-    const passes = pass ? pass.split(';') : api.content.get($host())?.pass?.split(';');
+    const passes = passProp ? passProp.split(';') : api.content.get($host())?.pass?.split(';');
+    const accessLevel = accessLevelProp || api.content.get($host())?.accessLevel || 'entitlement';
 
     switch (accessLevel) {
       case 'public':
@@ -29,7 +30,9 @@
     }
   }
 
-  function emitUnlockEvent() {
+  function emitUnlockEvent(api: SesamyAPI) {
+    const publisherContentId = publisherContentIdProp || api.content.get($host())?.id || '';
+
     const event = new CustomEvent('sesamyUnlocked', {
       detail: {
         publisherContentId,
@@ -108,7 +111,7 @@
           return '';
         }
       case 'event':
-        emitUnlockEvent();
+        emitUnlockEvent(api);
         return '';
       case 'proxy':
       case 'signedUrl':

@@ -5,6 +5,7 @@
   import type { PaywallProps } from './types';
   import Renderer from './components/paywall/Renderer.svelte';
   import type { Paywall } from './types/Paywall';
+  import LoginRenderer from './components/paywall/LoginRenderer.svelte';
 
   let { template, ...restProps }: PaywallProps = $props();
 
@@ -22,14 +23,23 @@
 </script>
 
 <Base let:api let:t>
+  {@const host = $host()}
+  {@const content = host ? api.content.get(host) : null}
+
   {#if paywall}
-    <Renderer
-      {api}
-      {paywall}
-      horizontal={template === 'BOXES'}
-      host={$host()}
-      {t}
-      {...{ ...restProps, template }}
-    />
+    {@const accessLevel = content?.accessLevel}
+
+    {#if accessLevel === 'entitlement'}
+      <Renderer
+        {api}
+        {paywall}
+        horizontal={template === 'BOXES'}
+        {host}
+        {t}
+        {...{ ...restProps, template }}
+      />
+    {:else if accessLevel === 'logged-in'}
+      <LoginRenderer {api} {t} {paywall} {...{ ...restProps, template }} />
+    {/if}
   {/if}
 </Base>

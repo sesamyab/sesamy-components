@@ -28,17 +28,37 @@
 <main>
   <aside></aside>
   <section>
-    <article>
+    <sesamy-article publisher-content-id="1">
       <h1>Sesamy article with remote content</h1>
       <div class="article-body">
         <sesamy-content-container lock-mode="proxy" locked-content-selector="article">
           <div slot="preview">
+            <p>This is the preview for an article locked with a pass.</p>
+          </div>
+        </sesamy-content-container>
+
+        <sesamy-paywall
+          settings-url="https://api.sesamy.dev/paywall/paywalls/test-fokus/ONh_7gBRk8U_L060YMUr2"
+          redirect-url="https://sesamy.com"
+        ></sesamy-paywall>
+      </div>
+    </sesamy-article>
+  </section>
+  <section>
+    <sesamy-article publisher-content-id="2" access-level="logged-in">
+      <h1>Sesamy article for logged in users</h1>
+      <div class="article-body">
+        <sesamy-content-container lock-mode="embed">
+          <div slot="preview">
             <p>
-              Apples trådlösa hörlurar AirPods har kommit i en hel rad olika varianter och utgåvor
-              sedan de först lanserades i september 2016. Den tidlösa designen tilltalar många, men
-              smakar det så kostar det. <br />Den som vill lägga vantarna på ett par nya AirPods i
-              dag behöver vara beredd att punga upp åtminstone 1 800 kronor, och de nyare modellerna
-              ligger på nästan dubbelt så mycket.
+              This article is locked for non-logged in users. Please log in to read the full
+              article.
+            </p>
+          </div>
+          <div slot="content">
+            <p>
+              This article is only available for logged in users. As you now are logged in you can
+              read the full article
             </p>
           </div>
         </sesamy-content-container>
@@ -48,7 +68,7 @@
           redirect-url="https://sesamy.com"
         ></sesamy-paywall>
       </div>
-    </article>
+    </sesamy-article>
   </section>
 </main>
 
