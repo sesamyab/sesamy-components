@@ -1,3 +1,20 @@
+# [2.7.0](https://github.com/sesamyab/sesamy-components/compare/v2.6.2...v2.7.0) (2025-03-06)
+
+
+### Bug Fixes
+
+* add registration wall inside paywall ([16b8e14](https://github.com/sesamyab/sesamy-components/commit/16b8e1401eb77d7a067b8ade28f0f313d21b9a67))
+* add support for the access level for the content container ([5c94702](https://github.com/sesamyab/sesamy-components/commit/5c94702ac475935d2c8fa8db5f34c38e9be9888a))
+* add the email spellchecker ([9098d93](https://github.com/sesamyab/sesamy-components/commit/9098d9383f58a42f255ec093f0afbb226307ba72))
+* copy login paywall ([8f71b37](https://github.com/sesamyab/sesamy-components/commit/8f71b37994c318866c94dc3655695e564b8f7cf1))
+* login renderer form submission handling ([6ad50e8](https://github.com/sesamyab/sesamy-components/commit/6ad50e824e66549120a552cc8ac6f0eca4948c1f))
+* remove terms ([c42732c](https://github.com/sesamyab/sesamy-components/commit/c42732cb8c2a31745f1468afa7466824985dfc05))
+
+
+### Features
+
+* login paywall layout ([dfda53f](https://github.com/sesamyab/sesamy-components/commit/dfda53fe462e106536a06a2328f9b28a837cc860))
+
 ## [2.6.2](https://github.com/sesamyab/sesamy-components/compare/v2.6.1...v2.6.2) (2025-02-20)
 
 
