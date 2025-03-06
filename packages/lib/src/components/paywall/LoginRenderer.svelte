@@ -100,12 +100,4 @@
   <Row>
     <Button onclick={() => login(api)} class="mt-2 w-full shadow-md">{t('continue')}</Button>
   </Row>
-
-  <Row>
-    <p class="text-xs mt-5 text-gray-500">
-      Genom att logga in godkänner du våra <a href="#terms" class="text-[#4285f4] no-underline"
-        >Vilkor</a
-      >
-    </p>
-  </Row>
 </Column>
