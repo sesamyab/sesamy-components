@@ -7,6 +7,7 @@
   import type { Paywall } from 'src/types/Paywall';
   import Button from '../Button.svelte';
   import Input from '../Input.svelte';
+  import InputGroup from '../InputGroup.svelte';
   import Icon from '../Icon.svelte';
   import { hexToHsl } from '../../utils/color';
 
@@ -29,6 +30,8 @@
   let suggestionTimeout: any;
   let emailSuggestion = $state('');
   let email = $state('');
+  let firstName = $state('');
+  let lastName = $state('');
 
   const paywallBgColor = styling?.backgroundColor || '#FFFFFF';
   const darkMode = styling?.showBackground && hexToHsl(paywallBgColor)[2] < 50;
@@ -101,7 +104,7 @@
               </Column>
             </Column>
 
-            <Column left class="w-full gap-1">
+            <InputGroup>
               <Input
                 onkeyup={provideSuggestion}
                 bind:value={email}
@@ -124,7 +127,11 @@
                   </span>
                 </button>
               {/if}
-            </Column>
+
+              <!-- TODO: should be a setting somewhere for which fields to display here -->
+              <Input bind:value={firstName} compact placeholder={t('first_name')} />
+              <Input bind:value={lastName} compact placeholder={t('last_name')} />
+            </InputGroup>
 
             <Button type="submit" class="w-full shadow-md">{t('continue')}</Button>
           </Column>
