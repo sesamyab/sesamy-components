@@ -17,7 +17,6 @@ declare namespace JSX {
       loading?: boolean;
       loggedIn?: boolean;
     };
-    'sesamy-registration-wall': {};
     'sesamy-paywall': {
       'settings-url': string;
     };
