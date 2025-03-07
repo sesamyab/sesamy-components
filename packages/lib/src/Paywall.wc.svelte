@@ -27,13 +27,9 @@
   {#if paywall}
     {#if template === 'ARTICLE'}
       <Renderer {api} {paywall} {host} {t} {...props} />
-    {/if}
-
-    {#if template === 'BOXES'}
+    {:else if template === 'BOXES'}
       <Renderer horizontal {api} {paywall} {host} {t} {...props} />
-    {/if}
-
-    {#if template === 'LOGIN'}
+    {:else if template === 'LOGIN'}
       <LoginRenderer {api} {t} {paywall} {...props}>
         <div slot="below-headline">
           <slot name="below-headline" />
