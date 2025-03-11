@@ -7,39 +7,34 @@
   import type { Paywall } from './types/Paywall';
   import LoginRenderer from './components/paywall/LoginRenderer.svelte';
 
-  let { template, ...restProps }: PaywallProps = $props();
+  let props: PaywallProps = $props();
 
   let paywall = $state<Paywall>();
+  let template = $state<string>();
 
   $effect(() => {
     (async () => {
-      const response = await fetch(restProps['settings-url']);
+      const response = await fetch(props['settings-url']);
       paywall = await response.json();
-      if (!template && paywall?.settings?.template) {
-        template = paywall.settings.template;
-      }
+      template = paywall?.settings.template || undefined;
     })();
   });
 </script>
 
 <Base let:api let:t>
   {@const host = $host()}
-  {@const content = host ? api.content.get(host) : null}
 
   {#if paywall}
-    {@const accessLevel = content?.accessLevel}
-
-    {#if accessLevel === 'entitlement'}
-      <Renderer
-        {api}
-        {paywall}
-        horizontal={template === 'BOXES'}
-        {host}
-        {t}
-        {...{ ...restProps, template }}
-      />
-    {:else if accessLevel === 'logged-in'}
-      <LoginRenderer {api} {t} {paywall} {...{ ...restProps, template }} />
+    {#if template === 'ARTICLE'}
+      <Renderer {api} {paywall} {host} {t} {...props} />
+    {:else if template === 'BOXES'}
+      <Renderer horizontal {api} {paywall} {host} {t} {...props} />
+    {:else if template === 'LOGIN'}
+      <LoginRenderer {api} {t} {paywall} {...props}>
+        <div slot="below-headline">
+          <slot name="below-headline" />
+        </div>
+      </LoginRenderer>
     {/if}
   {/if}
 </Base>
