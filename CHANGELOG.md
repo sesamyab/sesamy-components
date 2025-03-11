@@ -1,3 +1,13 @@
+# [2.8.0](https://github.com/sesamyab/sesamy-components/compare/v2.7.0...v2.8.0) (2025-03-11)
+
+
+### Features
+
+* add below-headline slot ([2068b8f](https://github.com/sesamyab/sesamy-components/commit/2068b8f7ad2b3e19874df02cef3e3f6ee69a3a0a))
+* base paywall rendering on template setting ([8cb2240](https://github.com/sesamyab/sesamy-components/commit/8cb2240ad5e974fd8223cc3e4941f9e43b00b501))
+* remove registration wall component ([c0c5c07](https://github.com/sesamyab/sesamy-components/commit/c0c5c07d3ebebfd687e6df758ed0cee376bf5d07))
+* use acme paywalls & update storybook + snapshots ([3fa85bf](https://github.com/sesamyab/sesamy-components/commit/3fa85bf88a5c39d472f7e6319b096b0128450574))
+
 # [2.7.0](https://github.com/sesamyab/sesamy-components/compare/v2.6.2...v2.7.0) (2025-03-06)
 
 
