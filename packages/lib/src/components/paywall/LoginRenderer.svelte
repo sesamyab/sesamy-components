@@ -24,7 +24,7 @@
     mainColor,
     logoUrl,
     vendorId,
-    settings: { useDefaultLogo, styling }
+    settings: { useDefaultLogo, styling, loginFields }
   } = paywall;
 
   let suggestionTimeout: any;
@@ -128,9 +128,10 @@
                 </button>
               {/if}
 
-              <!-- TODO: should be a setting somewhere for which fields to display here -->
-              <Input bind:value={firstName} compact placeholder={t('first_name')} />
-              <Input bind:value={lastName} compact placeholder={t('last_name')} />
+              {#if loginFields.name}
+                <Input bind:value={firstName} compact placeholder={t('first_name')} />
+                <Input bind:value={lastName} compact placeholder={t('last_name')} />
+              {/if}
             </InputGroup>
 
             <Button type="submit" class="w-full shadow-md">{t('continue')}</Button>
