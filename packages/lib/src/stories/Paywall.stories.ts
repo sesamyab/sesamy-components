@@ -4,7 +4,6 @@ import { Paywall } from '@sesamy/sesamy-components';
 
 interface PaywallProps {
   'settings-url': string;
-  template: 'ARTICLE' | 'BOXES';
   'item-src'?: string;
 }
 
@@ -15,7 +14,6 @@ const meta: Meta<PaywallProps> = {
   render: (args) =>
     html` <div style="gap: 10px; padding: 10px; --sesamy-primary-color: 249 86.4% 68.2%;">
       <sesamy-paywall
-        template=${args['template']}
         settings-url=${args['settings-url']}
         item-src=${args['item-src']}
         price="99"
@@ -25,14 +23,7 @@ const meta: Meta<PaywallProps> = {
   argTypes: {
     'settings-url': {
       control: 'text',
-      defaultValue: 'https://api.sesamy.dev/paywall/paywalls/test-fokus/ONh_7gBRk8U_L060YMUr2'
-    },
-    template: {
-      control: {
-        type: 'select'
-      },
-      options: ['ARTICLE', 'BOXES'],
-      defaultValue: 'ARTICLE'
+      defaultValue: 'https://api.sesamy.dev/paywall/paywalls/acme/OxHlsEHTUGs1tpF6EoRy8'
     }
   }
 };
@@ -40,41 +31,21 @@ const meta: Meta<PaywallProps> = {
 export default meta;
 type Story = StoryObj<PaywallProps>;
 
-export const Default: Story = {
+export const Article: Story = {
   args: {
-    'settings-url': 'https://api.sesamy.dev/paywall/paywalls/test-fokus/ONh_7gBRk8U_L060YMUr2',
-    'item-src': 'https://stage.fokus.se/aktuellt/lorem-ipsum-dolor-sit-amet-consectetur/',
-    template: 'ARTICLE'
+    'settings-url': 'https://api.sesamy.dev/paywall/paywalls/acme/OxHlsEHTUGs1tpF6EoRy8',
+    'item-src': 'https://acme.sesamy.dev/test-article'
   }
 };
 
-export const TemplateBoxes: Story = {
+export const Login: Story = {
   args: {
-    'settings-url': 'https://api.sesamy.dev/paywall/paywalls/test-fokus/ONh_7gBRk8U_L060YMUr2',
-    template: 'BOXES'
+    'settings-url': 'https://api.sesamy.dev/paywall/paywalls/acme/yn1wE5pJQgIXIfoQrLBqb'
   }
 };
 
-export const MobileView: Story = {
+export const Boxes: Story = {
   args: {
-    'settings-url': 'https://api.sesamy.dev/paywall/paywalls/test-fokus/ONh_7gBRk8U_L060YMUr2',
-    template: 'ARTICLE'
-  },
-  parameters: {
-    viewport: {
-      defaultViewport: 'mobile1'
-    }
-  }
-};
-
-export const TabletView: Story = {
-  args: {
-    'settings-url': 'https://api.sesamy.dev/paywall/paywalls/test-fokus/ONh_7gBRk8U_L060YMUr2',
-    template: 'ARTICLE'
-  },
-  parameters: {
-    viewport: {
-      defaultViewport: 'tablet'
-    }
+    'settings-url': 'https://api.sesamy.dev/paywall/paywalls/acme/Zt9jY_Ioc4SS6YG9hRkqp'
   }
 };
