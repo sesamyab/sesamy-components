@@ -64,7 +64,12 @@
     event.preventDefault();
 
     try {
-      await api.auth.loginWithRedirect({ authorizationParams: { login_hint: email } });
+      await api.auth.loginWithRedirect({
+        authorizationParams: {
+          login_hint: email,
+          metadata: loginFields.name ? { firstName, lastName } : undefined
+        }
+      });
     } catch (error) {
       console.error('Login failed:', error);
     }
