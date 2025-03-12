@@ -5,10 +5,8 @@
   import SelectionGroup from './SelectionGroup.svelte';
   import type { PaywallSinglePurchase } from 'src/types/Paywall';
   import type { PaywallProps } from 'src/types';
-  import type { SesamyAPI } from '@sesamy/sesamy-js';
 
   type Props = {
-    api: SesamyAPI;
     t: TranslationFunction;
     singlePurchase: PaywallSinglePurchase;
     selectProduct: Function;
@@ -19,7 +17,6 @@
 
   const props: Props = $props();
   let {
-    api,
     singlePurchase,
     selectProduct,
     hasSubscriptions,
@@ -30,7 +27,7 @@
   let { title, description } = singlePurchase;
 
   const completeAndSelect = () => {
-    selectProduct({ ...singlePurchase, price: singlePurchasePrice, url: articleUrl });
+    selectProduct({ ...singlePurchase, price: singlePurchasePrice });
   };
 
   if (articleUrl && !hasSubscriptions) {

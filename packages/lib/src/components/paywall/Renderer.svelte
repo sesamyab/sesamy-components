@@ -115,6 +115,7 @@
     }
   };
 
+  // TODO: We are calling this with a single purchase today..
   const selectProduct = (option: PaywallSubscription) => {
     error = '';
     // TODO: decide if we should remove "features" from shallow paywall. And if so, if we should add it to singlePurchase.
@@ -222,7 +223,6 @@
 
               {#if !horizontal && singlePurchase?.enabled && singlePurchasePrice && articleUrl}
                 <SinglePurchase
-                  {api}
                   {singlePurchase}
                   {currency}
                   {singlePurchasePrice}

@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import Row from '../Row.svelte';
   import { twMerge } from 'tailwind-merge';
 
   type Props = {
