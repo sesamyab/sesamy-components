@@ -1,3 +1,11 @@
+## [2.8.1](https://github.com/sesamyab/sesamy-components/compare/v2.8.0...v2.8.1) (2025-03-13)
+
+
+### Bug Fixes
+
+* keep loading state until navigation ([4e83a95](https://github.com/sesamyab/sesamy-components/commit/4e83a9553aabd7a13dd2c36cd799c8a722dfb9e0))
+* single purchase ([9225383](https://github.com/sesamyab/sesamy-components/commit/92253836eb3ec15fcdbb4c0d459a33a3946526de))
+
 # [2.8.0](https://github.com/sesamyab/sesamy-components/compare/v2.7.0...v2.8.0) (2025-03-11)
 
 
