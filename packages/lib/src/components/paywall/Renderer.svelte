@@ -78,7 +78,6 @@
 
     if (product?.url && product?.url !== articleUrl) {
       window.location.assign(product.url);
-      loading = false;
       return;
     }
 
