@@ -76,6 +76,12 @@
 
     loading = true;
 
+    if (product?.url && product?.url !== articleUrl) {
+      window.location.assign(product.url);
+      loading = false;
+      return;
+    }
+
     const item = product?.url
       ? {
           url: product.url
@@ -220,28 +226,23 @@
                 />
               {/if}
 
-              {#if !horizontal && singlePurchase?.enabled && singlePurchasePrice && articleUrl}
-                <SinglePurchase
-                  {api}
-                  {singlePurchase}
-                  {currency}
-                  {singlePurchasePrice}
-                  {articleUrl}
-                  {t}
-                  {selectProduct}
-                  {hasSubscriptions}
-                  {...userProps}
-                />
-              {/if}
-
               {#if !horizontal}
-                {#if product?.url}
-                  <Button href={product.url} class="mt-2 w-full shadow-md">{t('continue')}</Button>
-                {:else}
-                  <Button {loading} disabled={loading} class="mt-2 w-full shadow-md" type="submit">
-                    {t('continue')}
-                  </Button>
+                {#if singlePurchase?.enabled && singlePurchasePrice && articleUrl}
+                  <SinglePurchase
+                    {singlePurchase}
+                    {currency}
+                    {singlePurchasePrice}
+                    {articleUrl}
+                    {t}
+                    {selectProduct}
+                    {hasSubscriptions}
+                    {...userProps}
+                  />
                 {/if}
+
+                <Button {loading} disabled={loading} class="mt-2 w-full shadow-md" type="submit">
+                  {t('continue')}
+                </Button>
               {/if}
             </form>
           {/if}

@@ -8,7 +8,6 @@
   import type { SesamyAPI } from '@sesamy/sesamy-js';
 
   type Props = {
-    api: SesamyAPI;
     t: TranslationFunction;
     singlePurchase: PaywallSinglePurchase;
     selectProduct: Function;
@@ -19,7 +18,6 @@
 
   const props: Props = $props();
   let {
-    api,
     singlePurchase,
     selectProduct,
     hasSubscriptions,
