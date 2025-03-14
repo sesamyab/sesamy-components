@@ -43,6 +43,10 @@ export type PaywallSettings = {
     backgroundColor?: string;
     dropShadow: boolean;
   };
+  loginFields: {
+    name?: boolean;
+    phone?: boolean;
+  };
 };
 
 export type Paywall = {
