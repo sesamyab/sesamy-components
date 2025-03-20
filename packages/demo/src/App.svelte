@@ -20,12 +20,19 @@
       publisher-content-id="1"
       item-src="https://acme.sesamy.dev/test-article"
       price="13.37"
+      pass="https://sesamy.dev/digital"
     >
       <h1>Sesamy article with remote content</h1>
       <div class="article-body">
-        <sesamy-content-container lock-mode="proxy" locked-content-selector="article">
+        <sesamy-content-container>
           <div slot="preview">
             <p>This is the preview for an article locked with a pass.</p>
+          </div>
+          <div slot="content">
+            <p>
+              This is the full article. You can read it because you have a pass or have purchased
+              access to it.
+            </p>
           </div>
         </sesamy-content-container>
 
