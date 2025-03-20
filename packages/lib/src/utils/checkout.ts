@@ -1,10 +1,6 @@
 import type { Checkout } from '@sesamy/sesamy-js';
 import type { IconName } from 'src/icons/types';
 
-const ENV = import.meta.env.MODE;
-export const CHECKOUT_URL =
-  ENV === 'production' ? 'https://checkout3.sesamy.com' : 'https://checkout3.sesamy.dev';
-
 export type PaymentMethodType = {
   provider: string;
   method: string;
@@ -16,9 +12,8 @@ export const goToCheckout = async (
   paymentMethod?: PaymentMethodType,
   business?: boolean
 ) => {
-  const checkoutURL = new URL(CHECKOUT_URL);
+  const checkoutURL = new URL(checkout.checkoutUrl);
 
-  checkoutURL.pathname = checkout.id;
   checkoutURL.searchParams.set('norecreate', 'true');
   checkoutURL.searchParams.set('lang', checkout.language);
   checkoutURL.searchParams.set('redirect-url', checkout.redirectUrl);
