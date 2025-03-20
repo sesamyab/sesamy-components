@@ -1,3 +1,10 @@
+## [2.8.2](https://github.com/sesamyab/sesamy-components/compare/v2.8.1...v2.8.2) (2025-03-20)
+
+
+### Bug Fixes
+
+* get checkoutUrl from api-proxy ([620b797](https://github.com/sesamyab/sesamy-components/commit/620b797dafc8dd41f60fdf066b433cf9fec36b2f))
+
 ## [2.8.1](https://github.com/sesamyab/sesamy-components/compare/v2.8.0...v2.8.1) (2025-03-13)
 
 
