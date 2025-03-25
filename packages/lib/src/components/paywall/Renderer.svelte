@@ -94,7 +94,7 @@
       checkout = await api.checkouts.create({
         vendorId,
         items: [item],
-        discountCode: product.discountCode,
+        requestedDiscountCodes: product.discountCode ? [product.discountCode] : undefined,
         redirectUrl,
         price: product.price,
         currency,
