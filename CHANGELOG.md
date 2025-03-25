@@ -1,3 +1,15 @@
+# [2.9.0](https://github.com/sesamyab/sesamy-components/compare/v2.8.2...v2.9.0) (2025-03-25)
+
+
+### Bug Fixes
+
+* checkout requestedDiscountCodes ([de7be05](https://github.com/sesamyab/sesamy-components/commit/de7be05c965962f8d3498720f47840302ba98700))
+
+
+### Features
+
+* sesamy-js upgrade ([a26960b](https://github.com/sesamyab/sesamy-components/commit/a26960b6ee691037859b6816b7752e96137b0999))
+
 ## [2.8.2](https://github.com/sesamyab/sesamy-components/compare/v2.8.1...v2.8.2) (2025-03-20)
 
 
