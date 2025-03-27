@@ -25,8 +25,16 @@
 
       --s-login-button-color: var(--sesamy-login-button-color, #000000);
       --s-login-button-border-width: var(--sesamy-login-button-border-width, 1px);
+      --s-login-button-border-radius: var(--sesamy-login-button-border-radius, 0.375rem);
       --s-login-avatar-bgcolor: var(--sesamy-login-avatar-bgcolor, var(--s-login-button-color));
       --s-login-avatar-textcolor: var(--sesamy-login-avatar-textcolor, #ffffff);
+
+      --s-login-popup-width: var(--sesamy-login-popup-width, 18rem);
+      --s-login-popup-bgcolor: var(--sesamy-login-popup-bgcolor, #ffffff);
+      --s-login-popup-textcolor: var(--sesamy-login-popup-textcolor, #000000);
+      --s-login-popup-border-color: var(--sesamy-login-popup-border-color, #e5e7eb);
+      --s-login-popup-border-width: var(--sesamy-login-popup-border-width, 1px);
+      --s-login-popup-border-radius: var(--sesamy-login-popup-border-radius, 0.125rem);
     }
   `;
 
