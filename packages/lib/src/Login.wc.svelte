@@ -80,15 +80,15 @@
         </button>
         {#if showPopupMenu}
           <div
-            class="absolute top-full mt-1.5 right-0 bg-white text-black border border-gray-200 rounded-sm w-72"
+            class="absolute top-full mt-1.5 right-0 bg-[--s-login-popup-bgcolor] text-[--s-login-popup-textcolor] border-[color:--s-login-popup-border-color] border-[length:--s-login-popup-border-width] rounded-[--s-login-popup-border-radius] w-[--s-login-popup-width] z-[--s-login-popup-zindex]"
             role="menu"
           >
             <slot name="popup-menu">
               <ul>
-                <li class="p-4 border-b border-gray-200 text-base">
+                <li class="p-4 border-b border-[color:--s-login-popup-border-color] text-base">
                   <span class="line-clamp-1 break-all">{user?.email}</span>
                 </li>
-                <li class="border-b border-gray-200 text-sm font-bold">
+                <li class="border-b border-[color:--s-login-popup-border-color] text-sm font-bold">
                   <a
                     class="block w-full text-left px-4 py-3 hover:bg-gray-100/50"
                     href={accountLink}
@@ -111,7 +111,7 @@
     {:else}
       <Button
         class={twMerge(
-          'font-bold row gap-1.5 text-[color:--s-login-button-color] border-[color:--s-login-button-color] border-[length:--s-login-button-border-width]',
+          'font-bold row gap-1.5 text-[color:--s-login-button-color] border-[color:--s-login-button-color] border-[length:--s-login-button-border-width] rounded-[--s-login-button-border-radius]',
           classes
         )}
         variant="secondary"
