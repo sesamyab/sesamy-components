@@ -1,3 +1,11 @@
+# [2.10.0](https://github.com/sesamyab/sesamy-components/compare/v2.9.1...v2.10.0) (2025-03-27)
+
+
+### Features
+
+* login design tokens ([1d3829c](https://github.com/sesamyab/sesamy-components/commit/1d3829c30ec6e7076e284482101c21cc5f9ec919))
+* z-index token ([67fb45e](https://github.com/sesamyab/sesamy-components/commit/67fb45e3da0507fcb98233eb7737e2b533623f75))
+
 ## [2.9.1](https://github.com/sesamyab/sesamy-components/compare/v2.9.0...v2.9.1) (2025-03-25)
 
 
