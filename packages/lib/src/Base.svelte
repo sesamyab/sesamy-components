@@ -35,6 +35,7 @@
       --s-login-popup-border-color: var(--sesamy-login-popup-border-color, #e5e7eb);
       --s-login-popup-border-width: var(--sesamy-login-popup-border-width, 1px);
       --s-login-popup-border-radius: var(--sesamy-login-popup-border-radius, 0.125rem);
+      --s-login-popup-zindex: var(--sesamy-login-popup-zindex, 10);
     }
   `;
 
