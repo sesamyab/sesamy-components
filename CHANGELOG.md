@@ -1,3 +1,10 @@
+# [2.11.0](https://github.com/sesamyab/sesamy-components/compare/v2.10.0...v2.11.0) (2025-03-31)
+
+
+### Features
+
+* paywall inputs autocomplete ([08c9561](https://github.com/sesamyab/sesamy-components/commit/08c9561245262e07c04525fd9859f978b1ed0d76))
+
 # [2.10.0](https://github.com/sesamyab/sesamy-components/compare/v2.9.1...v2.10.0) (2025-03-27)
 
 
