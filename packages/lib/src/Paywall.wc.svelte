@@ -23,8 +23,21 @@
 
 <Base let:api let:t>
   {@const host = $host()}
+  {#if props['settings-url']}
+    <div class="sesamy-paywall" style="display: contents">
+      <slot {api} {t} {...props} />
+    </div>
+  {/if}
+
+  {#if !paywall}
+    <div class="sesamy-paywall" style="display: contents">
+      <slot {api} {t} {...props} />
+    </div>
+  {/if}
 
   {#if paywall}
+    {api.log(`sesamy-paywall with template ${template}`)}
+
     {#if template === 'ARTICLE'}
       <Renderer {api} {paywall} {host} {t} {...props} />
     {:else if template === 'BOXES'}
