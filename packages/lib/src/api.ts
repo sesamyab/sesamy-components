@@ -10,7 +10,7 @@ declare global {
 }
 
 export async function getApi(): Promise<SesamyAPI> {
-  if (window.sesamy) {
+  if (window.sesamy?.isReady()) {
     return window.sesamy;
   }
 

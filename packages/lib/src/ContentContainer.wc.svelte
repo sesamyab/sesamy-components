@@ -19,6 +19,10 @@
     const passes = passProp ? passProp.split(';') : api.content.get($host())?.pass?.split(';');
     const accessLevel = accessLevelProp || api.content.get($host())?.accessLevel || 'entitlement';
 
+    api.log(
+      `Checking access for ${articleUrl} with passes: ${JSON.stringify(passes)}, articleUrl: ${articleUrl} and access level: ${accessLevel}`
+    );
+
     switch (accessLevel) {
       case 'public':
         return true;
