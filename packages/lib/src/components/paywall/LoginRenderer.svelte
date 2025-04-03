@@ -67,7 +67,7 @@
       await api.auth.loginWithRedirect({
         authorizationParams: {
           login_hint: email,
-          metadata: loginFields.name ? { firstName, lastName } : undefined
+          metadata: loginFields?.name ? { firstName, lastName } : undefined
         }
       });
     } catch (error) {
@@ -133,7 +133,7 @@
                 </button>
               {/if}
 
-              {#if loginFields.name}
+              {#if loginFields?.name}
                 <Input bind:value={firstName} compact placeholder={t('first_name')} />
                 <Input bind:value={lastName} compact placeholder={t('last_name')} />
               {/if}
