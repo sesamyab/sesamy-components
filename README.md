@@ -1,20 +1,118 @@
 # 🌐 sesamy-components
 
-> A project for building a shareable web components library using [Vite](https://vitejs.dev), [Svelte](https://svelte.dev), [storybook](https://storybook.js.org) and [TypeScript](https://www.typescriptlang.org).
+> A shareable web components library using [Vite](https://vitejs.dev), [Svelte](https://svelte.dev), [storybook](https://storybook.js.org) and [TypeScript](https://www.typescriptlang.org).
 
-This templates generates typed [web components](https://developer.mozilla.org/en-US/docs/Web/Web_Components) than can be used with [plain HTML](https://www.webcomponents.org/introduction#how-do-i-use-a-web-component-) or within any major frameworks, such as React, Angular, Vue or Svelte (see [compatibility](https://custom-elements-everywhere.com/)).
+This library provides typed [web components](https://developer.mozilla.org/en-US/docs/Web/Web_Components) that can be used with [plain HTML](https://www.webcomponents.org/introduction#how-do-i-use-a-web-component-) or within any major frameworks, such as React, Angular, Vue or Svelte (see [compatibility](https://custom-elements-everywhere.com/)).
 
-## How to use this template
+## Installation
 
-You can directly create a new GitHub repo from this template by selecting the **Use this template** button on GitHub.
-
-You can also clone it locally with the following commands:
+You can install the package with:
 
 ```bash
-npx degit sesamy/sesamy-components
-cd sesamy-components
-yarn
+npm install @sesamy/sesamy-components
+# or
+yarn add @sesamy/sesamy-components
 ```
+
+## Components
+
+### sesamy-login
+
+A web component that provides authentication functionality, displaying a login button for unauthenticated users and an avatar with a dropdown menu for authenticated users.
+
+**Props/Attributes:**
+- `buttonText`: Text to display on the login button
+- `loading`: Boolean to show loading state
+- `loggedIn`: Boolean indicating if user is logged in
+- `userAvatar`: URL to the user's avatar image
+- `lang`: Language setting for the component
+- `variant`: Appearance variant ('text', 'picture', or 'link')
+- `class`: CSS classes to apply to the component
+
+**Events:**
+- `login`: Dispatched when login action is triggered
+
+**Basic Usage Example:**
+```html
+<!-- Simple login button -->
+<sesamy-login></sesamy-login>
+
+<!-- Customized login button -->
+<sesamy-login button-text="Sign In Now"></sesamy-login>
+```
+
+### sesamy-content-container
+
+A web component that controls access to content based on user authentication and entitlements, with support for different content locking mechanisms.
+
+**Props/Attributes:**
+- `item-src`: URL of the content item
+- `pass`: Semicolon-separated list of pass IDs that grant access
+- `access-level`: Access level required ('public', 'logged-in', or 'entitlement')
+- `publisher-content-id`: ID of the content from the publisher
+- `lock-mode`: Content locking mechanism ('embed', 'encode', 'signedUrl', 'event', or 'proxy')
+- `locked-content-selector`: CSS selector for locked content when using signed URLs
+
+**Events:**
+- `sesamyUnlocked`: Dispatched when content is unlocked (with `item-src` and `publisher-content-id` in detail)
+
+**Basic Usage Example:**
+```html
+<!-- Basic content container with preview and locked content -->
+<sesamy-content-container item-src="https://example.com/article.html">
+  <div slot="preview">This is a preview visible to everyone</div>
+  <div slot="content">This is the full content for authorized users</div>
+</sesamy-content-container>
+
+<!-- Content visible only to logged-in users -->
+<sesamy-content-container access-level="logged-in">
+  <div slot="preview">Please log in to view this content</div>
+  <div slot="content">This content is for logged-in users only</div>
+</sesamy-content-container>
+```
+
+### sesamy-paywall
+
+A web component that displays a paywall for content, loading paywall settings from a remote URL and supporting different templates (Article, Boxes, Login).
+
+**Props/Attributes:**
+- `settings-url`: URL to fetch paywall settings (required)
+- `item-src`: URL of the content item
+- `price`: Price of the content
+- `currency`: Currency code for the price
+- `redirect-url`: URL to redirect after purchase
+- `utm-source`, `utm-medium`, `utm-campaign`, `utm-term`, `utm-content`: UTM parameters for tracking
+- `pass`: Pass ID for access
+
+**Basic Usage Example:**
+```html
+<!-- Article paywall -->
+<sesamy-paywall 
+  settings-url="https://api.example.com/paywall/settings" 
+  item-src="https://example.com/article"
+  price="99"
+  currency="USD">
+</sesamy-paywall>
+
+<!-- Login paywall -->
+<sesamy-paywall settings-url="https://api.example.com/paywall/login-settings">
+  <div slot="below-headline">Additional content below headline</div>
+</sesamy-paywall>
+```
+
+### sesamy-visibility
+
+A simple web component that conditionally renders content based on user authentication status.
+
+**Basic Usage Example:**
+```html
+<sesamy-visibility>
+  <div slot="logged-in">This content is only visible when logged in</div>
+  <div slot="not-logged-in">This content is only visible when not logged in</div>
+</sesamy-visibility>
+```
+
+## Development
 
 Your components source code lives in `lib/` folder. Only components with the `.wc.svelte` extension will be exported as web components and available in your library. This means that you can also use regular Svelte components with the `.svelte` extension as child components for your implementation details.
 

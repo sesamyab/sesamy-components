@@ -1,3 +1,79 @@
+# [2.11.0](https://github.com/sesamyab/sesamy-components/compare/v2.10.0...v2.11.0) (2025-03-31)
+
+
+### Features
+
+* paywall inputs autocomplete ([08c9561](https://github.com/sesamyab/sesamy-components/commit/08c9561245262e07c04525fd9859f978b1ed0d76))
+
+# [2.10.0](https://github.com/sesamyab/sesamy-components/compare/v2.9.1...v2.10.0) (2025-03-27)
+
+
+### Features
+
+* login design tokens ([1d3829c](https://github.com/sesamyab/sesamy-components/commit/1d3829c30ec6e7076e284482101c21cc5f9ec919))
+* z-index token ([67fb45e](https://github.com/sesamyab/sesamy-components/commit/67fb45e3da0507fcb98233eb7737e2b533623f75))
+
+## [2.9.1](https://github.com/sesamyab/sesamy-components/compare/v2.9.0...v2.9.1) (2025-03-25)
+
+
+### Bug Fixes
+
+* swish logo colors ([5feafcc](https://github.com/sesamyab/sesamy-components/commit/5feafcc05e611dbac705ef96c50a0690f3e1c5e8))
+
+# [2.9.0](https://github.com/sesamyab/sesamy-components/compare/v2.8.2...v2.9.0) (2025-03-25)
+
+
+### Bug Fixes
+
+* checkout requestedDiscountCodes ([de7be05](https://github.com/sesamyab/sesamy-components/commit/de7be05c965962f8d3498720f47840302ba98700))
+
+
+### Features
+
+* sesamy-js upgrade ([a26960b](https://github.com/sesamyab/sesamy-components/commit/a26960b6ee691037859b6816b7752e96137b0999))
+
+## [2.8.2](https://github.com/sesamyab/sesamy-components/compare/v2.8.1...v2.8.2) (2025-03-20)
+
+
+### Bug Fixes
+
+* get checkoutUrl from api-proxy ([620b797](https://github.com/sesamyab/sesamy-components/commit/620b797dafc8dd41f60fdf066b433cf9fec36b2f))
+
+## [2.8.1](https://github.com/sesamyab/sesamy-components/compare/v2.8.0...v2.8.1) (2025-03-13)
+
+
+### Bug Fixes
+
+* keep loading state until navigation ([4e83a95](https://github.com/sesamyab/sesamy-components/commit/4e83a9553aabd7a13dd2c36cd799c8a722dfb9e0))
+* single purchase ([9225383](https://github.com/sesamyab/sesamy-components/commit/92253836eb3ec15fcdbb4c0d459a33a3946526de))
+
+# [2.8.0](https://github.com/sesamyab/sesamy-components/compare/v2.7.0...v2.8.0) (2025-03-11)
+
+
+### Features
+
+* add below-headline slot ([2068b8f](https://github.com/sesamyab/sesamy-components/commit/2068b8f7ad2b3e19874df02cef3e3f6ee69a3a0a))
+* base paywall rendering on template setting ([8cb2240](https://github.com/sesamyab/sesamy-components/commit/8cb2240ad5e974fd8223cc3e4941f9e43b00b501))
+* remove registration wall component ([c0c5c07](https://github.com/sesamyab/sesamy-components/commit/c0c5c07d3ebebfd687e6df758ed0cee376bf5d07))
+* use acme paywalls & update storybook + snapshots ([3fa85bf](https://github.com/sesamyab/sesamy-components/commit/3fa85bf88a5c39d472f7e6319b096b0128450574))
+
+# [2.7.0](https://github.com/sesamyab/sesamy-components/compare/v2.6.2...v2.7.0) (2025-03-06)
+
+
+### Bug Fixes
+
+* add registration wall inside paywall ([16b8e14](https://github.com/sesamyab/sesamy-components/commit/16b8e1401eb77d7a067b8ade28f0f313d21b9a67))
+* add support for the access level for the content container ([5c94702](https://github.com/sesamyab/sesamy-components/commit/5c94702ac475935d2c8fa8db5f34c38e9be9888a))
+* add the email spellchecker ([9098d93](https://github.com/sesamyab/sesamy-components/commit/9098d9383f58a42f255ec093f0afbb226307ba72))
+* copy login paywall ([8f71b37](https://github.com/sesamyab/sesamy-components/commit/8f71b37994c318866c94dc3655695e564b8f7cf1))
+* login renderer form submission handling ([6ad50e8](https://github.com/sesamyab/sesamy-components/commit/6ad50e824e66549120a552cc8ac6f0eca4948c1f))
+* remove terms ([c42732c](https://github.com/sesamyab/sesamy-components/commit/c42732cb8c2a31745f1468afa7466824985dfc05))
+
+
+### Features
+
+* login paywall layout ([dfda53f](https://github.com/sesamyab/sesamy-components/commit/dfda53fe462e106536a06a2328f9b28a837cc860))
+
 ## [2.6.2](https://github.com/sesamyab/sesamy-components/compare/v2.6.1...v2.6.2) (2025-02-20)
 
 
