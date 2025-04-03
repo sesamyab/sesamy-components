@@ -3,6 +3,7 @@
   import Row from './Row.svelte';
   import { twMerge } from 'tailwind-merge';
   import type { IconName } from './../icons/types';
+  import SwishLogo from '../assets/SwishLogo.svelte';
 
   type Props = {
     name: IconName;
@@ -22,5 +23,9 @@
     size === 'lg' && 'w-12 shadow'
   )}
 >
-  <Icon {name} multiColor />
+  {#if name === 'swish'}
+    <SwishLogo width="30" height="30" />
+  {:else}
+    <Icon {name} multiColor />
+  {/if}
 </Row>

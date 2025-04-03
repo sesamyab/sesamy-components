@@ -5,7 +5,7 @@
   import Input from '../Input.svelte';
   import InputGroup from '../InputGroup.svelte';
   import Select from '../Select.svelte';
-  import type { Checkout, SesamyAPI } from '@sesamy/sesamy-js';
+  import type { Checkout, Profile, SesamyAPI } from '@sesamy/sesamy-js';
   import Selection from './Selection.svelte';
   import SelectionGroup from './SelectionGroup.svelte';
   import PaymentMethod from '../PaymentMethod.svelte';
@@ -40,6 +40,15 @@
   let paymentMethod = $state<PaymentMethodType>();
   let emailSuggestion = $state('');
   let suggestionTimeout: any;
+
+  $effect(() => {
+    (async () => {
+      const user = await api.auth.getUser();
+      if (!email) {
+        email = user?.email || '';
+      }
+    })();
+  });
 
   const validate = () => {
     const tempErrors = [];
@@ -161,6 +170,7 @@
     <Input
       onkeyup={provideSuggestion}
       bind:value={email}
+      name="email"
       compact
       placeholder={t('email')}
       hasError={errors?.email}
@@ -185,11 +195,18 @@
         </div>
       </Row>
     </Accordion>
-    <Select options={countries} bind:value={country} compact placeholder={t('country')} />
+    <Select
+      options={countries}
+      bind:value={country}
+      name="country"
+      compact
+      placeholder={t('country')}
+    />
     {#if checkout?.fieldSettings?.phone?.enabled}
       <Input
         onkeyup={() => (errors = undefined)}
         bind:value={phoneNumber}
+        name="tel"
         compact
         placeholder={t('phone_number')}
         hasError={errors?.phoneNumber}
@@ -199,6 +216,7 @@
       <Input
         onkeyup={() => (errors = undefined)}
         bind:value={firstName}
+        name="first-name"
         compact
         placeholder={t('first_name')}
         hasError={errors?.firstName}
@@ -206,6 +224,7 @@
       <Input
         onkeyup={() => (errors = undefined)}
         bind:value={lastName}
+        name="last-name"
         compact
         placeholder={t('last_name')}
         hasError={errors?.lastName}

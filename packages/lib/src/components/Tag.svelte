@@ -4,7 +4,7 @@
   let { text, chunky, t }: { text: string; chunky?: boolean; t: any } = $props();
 </script>
 
-<div class={twMerge('absolute top-2 -right-3 rotate-3', chunky && 'top-5')}>
+<div class={twMerge('absolute top-2 -right-1.5 rotate-3', chunky && 'top-5')}>
   <div
     class={twMerge(
       'absolute bg-primary bottom-0 rounded right-0 px-2 text-white text-xs py-1 font-bold whitespace-nowrap',
