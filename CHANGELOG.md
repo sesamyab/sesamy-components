@@ -1,3 +1,10 @@
+## [2.12.1](https://github.com/sesamyab/sesamy-components/compare/v2.12.0...v2.12.1) (2025-04-03)
+
+
+### Bug Fixes
+
+* null check login fields ([15c5699](https://github.com/sesamyab/sesamy-components/commit/15c5699e7edfd3814cfd0f06d7e41c3c55764e15))
+
 # [2.12.0](https://github.com/sesamyab/sesamy-components/compare/v2.11.0...v2.12.0) (2025-04-03)
 
 
