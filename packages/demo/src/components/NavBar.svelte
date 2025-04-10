@@ -12,8 +12,16 @@
     <li>
       <sesamy-login>
         <div slot="popup-menu">
-          <sesamy-login-menu-item type="LINK" href="https://sesamy.com" text="Sesamy"
+          <sesamy-login-menu-item type="EMAIL"></sesamy-login-menu-item>
+          <sesamy-login-menu-item type="ACCOUNT"></sesamy-login-menu-item>
+          <sesamy-login-menu-item
+            type="LINK"
+            href="https://sesamy.com"
+            target="_blank"
+            text="Sesamy"
           ></sesamy-login-menu-item>
+          <sesamy-login-menu-item type="LOGOUT"></sesamy-login-menu-item>
+          <div style="padding:1rem;font-size:0.875rem;">Other custom menu content</div>
         </div>
       </sesamy-login>
     </li>
