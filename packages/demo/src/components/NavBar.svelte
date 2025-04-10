@@ -14,7 +14,6 @@
         <div slot="popup-menu">
           <sesamy-login-menu-item type="LINK" href="https://sesamy.com" text="Sesamy"
           ></sesamy-login-menu-item>
-          <div>test</div>
         </div>
       </sesamy-login>
     </li>
