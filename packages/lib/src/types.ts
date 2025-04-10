@@ -32,6 +32,10 @@ export type PaywallProps = HTMLElement & {
   pass?: string;
 };
 
+export type LoginMenuItemProps = HTMLElement & {
+  type: 'ACCOUNT' | 'LOGIN' | 'LOGOUT' | 'EMAIL';
+};
+
 export type ButtonVariant = 'primary' | 'secondary' | 'tertiary';
 
 export type ButtonProps = HTMLButtonAttributes & {

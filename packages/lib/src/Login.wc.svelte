@@ -7,6 +7,7 @@
   import type { LoginProps } from './types';
   import Button from './components/Button.svelte';
   import { twMerge } from 'tailwind-merge';
+  import LoginMenuItem from './components/LoginMenuItem.svelte';
 
   let {
     loading,
@@ -27,16 +28,6 @@
     } catch (error) {
       disabled = false;
       console.error('Login failed:', error);
-    }
-  };
-
-  const logout = async (api: SesamyAPI) => {
-    loading = true;
-    try {
-      await api.auth.logout();
-      loggedIn = false;
-    } catch (error) {
-      console.error('Logout failed:', error);
     }
   };
 
@@ -85,24 +76,9 @@
           >
             <slot name="popup-menu">
               <ul>
-                <li class="p-4 border-b border-[color:--s-login-popup-border-color] text-base">
-                  <span class="line-clamp-1 break-all">{user?.email}</span>
-                </li>
-                <li class="border-b border-[color:--s-login-popup-border-color] text-sm font-bold">
-                  <a
-                    class="block w-full text-left px-4 py-3 hover:bg-gray-100/50"
-                    href={accountLink}
-                    target="_blank"
-                  >
-                    {t('my_account')}
-                  </a>
-                </li>
-                <li class="text-sm font-bold">
-                  <button
-                    class="block w-full text-left px-4 py-3 hover:bg-gray-100/50"
-                    onclick={() => logout(api)}>{t('logout')}</button
-                  >
-                </li>
+                <LoginMenuItem type="EMAIL" {api} {t} />
+                <LoginMenuItem type="ACCOUNT" {api} {t} />
+                <LoginMenuItem type="LOGOUT" {api} {t} {loading} />
               </ul>
             </slot>
           </div>
