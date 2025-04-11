@@ -7,7 +7,7 @@
   import type { LoginProps } from './types';
   import Button from './components/Button.svelte';
   import { twMerge } from 'tailwind-merge';
-  import LoginMenuItem from './LoginMenuItem.wc.svelte';
+  import LoginMenuItemRenderer from './components/LoginMenuItemRenderer.svelte';
 
   let {
     loading,
@@ -86,9 +86,9 @@
           role="menu"
         >
           <slot name="popup-menu">
-            <LoginMenuItem type="EMAIL" />
-            <LoginMenuItem type="ACCOUNT" />
-            <LoginMenuItem type="LOGOUT" />
+            <LoginMenuItemRenderer {api} {t} type="EMAIL" />
+            <LoginMenuItemRenderer {api} {t} type="ACCOUNT" />
+            <LoginMenuItemRenderer {api} {t} type="LOGOUT" />
           </slot>
         </div>
       </div>
