@@ -7,7 +7,7 @@
   import type { LoginProps } from './types';
   import Button from './components/Button.svelte';
   import { twMerge } from 'tailwind-merge';
-  import LoginMenuItem from './components/LoginMenuItem.svelte';
+  import LoginMenuItemRenderer from './components/LoginMenuItemRenderer.svelte';
 
   let {
     loading,
@@ -45,7 +45,16 @@
   };
 
   const handleClickOutside = (e: Event) => {
-    if (e.target !== $host()) {
+    const target = e.target as Node;
+    const popupMenu = $host().querySelector('[slot="popup-menu"]');
+
+    // Check if the click is on this component or within the popup menu
+    if (
+      target !== $host() &&
+      !$host().contains(target) &&
+      target !== popupMenu &&
+      !(popupMenu && popupMenu.contains(target))
+    ) {
       showPopupMenu = false;
     }
   };
@@ -69,20 +78,19 @@
             <Avatar src={userAvatar} {loading} size="sm"></Avatar>
           </slot>
         </button>
-        {#if showPopupMenu}
-          <div
-            class="absolute top-full mt-1.5 right-0 bg-[--s-login-popup-bgcolor] text-[--s-login-popup-textcolor] border-[color:--s-login-popup-border-color] border-[length:--s-login-popup-border-width] rounded-[--s-login-popup-border-radius] w-[--s-login-popup-width] z-[--s-login-popup-zindex]"
-            role="menu"
-          >
-            <slot name="popup-menu">
-              <ul>
-                <LoginMenuItem type="EMAIL" {api} {t} />
-                <LoginMenuItem type="ACCOUNT" {api} {t} />
-                <LoginMenuItem type="LOGOUT" {api} {t} {loading} />
-              </ul>
-            </slot>
-          </div>
-        {/if}
+        <div
+          class={twMerge(
+            'absolute top-full mt-1.5 right-0 bg-[--s-login-popup-bgcolor] text-[--s-login-popup-textcolor] border-[color:--s-login-popup-border-color] border-[length:--s-login-popup-border-width] rounded-[--s-login-popup-border-radius] w-[--s-login-popup-width] z-[--s-login-popup-zindex] hidden',
+            showPopupMenu && 'block'
+          )}
+          role="menu"
+        >
+          <slot name="popup-menu">
+            <LoginMenuItemRenderer {api} {t} type="EMAIL" />
+            <LoginMenuItemRenderer {api} {t} type="ACCOUNT" />
+            <LoginMenuItemRenderer {api} {t} type="LOGOUT" />
+          </slot>
+        </div>
       </div>
     {:else}
       <Button

@@ -2,17 +2,18 @@
 
 <script lang="ts">
   import Base from './Base.svelte';
-  import LoginMenuItem from './components/LoginMenuItem.svelte';
+  import LoginMenuItemRenderer from './components/LoginMenuItemRenderer.svelte';
 
   type Props = {
     type: 'EMAIL' | 'ACCOUNT' | 'LOGOUT' | 'LINK';
     href?: string;
+    target?: string;
     text?: string;
   };
 
-  let { text, href }: Props = $props();
+  let props: Props = $props();
 </script>
 
 <Base let:api let:t>
-  <LoginMenuItem type="EMAIL" {api} {t} {text} {href} />
+  <LoginMenuItemRenderer {api} {t} {...props} />
 </Base>
