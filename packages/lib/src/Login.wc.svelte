@@ -2,12 +2,12 @@
 
 <script lang="ts">
   import type { Profile, SesamyAPI } from '@sesamy/sesamy-js';
-  import Avatar from './Avatar.wc.svelte';
   import Base from './Base.svelte';
   import type { LoginProps } from './types';
   import Button from './components/Button.svelte';
   import { twMerge } from 'tailwind-merge';
   import LoginMenuItemRenderer from './components/LoginMenuItemRenderer.svelte';
+  import AvatarRenderer from './components/AvatarRenderer.svelte';
 
   let {
     loading,
@@ -63,7 +63,7 @@
 
 <Base let:api let:t>
   {#await checkLoggedIn(api)}
-    <Avatar loading={true} size="sm"></Avatar>
+    <AvatarRenderer loading={true} size="sm" />
   {:then _}
     {#if loggedIn}
       <div class="relative">
@@ -75,7 +75,7 @@
           aria-expanded={showPopupMenu}
         >
           <slot name="avatar">
-            <Avatar src={userAvatar} {loading} size="sm"></Avatar>
+            <AvatarRenderer src={userAvatar} {loading} size="sm" />
           </slot>
         </button>
         <div
