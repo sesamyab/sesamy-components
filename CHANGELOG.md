@@ -1,3 +1,24 @@
+## [2.12.1](https://github.com/sesamyab/sesamy-components/compare/v2.12.0...v2.12.1) (2025-04-03)
+
+
+### Bug Fixes
+
+* null check login fields ([15c5699](https://github.com/sesamyab/sesamy-components/commit/15c5699e7edfd3814cfd0f06d7e41c3c55764e15))
+
+# [2.12.0](https://github.com/sesamyab/sesamy-components/compare/v2.11.0...v2.12.0) (2025-04-03)
+
+
+### Bug Fixes
+
+* ensure sesamy-js is ready ([dd8b392](https://github.com/sesamyab/sesamy-components/commit/dd8b3928089e3d371ce97d601aa42633b0faba44))
+
+
+### Features
+
+* inputs for firstname lastname in login paywall ([15a7bef](https://github.com/sesamyab/sesamy-components/commit/15a7bef356eae791ed09926d92289ce77c0050c8))
+* paywall login fields setting ([7742b6f](https://github.com/sesamyab/sesamy-components/commit/7742b6fca6cdd9d6479b074ed928dc081d67ddeb))
+* send firstName lastName to api on login ([09651cf](https://github.com/sesamyab/sesamy-components/commit/09651cfa9784274423ab5dee03dc77f66e8b27df))
+
 # [2.11.0](https://github.com/sesamyab/sesamy-components/compare/v2.10.0...v2.11.0) (2025-03-31)
 
 
