@@ -1,10 +1,8 @@
 import type { Checkout } from '@sesamy/sesamy-js';
-import type { IconName } from 'src/icons/types';
 
 export type PaymentMethodType = {
   provider: string;
   method: string;
-  icon: IconName;
 };
 
 export const goToCheckout = async (

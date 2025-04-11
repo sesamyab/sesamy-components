@@ -5,11 +5,10 @@
   import Input from '../Input.svelte';
   import InputGroup from '../InputGroup.svelte';
   import Select from '../Select.svelte';
-  import type { Checkout, Profile, SesamyAPI } from '@sesamy/sesamy-js';
+  import type { Checkout, SesamyAPI } from '@sesamy/sesamy-js';
   import Selection from './Selection.svelte';
   import SelectionGroup from './SelectionGroup.svelte';
   import PaymentMethod from '../PaymentMethod.svelte';
-  import type { IconName } from '../../icons/types';
   import Icon from '../Icon.svelte';
   import Row from '../Row.svelte';
   import { isValidEmail } from '../../utils/email';
@@ -19,6 +18,7 @@
   import emailSpellChecker from '@zootools/email-spell-checker';
   import Accordion from '../Accordion.svelte';
   import { goToCheckout, type PaymentMethodType } from '../../utils/checkout';
+  import PaymentMethodLogo from '../PaymentMethodLogo.svelte';
 
   type Props = {
     api: SesamyAPI;
@@ -146,21 +146,15 @@
         ...(methods?.length
           ? methods.map((method) => ({
               provider,
-              method,
-              icon: method.toLocaleLowerCase() as IconName
+              method
             }))
           : [])
       ],
       [] as PaymentMethodType[]
     );
 
-  const multiColoredIcons = ['vipps', 'google-pay'];
-
-  isSupportingGooglePay() &&
-    paymentMethods.push({ provider: 'STRIPE', method: 'GOOGLE-PAY', icon: 'google-pay' });
-
-  isSupportingApplePay() &&
-    paymentMethods.push({ provider: 'STRIPE', method: 'APPLE-PAY', icon: 'apple-pay' });
+  isSupportingGooglePay() && paymentMethods.push({ provider: 'STRIPE', method: 'GOOGLE-PAY' });
+  isSupportingApplePay() && paymentMethods.push({ provider: 'STRIPE', method: 'APPLE-PAY' });
 
   paymentMethods.length && selectPaymentMethod(paymentMethods[0]);
 </script>
@@ -234,24 +228,25 @@
 
   <div class="grid grid-cols-2 w-full gap-2 auto-rows-fr">
     {#each paymentMethods as paymentMethod, i (`${paymentMethod.provider}-${paymentMethod.method}`)}
-      {@const { provider, method, icon } = paymentMethod}
+      {@const { provider, method } = paymentMethod}
       <SelectionGroup>
-        <Selection
-          checked={!i}
-          id={`${provider}-${method}`}
-          name="payment-method"
-          onchange={() => selectPaymentMethod(paymentMethod)}
-        >
-          <Row class="w-16 text-black dark:text-white" left>
-            <Icon class="text-3xl" multiColor={multiColoredIcons.includes(icon)} name={icon} />
+        <Selection checked={!i} id={`${provider}-${method}`} name="payment-method">
+          <Row class="w-full !justify-between">
+            {#if method === 'CARD'}
+              <Icon name="card" class="text-2xl" />
+            {:else}
+              <div>
+                <PaymentMethodLogo {method} width="auto" height="25" />
+              </div>
+            {/if}
+            {#if method && ['CARD', 'GOOGLE-PAY', 'APPLE-PAY'].includes(method)}
+              <div class="gap-1 hidden @xl:row-left">
+                <PaymentMethod size="sm" name="visa" />
+                <PaymentMethod size="sm" name="amex" />
+                <PaymentMethod size="sm" name="mastercard" />
+              </div>
+            {/if}
           </Row>
-          {#if method && ['CARD', 'GOOGLE-PAY', 'APPLE-PAY'].includes(method)}
-            <div class="gap-1 hidden @xl:row-left">
-              <PaymentMethod size="sm" name="visa" />
-              <PaymentMethod size="sm" name="amex" />
-              <PaymentMethod size="sm" name="mastercard" />
-            </div>
-          {/if}
         </Selection>
       </SelectionGroup>
     {/each}
