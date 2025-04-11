@@ -3,7 +3,7 @@
   import Row from './Row.svelte';
   import { twMerge } from 'tailwind-merge';
   import type { IconName } from './../icons/types';
-  import SwishLogo from '../assets/SwishLogo.svelte';
+  import PaymentMethodLogo from './PaymentMethodLogo.svelte';
 
   type Props = {
     name: IconName;
@@ -15,7 +15,7 @@
 
 <Row
   class={twMerge(
-    'aspect-[4/3] px-1 rounded bg-white text-black border border-transparent',
+    'aspect-[4/3] px-1 rounded bg-white border border-transparent',
     name === 'klarna' && 'bg-[#FEB4C7]',
     name === 'amex' && 'bg-[#1F72CD]',
     size === 'sm' && 'w-8 border-gray-300',
@@ -23,9 +23,5 @@
     size === 'lg' && 'w-12 shadow'
   )}
 >
-  {#if name === 'swish'}
-    <SwishLogo width="30" height="30" />
-  {:else}
-    <Icon {name} multiColor />
-  {/if}
+  <PaymentMethodLogo method={name.toUpperCase()} width="38" height="auto" />
 </Row>

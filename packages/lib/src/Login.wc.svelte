@@ -2,11 +2,12 @@
 
 <script lang="ts">
   import type { Profile, SesamyAPI } from '@sesamy/sesamy-js';
-  import Avatar from './Avatar.wc.svelte';
   import Base from './Base.svelte';
   import type { LoginProps } from './types';
   import Button from './components/Button.svelte';
   import { twMerge } from 'tailwind-merge';
+  import LoginMenuItemRenderer from './components/LoginMenuItemRenderer.svelte';
+  import AvatarRenderer from './components/AvatarRenderer.svelte';
 
   let {
     loading,
@@ -30,16 +31,6 @@
     }
   };
 
-  const logout = async (api: SesamyAPI) => {
-    loading = true;
-    try {
-      await api.auth.logout();
-      loggedIn = false;
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
-  };
-
   const checkLoggedIn = async (api: SesamyAPI) => {
     try {
       loggedIn = await api.auth.isAuthenticated();
@@ -54,7 +45,16 @@
   };
 
   const handleClickOutside = (e: Event) => {
-    if (e.target !== $host()) {
+    const target = e.target as Node;
+    const popupMenu = $host().querySelector('[slot="popup-menu"]');
+
+    // Check if the click is on this component or within the popup menu
+    if (
+      target !== $host() &&
+      !$host().contains(target) &&
+      target !== popupMenu &&
+      !(popupMenu && popupMenu.contains(target))
+    ) {
       showPopupMenu = false;
     }
   };
@@ -63,7 +63,7 @@
 
 <Base let:api let:t>
   {#await checkLoggedIn(api)}
-    <Avatar loading={true} size="sm"></Avatar>
+    <AvatarRenderer loading={true} size="sm" />
   {:then _}
     {#if loggedIn}
       <div class="relative">
@@ -75,38 +75,22 @@
           aria-expanded={showPopupMenu}
         >
           <slot name="avatar">
-            <Avatar src={userAvatar} {loading} size="sm"></Avatar>
+            <AvatarRenderer src={userAvatar} {loading} size="sm" />
           </slot>
         </button>
-        {#if showPopupMenu}
-          <div
-            class="absolute top-full mt-1.5 right-0 bg-[--s-login-popup-bgcolor] text-[--s-login-popup-textcolor] border-[color:--s-login-popup-border-color] border-[length:--s-login-popup-border-width] rounded-[--s-login-popup-border-radius] w-[--s-login-popup-width] z-[--s-login-popup-zindex]"
-            role="menu"
-          >
-            <slot name="popup-menu">
-              <ul>
-                <li class="p-4 border-b border-[color:--s-login-popup-border-color] text-base">
-                  <span class="line-clamp-1 break-all">{user?.email}</span>
-                </li>
-                <li class="border-b border-[color:--s-login-popup-border-color] text-sm font-bold">
-                  <a
-                    class="block w-full text-left px-4 py-3 hover:bg-gray-100/50"
-                    href={accountLink}
-                    target="_blank"
-                  >
-                    {t('my_account')}
-                  </a>
-                </li>
-                <li class="text-sm font-bold">
-                  <button
-                    class="block w-full text-left px-4 py-3 hover:bg-gray-100/50"
-                    onclick={() => logout(api)}>{t('logout')}</button
-                  >
-                </li>
-              </ul>
-            </slot>
-          </div>
-        {/if}
+        <div
+          class={twMerge(
+            'absolute top-full mt-1.5 right-0 bg-[--s-login-popup-bgcolor] text-[--s-login-popup-textcolor] border-[color:--s-login-popup-border-color] border-[length:--s-login-popup-border-width] rounded-[--s-login-popup-border-radius] w-[--s-login-popup-width] z-[--s-login-popup-zindex] hidden',
+            showPopupMenu && 'block'
+          )}
+          role="menu"
+        >
+          <slot name="popup-menu">
+            <LoginMenuItemRenderer {api} {t} type="EMAIL" />
+            <LoginMenuItemRenderer {api} {t} type="ACCOUNT" />
+            <LoginMenuItemRenderer {api} {t} type="LOGOUT" />
+          </slot>
+        </div>
       </div>
     {:else}
       <Button
