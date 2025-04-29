@@ -1,3 +1,10 @@
+## [2.13.1](https://github.com/sesamyab/sesamy-components/compare/v2.13.0...v2.13.1) (2025-04-29)
+
+
+### Bug Fixes
+
+* payment method onChange ([1e49a42](https://github.com/sesamyab/sesamy-components/commit/1e49a423d6eec6ee23a8b5c3303f8d67bf86a61c))
+
 # [2.13.0](https://github.com/sesamyab/sesamy-components/compare/v2.12.1...v2.13.0) (2025-04-11)
 
 
