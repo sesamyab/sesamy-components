@@ -230,7 +230,12 @@
     {#each paymentMethods as paymentMethod, i (`${paymentMethod.provider}-${paymentMethod.method}`)}
       {@const { provider, method } = paymentMethod}
       <SelectionGroup>
-        <Selection checked={!i} id={`${provider}-${method}`} name="payment-method">
+        <Selection
+          checked={!i}
+          id={`${provider}-${method}`}
+          name="payment-method"
+          onchange={() => selectPaymentMethod(paymentMethod)}
+        >
           <Row class="w-full !justify-between">
             {#if method === 'CARD'}
               <Icon name="card" class="text-2xl" />
