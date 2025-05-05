@@ -45,9 +45,13 @@ A web component that provides authentication functionality, displaying a login b
 ```html
 <sesamy-login
   style="
-    --sesamy-login-button-color: red; /* Sets text and border color of the login button, default black */
+    --sesamy-font-family: Georgia; /* Sets font family, default Helvetica */
+    --sesamy-login-button-background-color: blue; /* Sets background color of the login button, default transparent */
+    --sesamy-login-button-text-color: green; /* Sets text color of the login button, default black */
+    --sesamy-login-button-border-color: pink; /* Sets border color of the login button, default black */
     --sesamy-login-button-border-width: 5px; /* Sets border width of the login button, default 1px */
     --sesamy-login-button-border-radius: 20px; /* Sets border radius of the login button, default */
+    --sesamy-login-button-font-weight: 100; /* Sets font weight of the login button, default 700 */
     --sesamy-login-popup-width: 400px; /* Sets width of the login popup, default 18rem */
     --sesamy-login-popup-bgcolor: green; /* Sets background color of the login popup, default white */
     --sesamy-login-popup-textcolor: pink; /* Sets text color of the login popup, default black */
