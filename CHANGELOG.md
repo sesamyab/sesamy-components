@@ -1,3 +1,10 @@
+## [2.14.1](https://github.com/sesamyab/sesamy-components/compare/v2.14.0...v2.14.1) (2025-05-05)
+
+
+### Bug Fixes
+
+* login button font weight ([125eb0d](https://github.com/sesamyab/sesamy-components/commit/125eb0d491c21e6f7f406b7cecc65ca929426e65))
+
 # [2.14.0](https://github.com/sesamyab/sesamy-components/compare/v2.13.1...v2.14.0) (2025-05-05)
 
 
