@@ -20,12 +20,16 @@
       color: black;
       text-align: left;
 
-      --s-primary-color: var(--sesamy-primary-color, '#000000');
+      --s-primary-color: var(--sesamy-primary-color, #000000);
       --s-font-family: var(--sesamy-font-family, Helvetica);
 
       --s-login-button-color: var(--sesamy-login-button-color, #000000);
+      --s-login-button-text-color: var(--sesamy-login-button-color, var(--sesamy-login-button-text-color, #000000));
+      --s-login-button-border-color: var(--sesamy-login-button-color, var(--sesamy-login-button-border-color, #000000));
+      --s-login-button-background-color: var(--sesamy-login-button-background-color, transparent);
       --s-login-button-border-width: var(--sesamy-login-button-border-width, 1px);
       --s-login-button-border-radius: var(--sesamy-login-button-border-radius, 0.375rem);
+      --s-login-button-font-weight: var(--sesamy-login-button-font-weight, 700);
       --s-login-avatar-bgcolor: var(--sesamy-login-avatar-bgcolor, var(--s-login-button-color));
       --s-login-avatar-textcolor: var(--sesamy-login-avatar-textcolor, #ffffff);
 
