@@ -1,3 +1,11 @@
+# [2.14.0](https://github.com/sesamyab/sesamy-components/compare/v2.13.1...v2.14.0) (2025-05-05)
+
+
+### Features
+
+* login button design tokens ([13d6113](https://github.com/sesamyab/sesamy-components/commit/13d61133a6e8e463cac9eac691252f26f3ad10a1))
+* more design tokens for login component ([c790d42](https://github.com/sesamyab/sesamy-components/commit/c790d42fcf427bce52df72cd42fda3f72d44094d))
+
 ## [2.13.1](https://github.com/sesamyab/sesamy-components/compare/v2.13.0...v2.13.1) (2025-04-29)
 
 
