@@ -41,6 +41,24 @@ A web component that provides authentication functionality, displaying a login b
 <sesamy-login button-text="Sign In Now"></sesamy-login>
 ```
 
+**Design tokens:**
+```html
+<sesamy-login
+  style="
+    --sesamy-login-button-color: red; /* Sets text and border color of the login button, default black */
+    --sesamy-login-button-border-width: 5px; /* Sets border width of the login button, default 1px */
+    --sesamy-login-button-border-radius: 20px; /* Sets border radius of the login button, default */
+    --sesamy-login-popup-width: 400px; /* Sets width of the login popup, default 18rem */
+    --sesamy-login-popup-bgcolor: green; /* Sets background color of the login popup, default white */
+    --sesamy-login-popup-textcolor: pink; /* Sets text color of the login popup, default black */
+    --sesamy-login-popup-border-color: red; /* Sets border color of the login popup, default #e5e7eb */
+    --sesamy-login-popup-border-width: 5px; /* Sets border width of the login popup, default 1px */
+    --sesamy-login-popup-border-radius: 20px; /* Sets border radius of the login popup, default 0.125rem */
+    --sesamy-login-popup-zindex: 100; /* Sets z-index of the login popup, default 10 */
+  "
+></sesamy-login>
+```
+
 ### sesamy-content-container
 
 A web component that controls access to content based on user authentication and entitlements, with support for different content locking mechanisms.
