@@ -14,7 +14,75 @@
     'locked-content-selector': lockedContentSelector
   }: ContentContainerProps = $props();
 
+  // Force component update when slots change
+  let previewSlotVersion = $state(0);
+  let contentSlotVersion = $state(0);
+  // Current API instance from the latest access check
+  let currentApi: SesamyAPI | null = null;
+
+  // Function to handle slot changes
+  function handleSlotChange(slotName: string, api: SesamyAPI) {
+    console.log(`Slot "${slotName}" content changed`);
+    if (slotName === 'preview') {
+      previewSlotVersion++;
+    } else if (slotName === 'content') {
+      contentSlotVersion++;
+
+      // If in encode mode and content slot changes, re-process content
+      if (lockMode === 'encode') {
+        unlockAndRenderContent(api);
+      }
+    }
+  }
+
+  // This function will be called when API is available
+  function setupSlotChangeListeners(api: SesamyAPI) {
+    // Store API reference for slot changes
+    currentApi = api;
+
+    const host = $host();
+    if (!host) return;
+
+    // Setup slotchange listeners for both slots
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.type === 'childList' || mutation.type === 'characterData') {
+          const slot = (mutation.target as HTMLElement).getAttribute?.('slot');
+          if (slot === 'preview' || slot === 'content') {
+            handleSlotChange(slot, api);
+          } else if (
+            (mutation.target as HTMLElement).querySelector?.('[slot="preview"], [slot="content"]')
+          ) {
+            // Check if any of the changed nodes contain slot elements
+            const previewSlot = (mutation.target as HTMLElement).querySelector('[slot="preview"]');
+            const contentSlot = (mutation.target as HTMLElement).querySelector('[slot="content"]');
+
+            if (previewSlot) handleSlotChange('preview', api);
+            if (contentSlot) handleSlotChange('content', api);
+          }
+        }
+      }
+    });
+
+    // Observe the entire host and its children
+    observer.observe(host, {
+      childList: true,
+      subtree: true,
+      characterData: true
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }
+
   async function checkAccess(api: SesamyAPI) {
+    // Store API reference for slot change handling
+    currentApi = api;
+
+    // Set up slot change listeners when we first receive the API
+    setupSlotChangeListeners(api);
+
     const articleUrl = itemSrc || api.content.get($host())?.url || '';
     const passes = passProp ? passProp.split(';') : api.content.get($host())?.pass?.split(';');
     const accessLevel = accessLevelProp || api.content.get($host())?.accessLevel || 'entitlement';
@@ -139,22 +207,24 @@
 </script>
 
 <Base let:api applyStyles={false}>
-  {#await checkAccess(api)}
-    <!-- Show the preview until we know if the user has access -->
-    <slot name="preview"></slot>
-  {:then entitlement}
-    {#if entitlement}
-      {#if lockMode === 'embed'}
-        <slot name="content"></slot>
-      {:else}
-        {#await unlockAndRenderContent(api)}
-          <slot name="preview"></slot>
-        {:then}
-          <!-- Once the content is unlocked it will displayed outside the shadow DOM. -->
-        {/await}
-      {/if}
-    {:else}
+  {#key previewSlotVersion + contentSlotVersion}
+    {#await checkAccess(api)}
+      <!-- Show the preview until we know if the user has access -->
       <slot name="preview"></slot>
-    {/if}
-  {/await}
+    {:then entitlement}
+      {#if entitlement}
+        {#if lockMode === 'embed'}
+          <slot name="content"></slot>
+        {:else}
+          {#await unlockAndRenderContent(api)}
+            <slot name="preview"></slot>
+          {:then}
+            <!-- Once the content is unlocked it will displayed outside the shadow DOM. -->
+          {/await}
+        {/if}
+      {:else}
+        <slot name="preview"></slot>
+      {/if}
+    {/await}
+  {/key}
 </Base>
