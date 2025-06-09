@@ -1,3 +1,42 @@
+## [2.14.1](https://github.com/sesamyab/sesamy-components/compare/v2.14.0...v2.14.1) (2025-05-05)
+
+
+### Bug Fixes
+
+* login button font weight ([125eb0d](https://github.com/sesamyab/sesamy-components/commit/125eb0d491c21e6f7f406b7cecc65ca929426e65))
+
+# [2.14.0](https://github.com/sesamyab/sesamy-components/compare/v2.13.1...v2.14.0) (2025-05-05)
+
+
+### Features
+
+* login button design tokens ([13d6113](https://github.com/sesamyab/sesamy-components/commit/13d61133a6e8e463cac9eac691252f26f3ad10a1))
+* more design tokens for login component ([c790d42](https://github.com/sesamyab/sesamy-components/commit/c790d42fcf427bce52df72cd42fda3f72d44094d))
+
+## [2.13.1](https://github.com/sesamyab/sesamy-components/compare/v2.13.0...v2.13.1) (2025-04-29)
+
+
+### Bug Fixes
+
+* payment method onChange ([1e49a42](https://github.com/sesamyab/sesamy-components/commit/1e49a423d6eec6ee23a8b5c3303f8d67bf86a61c))
+
+# [2.13.0](https://github.com/sesamyab/sesamy-components/compare/v2.12.1...v2.13.0) (2025-04-11)
+
+
+### Bug Fixes
+
+* avatar renderer component ([0191784](https://github.com/sesamyab/sesamy-components/commit/01917847d727f9c6aff60031e3e70dc719947316))
+* login menu item renderer ([9373e62](https://github.com/sesamyab/sesamy-components/commit/9373e62e3d00c7be91c6cd8752c1e19e5a5ea7eb))
+* payment methods logos ([58c275b](https://github.com/sesamyab/sesamy-components/commit/58c275b4627b4956d6d7bde4cf5cb4b7cdaba86c))
+* review notes ([c1d5b76](https://github.com/sesamyab/sesamy-components/commit/c1d5b76b0d5f9c442fe8cb95a4f87ce4949ee730))
+* update demo page ([33b8eb9](https://github.com/sesamyab/sesamy-components/commit/33b8eb91b685ee5a93ddbc19333750a1d01e0db5))
+
+
+### Features
+
+* add login menu item ([2038639](https://github.com/sesamyab/sesamy-components/commit/2038639b9ddf606b7a99815fe6f01db8f153a5fa))
+* login-menu-item improvements ([6a61cf8](https://github.com/sesamyab/sesamy-components/commit/6a61cf8950a30916d53689fdd73c922e3e43f5aa))
+
 ## [2.12.1](https://github.com/sesamyab/sesamy-components/compare/v2.12.0...v2.12.1) (2025-04-03)
 
 
