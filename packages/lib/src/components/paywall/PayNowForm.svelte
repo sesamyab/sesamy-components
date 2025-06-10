@@ -53,6 +53,12 @@
   let suggestionTimeout: any;
 
   $effect(() => {
+    if (!countries.map((c) => c.value).includes(country)) {
+      country = countries[0]?.value; // Fallback to the first country if the geo country is not allowed
+    }
+  });
+
+  $effect(() => {
     (async () => {
       const user = await api.auth.getUser();
       if (!email) {
