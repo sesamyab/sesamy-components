@@ -132,6 +132,7 @@
           // Need to set CARD for Google Pay and Apple Pay
           method: isWallet ? 'CARD' : paymentMethod.method
         },
+        country,
         email
       });
 
