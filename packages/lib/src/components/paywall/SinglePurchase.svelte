@@ -5,7 +5,6 @@
   import SelectionGroup from './SelectionGroup.svelte';
   import type { PaywallSinglePurchase } from 'src/types/Paywall';
   import type { PaywallProps } from 'src/types';
-  import type { SesamyAPI } from '@sesamy/sesamy-js';
 
   type Props = {
     t: TranslationFunction;

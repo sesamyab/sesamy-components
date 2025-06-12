@@ -14,13 +14,12 @@ npm install @sesamy/sesamy-components
 yarn add @sesamy/sesamy-components
 ```
 
-## Components
-
-### sesamy-login
+# sesamy-login
 
 A web component that provides authentication functionality, displaying a login button for unauthenticated users and an avatar with a dropdown menu for authenticated users.
 
 **Props/Attributes:**
+
 - `buttonText`: Text to display on the login button
 - `loading`: Boolean to show loading state
 - `loggedIn`: Boolean indicating if user is logged in
@@ -30,9 +29,11 @@ A web component that provides authentication functionality, displaying a login b
 - `class`: CSS classes to apply to the component
 
 **Events:**
+
 - `login`: Dispatched when login action is triggered
 
 **Basic Usage Example:**
+
 ```html
 <!-- Simple login button -->
 <sesamy-login></sesamy-login>
@@ -42,6 +43,7 @@ A web component that provides authentication functionality, displaying a login b
 ```
 
 **Design tokens:**
+
 ```html
 <sesamy-login
   style="
@@ -63,11 +65,83 @@ A web component that provides authentication functionality, displaying a login b
 ></sesamy-login>
 ```
 
+## Slots
+
+The `sesamy-login` component provides several slots for customizing its appearance and behavior:
+
+### button-text
+
+- **Purpose:** Replaces the default login button text.
+- **Behavior:** Content in this slot will be rendered as the main text of the login button, replacing the default (localized) "login" text.
+- **Example:**
+  ```html
+  <sesamy-login>
+    <span slot="button-text">Sign in with Email</span>
+  </sesamy-login>
+  ```
+
+### button-text-prefix
+
+- **Purpose:** Inserts content before the login button text.
+- **Behavior:** Content in this slot will appear before the main button text, useful for adding icons or labels.
+- **Example:**
+  ```html
+  <sesamy-login>
+    <span slot="button-text-prefix">🔒</span>
+  </sesamy-login>
+  ```
+
+### button-text-suffix
+
+- **Purpose:** Inserts content after the login button text.
+- **Behavior:** Content in this slot will appear after the main button text, useful for adding icons or additional info.
+- **Example:**
+  ```html
+  <sesamy-login>
+    <span slot="button-text-suffix">→</span>
+  </sesamy-login>
+  ```
+
+### avatar
+
+- **Purpose:** Replaces the default avatar shown when logged in.
+- **Behavior:** Content in this slot will be rendered instead of the default avatar image/button when the user is authenticated.
+- **Example:**
+  ```html
+  <sesamy-login>
+    <img
+      slot="avatar"
+      src="/my-avatar.png"
+      alt="User avatar"
+      style="width:32px;height:32px;border-radius:50%"
+    />
+  </sesamy-login>
+  ```
+
+### popup-menu
+
+- **Purpose:** Replaces the default popup menu shown when clicking the avatar.
+- **Behavior:** Content in this slot will be rendered instead of the default menu (email/account/logout) when the user is authenticated and opens the menu.
+- **Example:**
+  ```html
+  <sesamy-login>
+    <div slot="popup-menu">
+      <a href="/profile">Profile</a>
+      <a href="/logout">Logout</a>
+    </div>
+  </sesamy-login>
+  ```
+
+**Note:**
+
+- All slots are optional. If not provided, the component will render its default content for each area.
+
 ### sesamy-content-container
 
 A web component that controls access to content based on user authentication and entitlements, with support for different content locking mechanisms.
 
 **Props/Attributes:**
+
 - `item-src`: URL of the content item
 - `pass`: Semicolon-separated list of pass IDs that grant access
 - `access-level`: Access level required ('public', 'logged-in', or 'entitlement')
@@ -76,9 +150,11 @@ A web component that controls access to content based on user authentication and
 - `locked-content-selector`: CSS selector for locked content when using signed URLs
 
 **Events:**
+
 - `sesamyUnlocked`: Dispatched when content is unlocked (with `item-src` and `publisher-content-id` in detail)
 
 **Basic Usage Example:**
+
 ```html
 <!-- Basic content container with preview and locked content -->
 <sesamy-content-container item-src="https://example.com/article.html">
@@ -93,11 +169,12 @@ A web component that controls access to content based on user authentication and
 </sesamy-content-container>
 ```
 
-### sesamy-paywall
+# sesamy-paywall
 
 A web component that displays a paywall for content, loading paywall settings from a remote URL and supporting different templates (Article, Boxes, Login).
 
 **Props/Attributes:**
+
 - `settings-url`: URL to fetch paywall settings (required)
 - `item-src`: URL of the content item
 - `price`: Price of the content
@@ -106,27 +183,72 @@ A web component that displays a paywall for content, loading paywall settings fr
 - `utm-source`, `utm-medium`, `utm-campaign`, `utm-term`, `utm-content`: UTM parameters for tracking
 - `pass`: Pass ID for access
 
+**Slots:**
+
+- `below-headline`: Content rendered below the paywall headline (e.g., additional info, custom elements)
+- `features`: Content rendered in the features section of the paywall (e.g., feature list, benefits)
+
 **Basic Usage Example:**
+
 ```html
 <!-- Article paywall -->
-<sesamy-paywall 
-  settings-url="https://api.example.com/paywall/settings" 
+<sesamy-paywall
+  settings-url="https://api.example.com/paywall/settings"
   item-src="https://example.com/article"
   price="99"
-  currency="USD">
+  currency="USD"
+>
+  <div slot="features">✔️ Unlimited access<br />✔️ Cancel anytime</div>
 </sesamy-paywall>
 
-<!-- Login paywall -->
+<!-- Login paywall with below-headline slot -->
 <sesamy-paywall settings-url="https://api.example.com/paywall/login-settings">
   <div slot="below-headline">Additional content below headline</div>
 </sesamy-paywall>
 ```
 
-### sesamy-visibility
+## Slots
+
+The `sesamy-paywall` component provides two main slots for customization:
+
+### below-headline
+
+- **Purpose:** Inserts custom content directly below the paywall headline.
+- **Behavior:** The content you provide in this slot will be rendered in addition to the default paywall content, immediately below the headline. Use this for adding extra information, banners, or custom elements.
+- **Example:**
+  ```html
+  <sesamy-paywall settings-url="https://api.example.com/paywall/login-settings">
+    <div slot="below-headline">Special offer for new users!</div>
+  </sesamy-paywall>
+  ```
+
+### features
+
+- **Purpose:** Replaces the default features section of the paywall.
+- **Behavior:** When you provide content in the `features` slot, it will completely replace the built-in features list or section. Use this slot to fully customize the list of benefits, features, or selling points shown to the user.
+- **Example:**
+  ```html
+  <sesamy-paywall settings-url="https://api.example.com/paywall/settings">
+    <div slot="features">
+      <ul>
+        <li>✔️ Unlimited access</li>
+        <li>✔️ Cancel anytime</li>
+        <li>✔️ Exclusive articles</li>
+      </ul>
+    </div>
+  </sesamy-paywall>
+  ```
+
+**Note:**
+
+- The `below-headline` slot adds to the paywall, while the `features` slot replaces the default features section entirely.
+
+# sesamy-visibility
 
 A simple web component that conditionally renders content based on user authentication status.
 
 **Basic Usage Example:**
+
 ```html
 <sesamy-visibility>
   <div slot="logged-in">This content is only visible when logged in</div>
