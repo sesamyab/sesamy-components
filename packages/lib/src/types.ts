@@ -1,6 +1,5 @@
 import type { SesamyAPI } from '@sesamy/sesamy-js';
 import type { HTMLButtonAttributes } from 'svelte/elements';
-import type { SupportedLanguage } from './i18n';
 
 // NOTE: (important!)
 // These types are what we expose to the end user of our web-components
@@ -10,7 +9,6 @@ export type Size = 'sm' | 'md' | 'lg';
 export interface LoginProps {
   loading?: boolean;
   loggedIn?: boolean;
-  userAvatar?: string;
   onLogin?: (event: CustomEvent) => void;
 }
 
