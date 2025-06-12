@@ -21,6 +21,7 @@ yarn add @sesamy/sesamy-components
 A web component that provides authentication functionality, displaying a login button for unauthenticated users and an avatar with a dropdown menu for authenticated users.
 
 **Props/Attributes:**
+
 - `buttonText`: Text to display on the login button
 - `loading`: Boolean to show loading state
 - `loggedIn`: Boolean indicating if user is logged in
@@ -30,9 +31,11 @@ A web component that provides authentication functionality, displaying a login b
 - `class`: CSS classes to apply to the component
 
 **Events:**
+
 - `login`: Dispatched when login action is triggered
 
 **Basic Usage Example:**
+
 ```html
 <!-- Simple login button -->
 <sesamy-login></sesamy-login>
@@ -42,6 +45,7 @@ A web component that provides authentication functionality, displaying a login b
 ```
 
 **Design tokens:**
+
 ```html
 <sesamy-login
   style="
@@ -68,6 +72,7 @@ A web component that provides authentication functionality, displaying a login b
 A web component that controls access to content based on user authentication and entitlements, with support for different content locking mechanisms.
 
 **Props/Attributes:**
+
 - `item-src`: URL of the content item
 - `pass`: Semicolon-separated list of pass IDs that grant access
 - `access-level`: Access level required ('public', 'logged-in', or 'entitlement')
@@ -76,9 +81,11 @@ A web component that controls access to content based on user authentication and
 - `locked-content-selector`: CSS selector for locked content when using signed URLs
 
 **Events:**
+
 - `sesamyUnlocked`: Dispatched when content is unlocked (with `item-src` and `publisher-content-id` in detail)
 
 **Basic Usage Example:**
+
 ```html
 <!-- Basic content container with preview and locked content -->
 <sesamy-content-container item-src="https://example.com/article.html">
@@ -98,6 +105,7 @@ A web component that controls access to content based on user authentication and
 A web component that displays a paywall for content, loading paywall settings from a remote URL and supporting different templates (Article, Boxes, Login).
 
 **Props/Attributes:**
+
 - `settings-url`: URL to fetch paywall settings (required)
 - `item-src`: URL of the content item
 - `price`: Price of the content
@@ -106,14 +114,22 @@ A web component that displays a paywall for content, loading paywall settings fr
 - `utm-source`, `utm-medium`, `utm-campaign`, `utm-term`, `utm-content`: UTM parameters for tracking
 - `pass`: Pass ID for access
 
+**Events:**
+
+- `sesamyPaywallAccessChecked`: Emitted after access check, with `{ hasAccess, paywallId, articleUrl, passes }` in `detail`.
+- `sesamyPaywallProductSelected`: Emitted when a product/subscription is selected, with `{ product, paywallId }` in `detail`.
+- `sesamyPaywallCheckoutRedirect`: Emitted before redirecting to checkout, with `{ checkout, paywallId, product }` in `detail`.
+
 **Basic Usage Example:**
+
 ```html
 <!-- Article paywall -->
-<sesamy-paywall 
-  settings-url="https://api.example.com/paywall/settings" 
+<sesamy-paywall
+  settings-url="https://api.example.com/paywall/settings"
   item-src="https://example.com/article"
   price="99"
-  currency="USD">
+  currency="USD"
+>
 </sesamy-paywall>
 
 <!-- Login paywall -->
@@ -127,6 +143,7 @@ A web component that displays a paywall for content, loading paywall settings fr
 A simple web component that conditionally renders content based on user authentication status.
 
 **Basic Usage Example:**
+
 ```html
 <sesamy-visibility>
   <div slot="logged-in">This content is only visible when logged in</div>

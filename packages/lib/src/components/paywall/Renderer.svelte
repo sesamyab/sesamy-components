@@ -19,6 +19,7 @@
   import NotLoggedIn from '../NotLoggedIn.svelte';
   import { parsePrice } from '../../utils/money';
   import { goToCheckout } from '../../utils/checkout';
+  import { SofaIcon } from 'lucide-svelte';
 
   type Props = {
     api: SesamyAPI;
@@ -66,7 +67,16 @@
       ? userProps.pass.split(';')
       : api.content.get(host)?.pass?.split(';');
 
-    return api.entitlements.hasAccess(articleUrl || '', passes);
+    const hasAccess = await api.entitlements.hasAccess(articleUrl || '', passes);
+
+    api.events.emit('sesamyPaywallAccessChecked', {
+      hasAccess,
+      paywallId: paywall.id,
+      articleUrl,
+      passes
+    });
+
+    return hasAccess;
   };
 
   const createCheckout = async (e: SubmitEvent) => {
@@ -107,6 +117,12 @@
           source: 'PAYWALL',
           sourceId: paywall.id
         }
+      });
+
+      api.events.emit('sesamyPaywallProductSelected', {
+        product,
+        checkoutId: checkout.id,
+        paywallId: paywall.id
       });
 
       if (product.preferBusiness) {
