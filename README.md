@@ -117,7 +117,7 @@ A web component that displays a paywall for content, loading paywall settings fr
 **Events:**
 
 - `sesamyPaywallAccessChecked`: Emitted after access check, with `{ hasAccess, paywallId, articleUrl, passes }` in `detail`.
-- `sesamyPaywallProductSelected`: Emitted when a product/subscription is selected, with `{ product, paywallId }` in `detail`.
+- `sesamyPaywallProductSelected`: Emitted when a product/subscription is selected and the continue button is pressed, with `{ product, checkoutId, paywallId }` in `detail`.
 - `sesamyPaywallCheckoutRedirect`: Emitted before redirecting to checkout, with `{ checkout, paywallId, product }` in `detail`.
 
 **Basic Usage Example:**
