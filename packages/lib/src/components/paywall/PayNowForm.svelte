@@ -28,7 +28,18 @@
 
   let { api, t, checkout }: Props = $props();
 
-  const countries = getCountriesOptions(checkout.language); // TODO: grab this from lang preferences (see Base.svelte)
+  const countries = getCountriesOptions(checkout.language).filter((country) => {
+    // Filter out countries that are not allowed or blocked by the items in the checkout
+    return checkout.items.every((item) => {
+      return (
+        !item.geoRestrictions ||
+        (item.geoRestrictions.type === 'ALLOW' &&
+          item.geoRestrictions.countries.includes(country.value)) ||
+        (item.geoRestrictions.type === 'BLOCK' &&
+          !item.geoRestrictions.countries.includes(country.value))
+      );
+    });
+  }); // TODO: grab this from lang preferences (see Base.svelte)
 
   let email = $state('');
   let firstName = $state('');
@@ -40,6 +51,12 @@
   let paymentMethod = $state<PaymentMethodType>();
   let emailSuggestion = $state('');
   let suggestionTimeout: any;
+
+  $effect(() => {
+    if (!countries.map((c) => c.value).includes(country)) {
+      country = countries[0]?.value; // Fallback to the first country if the geo country is not allowed
+    }
+  });
 
   $effect(() => {
     (async () => {
@@ -121,6 +138,7 @@
           // Need to set CARD for Google Pay and Apple Pay
           method: isWallet ? 'CARD' : paymentMethod.method
         },
+        country,
         email
       });
 

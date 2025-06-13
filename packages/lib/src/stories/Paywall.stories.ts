@@ -1,6 +1,5 @@
 import { html } from 'lit-html';
 import type { Meta, StoryObj } from '@storybook/web-components';
-import { Paywall } from '@sesamy/sesamy-components';
 
 interface PaywallProps {
   'settings-url': string;
@@ -48,4 +47,28 @@ export const Boxes: Story = {
   args: {
     'settings-url': 'https://api.sesamy.dev/paywall/paywalls/acme/Zt9jY_Ioc4SS6YG9hRkqp'
   }
+};
+
+export const Slots: Story = {
+  args: {
+    'settings-url': 'https://api.sesamy.dev/paywall/paywalls/acme/OxHlsEHTUGs1tpF6EoRy8',
+    'item-src': 'https://acme.sesamy.dev/test-article'
+  },
+  render: (args) => html`
+    <div style="gap: 10px; padding: 10px; --sesamy-primary-color: 249 86.4% 68.2%;">
+      <sesamy-paywall
+        settings-url=${args['settings-url']}
+        item-src=${args['item-src']}
+        price="99"
+        currency="SEK"
+      >
+        <div slot="below-headline" style="background: #f0f0f0; padding: 8px;">
+          Custom <b>Below Headline</b> Slot
+        </div>
+        <div slot="features" style="background: #f0f0f0; padding: 8px;">
+          Custom <b>Features</b> Slot
+        </div>
+      </sesamy-paywall>
+    </div>
+  `
 };

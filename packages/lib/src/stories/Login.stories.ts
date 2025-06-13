@@ -5,26 +5,16 @@ import { Login } from '@sesamy/sesamy-components';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
 
 type LoginProps = {
-  buttonText?: string;
   onLogin?: (event: CustomEvent) => void;
-  lang?: string;
 };
 
 const meta: Meta<LoginProps> = {
   title: 'Components/Login',
   tags: ['autodocs', 'visual:check', 'story'],
   component: 'sesamy-login',
-  render: (args) => html`
-    <sesamy-login
-      .buttonText=${args.buttonText}
-      .outline=${ifDefined(args.lang)}
-      @login=${args.onLogin}
-    ></sesamy-login>
-  `,
+  render: (args) => html` <sesamy-login @login=${args.onLogin}></sesamy-login> `,
   argTypes: {
-    buttonText: { control: 'text' },
-    onLogin: { action: 'login' },
-    lang: { control: 'text' }
+    onLogin: { action: 'login' }
   }
 };
 
@@ -33,13 +23,14 @@ export default meta;
 type Story = StoryObj<LoginProps>;
 
 export const Default: Story = {
-  args: {
-    buttonText: 'Log In'
-  }
+  args: {}
 };
 
 export const CustomText: Story = {
-  args: {
-    buttonText: 'Sign In Now'
-  }
+  render: (args) => html`
+    <sesamy-login @login=${args.onLogin}>
+      <span slot="button-text">Sign In Now</span>
+    </sesamy-login>
+  `,
+  args: {}
 };
