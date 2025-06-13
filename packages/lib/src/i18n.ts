@@ -23,12 +23,11 @@ const languages: Languages = {
 
 export interface TranslationFunction {
   (key: Key): string;
-  lang?: SupportedLanguage;
 }
 
 export type SupportedLanguage = keyof typeof languages;
 
 export default function init(langAttribute: SupportedLanguage): TranslationFunction {
   const lang = languages[langAttribute] ? langAttribute : 'en';
-  return (key: Key, language?: SupportedLanguage) => languages[language || lang]?.[key] || key;
+  return (key: Key) => languages[lang]?.[key] || key;
 }
