@@ -39,13 +39,19 @@
     {api.log(`sesamy-paywall with template ${template}`)}
 
     {#if template === 'ARTICLE'}
-      <Renderer {api} {paywall} {host} {t} {...props} />
+      <Renderer {api} {paywall} {host} {t} {...props}>
+        <slot name="below-headline" slot="below-headline" />
+        <slot name="features" slot="features" />
+      </Renderer>
     {:else if template === 'BOXES'}
-      <Renderer horizontal {api} {paywall} {host} {t} {...props} />
+      <Renderer horizontal {api} {paywall} {host} {t} {...props}>
+        <slot name="below-headline" slot="below-headline" />
+        <slot name="features" slot="features" />
+      </Renderer>
     {:else if template === 'LOGIN'}
       <LoginRenderer {api} {t} {paywall} {...props}>
         <div slot="below-headline">
-          <slot name="below-headline" />
+          <slot name="below-headline" slot="below-headline" />
         </div>
       </LoginRenderer>
     {/if}

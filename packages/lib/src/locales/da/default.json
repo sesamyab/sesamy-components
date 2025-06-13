@@ -1,0 +1,23 @@
+{
+  "already_subscribing": "Abonnerer du allerede?",
+  "click_to_update": "Klik for at opdatere",
+  "continue": "Fortsæt",
+  "country": "Land",
+  "did_you_mean": "Mente du, at",
+  "email": "E-mail-adresse",
+  "first_name": "Fornavn",
+  "first_name_required": "Fornavn er påkrævet",
+  "invalid_email": "Ugyldig e-mailadresse",
+  "last_name": "Efternavn",
+  "last_name_required": "Efternavn er påkrævet",
+  "login": "Login",
+  "logo_of": "Logo for",
+  "logout": "Log ud",
+  "my_account": "Min konto",
+  "pay_now": "Betal nu",
+  "phone_number": "Telefonnummer",
+  "phone_number_required": "Telefonnummer er påkrævet",
+  "secure_payment": "Sikker SSL-krypteret betaling",
+  "something_went_wrong": "Noget gik galt",
+  "user_already_owns_item": "Du ejer allerede dette produkt"
+}
