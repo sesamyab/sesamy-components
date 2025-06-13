@@ -19,6 +19,7 @@
   import Accordion from '../Accordion.svelte';
   import { goToCheckout, type PaymentMethodType } from '../../utils/checkout';
   import PaymentMethodLogo from '../PaymentMethodLogo.svelte';
+  import { AppleIcon } from 'lucide-svelte';
 
   type Props = {
     api: SesamyAPI;
@@ -127,6 +128,13 @@
     validate();
     if (errors) return;
     if (!paymentMethod) return;
+
+    api.events.emit('sesamyPaywallCheckoutRedirect', {
+      checkoutId: checkout.id,
+      country,
+      paymentMethod
+    });
+
     loading = true;
 
     try {

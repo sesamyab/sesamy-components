@@ -2,6 +2,7 @@
   import '../../lib';
   import NavBar from './components/NavBar.svelte';
   import { init } from '@sesamy/sesamy-js';
+  import { onMount } from 'svelte';
 
   init({
     clientId: 'acme',
@@ -9,6 +10,22 @@
     api: {
       namespace: 'sesamy'
     }
+  });
+
+  onMount(() => {
+    // Listen for all custom events on the document
+    const handler = (event: Event) => {
+      console.log('Custom event:', event.type, event);
+    };
+
+    [
+      'sesamyPaywallAccessChecked',
+      'sesamyPaywallProductSelected',
+      'sesamyPaywallCheckoutRedirect'
+    ].forEach((eventName) => {
+      window.addEventListener(eventName, handler as EventListener, true);
+      console.log(`Listening for ${eventName} events`);
+    });
   });
 </script>
 
