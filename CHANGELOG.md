@@ -1,3 +1,20 @@
+# [2.15.0](https://github.com/sesamyab/sesamy-components/compare/v2.14.1...v2.15.0) (2025-06-13)
+
+
+### Bug Fixes
+
+* remove lang override in translation function ([3028562](https://github.com/sesamyab/sesamy-components/commit/3028562a9e3618345770b043a35df0fa45b2191f))
+* review comments ([981fa53](https://github.com/sesamyab/sesamy-components/commit/981fa53911dd246cda6d8c0740f363bd42b50bef))
+* select first country if geo country not allowed ([d634201](https://github.com/sesamyab/sesamy-components/commit/d6342019b07cd791eecf63ca9ce8596d3b043b5c))
+* send selected country to api ([525c92c](https://github.com/sesamyab/sesamy-components/commit/525c92ce3db0fcf9ab413981de9e59f75cef9134))
+* update snapshots ([32179a8](https://github.com/sesamyab/sesamy-components/commit/32179a8aac2e52088fbaecd45f1effcc5369c928))
+
+
+### Features
+
+* add geo-georestrictions for article paywall ([7422392](https://github.com/sesamyab/sesamy-components/commit/74223924846d225ce6f2a85bd50d08baf5b17c71))
+* update the slots for paywalls and features ([4f0091b](https://github.com/sesamyab/sesamy-components/commit/4f0091b411bec37abac0c95d655c1657db186c09))
+
 ## [2.14.1](https://github.com/sesamyab/sesamy-components/compare/v2.14.0...v2.14.1) (2025-05-05)
 
 

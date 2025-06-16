@@ -221,8 +221,12 @@
             </div>
           </div>
 
+          <slot name="below-headline" />
+
           {#if product && !horizontal}
-            <Features features={product.features} class="font-bold mb-2" />
+            <Features features={product.features} class="font-bold mb-2">
+              <slot name="features" slot="features" />
+            </Features>
           {/if}
 
           {#if checkout && !product?.preferBusiness}

@@ -9,12 +9,7 @@
   import LoginMenuItemRenderer from './components/LoginMenuItemRenderer.svelte';
   import AvatarRenderer from './components/AvatarRenderer.svelte';
 
-  let {
-    loading,
-    loggedIn,
-    userAvatar,
-    class: classes = ''
-  }: LoginProps & { class?: string } = $props();
+  let { loading, loggedIn, class: classes = '' }: LoginProps & { class?: string } = $props();
 
   let disabled = $state(false);
   let showPopupMenu = $state(false);
@@ -36,7 +31,6 @@
       loggedIn = await api.auth.isAuthenticated();
       if (loggedIn) {
         user = await api.auth.getUser();
-        userAvatar = user?.picture || '';
         accountLink = await api.generateLink({ target: 'account' });
       }
     } catch (error) {
@@ -75,7 +69,7 @@
           aria-expanded={showPopupMenu}
         >
           <slot name="avatar">
-            <AvatarRenderer src={userAvatar} {loading} size="sm" />
+            <AvatarRenderer src={user?.picture} {loading} size="sm" />
           </slot>
         </button>
         <div

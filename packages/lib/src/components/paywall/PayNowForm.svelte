@@ -19,17 +19,23 @@
   import Accordion from '../Accordion.svelte';
   import { goToCheckout, type PaymentMethodType } from '../../utils/checkout';
   import PaymentMethodLogo from '../PaymentMethodLogo.svelte';
-  import { AppleIcon } from 'lucide-svelte';
 
-  type Props = {
-    api: SesamyAPI;
-    t: TranslationFunction;
-    checkout: Checkout;
-  };
+  type Props = { api: SesamyAPI; t: TranslationFunction; checkout: Checkout };
 
   let { api, t, checkout }: Props = $props();
 
-  const countries = getCountriesOptions(checkout.language); // TODO: grab this from lang preferences (see Base.svelte)
+  const countries = getCountriesOptions(checkout.language).filter((country) => {
+    // Filter out countries that are not allowed or blocked by the items in the checkout
+    return checkout.items.every((item) => {
+      return (
+        !item.geoRestrictions ||
+        (item.geoRestrictions.type === 'ALLOW' &&
+          item.geoRestrictions.countries.includes(country.value)) ||
+        (item.geoRestrictions.type === 'BLOCK' &&
+          !item.geoRestrictions.countries.includes(country.value))
+      );
+    });
+  }); // TODO: grab this from lang preferences (see Base.svelte)
 
   let email = $state('');
   let firstName = $state('');
@@ -41,6 +47,12 @@
   let paymentMethod = $state<PaymentMethodType>();
   let emailSuggestion = $state('');
   let suggestionTimeout: any;
+
+  $effect(() => {
+    if (!countries.map((c) => c.value).includes(country)) {
+      country = countries[0]?.value; // Fallback to the first country if the geo country is not allowed
+    }
+  });
 
   $effect(() => {
     (async () => {
@@ -83,13 +95,7 @@
     }
 
     errors = tempErrors.length
-      ? tempErrors.reduce(
-          (acc, [key, value]) => ({
-            ...acc,
-            [key]: value
-          }),
-          {}
-        )
+      ? tempErrors.reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
       : undefined;
   };
 
@@ -99,10 +105,7 @@
     clearTimeout(suggestionTimeout);
 
     suggestionTimeout = setTimeout(() => {
-      emailSuggestion =
-        emailSpellChecker.run({
-          email
-        })?.full || '';
+      emailSuggestion = emailSpellChecker.run({ email })?.full || '';
     }, 400);
   };
 
@@ -129,6 +132,7 @@
           // Need to set CARD for Google Pay and Apple Pay
           method: isWallet ? 'CARD' : paymentMethod.method
         },
+        country,
         email
       });
 
@@ -151,12 +155,7 @@
     .reduce(
       (acc, { provider, methods }) => [
         ...acc,
-        ...(methods?.length
-          ? methods.map((method) => ({
-              provider,
-              method
-            }))
-          : [])
+        ...(methods?.length ? methods.map((method) => ({ provider, method })) : [])
       ],
       [] as PaymentMethodType[]
     );
