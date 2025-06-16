@@ -28,9 +28,7 @@
     horizontal?: boolean;
   } & PaywallProps;
 
-  type Product = PaywallSubscription & {
-    features: string[];
-  };
+  type Product = PaywallSubscription & { features: string[] };
 
   let { api, t, horizontal = false, host, paywall, ...userProps }: Props = $props();
 
@@ -66,7 +64,16 @@
       ? userProps.pass.split(';')
       : api.content.get(host)?.pass?.split(';');
 
-    return api.entitlements.hasAccess(articleUrl || '', passes);
+    const hasAccess = await api.entitlements.hasAccess(articleUrl || '', passes);
+
+    api.events.emit('sesamyPaywallAccessChecked', {
+      hasAccess,
+      paywallId: paywall.id,
+      articleUrl,
+      passes
+    });
+
+    return hasAccess;
   };
 
   const createCheckout = async (e: SubmitEvent) => {
@@ -82,13 +89,8 @@
     }
 
     const item = product?.url
-      ? {
-          url: product.url
-        }
-      : {
-          sku: product.sku,
-          purchaseOptionId: product.poId
-        };
+      ? { url: product.url }
+      : { sku: product.sku, purchaseOptionId: product.poId };
 
     try {
       checkout = await api.checkouts.create({
@@ -109,6 +111,12 @@
         }
       });
 
+      api.events.emit('sesamyPaywallProductSelected', {
+        product,
+        checkoutId: checkout.id,
+        paywallId: paywall.id
+      });
+
       if (product.preferBusiness) {
         goToCheckout(checkout, undefined, true);
       }
@@ -123,10 +131,7 @@
   const selectProduct = (option: PaywallSubscription) => {
     error = '';
     // TODO: decide if we should remove "features" from shallow paywall. And if so, if we should add it to singlePurchase.
-    product = {
-      ...option,
-      features: option?.features || features
-    };
+    product = { ...option, features: option?.features || features };
   };
 
   const hasSubscriptions = subscriptions.length > 0;
