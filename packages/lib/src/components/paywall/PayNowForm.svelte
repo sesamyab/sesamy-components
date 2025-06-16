@@ -112,8 +112,9 @@
   const onSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
     validate();
-    if (errors) return;
-    if (!paymentMethod) return;
+    if (errors || !paymentMethod) {
+      return;
+    }
 
     api.events.emit('sesamyPaywallCheckoutRedirect', {
       checkoutId: checkout.id,

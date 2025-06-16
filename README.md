@@ -183,18 +183,15 @@ A web component that displays a paywall for content, loading paywall settings fr
 - `utm-source`, `utm-medium`, `utm-campaign`, `utm-term`, `utm-content`: UTM parameters for tracking
 - `pass`: Pass ID for access
 
-<<<<<<< HEAD
 **Events:**
 
 - `sesamyPaywallAccessChecked`: Emitted after access check, with `{ hasAccess, paywallId, articleUrl, passes }` in `detail`.
 - `sesamyPaywallProductSelected`: Emitted when a product/subscription is selected and the continue button is pressed, with `{ product, checkoutId, paywallId }` in `detail`.
-- `sesamyPaywallCheckoutRedirect`: Emitted before redirecting to checkout, with `{ checkout, paywallId, product }` in `detail`.
-=======
-**Slots:**
+- `sesamyPaywallCheckoutRedirect`: Emitted before redirecting to checkout, with `{ checkout, paywallId, paymentMethod }` in `detail`.
+  **Slots:**
 
 - `below-headline`: Content rendered below the paywall headline (e.g., additional info, custom elements)
 - `features`: Content rendered in the features section of the paywall (e.g., feature list, benefits)
->>>>>>> main
 
 **Basic Usage Example:**
 
@@ -206,10 +203,9 @@ A web component that displays a paywall for content, loading paywall settings fr
   price="99"
   currency="USD"
 >
-<<<<<<< HEAD
-=======
+  <<<<<<< HEAD =======
   <div slot="features">✔️ Unlimited access<br />✔️ Cancel anytime</div>
->>>>>>> main
+  >>>>>>> main
 </sesamy-paywall>
 
 <!-- Login paywall with below-headline slot -->
