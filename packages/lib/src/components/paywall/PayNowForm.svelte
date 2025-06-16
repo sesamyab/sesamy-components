@@ -20,11 +20,7 @@
   import { goToCheckout, type PaymentMethodType } from '../../utils/checkout';
   import PaymentMethodLogo from '../PaymentMethodLogo.svelte';
 
-  type Props = {
-    api: SesamyAPI;
-    t: TranslationFunction;
-    checkout: Checkout;
-  };
+  type Props = { api: SesamyAPI; t: TranslationFunction; checkout: Checkout };
 
   let { api, t, checkout }: Props = $props();
 
@@ -99,13 +95,7 @@
     }
 
     errors = tempErrors.length
-      ? tempErrors.reduce(
-          (acc, [key, value]) => ({
-            ...acc,
-            [key]: value
-          }),
-          {}
-        )
+      ? tempErrors.reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
       : undefined;
   };
 
@@ -115,18 +105,23 @@
     clearTimeout(suggestionTimeout);
 
     suggestionTimeout = setTimeout(() => {
-      emailSuggestion =
-        emailSpellChecker.run({
-          email
-        })?.full || '';
+      emailSuggestion = emailSpellChecker.run({ email })?.full || '';
     }, 400);
   };
 
   const onSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
     validate();
-    if (errors) return;
-    if (!paymentMethod) return;
+    if (errors || !paymentMethod) {
+      return;
+    }
+
+    api.events.emit('sesamyPaywallCheckoutRedirect', {
+      checkoutId: checkout.id,
+      country,
+      paymentMethod
+    });
+
     loading = true;
 
     try {
@@ -161,12 +156,7 @@
     .reduce(
       (acc, { provider, methods }) => [
         ...acc,
-        ...(methods?.length
-          ? methods.map((method) => ({
-              provider,
-              method
-            }))
-          : [])
+        ...(methods?.length ? methods.map((method) => ({ provider, method })) : [])
       ],
       [] as PaymentMethodType[]
     );
