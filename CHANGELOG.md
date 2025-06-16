@@ -1,3 +1,16 @@
+# [2.16.0](https://github.com/sesamyab/sesamy-components/compare/v2.15.0...v2.16.0) (2025-06-16)
+
+
+### Bug Fixes
+
+* review comments ([a9c2120](https://github.com/sesamyab/sesamy-components/commit/a9c2120f0805afacdea69f66154432deb8755a62))
+* update sesamy-js ([a9a90f2](https://github.com/sesamyab/sesamy-components/commit/a9a90f2f326a9790d0b9f407fb4d8b272554c281))
+
+
+### Features
+
+* emit events in paywall component ([579e565](https://github.com/sesamyab/sesamy-components/commit/579e56580d8d5da08b339b9969ec79beed471ea1))
+
 # [2.15.0](https://github.com/sesamyab/sesamy-components/compare/v2.14.1...v2.15.0) (2025-06-13)
 
 
