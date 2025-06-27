@@ -19,7 +19,7 @@
   const login = async (api: SesamyAPI) => {
     disabled = true;
     try {
-      await api.auth.loginWithRedirect();
+      await api.auth.login();
     } catch (error) {
       disabled = false;
       console.error('Login failed:', error);
