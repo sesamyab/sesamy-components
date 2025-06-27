@@ -1,3 +1,10 @@
+## [2.16.1](https://github.com/sesamyab/sesamy-components/compare/v2.16.0...v2.16.1) (2025-06-27)
+
+
+### Bug Fixes
+
+* use popup if incognito ([2d839ff](https://github.com/sesamyab/sesamy-components/commit/2d839ff93a009d4c18bf08c44d3e6e29bb689e5c))
+
 # [2.16.0](https://github.com/sesamyab/sesamy-components/compare/v2.15.0...v2.16.0) (2025-06-16)
 
 
