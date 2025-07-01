@@ -117,6 +117,8 @@
         paywallId: paywall.id
       });
 
+      loading = false;
+
       if (product.preferBusiness) {
         goToCheckout(checkout, undefined, true);
       }
@@ -132,6 +134,13 @@
     error = '';
     // TODO: decide if we should remove "features" from shallow paywall. And if so, if we should add it to singlePurchase.
     product = { ...option, features: option?.features || features };
+  };
+
+  const onResetCheckout = () => {
+    api.events.emit('sesamyPaywallResetCheckout', {
+      paywallId: paywall.id
+    });
+    checkout = undefined;
   };
 
   const hasSubscriptions = subscriptions.length > 0;
@@ -219,7 +228,7 @@
           {/if}
 
           {#if checkout && !product?.preferBusiness}
-            <PayNowForm {api} {checkout} {t} />
+            <PayNowForm {api} {checkout} {t} {onResetCheckout} />
           {:else}
             <form class="contents" onsubmit={createCheckout}>
               {#if subscriptions.length}

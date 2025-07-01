@@ -14,6 +14,7 @@
     part,
     onclick,
     href,
+    type = 'button',
     class: classes
   }: ButtonProps & { loading?: boolean; disabled?: boolean; class?: string } = $props();
 </script>
@@ -36,6 +37,7 @@
     {onclick}
     {part}
     {disabled}
+    {type}
   >
     {#if loading}
       <span
