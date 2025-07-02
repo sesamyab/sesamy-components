@@ -64,6 +64,8 @@
       url,
       discountPrice
     } = subscription}
+    {@const hasPrice = typeof price === 'number'}
+    {@const hasDiscountPrice = typeof discountPrice === 'number'}
 
     {#if horizontal}
       <Column
@@ -79,9 +81,9 @@
         <Column class="p-4 flex-1 gap-2 w-full !justify-between shadow-md" left up>
           <Column class="@xl:p-1" left>
             <div class="text-base @xl:text-lg font-bold leading-tight">{title}</div>
-            {#if typeof price === 'number'}
+            {#if hasPrice}
               <Column class="mb-0 @xl:mb-4" left>
-                {#if discountPrice}
+                {#if hasDiscountPrice}
                   <div class="leading-none">
                     <span class="font-bold text-2xl @xl:text-4xl whitespace-nowrap">
                       {discountPrice}
@@ -97,7 +99,7 @@
                   <span
                     class={twMerge(
                       'font-bold text-2xl @xl:text-4xl',
-                      discountPrice && 'text-xl @xl:text-2xl text-gray-400'
+                      hasDiscountPrice && 'text-xl @xl:text-2xl text-gray-400'
                     )}
                   >
                     {price}
@@ -106,7 +108,7 @@
                   <span
                     class={twMerge(
                       'text-xl @xl:text-2xl whitespace-nowrap',
-                      discountPrice && 'text-base @xl:text-lg text-gray-400'
+                      hasDiscountPrice && 'text-base @xl:text-lg text-gray-400'
                     )}
                   >
                     {periodText && ` / ${periodText}`}
@@ -114,7 +116,7 @@
                   <div
                     class={twMerge(
                       'hidden absolute top-1/2 left-0 right-0 h-px bg-gray-400',
-                      discountPrice && 'block'
+                      hasDiscountPrice && 'block'
                     )}
                   ></div>
                 </div>
@@ -167,7 +169,7 @@
           {/if}
         </Column>
         <div class="column-left @md:column-right">
-          {#if discountPrice}
+          {#if hasDiscountPrice}
             <div class="text-base font-bold leading-none">
               {discountPrice}
               {currency}
@@ -176,11 +178,11 @@
               {/if}
             </div>
           {/if}
-          {#if price}
+          {#if hasPrice}
             <div
               class={twMerge(
                 'text-base font-bold leading-none',
-                discountPrice && 'line-through text-gray-400 text-sm'
+                hasDiscountPrice && 'line-through text-gray-400 text-sm'
               )}
             >
               {price}
