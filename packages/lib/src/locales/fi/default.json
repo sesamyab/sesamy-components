@@ -7,6 +7,7 @@
   "email": "Sähköpostiosoite",
   "first_name": "Etunimi",
   "first_name_required": "Etunimi vaaditaan",
+  "go_back": "Palaa takaisin",
   "invalid_email": "Virheellinen sähköpostiosoite",
   "last_name": "Sukunimi",
   "last_name_required": "Sukunimi vaaditaan",

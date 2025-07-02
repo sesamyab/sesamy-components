@@ -7,6 +7,7 @@
   "email": "E-postadresse",
   "first_name": "Fornavn",
   "first_name_required": "Fornavn er påkrevd",
+  "go_back": "Gå tilbake",
   "invalid_email": "Ugyldig e-postadresse",
   "last_name": "Etternavn",
   "last_name_required": "Etternavn er påkrevd",

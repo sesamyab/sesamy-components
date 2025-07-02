@@ -7,6 +7,7 @@
   "email": "Indirizzo e-mail",
   "first_name": "Nome",
   "first_name_required": "Il nome è obbligatorio",
+  "go_back": "Torna indietro",
   "invalid_email": "Indirizzo e-mail non valido",
   "last_name": "Cognome",
   "last_name_required": "Il cognome è obbligatorio",

@@ -20,9 +20,14 @@
   import { goToCheckout, type PaymentMethodType } from '../../utils/checkout';
   import PaymentMethodLogo from '../PaymentMethodLogo.svelte';
 
-  type Props = { api: SesamyAPI; t: TranslationFunction; checkout: Checkout };
+  type Props = {
+    api: SesamyAPI;
+    t: TranslationFunction;
+    checkout: Checkout;
+    onResetCheckout: () => void;
+  };
 
-  let { api, t, checkout }: Props = $props();
+  let { api, t, checkout, onResetCheckout }: Props = $props();
 
   const countries = getCountriesOptions(checkout.language).filter((country) => {
     // Filter out countries that are not allowed or blocked by the items in the checkout
@@ -138,6 +143,7 @@
       });
 
       goToCheckout(checkout, paymentMethod);
+      loading = false;
       return;
     } catch (err: any) {
       if (err?.message?.includes('User already owns item')) {
@@ -268,6 +274,14 @@
   <Button {loading} disabled={loading} class="mt-2 w-full shadow-md" type="submit">
     {t('pay_now')}
   </Button>
+  <button
+    type="button"
+    onclick={onResetCheckout}
+    class="text-sm font-bold mx-auto hover:underline p-1 row gap-1"
+  >
+    <Icon name="chevron-left" class="text-[8px]" />
+    <span>{t('go_back')}</span>
+  </button>
 </form>
 
 {#if errors}
