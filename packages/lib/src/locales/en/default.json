@@ -7,6 +7,7 @@
   "email": "Email address",
   "first_name": "First name",
   "first_name_required": "First name is required",
+  "go_back": "Go back",
   "invalid_email": "Invalid email address",
   "last_name": "Last name",
   "last_name_required": "Last name is required",

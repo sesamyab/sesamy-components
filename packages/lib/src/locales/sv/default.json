@@ -7,6 +7,7 @@
   "email": "E-postadress",
   "first_name": "Förnamn",
   "first_name_required": "Förnamn är obligatoriskt",
+  "go_back": "Gå tillbaka",
   "invalid_email": "Ogiltig e-postadress",
   "last_name": "Efternamn",
   "last_name_required": "Efternamn är obligatoriskt",

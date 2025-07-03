@@ -15,15 +15,15 @@
     articleUrl: string;
   } & PaywallProps;
 
-  const props: Props = $props();
-  let {
+  const {
     singlePurchase,
     selectProduct,
     hasSubscriptions,
     articleUrl,
     singlePurchasePrice,
-    currency
-  } = props;
+    currency,
+    t
+  }: Props = $props();
   let { title, description } = singlePurchase;
 
   const completeAndSelect = () => {
