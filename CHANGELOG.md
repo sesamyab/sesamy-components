@@ -1,3 +1,15 @@
+# [2.17.0](https://github.com/sesamyab/sesamy-components/compare/v2.16.1...v2.17.0) (2025-07-03)
+
+
+### Bug Fixes
+
+* support zero prices ([693506b](https://github.com/sesamyab/sesamy-components/commit/693506b768b38f2ea0f881d40b9b99b64d18974d))
+
+
+### Features
+
+* paywall step2 back button ([5fead45](https://github.com/sesamyab/sesamy-components/commit/5fead45c6026ac760b75212a52ccdfc1ec2f1233))
+
 ## [2.16.1](https://github.com/sesamyab/sesamy-components/compare/v2.16.0...v2.16.1) (2025-06-27)
 
 
