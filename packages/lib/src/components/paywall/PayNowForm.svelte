@@ -139,7 +139,10 @@
           method: isWallet ? 'CARD' : paymentMethod.method
         },
         country,
-        email
+        email,
+        phoneNumber: phoneNumber || undefined,
+        givenName: firstName || undefined,
+        familyName: lastName || undefined
       });
 
       goToCheckout(checkout, paymentMethod);
