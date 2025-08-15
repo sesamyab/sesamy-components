@@ -1,3 +1,10 @@
+## [2.17.1](https://github.com/sesamyab/sesamy-components/compare/v2.17.0...v2.17.1) (2025-08-15)
+
+
+### Bug Fixes
+
+* actually send name and phonenr to checkout ([fab8c48](https://github.com/sesamyab/sesamy-components/commit/fab8c483afcaf262d17c88e5f24956e6207d1839))
+
 # [2.17.0](https://github.com/sesamyab/sesamy-components/compare/v2.16.1...v2.17.0) (2025-07-03)
 
 
