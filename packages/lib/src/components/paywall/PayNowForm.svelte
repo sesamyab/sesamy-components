@@ -19,6 +19,8 @@
   import Accordion from '../Accordion.svelte';
   import { goToCheckout, type PaymentMethodType } from '../../utils/checkout';
   import PaymentMethodLogo from '../PaymentMethodLogo.svelte';
+  import { twMerge } from 'tailwind-merge';
+  import BirthDateInput from '../BirthDateInput.svelte';
 
   type Props = {
     api: SesamyAPI;
@@ -47,11 +49,16 @@
   let lastName = $state('');
   let phoneNumber = $state('');
   let country = $state(checkout.country || 'SE'); // Must provide a fallback value since `Checkout.country` is optional
+  let birthYear = $state('');
+  let birthMonth = $state('');
+  let birthDay = $state('');
   let loading = $state(false);
   let errors = $state<{ [key: string]: any }>();
   let paymentMethod = $state<PaymentMethodType>();
   let emailSuggestion = $state('');
   let suggestionTimeout: any;
+  let gotReferral = $state(false);
+  let referralEmail = $state('');
 
   $effect(() => {
     if (!countries.map((c) => c.value).includes(country)) {
@@ -99,6 +106,30 @@
       tempErrors.push(['lastName', 'last_name_required']);
     }
 
+    if (gotReferral && !isValidEmail(referralEmail)) {
+      tempErrors.push(['referralEmail', 'referral_email_required']);
+    }
+
+    // Validate date of birth
+    const currentYear = new Date().getFullYear();
+    const year = parseInt(birthYear);
+    const month = parseInt(birthMonth);
+    const day = parseInt(birthDay);
+    if (birthYear && (isNaN(year) || year < 1900 || year > currentYear)) {
+      tempErrors.push(['birthYear', 'invalid_birth_year']);
+    }
+    if (birthMonth && (isNaN(month) || month < 1 || month > 12)) {
+      tempErrors.push(['birthMonth', 'invalid_birth_month']);
+    }
+    if (birthDay && (isNaN(day) || day < 1 || day > 31)) {
+      tempErrors.push(['birthDay', 'invalid_birth_day']);
+    }
+    if (checkout.fieldSettings?.birthdate?.enabled && checkout.fieldSettings?.birthdate?.required) {
+      if (!birthYear || !birthMonth || !birthDay) {
+        tempErrors.push(['birthDate', 'birthdate_required']);
+      }
+    }
+
     errors = tempErrors.length
       ? tempErrors.reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
       : undefined;
@@ -132,6 +163,11 @@
     try {
       const isWallet = ['GOOGLE-PAY', 'APPLE-PAY'].includes(paymentMethod.method);
 
+      const birthDate =
+        birthYear && birthMonth && birthDay
+          ? `${birthYear}-${birthMonth.padStart(2, '0')}-${birthDay.padStart(2, '0')}`
+          : undefined;
+
       await api.checkouts.update(checkout.id, {
         paymentData: {
           provider: paymentMethod.provider,
@@ -142,7 +178,9 @@
         email,
         phoneNumber: phoneNumber || undefined,
         givenName: firstName || undefined,
-        familyName: lastName || undefined
+        familyName: lastName || undefined,
+        birthDate,
+        referralEmail: gotReferral ? referralEmail : undefined
       });
 
       goToCheckout(checkout, paymentMethod);
@@ -177,43 +215,43 @@
 </script>
 
 <form class="contents" onsubmit={onSubmit}>
-  <InputGroup>
-    <Input
-      onkeyup={provideSuggestion}
-      bind:value={email}
-      name="email"
-      compact
-      placeholder={t('email')}
-      hasError={errors?.email}
-    />
-    <Accordion isOpen={!!emailSuggestion}>
-      <Row
-        onclick={() => {
-          email = emailSuggestion;
-          emailSuggestion = '';
-        }}
-        class="bg-primary/10 gap-4 px-2 py-3 !justify-between active:bg-primary/10 text-sm border-x border-gray-200 text-gray-500 hover:cursor-pointer hover:bg-primary/15 transition-colors duration-75"
-      >
-        <Row class="gap-2">
-          <Icon class="text-primary text-xl" name="info" />
-          <div>
-            {t('did_you_mean')}
-            <span class="text-primary">{emailSuggestion}</span>?
+  <Column up left class="gap-2">
+    <InputGroup>
+      <Input
+        onkeyup={provideSuggestion}
+        bind:value={email}
+        name="email"
+        compact
+        placeholder={t('email')}
+        hasError={errors?.email}
+      />
+      <Accordion isOpen={!!emailSuggestion}>
+        <Row
+          onclick={() => {
+            email = emailSuggestion;
+            emailSuggestion = '';
+          }}
+          class="bg-primary/10 gap-4 px-2 py-3 !justify-between active:bg-primary/10 text-sm border-x border-gray-200 text-gray-500 hover:cursor-pointer hover:bg-primary/15 transition-colors duration-75"
+        >
+          <Row class="gap-2">
+            <Icon class="text-primary text-xl" name="info" />
+            <div>
+              {t('did_you_mean')}
+              <span class="text-primary">{emailSuggestion}</span>?
+            </div>
+          </Row>
+          <div class="text-center whitespace-nowrap">
+            {t('click_to_update')}
           </div>
         </Row>
-        <div class="text-center whitespace-nowrap">
-          {t('click_to_update')}
-        </div>
-      </Row>
-    </Accordion>
-    <Select
-      options={countries}
-      bind:value={country}
-      name="country"
-      compact
-      placeholder={t('country')}
-    />
-    {#if checkout?.fieldSettings?.phone?.enabled}
+      </Accordion>
+      <Select
+        options={countries}
+        bind:value={country}
+        name="country"
+        compact
+        placeholder={t('country')}
+      />
       <Input
         onkeyup={() => (errors = undefined)}
         bind:value={phoneNumber}
@@ -222,8 +260,6 @@
         placeholder={t('phone_number')}
         hasError={errors?.phoneNumber}
       />
-    {/if}
-    {#if checkout?.fieldSettings?.name?.enabled}
       <Input
         onkeyup={() => (errors = undefined)}
         bind:value={firstName}
@@ -240,8 +276,53 @@
         placeholder={t('last_name')}
         hasError={errors?.lastName}
       />
-    {/if}
-  </InputGroup>
+    </InputGroup>
+
+    <BirthDateInput
+      {t}
+      bind:year={birthYear}
+      bind:month={birthMonth}
+      bind:day={birthDay}
+      hasError={errors?.birthYear || errors?.birthMonth || errors?.birthDay || errors?.birthDate}
+      onYearChange={() => (errors = undefined)}
+      onMonthChange={() => (errors = undefined)}
+      onDayChange={() => (errors = undefined)}
+    />
+
+    <div class="w-full">
+      <div
+        class={twMerge(
+          'bg-white rounded-md border border-gray-200',
+          gotReferral && 'rounded-b-none'
+        )}
+      >
+        <Selection
+          id="got-referred"
+          name="got-referred"
+          type="checkbox"
+          checked={gotReferral}
+          onchange={(e: Event) => {
+            const target = e.target as HTMLInputElement;
+            gotReferral = target.checked;
+          }}
+        >
+          <span class="text-sm">{t('got_referred')}</span>
+        </Selection>
+      </div>
+
+      <Accordion isOpen={gotReferral}>
+        <Input
+          bind:value={referralEmail}
+          name="referral-email"
+          compact
+          placeholder={t('referral_email')}
+          class="rounded-t-none -mt-px"
+          hasError={errors?.referralEmail}
+          onkeyup={() => (errors = undefined)}
+        />
+      </Accordion>
+    </div>
+  </Column>
 
   <div class="grid grid-cols-2 w-full gap-2 auto-rows-fr">
     {#each paymentMethods as paymentMethod, i (`${paymentMethod.provider}-${paymentMethod.method}`)}
