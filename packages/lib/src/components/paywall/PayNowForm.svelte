@@ -215,7 +215,7 @@
 </script>
 
 <form class="contents" onsubmit={onSubmit}>
-  <Column up left class="gap-2">
+  <Column up left class="gap-2 w-full">
     <InputGroup>
       <Input
         onkeyup={provideSuggestion}
@@ -252,76 +252,84 @@
         compact
         placeholder={t('country')}
       />
-      <Input
-        onkeyup={() => (errors = undefined)}
-        bind:value={phoneNumber}
-        name="tel"
-        compact
-        placeholder={t('phone_number')}
-        hasError={errors?.phoneNumber}
-      />
-      <Input
-        onkeyup={() => (errors = undefined)}
-        bind:value={firstName}
-        name="first-name"
-        compact
-        placeholder={t('first_name')}
-        hasError={errors?.firstName}
-      />
-      <Input
-        onkeyup={() => (errors = undefined)}
-        bind:value={lastName}
-        name="last-name"
-        compact
-        placeholder={t('last_name')}
-        hasError={errors?.lastName}
-      />
+      {#if checkout?.fieldSettings?.phone?.enabled}
+        <Input
+          onkeyup={() => (errors = undefined)}
+          bind:value={phoneNumber}
+          name="tel"
+          compact
+          placeholder={t('phone_number')}
+          hasError={errors?.phoneNumber}
+        />
+      {/if}
+      {#if checkout?.fieldSettings?.name?.enabled}
+        <Input
+          onkeyup={() => (errors = undefined)}
+          bind:value={firstName}
+          name="first-name"
+          compact
+          placeholder={t('first_name')}
+          hasError={errors?.firstName}
+        />
+        <Input
+          onkeyup={() => (errors = undefined)}
+          bind:value={lastName}
+          name="last-name"
+          compact
+          placeholder={t('last_name')}
+          hasError={errors?.lastName}
+        />
+      {/if}
     </InputGroup>
 
-    <BirthDateInput
-      {t}
-      bind:year={birthYear}
-      bind:month={birthMonth}
-      bind:day={birthDay}
-      hasError={errors?.birthYear || errors?.birthMonth || errors?.birthDay || errors?.birthDate}
-      onYearChange={() => (errors = undefined)}
-      onMonthChange={() => (errors = undefined)}
-      onDayChange={() => (errors = undefined)}
-    />
+    {#if checkout?.fieldSettings?.birthdate?.enabled}
+      <BirthDateInput
+        {t}
+        bind:year={birthYear}
+        bind:month={birthMonth}
+        bind:day={birthDay}
+        hasError={errors?.birthYear || errors?.birthMonth || errors?.birthDay || errors?.birthDate}
+        onYearChange={() => (errors = undefined)}
+        onMonthChange={() => (errors = undefined)}
+        onDayChange={() => (errors = undefined)}
+      />
+    {/if}
 
-    <div class="w-full">
-      <div
-        class={twMerge(
-          'bg-white rounded-md border border-gray-200',
-          gotReferral && 'rounded-b-none'
-        )}
-      >
-        <Selection
-          id="got-referred"
-          name="got-referred"
-          type="checkbox"
-          checked={gotReferral}
-          onchange={(e: Event) => {
-            const target = e.target as HTMLInputElement;
-            gotReferral = target.checked;
-          }}
+    {#if checkout?.fieldSettings?.referral?.enabled}
+      <div class="w-full">
+        <div
+          class={twMerge(
+            'bg-white rounded-md border border-gray-200',
+            gotReferral && 'rounded-b-none'
+          )}
         >
-          <span class="text-sm">{t('got_referred')}</span>
-        </Selection>
-      </div>
+          <Selection
+            id="got-referred"
+            name="got-referred"
+            type="checkbox"
+            checked={gotReferral}
+            onchange={(e: Event) => {
+              const target = e.target as HTMLInputElement;
+              gotReferral = target.checked;
+            }}
+          >
+            <span class="text-sm">{t('got_referred')}</span>
+          </Selection>
+        </div>
 
-      <Accordion isOpen={gotReferral}>
-        <Input
-          bind:value={referralEmail}
-          name="referral-email"
-          compact
-          placeholder={t('referral_email')}
-          class="rounded-t-none -mt-px"
-          hasError={errors?.referralEmail}
-          onkeyup={() => (errors = undefined)}
-        />
-      </Accordion>
-    </div>
+        <Accordion isOpen={gotReferral}>
+          <Input
+            bind:value={referralEmail}
+            name="referral-email"
+            compact
+            placeholder={t('referral_email')}
+            class="rounded-t-none -mt-px"
+            hasError={errors?.referralEmail}
+            onkeyup={() => (errors = undefined)}
+          />
+        </Accordion>
+      </div>
+    {/if}
   </Column>
 
   <div class="grid grid-cols-2 w-full gap-2 auto-rows-fr">
