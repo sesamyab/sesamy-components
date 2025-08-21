@@ -1,3 +1,10 @@
+## [2.18.1](https://github.com/sesamyab/sesamy-components/compare/v2.18.0...v2.18.1) (2025-08-21)
+
+
+### Bug Fixes
+
+* add fieldsettings check ([9fbe586](https://github.com/sesamyab/sesamy-components/commit/9fbe5869f6160933a0ab9629663efd5ea7570be9))
+
 # [2.18.0](https://github.com/sesamyab/sesamy-components/compare/v2.17.1...v2.18.0) (2025-08-21)
 
 
