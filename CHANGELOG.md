@@ -1,3 +1,10 @@
+# [2.18.0](https://github.com/sesamyab/sesamy-components/compare/v2.17.1...v2.18.0) (2025-08-21)
+
+
+### Features
+
+* add birthdate & referralEmail to paywall ([40a7310](https://github.com/sesamyab/sesamy-components/commit/40a7310836577f4d0746a837c14b33de42604c97))
+
 ## [2.17.1](https://github.com/sesamyab/sesamy-components/compare/v2.17.0...v2.17.1) (2025-08-15)
 
 
