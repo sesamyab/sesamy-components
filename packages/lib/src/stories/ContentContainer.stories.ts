@@ -1,4 +1,3 @@
-import '@sesamy/sesamy-components';
 import { html } from 'lit-html';
 import type { Meta, StoryObj } from '@storybook/web-components';
 import type { ContentContainerProps } from '../types';
