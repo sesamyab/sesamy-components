@@ -134,7 +134,12 @@
     error = '';
     product = {
       ...option,
-      features: option.features && option.features.length > 0 ? option.features : features
+      features:
+        Array.isArray(option.features) && option.features.length > 0
+          ? option.features
+          : Array.isArray(features)
+            ? features
+            : []
     };
   };
 
