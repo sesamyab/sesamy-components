@@ -1,3 +1,12 @@
+## [2.18.2](https://github.com/sesamyab/sesamy-components/compare/v2.18.1...v2.18.2) (2025-08-28)
+
+
+### Bug Fixes
+
+* centralize component registration ([2ae2cad](https://github.com/sesamyab/sesamy-components/commit/2ae2cadd223b37f5fa9f1d9420045f66c2cbec09))
+* slots and features handling in paywall ([162844d](https://github.com/sesamyab/sesamy-components/commit/162844d35d8bb79a0812b9b878fd047cc1493f3c))
+* temp exclude stripe_klarna payment method ([105c6ea](https://github.com/sesamyab/sesamy-components/commit/105c6eadf6464923b52159bfd1fdd649d7b88226))
+
 ## [2.18.1](https://github.com/sesamyab/sesamy-components/compare/v2.18.0...v2.18.1) (2025-08-21)
 
 
