@@ -11,15 +11,13 @@
   let { features, class: classes }: Props = $props();
 </script>
 
-<slot name="features">
-  <ul class={twMerge('space-y-0.5 @md:space-y-1.5 text-sm @md:text-base', classes)}>
-    {#each features as feature}
-      <li class="row-up-left gap-2" transition:slide>
-        <Icon class="text-xs @md:text-sm text-primary mt-0.5 @md:mt-1" name="checkmark" />
-        <div class={twMerge('flex-1 leading-snug')}>
-          {feature}
-        </div>
-      </li>
-    {/each}
-  </ul>
-</slot>
+<ul class={twMerge('space-y-0.5 @md:space-y-1.5 text-sm @md:text-base', classes)}>
+  {#each features as feature}
+    <li class="row-up-left gap-2" transition:slide>
+      <Icon class="text-xs @md:text-sm text-primary mt-0.5 @md:mt-1" name="checkmark" />
+      <div class={twMerge('flex-1 leading-snug')}>
+        {feature}
+      </div>
+    </li>
+  {/each}
+</ul>

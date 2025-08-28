@@ -132,8 +132,15 @@
 
   const selectProduct = (option: PaywallSubscription) => {
     error = '';
-    // TODO: decide if we should remove "features" from shallow paywall. And if so, if we should add it to singlePurchase.
-    product = { ...option, features: option?.features || features };
+    product = {
+      ...option,
+      features:
+        Array.isArray(option.features) && option.features.length > 0
+          ? option.features
+          : Array.isArray(features)
+            ? features
+            : []
+    };
   };
 
   const onResetCheckout = () => {
@@ -219,12 +226,12 @@
             </div>
           </div>
 
-          <slot name="below-headline" />
+          <svelte:element this={'slot'} name="below-headline" />
 
           {#if product && !horizontal}
-            <Features features={product.features} class="font-bold mb-2">
-              <slot name="features" slot="features" />
-            </Features>
+            <svelte:element this={'slot'} name="features">
+              <Features features={product.features} class="font-bold mb-2" />
+            </svelte:element>
           {/if}
 
           {#if checkout && !product?.preferBusiness}

@@ -105,7 +105,7 @@
                 <div class="w-full text-2xl @md:text-3xl leading-tight font-bold">
                   {headline}
                 </div>
-                <slot name="below-headline" />
+                <svelte:element this={'slot'} name="below-headline" />
               </Column>
             </Column>
 

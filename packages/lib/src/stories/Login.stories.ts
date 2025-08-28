@@ -1,8 +1,5 @@
-// File: packages/lib/src/stories/Login.stories.ts
 import { html } from 'lit-html';
 import type { Meta, StoryObj } from '@storybook/web-components';
-import { Login } from '@sesamy/sesamy-components';
-import { ifDefined } from 'lit-html/directives/if-defined.js';
 
 type LoginProps = {
   onLogin?: (event: CustomEvent) => void;

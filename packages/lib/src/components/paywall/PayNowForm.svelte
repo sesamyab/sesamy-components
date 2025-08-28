@@ -206,7 +206,8 @@
         ...(methods?.length ? methods.map((method) => ({ provider, method })) : [])
       ],
       [] as PaymentMethodType[]
-    );
+    )
+    .filter(({ method }) => method !== 'STRIPE_KLARNA'); // Temporarily exclude STRIPE_KLARNA
 
   isSupportingGooglePay() && paymentMethods.push({ provider: 'STRIPE', method: 'GOOGLE-PAY' });
   isSupportingApplePay() && paymentMethods.push({ provider: 'STRIPE', method: 'APPLE-PAY' });
