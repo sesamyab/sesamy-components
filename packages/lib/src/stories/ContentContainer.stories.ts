@@ -63,8 +63,8 @@ export const AuthenticatedUsers: Story = {
     html` <div>
       <sesamy-login></sesamy-login>
       <sesamy-content-container access-level="logged-in">
-        <div slot="preview">This is visisble for unauthenticated users</div>
-        <div slot="content">This is visisble for authenticated users</div>
+        <div slot="preview">This is visible for unauthenticated users</div>
+        <div slot="content">This is visible for authenticated users</div>
       </sesamy-content-container>
     </div>`
 };
@@ -79,7 +79,7 @@ export const PublicContent: Story = {
       <sesamy-login></sesamy-login>
       <sesamy-content-container access-level="public">
         <div slot="preview">This is should not be visible</div>
-        <div slot="content">This is visisble all users</div>
+        <div slot="content">This is visible all users</div>
       </sesamy-content-container>
     </div>`
 };

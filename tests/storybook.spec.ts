@@ -16,7 +16,6 @@ const visualStories = filterStories(Object.values(manifest.entries));
 visualStories.forEach((story) => {
   test(story.id, async ({ page }, meta) => {
     await navigate(page, storybookUrl, meta.title);
-    await page.waitForLoadState('networkidle');
     await expect(page).toHaveScreenshot({
       animations: 'disabled',
       fullPage: true
