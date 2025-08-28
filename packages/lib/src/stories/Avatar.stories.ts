@@ -1,7 +1,6 @@
 import { html } from 'lit-html';
 import type { Meta, StoryObj } from '@storybook/web-components';
 import { ifDefined } from 'lit/directives/if-defined.js';
-import { Avatar } from '@sesamy/sesamy-components';
 
 type AvatarProps = {
   src?: string;
