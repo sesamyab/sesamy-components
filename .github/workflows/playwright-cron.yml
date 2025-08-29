@@ -1,0 +1,64 @@
+name: Playwright Tests - Cron runner
+on:
+  schedule:
+    - cron: '0 5 * * 0-6'
+
+permissions:
+  contents: read # Required for actions/checkout
+  actions: read # Required for actions/upload-artifact
+
+jobs:
+  playwright-cron:
+    timeout-minutes: 30
+    runs-on: [self-hosted, linux, x64, buildjet-8vcpu-ubuntu-2204]
+    container:
+      image: mcr.microsoft.com/playwright:v1.49.1-noble@sha256:70e367e0cbf60340a5b5fd562f6247a34eb3196efab9f88a3dd56482d9fe09d2
+      options: --ipc=host
+    permissions:
+      actions: write # Required for actions/upload-artifact (job-scope only)
+
+    steps:
+      - name: Checkout ref
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: yarn
+      - name: Run Playwright tests
+        run: yarn test
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-traces
+          path: test-results/
+          retention-days: 30
+          if-no-files-found: ignore
+      - name: Report failed test
+        if: failure()
+        uses: fjogeleit/http-request-action@44816be1eabb9c1122d8d775923f39bbe55c67a3 # v1
+        with:
+          url: ${{ secrets.SLACK_HOOK_TEST_RESULTS }}
+          method: 'POST'
+          data: |
+            {
+              "status": "failed 💥",
+              "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+              "test": "sesamy-components cron job"
+            }
+      - name: Report successful test
+        if: success()
+        uses: fjogeleit/http-request-action@44816be1eabb9c1122d8d775923f39bbe55c67a3 # v1
+        with:
+          url: ${{ secrets.SLACK_HOOK_TEST_RESULTS }}
+          method: 'POST'
+          data: |
+            {
+              "status": "success ✅",
+              "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+              "test": "sesamy-components cron job"
+            }
