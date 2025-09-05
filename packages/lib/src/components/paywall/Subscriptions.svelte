@@ -9,6 +9,7 @@
   import Tag from '../Tag.svelte';
   import Selection from './Selection.svelte';
   import type { SesamyAPI } from '@sesamy/sesamy-js';
+  import DescriptionWithReadMore from './DescriptionWithReadMore.svelte';
 
   type Props = {
     api: SesamyAPI;
@@ -62,7 +63,9 @@
       tag,
       buttonText,
       url,
-      discountPrice
+      discountPrice,
+      readMoreLink,
+      readMoreText
     } = subscription}
     {@const hasPrice = typeof price === 'number'}
     {@const hasDiscountPrice = typeof discountPrice === 'number'}
@@ -124,7 +127,13 @@
             {/if}
 
             {#if description && (!features || features.length < 1)}
-              <div class="text-sm text-gray-700 dark:text-gray-300">{description}</div>
+              <DescriptionWithReadMore
+                {description}
+                {readMoreLink}
+                {readMoreText}
+                {t}
+                class="text-gray-700 dark:text-gray-300"
+              />
             {/if}
 
             {#if features && features.length > 0}
@@ -163,9 +172,7 @@
         <Column class="flex-1" left>
           <div class="text-base font-bold leading-tight">{title}</div>
           {#if description}
-            <div class="leading-tight text-sm">
-              {description}
-            </div>
+            <DescriptionWithReadMore {description} {readMoreLink} {readMoreText} {t} />
           {/if}
         </Column>
         <div class="column-left @md:column-right">

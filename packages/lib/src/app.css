@@ -1,3 +1,51 @@
 @tailwind base;
 /* @tailwind components; */
 @tailwind utilities;
+
+.markdown-container {
+  @apply text-sm;
+  & .headline {
+    font-size: 1.25em;
+    font-weight: bold;
+    margin-bottom: 0.5em;
+  }
+  & p {
+    margin-bottom: 0.5em;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.markdown-container a,
+.inline-link {
+  display: inline-block;
+  position: relative;
+  color: color-mix(in srgb, currentColor 80%, transparent);
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 1px;
+    width: 100%;
+    border-bottom: 1px dashed currentColor;
+  }
+  &:hover {
+    color: currentColor;
+    &::after {
+      border-bottom-style: solid;
+    }
+  }
+
+  &.with-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+    &::after {
+      width: calc(100% - 1.25em);
+    }
+    svg {
+      transform: translateY(-1px);
+    }
+  }
+}
