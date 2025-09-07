@@ -1,3 +1,15 @@
+# [2.19.0](https://github.com/sesamyab/sesamy-components/compare/v2.18.2...v2.19.0) (2025-09-07)
+
+
+### Bug Fixes
+
+* playwright cron job ([6cd8b27](https://github.com/sesamyab/sesamy-components/commit/6cd8b2701712b21dcc6bed877cada0b7e82ddd54))
+
+
+### Features
+
+* read more link & markdown description ([a2066f7](https://github.com/sesamyab/sesamy-components/commit/a2066f7e84b34c7b0a7a5ffcb35c38f8a82b12d6))
+
 ## [2.18.2](https://github.com/sesamyab/sesamy-components/compare/v2.18.1...v2.18.2) (2025-08-28)
 
 
