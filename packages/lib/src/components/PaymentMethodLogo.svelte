@@ -6,7 +6,7 @@
   const methodLower = method.toLowerCase();
 
   const heightFactor: { [key: string]: number } = {
-    klarna: 0.85
+    klarna_private: 0.75
   };
 
   $: calculatedHeight =
@@ -110,7 +110,7 @@
     </g>
   </svg>
 {/if}
-{#if methodLower === 'klarna'}
+{#if methodLower === 'klarna_private'}
   <svg
     {width}
     height={calculatedHeight}
