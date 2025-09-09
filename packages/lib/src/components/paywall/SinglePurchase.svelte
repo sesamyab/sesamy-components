@@ -47,7 +47,7 @@
       <Column left>
         <div class="text-base font-bold leading-tight">{title}</div>
         <div class="text-sm">
-          {description}
+          {@html description}
         </div>
       </Column>
       <div class="text-base font-bold">{singlePurchasePrice} {currency}</div>
