@@ -1,3 +1,10 @@
+## [2.19.1](https://github.com/sesamyab/sesamy-components/compare/v2.19.0...v2.19.1) (2025-09-09)
+
+
+### Bug Fixes
+
+* html parse single purchase description ([0f552fb](https://github.com/sesamyab/sesamy-components/commit/0f552fbab957d1c91cdf004fcd9c790fdbb5124a))
+
 # [2.19.0](https://github.com/sesamyab/sesamy-components/compare/v2.18.2...v2.19.0) (2025-09-07)
 
 
