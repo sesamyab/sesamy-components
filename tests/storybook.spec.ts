@@ -22,8 +22,9 @@ visualStories.forEach((story) => {
     });
 
     if (story.id === 'components-paywall--article') {
-      await page.locator('"Continue"').click();
-      await expect(page.locator('"Pay now"')).toBeVisible();
+      await page.getByRole('button', { name: 'Continue' }).click();
+      await page.selectOption('select[name="country"]', { label: 'Sweden' });
+      await expect(page.getByRole('button', { name: 'Pay now' })).toBeVisible();
       await expect(page).toHaveScreenshot(`${story.id}-step2.png`, {
         animations: 'disabled',
         fullPage: true
