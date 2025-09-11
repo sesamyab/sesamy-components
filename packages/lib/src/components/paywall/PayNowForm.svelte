@@ -251,6 +251,7 @@
         bind:value={country}
         name="country"
         compact
+        autocomplete="country"
         placeholder={t('country')}
       />
       {#if checkout?.fieldSettings?.phone?.enabled}
