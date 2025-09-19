@@ -1,3 +1,10 @@
+## [2.19.2](https://github.com/sesamyab/sesamy-components/compare/v2.19.1...v2.19.2) (2025-09-19)
+
+
+### Bug Fixes
+
+* klarna payment method logo ([39655fc](https://github.com/sesamyab/sesamy-components/commit/39655fc0441d59c119c8eea7b4f641366ed37133))
+
 ## [2.19.1](https://github.com/sesamyab/sesamy-components/compare/v2.19.0...v2.19.1) (2025-09-09)
 
 
