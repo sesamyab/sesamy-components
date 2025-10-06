@@ -288,7 +288,6 @@
               {#each footerPaymentMethods as IconName[] as paymentMethod}
                 <PaymentMethod name={paymentMethod} />
               {/each}
-              <PaymentMethod name="amex" />
             </Row>
           </div>
         </Column>
