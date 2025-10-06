@@ -274,14 +274,21 @@
             <Error text={error} />
           {/if}
 
-          <div class="column gap-4 @md:row !justify-between w-full mt-4 @md:mt-8">
-            <Row class="gap-2 text-[#5F6D85] dark:text-gray-400 text-xs">
-              <Icon name="lock" />{t('secure_payment')}
+          <div class="gap-3 row !justify-between w-full mt-4 @md:mt-8">
+            <Row up left class="gap-2 text-[#5F6D85] dark:text-gray-400 text-xs !flex-nowrap">
+              <Icon name="lock" class="my-px" />
+              <span>
+                {@html t('powered_by_sesamy', {
+                  0: (text) =>
+                    `<a class="text-gray-800 hover:text-black whitespace-nowrap" href="https://sesamy.com/?utm_source=${vendorId}&utm_medium=referral&utm_campaign=paywall_component" target="_blank">${text}</a>`
+                })}
+              </span>
             </Row>
             <Row class="gap-2">
               {#each footerPaymentMethods as IconName[] as paymentMethod}
                 <PaymentMethod name={paymentMethod} />
               {/each}
+              <PaymentMethod name="amex" />
             </Row>
           </div>
         </Column>
