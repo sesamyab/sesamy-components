@@ -1,3 +1,10 @@
+## [2.20.1](https://github.com/sesamyab/sesamy-components/compare/v2.20.0...v2.20.1) (2025-10-06)
+
+
+### Bug Fixes
+
+* powered by link dark mode ([99f8b03](https://github.com/sesamyab/sesamy-components/commit/99f8b033caf529fd880bae511ed6474552972dbc))
+
 # [2.20.0](https://github.com/sesamyab/sesamy-components/compare/v2.19.2...v2.20.0) (2025-10-06)
 
 
