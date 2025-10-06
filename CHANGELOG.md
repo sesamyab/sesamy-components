@@ -1,3 +1,16 @@
+# [2.20.0](https://github.com/sesamyab/sesamy-components/compare/v2.19.2...v2.20.0) (2025-10-06)
+
+
+### Bug Fixes
+
+* rem hardcoded paymentmethod logo ([c4800ce](https://github.com/sesamyab/sesamy-components/commit/c4800ce08b70696b9c356e5f5747a11779cbed9d))
+* update translations ([1ede52c](https://github.com/sesamyab/sesamy-components/commit/1ede52cdab8f1252e6db82f9feb623b3e0475f40))
+
+
+### Features
+
+* powered by sesamy link ([69c54c9](https://github.com/sesamyab/sesamy-components/commit/69c54c99c7f5b6de3ef2198845b96f71cc1c0b38))
+
 ## [2.19.2](https://github.com/sesamyab/sesamy-components/compare/v2.19.1...v2.19.2) (2025-09-19)
 
 
