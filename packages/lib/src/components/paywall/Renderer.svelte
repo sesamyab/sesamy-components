@@ -280,7 +280,7 @@
               <span>
                 {@html t('powered_by_sesamy', {
                   0: (text) =>
-                    `<a class="text-gray-800 hover:text-black whitespace-nowrap" href="https://sesamy.com/?utm_source=${vendorId}&utm_medium=referral&utm_campaign=paywall_component" target="_blank">${text}</a>`
+                    `<a class="text-gray-800 hover:text-black whitespace-nowrap" href="https://sesamy.com/?utm_source=${encodeURIComponent(vendorId)}&utm_medium=referral&utm_campaign=paywall_component" target="_blank" rel="noopener">${text}</a>`
                 })}
               </span>
             </Row>
