@@ -21,13 +21,33 @@ const languages: Languages = {
   da
 };
 
+export type TranslationComponents = {
+  [key: string]: (text: string) => string;
+};
+
 export interface TranslationFunction {
-  (key: Key): string;
+  (key: Key, components?: TranslationComponents): string;
 }
 
 export type SupportedLanguage = keyof typeof languages;
 
+function interpolateComponents(text: string, components?: TranslationComponents): string {
+  if (!components) return text;
+
+  // Replace component tags like <0>text</0> with the component wrapper
+  return text.replace(/<(\d+)>(.*?)<\/\1>/g, (_, index, content) => {
+    const componentKey = index.toString();
+    if (components[componentKey]) {
+      return components[componentKey](content);
+    }
+    return content;
+  });
+}
+
 export default function init(langAttribute: SupportedLanguage): TranslationFunction {
   const lang = languages[langAttribute] ? langAttribute : 'en';
-  return (key: Key) => languages[lang]?.[key] || key;
+  return (key: Key, components?: TranslationComponents) => {
+    const translation = languages[lang]?.[key] || key;
+    return interpolateComponents(translation, components);
+  };
 }
