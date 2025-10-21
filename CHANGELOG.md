@@ -1,3 +1,10 @@
+## [2.20.2](https://github.com/sesamyab/sesamy-components/compare/v2.20.1...v2.20.2) (2025-10-21)
+
+
+### Bug Fixes
+
+* enable stripe_klarna and set paymentmethods sort order ([9784eb9](https://github.com/sesamyab/sesamy-components/commit/9784eb9c9df6c57cdd82dc535698ff2eaa7c6cd1))
+
 ## [2.20.1](https://github.com/sesamyab/sesamy-components/compare/v2.20.0...v2.20.1) (2025-10-06)
 
 
