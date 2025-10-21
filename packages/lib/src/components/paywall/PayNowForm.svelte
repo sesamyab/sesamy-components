@@ -21,6 +21,7 @@
   import PaymentMethodLogo from '../PaymentMethodLogo.svelte';
   import { twMerge } from 'tailwind-merge';
   import BirthDateInput from '../BirthDateInput.svelte';
+  import { PAYMENT_METHODS_SORT_ORDER } from '../../constants/payment-methods';
 
   type Props = {
     api: SesamyAPI;
@@ -198,21 +199,38 @@
     }
   };
 
-  const paymentMethods = checkout.availablePaymentMethods
-    .filter(({ provider }) => !['DUMMY', 'SESAMY', 'BILLOGRAM'].includes(provider))
-    .reduce(
-      (acc, { provider, methods }) => [
-        ...acc,
-        ...(methods?.length ? methods.map((method) => ({ provider, method })) : [])
-      ],
-      [] as PaymentMethodType[]
-    )
-    .filter(({ method }) => method !== 'STRIPE_KLARNA'); // Temporarily exclude STRIPE_KLARNA
+  const paymentMethods = checkout.availablePaymentMethods.reduce(
+    (acc, { provider, methods }) => [
+      ...acc,
+      ...(methods?.length ? methods.map((method) => ({ provider, method })) : [])
+    ],
+    [] as PaymentMethodType[]
+  );
 
-  isSupportingGooglePay() && paymentMethods.push({ provider: 'STRIPE', method: 'GOOGLE-PAY' });
-  isSupportingApplePay() && paymentMethods.push({ provider: 'STRIPE', method: 'APPLE-PAY' });
+  // Add wallet payment methods if supported by browser
+  if (isSupportingGooglePay()) {
+    paymentMethods.push({ provider: 'STRIPE', method: 'GOOGLE-PAY' });
+  }
+  if (isSupportingApplePay()) {
+    paymentMethods.push({ provider: 'STRIPE', method: 'APPLE-PAY' });
+  }
 
-  paymentMethods.length && selectPaymentMethod(paymentMethods[0]);
+  // Remove KLARNA_PRIVATE if both STRIPE_KLARNA and KLARNA_PRIVATE are present
+  const hasStripeKlarna = paymentMethods.some((pm) => pm.method === 'STRIPE_KLARNA');
+  const hasKlarnaPrivate = paymentMethods.some((pm) => pm.method === 'KLARNA_PRIVATE');
+  if (hasStripeKlarna && hasKlarnaPrivate) {
+    const klarnaPrivateIndex = paymentMethods.findIndex((pm) => pm.method === 'KLARNA_PRIVATE');
+    if (klarnaPrivateIndex !== -1) {
+      paymentMethods.splice(klarnaPrivateIndex, 1);
+    }
+  }
+
+  // Filter and sort payment methods according to PAYMENT_METHODS_SORT_ORDER
+  const sortedPaymentMethods = PAYMENT_METHODS_SORT_ORDER.map((method) =>
+    paymentMethods.find((pm) => pm.method === method)
+  ).filter((pm) => pm !== undefined) as PaymentMethodType[];
+
+  sortedPaymentMethods.length && selectPaymentMethod(sortedPaymentMethods[0]);
 </script>
 
 <form class="contents" onsubmit={onSubmit}>
@@ -335,7 +353,7 @@
   </Column>
 
   <div class="grid grid-cols-2 w-full gap-2 auto-rows-fr">
-    {#each paymentMethods as paymentMethod, i (`${paymentMethod.provider}-${paymentMethod.method}`)}
+    {#each sortedPaymentMethods as paymentMethod, i (`${paymentMethod.provider}-${paymentMethod.method}`)}
       {@const { provider, method } = paymentMethod}
       <SelectionGroup>
         <Selection
