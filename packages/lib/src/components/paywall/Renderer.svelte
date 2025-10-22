@@ -165,6 +165,7 @@
     styling?.showBackground && styling?.backgroundColor ? styling.backgroundColor : '#FFFFFF';
   const autoDarkMode = styling?.showBackground && hexToHsl(paywallBgColor)[2] < 50;
   const paywallTextColor = autoDarkMode ? '#FFFFFF' : '#000000';
+  const autoBtnColor = hexToHsl(mainColor)[2] < 50 ? '#FFFFFF' : '#000000';
 
   let darkMode = $state(autoDarkMode);
 
@@ -178,7 +179,7 @@
       --s-paywall-border-radius-desktop: var(--sesamy-paywall-border-radius-desktop, calc(var(--s-paywall-border-radius) * 3));
       --s-paywall-theme: var(--sesamy-paywall-theme, ${autoDarkMode ? 'dark' : 'light'});
       --s-paywall-btn-bg-color: var(--sesamy-paywall-btn-bg-color, var(--s-primary-color));
-      --s-paywall-btn-text-color: var(--sesamy-paywall-btn-text-color, var(--s-paywall-text-color));
+      --s-paywall-btn-text-color: var(--sesamy-paywall-btn-text-color, ${autoBtnColor});
     }
   `;
 
