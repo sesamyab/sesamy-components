@@ -319,7 +319,7 @@
       <div class="w-full">
         <div
           class={twMerge(
-            'bg-white rounded-md border border-gray-200',
+            'bg-white rounded-md border border-gray-200 dark:bg-black/25 dark:border-gray-700',
             gotReferral && 'rounded-b-none'
           )}
         >
@@ -367,7 +367,7 @@
               <Icon name="card" class="text-2xl" />
             {:else}
               <div>
-                <PaymentMethodLogo {method} width="auto" height="25" />
+                <PaymentMethodLogo {method} width="auto" height="25" darkModeSupport={true} />
               </div>
             {/if}
             {#if method && ['CARD', 'GOOGLE-PAY', 'APPLE-PAY'].includes(method)}
@@ -383,7 +383,12 @@
     {/each}
   </div>
 
-  <Button {loading} disabled={loading} class="mt-2 w-full shadow-md" type="submit">
+  <Button
+    {loading}
+    disabled={loading}
+    class="mt-2 w-full shadow-md bg-[var(--s-paywall-btn-bg-color)] text-[var(--s-paywall-btn-text-color)]"
+    type="submit"
+  >
     {t('pay_now')}
   </Button>
   <button
