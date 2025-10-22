@@ -174,6 +174,7 @@
       --s-primary-color: var(--sesamy-paywall-primary-color, ${mainColor});
       --s-paywall-bg-color: var(--sesamy-paywall-bg-color, ${paywallBgColor});
       --s-paywall-text-color: var(--sesamy-paywall-text-color, ${paywallTextColor});
+      --s-paywall-text-color-70: var(--s-paywall-text-color);
       --s-paywall-text-color-70: color-mix(in srgb, var(--s-paywall-text-color) 70%, transparent);
       --s-paywall-border-radius: var(--sesamy-paywall-border-radius, 0.5rem);
       --s-paywall-border-radius-desktop: var(--sesamy-paywall-border-radius-desktop, calc(var(--s-paywall-border-radius) * 3));
