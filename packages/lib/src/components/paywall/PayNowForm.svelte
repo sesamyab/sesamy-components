@@ -352,7 +352,7 @@
     {/if}
   </Column>
 
-  <div class="grid grid-cols-2 w-full gap-2 auto-rows-fr">
+  <div class="grid @sm:grid-cols-2 w-full gap-2 auto-rows-fr">
     {#each sortedPaymentMethods as paymentMethod, i (`${paymentMethod.provider}-${paymentMethod.method}`)}
       {@const { provider, method } = paymentMethod}
       <SelectionGroup>
@@ -362,22 +362,25 @@
           name="payment-method"
           onchange={() => selectPaymentMethod(paymentMethod)}
         >
-          <Row class="w-full !justify-between">
-            {#if method === 'CARD'}
-              <Icon name="card" class="text-2xl" />
-            {:else}
-              <div>
-                <PaymentMethodLogo {method} width="auto" height="25" darkModeSupport={true} />
-              </div>
-            {/if}
-            {#if method && ['CARD', 'GOOGLE-PAY', 'APPLE-PAY'].includes(method)}
-              <div class="gap-1 hidden @xl:row-left">
-                <PaymentMethod size="sm" name="visa" />
-                <PaymentMethod size="sm" name="amex" />
-                <PaymentMethod size="sm" name="mastercard" />
-              </div>
-            {/if}
-          </Row>
+          {#if method === 'CARD'}
+            <Icon name="card" class="text-2xl" />
+          {:else}
+            <div class="[&>svg]:max-w-full">
+              <PaymentMethodLogo
+                {method}
+                width="auto"
+                height={method.includes('KLARNA') ? '21' : '25'}
+                darkModeSupport={true}
+              />
+            </div>
+          {/if}
+          {#if method && ['CARD', 'GOOGLE-PAY', 'APPLE-PAY'].includes(method)}
+            <div class="gap-1 hidden @xl:row-left">
+              <PaymentMethod size="sm" name="visa" />
+              <PaymentMethod size="sm" name="amex" />
+              <PaymentMethod size="sm" name="mastercard" />
+            </div>
+          {/if}
         </Selection>
       </SelectionGroup>
     {/each}
