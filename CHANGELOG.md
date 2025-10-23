@@ -1,3 +1,11 @@
+## [2.20.3](https://github.com/sesamyab/sesamy-components/compare/v2.20.2...v2.20.3) (2025-10-23)
+
+
+### Bug Fixes
+
+* better dark mode handling ([34a98c9](https://github.com/sesamyab/sesamy-components/commit/34a98c971c00da3d7bdf707fbfa09c298669846c))
+* set btn-color based on primary-color hsl ([e17f712](https://github.com/sesamyab/sesamy-components/commit/e17f712316f0c2457e10eb882b4226edbcbab88e))
+
 ## [2.20.2](https://github.com/sesamyab/sesamy-components/compare/v2.20.1...v2.20.2) (2025-10-21)
 
 
