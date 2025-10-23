@@ -1,3 +1,11 @@
+## [2.20.4](https://github.com/sesamyab/sesamy-components/compare/v2.20.3...v2.20.4) (2025-10-23)
+
+
+### Bug Fixes
+
+* payment-method buttons responsiveness ([68f444a](https://github.com/sesamyab/sesamy-components/commit/68f444a5981c57818b527fe73a0e4bea12fa68cf))
+* temp remove stripe_klarna option ([f0c8fe8](https://github.com/sesamyab/sesamy-components/commit/f0c8fe868c395fabcbbbccba9a0fec7a393994b2))
+
 ## [2.20.3](https://github.com/sesamyab/sesamy-components/compare/v2.20.2...v2.20.3) (2025-10-23)
 
 
