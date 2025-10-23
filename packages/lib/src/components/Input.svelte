@@ -32,7 +32,7 @@
     bind:this={inputElement}
     {...props}
     class={twMerge(
-      'relative peer w-full rounded-md border border-gray-200 p-4 text-base leading-snug text-gray-800 outline-0 transition-colors duration-150 placeholder:text-gray-400 focus:border-gray-300 focus:z-10 disabled:opacity-[20%] dark:border-gray-700 dark:bg-black/25 dark:text-gray-100',
+      'relative peer w-full rounded-md border border-gray-200 p-4 text-base leading-snug text-gray-800 outline-0 transition-colors duration-150 placeholder:text-gray-400 focus:border-gray-300 focus:z-10 disabled:opacity-[20%] dark:border-gray-700 dark:focus:border-gray-600 dark:bg-black/25 dark:text-gray-100',
       (hasError || !!error) && '!border-red-500',
       compact && 'pb-2 pt-6 placeholder:text-transparent',
       String(classes)
