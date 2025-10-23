@@ -142,7 +142,11 @@
           </Column>
 
           {#if url}
-            <Button href={url} class="w-full mt-4" variant="primary">
+            <Button
+              href={url}
+              class="w-full mt-4 bg-[var(--s-paywall-btn-bg-color)] text-[var(--s-paywall-btn-text-color)]"
+              variant="primary"
+            >
               {buttonText || t('continue')}
             </Button>
           {:else}
@@ -160,7 +164,7 @@
       </Column>
     {:else}
       {#if i}
-        <hr class={twMerge('w-full dark:border-gray-800')} />
+        <hr class={twMerge('w-full border-primary opacity-25')} />
       {/if}
       <Selection
         {id}
