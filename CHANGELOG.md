@@ -1,3 +1,11 @@
+## [2.20.5](https://github.com/sesamyab/sesamy-components/compare/v2.20.4...v2.20.5) (2025-10-24)
+
+
+### Bug Fixes
+
+* paywall button color ([c635fda](https://github.com/sesamyab/sesamy-components/commit/c635fda9293fb5f08a0eabfbc714f57d064e51c9))
+* phone number validation ([b72f133](https://github.com/sesamyab/sesamy-components/commit/b72f133d9436cb421cb8f6f307850c1fb81ea6cd))
+
 ## [2.20.4](https://github.com/sesamyab/sesamy-components/compare/v2.20.3...v2.20.4) (2025-10-23)
 
 
