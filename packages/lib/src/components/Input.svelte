@@ -43,7 +43,7 @@
   {#if compact}
     <div
       class={twMerge(
-        'pointer-events-none absolute z-20 left-4 right-4 top-1/2 line-clamp-1 -translate-y-1/2 text-base font-medium text-gray-400 transition-[transform,font-size] peer-focus-visible:-translate-y-[calc(50%+theme(space.3))] peer-focus:text-xs',
+        'pointer-events-none absolute z-20 left-4 right-4 top-1/2 line-clamp-1 -translate-y-1/2 text-base font-medium text-gray-400 transition-[transform,font-size] peer-focus:-translate-y-[calc(50%+theme(space.3))] peer-focus:text-xs',
         !!value && '-translate-y-[calc(50%+theme(space.3))] text-xs sm:text-xs'
       )}
     >

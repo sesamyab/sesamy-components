@@ -17,6 +17,7 @@
   "invalid_birth_month": "Neplatný měsíc",
   "invalid_birth_year": "Nesprávný rok",
   "invalid_email": "Neplatná e-mailová adresa",
+  "invalid_phone_number": "Neplatné telefonní číslo",
   "last_name": "Příjmení",
   "last_name_required": "Příjmení je povinné",
   "login": "Přihlášení",

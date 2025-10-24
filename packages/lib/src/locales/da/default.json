@@ -17,6 +17,7 @@
   "invalid_birth_month": "Ugyldig måned",
   "invalid_birth_year": "Ugyldigt år",
   "invalid_email": "Ugyldig e-mailadresse",
+  "invalid_phone_number": "Ugyldigt telefonnummer",
   "last_name": "Efternavn",
   "last_name_required": "Efternavn er påkrævet",
   "login": "Login",

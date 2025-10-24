@@ -1,6 +1,6 @@
 {
   "already_subscribing": "Prenumererar du redan?",
-  "birthdate_required": "Födelsedatum krävs",
+  "birthdate_required": "Födelsedatum är obligatoriskt",
   "click_to_update": "Klicka för att uppdatera",
   "continue": "Fortsätt",
   "country": "Land",
@@ -17,6 +17,7 @@
   "invalid_birth_month": "Ogiltig månad",
   "invalid_birth_year": "Ogiltigt år",
   "invalid_email": "Ogiltig e-postadress",
+  "invalid_phone_number": "Ogiltigt telefonnummer",
   "last_name": "Efternamn",
   "last_name_required": "Efternamn är obligatoriskt",
   "login": "Logga in",
