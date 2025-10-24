@@ -99,7 +99,6 @@
 
     if (
       checkout?.fieldSettings?.phone?.enabled &&
-      checkout?.fieldSettings?.phone?.required &&
       phoneNumber &&
       !isValidPhoneNumber
     ) {
