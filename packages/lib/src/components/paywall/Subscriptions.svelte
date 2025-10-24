@@ -153,7 +153,7 @@
             {#await getCheckoutUrl(subscription) then checkoutUrl}
               <Button
                 href={checkoutUrl.replace('poId', 'option')}
-                class="w-full mt-4"
+                class="w-full mt-4 bg-[var(--s-paywall-btn-bg-color)] text-[var(--s-paywall-btn-text-color)]"
                 variant="primary"
               >
                 {buttonText || t('continue')}
