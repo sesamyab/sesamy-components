@@ -13,10 +13,10 @@ export default defineConfig({
     },
     outDir: 'dist/lib',
     rollupOptions: {
-      external: ['svelte', '@sesamy/sesamy-js'],
+      external: ['@sesamy/sesamy-js'],
       output: {
         globals: {
-          svelte: 'Svelte'
+          '@sesamy/sesamy-js': 'SesamyJS'
         }
       }
     }
