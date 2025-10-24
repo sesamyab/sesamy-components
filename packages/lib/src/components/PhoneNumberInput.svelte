@@ -1,6 +1,6 @@
 <script lang="ts">
   import { twMerge } from 'tailwind-merge';
-  import type { TranslationFunction } from 'src/i18n';
+  import type { TranslationFunction } from '../i18n';
   import { normalizedCountries, TelInput } from 'svelte-tel-input';
   import type {
     Country,

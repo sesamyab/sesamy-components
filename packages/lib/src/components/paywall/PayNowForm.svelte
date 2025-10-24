@@ -1,6 +1,6 @@
 <script lang="ts">
-  // @ts-ignore
   import flagstyles from '../../flags.css?inline';
+  import flagsImage from '../../flags_responsive.png?url';
   import { getCountriesOptions } from '../../utils/countries';
   import Button from '../../Button.wc.svelte';
   import type { TranslationFunction } from '../../i18n';
@@ -164,7 +164,6 @@
   const onSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
     validate();
-    console.log('Submitting with phone number...', phoneNumber);
     if (errors || !paymentMethod) {
       return;
     }
@@ -403,9 +402,11 @@
   </div>
 
   {#if errors}
-    <div class="bg-white w-full dark:bg-black/25 border border-red-500 p-4 !text-sm rounded-md">
+    <div
+      class="bg-white w-full dark:bg-black/25 border border-red-500 text-red-500 px-4 py-3 !text-sm rounded-md font-bold"
+    >
       {#each Object.values(errors) as error}
-        <Error text={t(error)} />
+        <div>{t(error)}</div>
       {/each}
     </div>
   {/if}
@@ -429,4 +430,7 @@
   </button>
 </form>
 
-{@html '<sty' + 'le>' + flagstyles + '</style>'}
+{@html '<sty' +
+  'le>' +
+  flagstyles.replace('url(flags_responsive.png)', `url(${flagsImage})`) +
+  '</style>'}

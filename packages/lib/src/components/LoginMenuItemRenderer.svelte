@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { SesamyAPI } from '@sesamy/sesamy-js';
-  import type { TranslationFunction } from 'src/i18n';
+  import type { TranslationFunction } from '../i18n';
 
   type Props = {
     api: SesamyAPI;

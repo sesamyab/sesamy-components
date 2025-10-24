@@ -1,6 +1,6 @@
 <script lang="ts">
   import Icon from '../Icon.svelte';
-  import type { TranslationFunction } from 'src/i18n';
+  import type { TranslationFunction } from '../../i18n';
 
   type Props = {
     description: string;
