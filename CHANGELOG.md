@@ -1,3 +1,10 @@
+## [2.20.6](https://github.com/sesamyab/sesamy-components/compare/v2.20.5...v2.20.6) (2025-10-24)
+
+
+### Bug Fixes
+
+* correct build handling external deps ([507b08c](https://github.com/sesamyab/sesamy-components/commit/507b08ca2a9aa4925d364bd105115e2c5be19e69))
+
 ## [2.20.5](https://github.com/sesamyab/sesamy-components/compare/v2.20.4...v2.20.5) (2025-10-24)
 
 
