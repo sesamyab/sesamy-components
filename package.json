@@ -16,7 +16,7 @@
   "sideEffects": false,
   "scripts": {
     "dev": "vite --config vite.demo.config.ts",
-    "build": "yarn build:demo && yarn build:lib",
+    "build": "yarn build:lib && yarn build:demo",
     "build:lib": "vite build --config vite.lib.config.ts",
     "build:demo": "vite build --config vite.demo.config.ts",
     "preview": "vite preview --config vite.demo.config.ts",
