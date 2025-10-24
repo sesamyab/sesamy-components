@@ -17,6 +17,7 @@
   "invalid_birth_month": "Nieprawidłowy miesiąc",
   "invalid_birth_year": "Nieprawidłowy rok",
   "invalid_email": "Nieprawidłowy adres e-mail",
+  "invalid_phone_number": "Nieprawidłowy numer telefonu",
   "last_name": "Nazwisko",
   "last_name_required": "Nazwisko jest wymagane",
   "login": "Logowanie",

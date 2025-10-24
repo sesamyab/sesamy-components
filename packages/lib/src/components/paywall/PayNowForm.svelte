@@ -1,4 +1,6 @@
 <script lang="ts">
+  import flagstyles from '../../flags.css?inline';
+  import flagsImage from '../../flags_responsive.png?url';
   import { getCountriesOptions } from '../../utils/countries';
   import Button from '../../Button.wc.svelte';
   import type { TranslationFunction } from '../../i18n';
@@ -22,6 +24,8 @@
   import { twMerge } from 'tailwind-merge';
   import BirthDateInput from '../BirthDateInput.svelte';
   import { PAYMENT_METHODS_SORT_ORDER } from '../../constants/payment-methods';
+  import PhoneNumberInput from '../PhoneNumberInput.svelte';
+  import type { CountryCode } from 'svelte-tel-input/types';
 
   type Props = {
     api: SesamyAPI;
@@ -49,7 +53,9 @@
   let firstName = $state('');
   let lastName = $state('');
   let phoneNumber = $state('');
+  let isValidPhoneNumber = $state(false);
   let country = $state(checkout.country || 'SE'); // Must provide a fallback value since `Checkout.country` is optional
+  let phoneCountry = $state<CountryCode>((checkout.country as CountryCode) || 'SE'); // Separate state for phone input country
   let birthYear = $state('');
   let birthMonth = $state('');
   let birthDay = $state('');
@@ -89,6 +95,15 @@
       !phoneNumber
     ) {
       tempErrors.push(['phoneNumber', 'phone_number_required']);
+    }
+
+    if (
+      checkout?.fieldSettings?.phone?.enabled &&
+      checkout?.fieldSettings?.phone?.required &&
+      phoneNumber &&
+      !isValidPhoneNumber
+    ) {
+      tempErrors.push(['phoneNumber', 'invalid_phone_number']);
     }
 
     if (
@@ -233,7 +248,7 @@
   sortedPaymentMethods.length && selectPaymentMethod(sortedPaymentMethods[0]);
 </script>
 
-<form class="contents" onsubmit={onSubmit}>
+<form class="contents" onsubmit={onSubmit} novalidate>
   <Column up left class="gap-2 w-full">
     <InputGroup>
       <Input
@@ -273,13 +288,13 @@
         placeholder={t('country')}
       />
       {#if checkout?.fieldSettings?.phone?.enabled}
-        <Input
-          onkeyup={() => (errors = undefined)}
+        <PhoneNumberInput
           bind:value={phoneNumber}
-          name="tel"
-          compact
-          placeholder={t('phone_number')}
-          hasError={errors?.phoneNumber}
+          bind:valid={isValidPhoneNumber}
+          bind:selectedCountry={phoneCountry}
+          {t}
+          hasError={!!errors?.phoneNumber}
+          onChange={() => (errors = undefined)}
         />
       {/if}
       {#if checkout?.fieldSettings?.name?.enabled}
@@ -386,6 +401,16 @@
     {/each}
   </div>
 
+  {#if errors}
+    <div
+      class="bg-white w-full dark:bg-black/25 border border-red-500 text-red-500 px-4 py-3 !text-sm rounded-md font-bold"
+    >
+      {#each Object.values(errors) as error}
+        <div>{t(error)}</div>
+      {/each}
+    </div>
+  {/if}
+
   <Button
     {loading}
     disabled={loading}
@@ -394,6 +419,7 @@
   >
     {t('pay_now')}
   </Button>
+
   <button
     type="button"
     onclick={onResetCheckout}
@@ -404,10 +430,7 @@
   </button>
 </form>
 
-{#if errors}
-  <Column left>
-    {#each Object.values(errors) as error}
-      <Error text={t(error)} />
-    {/each}
-  </Column>
-{/if}
+{@html '<sty' +
+  'le>' +
+  flagstyles.replace('url(flags_responsive.png)', `url(${flagsImage})`) +
+  '</style>'}

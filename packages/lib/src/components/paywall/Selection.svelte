@@ -30,7 +30,7 @@
   <input {onchange} {type} class="peer sr-only" {checked} {name} {id} />
   {#if type === 'checkbox'}
     <div
-      class="w-4 h-4 rounded transition-all bg-white dark:bg-black border border-gray-300 dark:border-gray-500 relative ring ring-transparent peer-focus-visible:ring-primary/20 peer-checked:border-primary peer-checked:bg-primary"
+      class="w-4 h-4 rounded transition-all bg-white dark:bg-black border border-gray-300 dark:border-gray-500 relative ring ring-transparent peer-focus:ring-primary peer-checked:border-primary peer-checked:bg-primary"
     >
       <div
         class="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 text-[8px] text-white dark:text-black"
@@ -41,7 +41,7 @@
   {/if}
   {#if type === 'radio'}
     <div
-      class="w-4 h-4 rounded-full transition-all bg-white dark:bg-black border border-gray-300 dark:border-gray-500 relative ring ring-transparent peer-focus-visible:ring-primary/20 peer-checked:border-primary peer-checked:bg-primary"
+      class="w-4 h-4 rounded-full transition-all bg-white dark:bg-black border border-gray-300 dark:border-gray-500 relative ring ring-transparent peer-focus:ring-primary peer-checked:border-primary peer-checked:bg-primary"
     >
       <div
         class="content-[''] absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-white dark:bg-black rounded-full"

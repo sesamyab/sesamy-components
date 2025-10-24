@@ -17,6 +17,7 @@
   "invalid_birth_month": "Virheellinen kuukausi",
   "invalid_birth_year": "Virheellinen vuosi",
   "invalid_email": "Virheellinen sähköpostiosoite",
+  "invalid_phone_number": "Virheellinen puhelinnumero",
   "last_name": "Sukunimi",
   "last_name_required": "Sukunimi vaaditaan",
   "login": "Kirjaudu sisään",

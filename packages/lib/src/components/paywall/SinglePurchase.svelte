@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { TranslationFunction } from 'src/i18n';
+  import type { TranslationFunction } from '../../i18n';
   import Column from '../Column.svelte';
   import Selection from './Selection.svelte';
   import SelectionGroup from './SelectionGroup.svelte';
-  import type { PaywallSinglePurchase } from 'src/types/Paywall';
-  import type { PaywallProps } from 'src/types';
+  import type { PaywallSinglePurchase } from '../../types/Paywall';
+  import type { PaywallProps } from '../../types';
 
   type Props = {
     t: TranslationFunction;

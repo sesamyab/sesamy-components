@@ -1,8 +1,8 @@
 <script lang="ts">
   import { twMerge } from 'tailwind-merge';
   import SelectionGroup from './SelectionGroup.svelte';
-  import type { TranslationFunction } from 'src/i18n';
-  import type { PaywallSubscription } from 'src/types/Paywall';
+  import type { TranslationFunction } from '../../i18n';
+  import type { PaywallSubscription } from '../../types/Paywall';
   import Column from '../Column.svelte';
   import Features from '../Features.svelte';
   import Button from '../../Button.wc.svelte';
@@ -153,7 +153,7 @@
             {#await getCheckoutUrl(subscription) then checkoutUrl}
               <Button
                 href={checkoutUrl.replace('poId', 'option')}
-                class="w-full mt-4"
+                class="w-full mt-4 bg-[var(--s-paywall-btn-bg-color)] text-[var(--s-paywall-btn-text-color)]"
                 variant="primary"
               >
                 {buttonText || t('continue')}

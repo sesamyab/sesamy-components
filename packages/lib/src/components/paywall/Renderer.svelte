@@ -8,12 +8,12 @@
   import { twMerge } from 'tailwind-merge';
   import type { TranslationFunction } from '../../i18n';
   import { hexToHsl } from '../../utils/color';
-  import type { Paywall, PaywallSubscription } from 'src/types/Paywall';
-  import type { IconName } from 'src/icons/types';
+  import type { Paywall, PaywallSubscription } from '../../types/Paywall';
+  import type { IconName } from '../../icons/types';
   import Subscriptions from './Subscriptions.svelte';
   import SinglePurchase from './SinglePurchase.svelte';
   import type { SesamyAPI, Checkout } from '@sesamy/sesamy-js';
-  import type { PaywallProps } from 'src/types';
+  import type { PaywallProps } from '../../types';
   import Error from '../Error.svelte';
   import PayNowForm from './PayNowForm.svelte';
   import NotLoggedIn from '../NotLoggedIn.svelte';
@@ -165,7 +165,7 @@
     styling?.showBackground && styling?.backgroundColor ? styling.backgroundColor : '#FFFFFF';
   const autoDarkMode = styling?.showBackground && hexToHsl(paywallBgColor)[2] < 50;
   const paywallTextColor = autoDarkMode ? '#FFFFFF' : '#000000';
-  const autoBtnColor = hexToHsl(mainColor)[2] < 50 ? '#FFFFFF' : '#000000';
+  const autoBtnColor = hexToHsl(mainColor)[2] < 60 ? '#FFFFFF' : '#000000';
 
   let darkMode = $state(autoDarkMode);
 

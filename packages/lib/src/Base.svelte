@@ -1,5 +1,4 @@
 <script lang="ts">
-  // @ts-ignore
   import libstyles from './app.css?inline';
   import { getApi } from './api';
   import initTranslator from './i18n';
