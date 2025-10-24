@@ -165,7 +165,7 @@
     styling?.showBackground && styling?.backgroundColor ? styling.backgroundColor : '#FFFFFF';
   const autoDarkMode = styling?.showBackground && hexToHsl(paywallBgColor)[2] < 50;
   const paywallTextColor = autoDarkMode ? '#FFFFFF' : '#000000';
-  const autoBtnColor = hexToHsl(mainColor)[2] < 50 ? '#FFFFFF' : '#000000';
+  const autoBtnColor = hexToHsl(mainColor)[2] < 60 ? '#FFFFFF' : '#000000';
 
   let darkMode = $state(autoDarkMode);
 
