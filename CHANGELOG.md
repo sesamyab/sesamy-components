@@ -1,3 +1,10 @@
+## [2.20.7](https://github.com/sesamyab/sesamy-components/compare/v2.20.6...v2.20.7) (2025-10-24)
+
+
+### Bug Fixes
+
+* always validate phonenr if present ([1ddf8cc](https://github.com/sesamyab/sesamy-components/commit/1ddf8cc44c4e133b5c5bdbdde2a8c5634ba27f76))
+
 ## [2.20.6](https://github.com/sesamyab/sesamy-components/compare/v2.20.5...v2.20.6) (2025-10-24)
 
 
