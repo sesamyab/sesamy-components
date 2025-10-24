@@ -1,10 +1,10 @@
 <script lang="ts">
   import type { SesamyAPI } from '@sesamy/sesamy-js';
   import emailSpellChecker from '@zootools/email-spell-checker';
-  import type { TranslationFunction } from 'src/i18n';
+  import type { TranslationFunction } from '../../i18n';
   import Column from '../Column.svelte';
   import { twMerge } from 'tailwind-merge';
-  import type { Paywall } from 'src/types/Paywall';
+  import type { Paywall } from '../../types/Paywall';
   import Button from '../Button.svelte';
   import Input from '../Input.svelte';
   import InputGroup from '../InputGroup.svelte';

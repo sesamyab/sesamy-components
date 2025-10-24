@@ -17,6 +17,7 @@
   "invalid_birth_month": "Invalid month",
   "invalid_birth_year": "Invalid year",
   "invalid_email": "Invalid email address",
+  "invalid_phone_number": "Invalid phone number",
   "last_name": "Last name",
   "last_name_required": "Last name is required",
   "login": "Login",

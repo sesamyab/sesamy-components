@@ -17,6 +17,7 @@
   "invalid_birth_month": "Mese non valido",
   "invalid_birth_year": "Anno non valido",
   "invalid_email": "Indirizzo e-mail non valido",
+  "invalid_phone_number": "Numero di telefono non valido",
   "last_name": "Cognome",
   "last_name_required": "Il cognome è obbligatorio",
   "login": "Accesso",

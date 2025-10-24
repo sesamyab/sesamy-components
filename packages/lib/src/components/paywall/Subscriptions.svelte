@@ -1,8 +1,8 @@
 <script lang="ts">
   import { twMerge } from 'tailwind-merge';
   import SelectionGroup from './SelectionGroup.svelte';
-  import type { TranslationFunction } from 'src/i18n';
-  import type { PaywallSubscription } from 'src/types/Paywall';
+  import type { TranslationFunction } from '../../i18n';
+  import type { PaywallSubscription } from '../../types/Paywall';
   import Column from '../Column.svelte';
   import Features from '../Features.svelte';
   import Button from '../../Button.wc.svelte';
