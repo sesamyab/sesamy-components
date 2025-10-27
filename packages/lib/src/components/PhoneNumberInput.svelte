@@ -15,6 +15,7 @@
     t: TranslationFunction;
     value: E164Number | null;
     valid: boolean;
+    name?: string;
     selectedCountry: CountryCode | null;
     hasError?: boolean;
     onChange?: () => void;
@@ -24,6 +25,7 @@
     t,
     value = $bindable(),
     valid = $bindable(),
+    name,
     selectedCountry = $bindable(),
     hasError = false,
     onChange
@@ -49,6 +51,7 @@
     bind:detailedValue
     bind:value
     bind:valid
+    {name}
     {options}
     required
     class={twMerge(
