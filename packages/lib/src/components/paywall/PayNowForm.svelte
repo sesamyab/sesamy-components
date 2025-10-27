@@ -290,6 +290,7 @@
           {t}
           hasError={!!errors?.phoneNumber}
           onChange={() => (errors = undefined)}
+          name="tel"
         />
       {/if}
       {#if checkout?.fieldSettings?.name?.enabled}
