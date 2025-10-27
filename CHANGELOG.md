@@ -1,3 +1,10 @@
+## [2.20.8](https://github.com/sesamyab/sesamy-components/compare/v2.20.7...v2.20.8) (2025-10-27)
+
+
+### Bug Fixes
+
+* phonenumber input name attribute ([1ee2b72](https://github.com/sesamyab/sesamy-components/commit/1ee2b72dd7769d91856b6576532332187a9c5617))
+
 ## [2.20.7](https://github.com/sesamyab/sesamy-components/compare/v2.20.6...v2.20.7) (2025-10-24)
 
 
