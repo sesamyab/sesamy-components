@@ -97,11 +97,7 @@
       tempErrors.push(['phoneNumber', 'phone_number_required']);
     }
 
-    if (
-      checkout?.fieldSettings?.phone?.enabled &&
-      phoneNumber &&
-      !isValidPhoneNumber
-    ) {
+    if (checkout?.fieldSettings?.phone?.enabled && phoneNumber && !isValidPhoneNumber) {
       tempErrors.push(['phoneNumber', 'invalid_phone_number']);
     }
 
