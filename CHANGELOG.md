@@ -1,3 +1,10 @@
+## [2.20.9](https://github.com/sesamyab/sesamy-components/compare/v2.20.8...v2.20.9) (2025-10-27)
+
+
+### Reverts
+
+* Revert "fix: temp remove stripe_klarna option" ([fcb69b0](https://github.com/sesamyab/sesamy-components/commit/fcb69b034eb6c7ca675170ac47fdfc10203e317b))
+
 ## [2.20.8](https://github.com/sesamyab/sesamy-components/compare/v2.20.7...v2.20.8) (2025-10-27)
 
 
