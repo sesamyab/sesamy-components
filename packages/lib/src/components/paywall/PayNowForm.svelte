@@ -15,7 +15,6 @@
   import Icon from '../Icon.svelte';
   import Row from '../Row.svelte';
   import { isValidEmail } from '../../utils/email';
-  import Error from '../Error.svelte';
   import Column from '../Column.svelte';
   import { isSupportingApplePay, isSupportingGooglePay } from '../../utils/browser-support';
   import emailSpellChecker from '@zootools/email-spell-checker';
@@ -256,26 +255,28 @@
 <form class="contents" onsubmit={onSubmit} novalidate>
   <Column up left class="gap-2 w-full">
     {#if paywall.settings.displayOptions?.enableGift}
-      <SelectionGroup horizontal class="p-1 !gap-1 text-xs font-bold bg-transparent">
+      <div
+        class="row w-full rounded-md bg-gray-200 dark:bg-black/25 dark:border dark:border-gray-800 p-1 gap-1 text-xs font-bold"
+      >
         <button
           class={twMerge('rounded-md px-3 py-2 flex-1', !giftMode && 'bg-white dark:bg-black/25')}
           type="button"
           onclick={() => (giftMode = false)}
         >
-          Buy for yourself
+          {t('not_gift')}
         </button>
         <button
           class={twMerge('rounded-md px-3 py-2 flex-1', giftMode && 'bg-white dark:bg-black/25')}
           type="button"
           onclick={() => (giftMode = true)}
         >
-          Give as a gift
+          {t('is_gift')}
         </button>
-      </SelectionGroup>
+      </div>
     {/if}
 
     {#if giftMode}
-      <div class="text-sm uppercase font-bold pt-1 -mb-0.5">Your details</div>
+      <div class="text-sm uppercase font-bold pt-1 -mb-0.5">{t('your_details')}</div>
       <InputGroup>
         <Input
           bind:value={payerEmail}
@@ -286,7 +287,7 @@
           onkeyup={() => (errors = undefined)}
         />
       </InputGroup>
-      <div class="text-sm uppercase font-bold pt-1 -mb-0.5">The recipient's details</div>
+      <div class="text-sm uppercase font-bold pt-1 -mb-0.5">{t('recipient_details')}</div>
     {/if}
 
     <InputGroup>
