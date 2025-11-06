@@ -18,6 +18,7 @@
   "invalid_birth_year": "Invalid year",
   "invalid_email": "Invalid email address",
   "invalid_phone_number": "Invalid phone number",
+  "is_gift": "Give as a gift",
   "last_name": "Last name",
   "last_name_required": "Last name is required",
   "login": "Login",
@@ -25,15 +26,18 @@
   "logout": "Log out",
   "month": "Month",
   "my_account": "My account",
+  "not_gift": "Buy for yourself",
   "pay_now": "Pay now",
   "phone_number": "Phone number",
   "phone_number_required": "Phone number is required",
   "powered_by_sesamy": "Payments, paywall and subscriptions powered by <0>Sesamy subscription platform</0>.",
   "read_more": "Read more",
+  "recipient_details": "The recipient's details",
   "referral_email": "Referral email",
   "referral_email_required": "Referral email is required",
   "secure_payment": "Secure SSL encrypted payment",
   "something_went_wrong": "Something went wrong",
   "user_already_owns_item": "You already own this product",
-  "year": "Year"
+  "year": "Year",
+  "your_details": "Your details"
 }

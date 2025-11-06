@@ -256,7 +256,7 @@
           {/if}
 
           {#if checkout && !product?.preferBusiness}
-            <PayNowForm {api} {checkout} {t} {onResetCheckout} />
+            <PayNowForm {api} {paywall} {checkout} {t} {onResetCheckout} />
           {:else}
             <form class="contents" onsubmit={createCheckout}>
               {#if subscriptions.length}
