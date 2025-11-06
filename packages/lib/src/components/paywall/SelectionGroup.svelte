@@ -9,8 +9,10 @@
 
 <div
   class={twMerge(
-    'transition-colors rounded-md w-full bg-white border-gray-200 border has-[input:checked]:border-primary dark:bg-black/25 dark:border-gray-800',
-    horizontal && 'row gap-2 @xl:gap-4',
+    'transition-colors grid rounded-md w-full',
+    horizontal && 'gap-2 @xl:gap-4 @xl:auto-rows-fr',
+    !horizontal &&
+      'bg-white border-gray-200 border has-[input:checked]:border-primary dark:bg-black/25 dark:border-gray-800',
     classes
   )}
 >
