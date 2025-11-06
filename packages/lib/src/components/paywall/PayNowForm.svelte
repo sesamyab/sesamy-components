@@ -8,6 +8,7 @@
   import InputGroup from '../InputGroup.svelte';
   import Select from '../Select.svelte';
   import type { Checkout, SesamyAPI } from '@sesamy/sesamy-js';
+  type ExtendedCheckout = Checkout & { giftMode?: boolean }; // Temporary extension to include giftMode until sesamy-js is updated
   import Selection from './Selection.svelte';
   import SelectionGroup from './SelectionGroup.svelte';
   import PaymentMethod from '../PaymentMethod.svelte';
@@ -32,7 +33,7 @@
     api: SesamyAPI;
     t: TranslationFunction;
     paywall: Paywall;
-    checkout: Checkout;
+    checkout: ExtendedCheckout;
     onResetCheckout: () => void;
   };
 
