@@ -1123,23 +1123,23 @@
     lodash-es "^4.17.21"
     read-package-up "^11.0.0"
 
-"@sesamy/sdk@1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@sesamy/sdk/-/sdk-1.6.0.tgz#569fa4b8ee2059c1f118a23550f81a405426ca96"
-  integrity sha512-SjLaZjhffKzqT7oieUk7VMRn7O1LNeYMIUUMj0hIMBCsxPh2mVxrVbkVNjk5FrJP4HWV4EjqIveU1j702XfS6w==
+"@sesamy/sdk@1.11.0":
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/@sesamy/sdk/-/sdk-1.11.0.tgz#bd874654d5f2cb076d7daaf40c1113e141cd18b0"
+  integrity sha512-tYjBLAjj0SlW+RsICBJajSMZaM2xbylBv7QVxedZHaVF0MUcH+ukllij+NDZjaJ6JCgcBamM19JCuSE/XFZvTQ==
   dependencies:
     wretch "^2.9.0"
 
-"@sesamy/sesamy-js@1.49.0":
-  version "1.49.0"
-  resolved "https://registry.yarnpkg.com/@sesamy/sesamy-js/-/sesamy-js-1.49.0.tgz#05cb751bee649675c7837065d2288c0ab65fac98"
-  integrity sha512-51psqQ54/4YMJni7WaLOJ15kwjvknI95vW9qKUApLRNjjfYgfM+UyF2w8MimPvq7qeaz+Ue7WHG5Sepu7HXH+w==
+"@sesamy/sesamy-js@1.53.0":
+  version "1.53.0"
+  resolved "https://registry.yarnpkg.com/@sesamy/sesamy-js/-/sesamy-js-1.53.0.tgz#15ef2b013b74c54ec6528f689caf3608537bab11"
+  integrity sha512-O/NrOVZgBxNGmCFyfXoP1FyXXzqvpNdH0H1U15uqMuJoKLKXUfGhUrOCDFGN9RrU/yGn3l5LAE7MdA1cItSbgA==
   dependencies:
     "@analytics/activity-utils" "^0.1.16"
     "@analytics/scroll-utils" "^0.1.24"
     "@analytics/storage-utils" "^0.4.2"
     "@auth0/auth0-spa-js" "^2.5.0"
-    "@sesamy/sdk" "1.6.0"
+    "@sesamy/sdk" "1.11.0"
     analytics "^0.8.16"
     core-js "^3.45.0"
     detectincognitojs "^1.6.0"

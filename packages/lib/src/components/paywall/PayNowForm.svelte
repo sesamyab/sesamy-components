@@ -7,8 +7,8 @@
   import Input from '../Input.svelte';
   import InputGroup from '../InputGroup.svelte';
   import Select from '../Select.svelte';
-  import type { Checkout, SesamyAPI } from '@sesamy/sesamy-js';
-  type ExtendedCheckout = Checkout & { giftMode?: boolean }; // Temporary extension to include giftMode until sesamy-js is updated
+  import type { Checkout } from '@sesamy/sdk';
+  import type { SesamyAPI } from '@sesamy/sesamy-js';
   import Selection from './Selection.svelte';
   import SelectionGroup from './SelectionGroup.svelte';
   import PaymentMethod from '../PaymentMethod.svelte';
@@ -32,7 +32,7 @@
     api: SesamyAPI;
     t: TranslationFunction;
     paywall: Paywall;
-    checkout: ExtendedCheckout;
+    checkout: Checkout;
     onResetCheckout: () => void;
   };
 
@@ -201,7 +201,7 @@
         birthDate,
         referralEmail: gotReferral ? referralEmail : undefined,
         payerEmail: giftMode ? payerEmail : undefined
-      } as any);
+      });
 
       goToCheckout(checkout, paymentMethod);
       loading = false;
@@ -221,7 +221,7 @@
   const paymentMethods = checkout.availablePaymentMethods.reduce(
     (acc, { provider, methods }) => [
       ...acc,
-      ...(methods?.length ? methods.map((method) => ({ provider, method })) : [])
+      ...(methods?.length && provider ? methods.map((method) => ({ provider, method })) : [])
     ],
     [] as PaymentMethodType[]
   );
