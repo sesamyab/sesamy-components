@@ -12,7 +12,8 @@
   import type { IconName } from '../../icons/types';
   import Subscriptions from './Subscriptions.svelte';
   import SinglePurchase from './SinglePurchase.svelte';
-  import type { SesamyAPI, Checkout } from '@sesamy/sesamy-js';
+  import type { SesamyAPI } from '@sesamy/sesamy-js';
+  import type { Checkout } from '@sesamy/sdk';
   import type { PaywallProps } from '../../types';
   import Error from '../Error.svelte';
   import PayNowForm from './PayNowForm.svelte';
@@ -94,7 +95,6 @@
 
     try {
       checkout = await api.checkouts.create({
-        vendorId,
         items: [item],
         requestedDiscountCodes: product.discountCode ? [product.discountCode] : undefined,
         redirectUrl,
