@@ -46,6 +46,21 @@
 </script>
 
 <label class={twMerge('relative w-full gap-2 column-left', hasError && 'z-20')}>
+  <div class="absolute top-0 left-px bottom-px z-20 text-gray-300 focus-within:text-gray-400">
+    <div class="relative inline-flex pl-4 pr-2 items-center h-full gap-3 rounded-md">
+      <span class="flag flag-{selectedCountry?.toLowerCase()} flex-shrink-0"></span>
+      <Icon class="!text-xs" name="chevron-down" />
+    </div>
+    <select
+      id="phone-country-select"
+      class="absolute peer inset-0 opacity-0 cursor-pointer"
+      bind:value={selectedCountry}
+    >
+      {#each sortCountries(normalizedCountries) as country (country.id)}
+        <option value={country.id}>{country.label}</option>
+      {/each}
+    </select>
+  </div>
   <TelInput
     bind:country={selectedCountry}
     bind:detailedValue
@@ -66,20 +81,5 @@
     )}
   >
     {t('phone_number')}
-  </div>
-  <div class="absolute top-0 left-px bottom-px z-20">
-    <select
-      id="phone-country-select"
-      class="absolute inset-0 opacity-0 cursor-pointer"
-      bind:value={selectedCountry}
-    >
-      {#each sortCountries(normalizedCountries) as country (country.id)}
-        <option value={country.id}>{country.label}</option>
-      {/each}
-    </select>
-    <div class="inline-flex px-4 items-center h-full gap-3 rounded-md">
-      <span class="flag flag-{selectedCountry?.toLowerCase()} flex-shrink-0"></span>
-      <Icon class="!text-xs text-gray-300" name="chevron-down" />
-    </div>
   </div>
 </label>

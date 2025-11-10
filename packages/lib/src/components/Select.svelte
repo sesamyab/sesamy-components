@@ -27,7 +27,7 @@
   }: Props = $props();
 </script>
 
-<label class="relative w-full gap-2 column-left">
+<label class="relative w-full gap-2 column-left focus-within:z-10">
   <select
     bind:value
     class={twMerge(
