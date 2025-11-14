@@ -49,6 +49,11 @@ export type PaywallSettings = {
     name?: boolean;
     phone?: boolean;
   };
+  displayOptions?: {
+    enableGift?: boolean;
+    enableCompany?: boolean;
+    enableLoginButton?: boolean;
+  };
 };
 
 export type Paywall = {

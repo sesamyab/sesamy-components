@@ -7,14 +7,14 @@
   import Input from '../Input.svelte';
   import InputGroup from '../InputGroup.svelte';
   import Select from '../Select.svelte';
-  import type { Checkout, SesamyAPI } from '@sesamy/sesamy-js';
+  import type { Checkout } from '@sesamy/sdk';
+  import type { SesamyAPI } from '@sesamy/sesamy-js';
   import Selection from './Selection.svelte';
   import SelectionGroup from './SelectionGroup.svelte';
   import PaymentMethod from '../PaymentMethod.svelte';
   import Icon from '../Icon.svelte';
   import Row from '../Row.svelte';
   import { isValidEmail } from '../../utils/email';
-  import Error from '../Error.svelte';
   import Column from '../Column.svelte';
   import { isSupportingApplePay, isSupportingGooglePay } from '../../utils/browser-support';
   import emailSpellChecker from '@zootools/email-spell-checker';
@@ -26,15 +26,17 @@
   import { PAYMENT_METHODS_SORT_ORDER } from '../../constants/payment-methods';
   import PhoneNumberInput from '../PhoneNumberInput.svelte';
   import type { CountryCode } from 'svelte-tel-input/types';
+  import type { Paywall } from '../../types/Paywall';
 
   type Props = {
     api: SesamyAPI;
     t: TranslationFunction;
+    paywall: Paywall;
     checkout: Checkout;
     onResetCheckout: () => void;
   };
 
-  let { api, t, checkout, onResetCheckout }: Props = $props();
+  let { api, t, paywall, checkout, onResetCheckout }: Props = $props();
 
   const countries = getCountriesOptions(checkout.language).filter((country) => {
     // Filter out countries that are not allowed or blocked by the items in the checkout
@@ -66,6 +68,8 @@
   let suggestionTimeout: any;
   let gotReferral = $state(false);
   let referralEmail = $state('');
+  let giftMode = $state(checkout.giftMode);
+  let payerEmail = $state('');
 
   $effect(() => {
     if (!countries.map((c) => c.value).includes(country)) {
@@ -87,6 +91,10 @@
 
     if (!isValidEmail(email)) {
       tempErrors.push(['email', 'invalid_email']);
+    }
+
+    if (giftMode && !isValidEmail(payerEmail)) {
+      tempErrors.push(['payerEmail', 'invalid_email']);
     }
 
     if (
@@ -191,7 +199,8 @@
         givenName: firstName || undefined,
         familyName: lastName || undefined,
         birthDate,
-        referralEmail: gotReferral ? referralEmail : undefined
+        referralEmail: gotReferral ? referralEmail : undefined,
+        payerEmail: giftMode ? payerEmail : undefined
       });
 
       goToCheckout(checkout, paymentMethod);
@@ -212,7 +221,7 @@
   const paymentMethods = checkout.availablePaymentMethods.reduce(
     (acc, { provider, methods }) => [
       ...acc,
-      ...(methods?.length ? methods.map((method) => ({ provider, method })) : [])
+      ...(methods?.length && provider ? methods.map((method) => ({ provider, method })) : [])
     ],
     [] as PaymentMethodType[]
   );
@@ -245,6 +254,42 @@
 
 <form class="contents" onsubmit={onSubmit} novalidate>
   <Column up left class="gap-2 w-full">
+    {#if paywall.settings.displayOptions?.enableGift}
+      <div
+        class="row w-full rounded-md bg-gray-200 dark:bg-black/25 dark:border dark:border-gray-800 p-1 gap-1 text-xs font-bold"
+      >
+        <button
+          class={twMerge('rounded-md px-3 py-2 flex-1', !giftMode && 'bg-white dark:bg-black/25')}
+          type="button"
+          onclick={() => (giftMode = false)}
+        >
+          {t('not_gift')}
+        </button>
+        <button
+          class={twMerge('rounded-md px-3 py-2 flex-1', giftMode && 'bg-white dark:bg-black/25')}
+          type="button"
+          onclick={() => (giftMode = true)}
+        >
+          {t('is_gift')}
+        </button>
+      </div>
+    {/if}
+
+    {#if giftMode}
+      <div class="text-sm uppercase font-bold pt-1 -mb-0.5">{t('your_details')}</div>
+      <InputGroup>
+        <Input
+          bind:value={payerEmail}
+          name="payer-email"
+          compact
+          placeholder={t('email')}
+          hasError={errors?.payerEmail}
+          onkeyup={() => (errors = undefined)}
+        />
+      </InputGroup>
+      <div class="text-sm uppercase font-bold pt-1 -mb-0.5">{t('recipient_details')}</div>
+    {/if}
+
     <InputGroup>
       <Input
         onkeyup={provideSuggestion}
@@ -253,6 +298,7 @@
         compact
         placeholder={t('email')}
         hasError={errors?.email}
+        autocomplete="email"
       />
       <Accordion isOpen={!!emailSuggestion}>
         <Row
@@ -301,6 +347,7 @@
           compact
           placeholder={t('first_name')}
           hasError={errors?.firstName}
+          autocomplete="given-name"
         />
         <Input
           onkeyup={() => (errors = undefined)}
@@ -309,6 +356,7 @@
           compact
           placeholder={t('last_name')}
           hasError={errors?.lastName}
+          autocomplete="family-name"
         />
       {/if}
     </InputGroup>
@@ -361,41 +409,41 @@
         </Accordion>
       </div>
     {/if}
-  </Column>
 
-  <div class="grid @sm:grid-cols-2 w-full gap-2 auto-rows-fr">
-    {#each sortedPaymentMethods as paymentMethod, i (`${paymentMethod.provider}-${paymentMethod.method}`)}
-      {@const { provider, method } = paymentMethod}
-      <SelectionGroup>
-        <Selection
-          checked={!i}
-          id={`${provider}-${method}`}
-          name="payment-method"
-          onchange={() => selectPaymentMethod(paymentMethod)}
-        >
-          {#if method === 'CARD'}
-            <Icon name="card" class="text-2xl" />
-          {:else}
-            <div class="[&>svg]:max-w-full">
-              <PaymentMethodLogo
-                {method}
-                width="auto"
-                height={method.includes('KLARNA') ? '21' : '25'}
-                darkModeSupport={true}
-              />
-            </div>
-          {/if}
-          {#if method && ['CARD', 'GOOGLE-PAY', 'APPLE-PAY'].includes(method)}
-            <div class="gap-1 hidden @xl:row-left">
-              <PaymentMethod size="sm" name="visa" />
-              <PaymentMethod size="sm" name="amex" />
-              <PaymentMethod size="sm" name="mastercard" />
-            </div>
-          {/if}
-        </Selection>
-      </SelectionGroup>
-    {/each}
-  </div>
+    <div class="grid @sm:grid-cols-2 w-full gap-2 auto-rows-fr">
+      {#each sortedPaymentMethods as paymentMethod, i (`${paymentMethod.provider}-${paymentMethod.method}`)}
+        {@const { provider, method } = paymentMethod}
+        <SelectionGroup>
+          <Selection
+            checked={!i}
+            id={`${provider}-${method}`}
+            name="payment-method"
+            onchange={() => selectPaymentMethod(paymentMethod)}
+          >
+            {#if method === 'CARD'}
+              <Icon name="card" class="text-2xl" />
+            {:else}
+              <div class="[&>svg]:max-w-full">
+                <PaymentMethodLogo
+                  {method}
+                  width="auto"
+                  height={method.includes('KLARNA') ? '21' : '25'}
+                  darkModeSupport={true}
+                />
+              </div>
+            {/if}
+            {#if method && ['CARD', 'GOOGLE-PAY', 'APPLE-PAY'].includes(method)}
+              <div class="gap-1 hidden @xl:row-left">
+                <PaymentMethod size="sm" name="visa" />
+                <PaymentMethod size="sm" name="amex" />
+                <PaymentMethod size="sm" name="mastercard" />
+              </div>
+            {/if}
+          </Selection>
+        </SelectionGroup>
+      {/each}
+    </div>
+  </Column>
 
   {#if errors}
     <div

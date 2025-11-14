@@ -6,6 +6,7 @@
 
   init({
     clientId: 'acme',
+    vendorId: 'acme',
     environment: 'dev',
     api: {
       namespace: 'sesamy'
