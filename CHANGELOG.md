@@ -1,3 +1,22 @@
+# [2.21.0](https://github.com/sesamyab/sesamy-components/compare/v2.20.9...v2.21.0) (2025-11-14)
+
+
+### Bug Fixes
+
+* PhoneNumberInput focus handling ([70b18e3](https://github.com/sesamyab/sesamy-components/commit/70b18e3f0a011d51606064ae0726a2442625939a))
+* sdk types ([96f79c0](https://github.com/sesamyab/sesamy-components/commit/96f79c08950fa2b7e8f2065e147b03fb9ae15aaa))
+* selection group layout ([fb353be](https://github.com/sesamyab/sesamy-components/commit/fb353bec1e97179fb135633922221f53cc229b13))
+* sesamy-js update ([e6f8e03](https://github.com/sesamyab/sesamy-components/commit/e6f8e039e713125a382fafd563dbfcac432698ea))
+* sesamy-js update and correct types ([4641842](https://github.com/sesamyab/sesamy-components/commit/46418421a2f40b42589092fda670721afb6a7d36))
+* storybook importmap ([dadf065](https://github.com/sesamyab/sesamy-components/commit/dadf065494986ddb74d726ea17a154b319272815))
+* temp extend checkout type ([f81dfb1](https://github.com/sesamyab/sesamy-components/commit/f81dfb1f090b83c00f02df45c2f021f292145811))
+* translations ([6802f4a](https://github.com/sesamyab/sesamy-components/commit/6802f4a3a59ddcdb4bfc942c83a052b6560b6a60))
+
+
+### Features
+
+* paywall gift mode ([7b79072](https://github.com/sesamyab/sesamy-components/commit/7b79072c20b1e663d521700c07a24f14e85f843b))
+
 ## [2.20.9](https://github.com/sesamyab/sesamy-components/compare/v2.20.8...v2.20.9) (2025-10-27)
 
 
