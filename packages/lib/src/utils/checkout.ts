@@ -1,4 +1,4 @@
-import type { Checkout } from '@sesamy/sesamy-js';
+import type { Checkout } from '@sesamy/sdk';
 
 export type PaymentMethodType = {
   provider: string;
@@ -13,7 +13,9 @@ export const goToCheckout = async (
   const checkoutURL = new URL(checkout.checkoutUrl);
 
   checkoutURL.searchParams.set('norecreate', 'true');
-  checkoutURL.searchParams.set('lang', checkout.language);
+  if (checkout.language) {
+    checkoutURL.searchParams.set('lang', checkout.language);
+  }
   checkoutURL.searchParams.set('redirect-url', checkout.redirectUrl);
   if (paymentMethod) {
     checkoutURL.searchParams.set('payment-method', paymentMethod.method);
