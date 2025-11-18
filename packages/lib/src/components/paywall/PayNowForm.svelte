@@ -170,11 +170,19 @@
       return;
     }
 
-    api.events.emit('sesamyPaywallCheckoutRedirect', {
-      checkoutId: checkout.id,
-      country,
-      paymentMethod
-    });
+    const redirectEvent = api.events.emit(
+      'sesamyPaywallCheckoutRedirect',
+      {
+        checkoutId: checkout.id,
+        country,
+        paymentMethod
+      },
+      true
+    );
+
+    if (redirectEvent.canceled) {
+      return;
+    }
 
     loading = true;
 
