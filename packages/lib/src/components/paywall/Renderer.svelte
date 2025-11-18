@@ -12,8 +12,7 @@
   import type { IconName } from '../../icons/types';
   import Subscriptions from './Subscriptions.svelte';
   import SinglePurchase from './SinglePurchase.svelte';
-  import type { SesamyAPI } from '@sesamy/sesamy-js';
-  import type { Checkout } from '@sesamy/sdk';
+  import type { SesamyAPI, Checkout } from '@sesamy/sesamy-js';
   import type { PaywallProps } from '../../types';
   import Error from '../Error.svelte';
   import PayNowForm from './PayNowForm.svelte';

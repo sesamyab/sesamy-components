@@ -1,4 +1,4 @@
-import type { Checkout } from '@sesamy/sdk';
+import type { Checkout } from '@sesamy/sesamy-js';
 
 export type PaymentMethodType = {
   provider: string;
