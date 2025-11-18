@@ -93,7 +93,7 @@
       : { sku: product.sku, purchaseOptionId: product.poId };
 
     try {
-      checkout = await api.checkouts.create({
+      const checkoutPayload = {
         items: [item],
         requestedDiscountCodes: product.discountCode ? [product.discountCode] : undefined,
         redirectUrl,
@@ -105,10 +105,27 @@
           utmCampaign: userProps?.['utm-campaign'],
           utmTerm: userProps?.['utm-term'],
           utmContent: userProps?.['utm-content'],
-          source: 'PAYWALL',
+          source: 'PAYWALL' as const,
           sourceId: paywall.id
         }
-      });
+      };
+
+      const event = api.events.emit(
+        'sesamyPaywallCreateCheckout',
+        {
+          payload: checkoutPayload,
+          product,
+          paywallId: paywall.id
+        },
+        true
+      );
+
+      if (event.canceled) {
+        loading = false;
+        return;
+      }
+
+      checkout = await api.checkouts.create(checkoutPayload);
 
       api.events.emit('sesamyPaywallProductSelected', {
         product,
