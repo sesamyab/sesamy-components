@@ -7,8 +7,7 @@
   import Input from '../Input.svelte';
   import InputGroup from '../InputGroup.svelte';
   import Select from '../Select.svelte';
-  import type { Checkout } from '@sesamy/sdk';
-  import type { SesamyAPI } from '@sesamy/sesamy-js';
+  import type { SesamyAPI, Checkout } from '@sesamy/sesamy-js';
   import Selection from './Selection.svelte';
   import SelectionGroup from './SelectionGroup.svelte';
   import PaymentMethod from '../PaymentMethod.svelte';
@@ -171,11 +170,19 @@
       return;
     }
 
-    api.events.emit('sesamyPaywallCheckoutRedirect', {
-      checkoutId: checkout.id,
-      country,
-      paymentMethod
-    });
+    const redirectEvent = api.events.emit(
+      'sesamyPaywallCheckoutRedirect',
+      {
+        checkoutId: checkout.id,
+        country,
+        paymentMethod
+      },
+      true
+    );
+
+    if (redirectEvent.canceled) {
+      return;
+    }
 
     loading = true;
 
