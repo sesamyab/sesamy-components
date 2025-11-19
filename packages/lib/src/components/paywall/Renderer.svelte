@@ -12,8 +12,7 @@
   import type { IconName } from '../../icons/types';
   import Subscriptions from './Subscriptions.svelte';
   import SinglePurchase from './SinglePurchase.svelte';
-  import type { SesamyAPI } from '@sesamy/sesamy-js';
-  import type { Checkout } from '@sesamy/sdk';
+  import type { SesamyAPI, Checkout } from '@sesamy/sesamy-js';
   import type { PaywallProps } from '../../types';
   import Error from '../Error.svelte';
   import PayNowForm from './PayNowForm.svelte';
@@ -94,7 +93,7 @@
       : { sku: product.sku, purchaseOptionId: product.poId };
 
     try {
-      checkout = await api.checkouts.create({
+      const checkoutPayload = {
         items: [item],
         requestedDiscountCodes: product.discountCode ? [product.discountCode] : undefined,
         redirectUrl,
@@ -106,10 +105,27 @@
           utmCampaign: userProps?.['utm-campaign'],
           utmTerm: userProps?.['utm-term'],
           utmContent: userProps?.['utm-content'],
-          source: 'PAYWALL',
+          source: 'PAYWALL' as const,
           sourceId: paywall.id
         }
-      });
+      };
+
+      const event = api.events.emit(
+        'sesamyPaywallCreateCheckout',
+        {
+          payload: checkoutPayload,
+          product,
+          paywallId: paywall.id
+        },
+        true
+      );
+
+      if (event.canceled) {
+        loading = false;
+        return;
+      }
+
+      checkout = await api.checkouts.create(checkoutPayload);
 
       api.events.emit('sesamyPaywallProductSelected', {
         product,
