@@ -1,3 +1,13 @@
+## [2.21.1](https://github.com/sesamyab/sesamy-components/compare/v2.21.0...v2.21.1) (2025-11-19)
+
+
+### Bug Fixes
+
+* cancelable sesamyPaywallCheckoutRedirect event ([44484d5](https://github.com/sesamyab/sesamy-components/commit/44484d5c2deef2269da635d4da7ee945c0052dd0))
+* sesamyPaywallCreateCheckout event ([32bda0f](https://github.com/sesamyab/sesamy-components/commit/32bda0f6c19de67afd1c21cd000a4145b47c542c))
+* storybook build ([e6d9c73](https://github.com/sesamyab/sesamy-components/commit/e6d9c73961c9ebc01860b39f104a2258279aa301))
+* update sesamy-js with types and rem sdk dep ([98209e1](https://github.com/sesamyab/sesamy-components/commit/98209e1bd16fc0614c66d33e3ce0dca10775b687))
+
 # [2.21.0](https://github.com/sesamyab/sesamy-components/compare/v2.20.9...v2.21.0) (2025-11-14)
 
 
