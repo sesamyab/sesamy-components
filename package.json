@@ -112,7 +112,7 @@
     "dist/lib"
   ],
   "peerDependencies": {
-    "@sesamy/sesamy-js": "1.57.0"
+    "@sesamy/sesamy-js": "1.62.0"
   },
   "dependencies": {
     "@zootools/email-spell-checker": "^1.12.0",
