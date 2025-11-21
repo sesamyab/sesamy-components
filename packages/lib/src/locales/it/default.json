@@ -17,6 +17,8 @@
   "invalid_birth_month": "Mese non valido",
   "invalid_birth_year": "Anno non valido",
   "invalid_email": "Indirizzo e-mail non valido",
+  "invalid_phone_number": "Numero di telefono non valido",
+  "is_gift": "Regalo",
   "last_name": "Cognome",
   "last_name_required": "Il cognome è obbligatorio",
   "login": "Accesso",
@@ -24,14 +26,18 @@
   "logout": "Disconnettersi",
   "month": "Mese",
   "my_account": "Il mio account",
+  "not_gift": "Comprati",
   "pay_now": "Paga ora",
   "phone_number": "Numero di telefono",
   "phone_number_required": "Il numero di telefono è richiesto",
+  "powered_by_sesamy": "Pagamenti, paywall e abbonamenti alimentati dalla <0>piattaforma di abbonamento Sesamy</0>.",
   "read_more": "Per saperne di più",
+  "recipient_details": "I dati del destinatario",
   "referral_email": "Email di rinvio",
   "referral_email_required": "L'e-mail di riferimento è necessaria",
   "secure_payment": "Pagamento sicuro con crittografia SSL",
   "something_went_wrong": "Qualcosa è andato storto",
   "user_already_owns_item": "Possiedi già questo prodotto",
-  "year": "Anno"
+  "year": "Anno",
+  "your_details": "I vostri dati"
 }

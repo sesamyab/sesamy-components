@@ -17,6 +17,8 @@
   "invalid_birth_month": "Neplatný měsíc",
   "invalid_birth_year": "Nesprávný rok",
   "invalid_email": "Neplatná e-mailová adresa",
+  "invalid_phone_number": "Neplatné telefonní číslo",
+  "is_gift": "Darujte dárek",
   "last_name": "Příjmení",
   "last_name_required": "Příjmení je povinné",
   "login": "Přihlášení",
@@ -24,14 +26,18 @@
   "logout": "Odhlášení",
   "month": "Měsíc",
   "my_account": "Můj účet",
+  "not_gift": "Kupte si pro sebe",
   "pay_now": "Zaplaťte nyní",
   "phone_number": "Telefonní číslo",
   "phone_number_required": "Vyžaduje se telefonní číslo",
+  "powered_by_sesamy": "Platby, paywall a předplatné poháněné platformou <0>Sesamy subscription platform</0>.",
   "read_more": "Přečtěte si více",
+  "recipient_details": "Údaje o příjemci",
   "referral_email": "Doporučující e-mail",
   "referral_email_required": "Je vyžadován doporučující e-mail",
   "secure_payment": "Bezpečná platba šifrovaná pomocí SSL",
   "something_went_wrong": "Něco se pokazilo",
   "user_already_owns_item": "Tento produkt již vlastníte",
-  "year": "Rok"
+  "year": "Rok",
+  "your_details": "Vaše údaje"
 }

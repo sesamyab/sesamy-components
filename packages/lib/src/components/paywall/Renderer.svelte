@@ -8,12 +8,12 @@
   import { twMerge } from 'tailwind-merge';
   import type { TranslationFunction } from '../../i18n';
   import { hexToHsl } from '../../utils/color';
-  import type { Paywall, PaywallSubscription } from 'src/types/Paywall';
-  import type { IconName } from 'src/icons/types';
+  import type { Paywall, PaywallSubscription } from '../../types/Paywall';
+  import type { IconName } from '../../icons/types';
   import Subscriptions from './Subscriptions.svelte';
   import SinglePurchase from './SinglePurchase.svelte';
   import type { SesamyAPI, Checkout } from '@sesamy/sesamy-js';
-  import type { PaywallProps } from 'src/types';
+  import type { PaywallProps } from '../../types';
   import Error from '../Error.svelte';
   import PayNowForm from './PayNowForm.svelte';
   import NotLoggedIn from '../NotLoggedIn.svelte';
@@ -93,8 +93,7 @@
       : { sku: product.sku, purchaseOptionId: product.poId };
 
     try {
-      checkout = await api.checkouts.create({
-        vendorId,
+      const checkoutPayload = {
         items: [item],
         requestedDiscountCodes: product.discountCode ? [product.discountCode] : undefined,
         redirectUrl,
@@ -106,10 +105,27 @@
           utmCampaign: userProps?.['utm-campaign'],
           utmTerm: userProps?.['utm-term'],
           utmContent: userProps?.['utm-content'],
-          source: 'PAYWALL',
+          source: 'PAYWALL' as const,
           sourceId: paywall.id
         }
-      });
+      };
+
+      const event = api.events.emit(
+        'sesamyPaywallCreateCheckout',
+        {
+          payload: checkoutPayload,
+          product,
+          paywallId: paywall.id
+        },
+        true
+      );
+
+      if (event.canceled) {
+        loading = false;
+        return;
+      }
+
+      checkout = await api.checkouts.create(checkoutPayload);
 
       api.events.emit('sesamyPaywallProductSelected', {
         product,
@@ -161,21 +177,44 @@
     }
   }
 
-  const paywallBgColor = styling?.backgroundColor || '#FFFFFF';
-  const darkMode = styling?.showBackground && hexToHsl(paywallBgColor)[2] < 50;
-  const paywallTextColor = darkMode ? '#FFFFFF' : '#000000';
+  const paywallBgColor =
+    styling?.showBackground && styling?.backgroundColor ? styling.backgroundColor : '#FFFFFF';
+  const autoDarkMode = styling?.showBackground && hexToHsl(paywallBgColor)[2] < 50;
+  const paywallTextColor = autoDarkMode ? '#FFFFFF' : '#000000';
+  const autoBtnColor = hexToHsl(mainColor)[2] < 60 ? '#FFFFFF' : '#000000';
+
+  let darkMode = $state(autoDarkMode);
 
   let sesamyPaywallDesignTokens = `
     :host * {
       --s-primary-color: var(--sesamy-paywall-primary-color, ${mainColor});
       --s-paywall-bg-color: var(--sesamy-paywall-bg-color, ${paywallBgColor});
       --s-paywall-text-color: var(--sesamy-paywall-text-color, ${paywallTextColor});
+      --s-paywall-text-color-70: var(--s-paywall-text-color);
+      --s-paywall-text-color-70: color-mix(in srgb, var(--s-paywall-text-color) 70%, transparent);
       --s-paywall-border-radius: var(--sesamy-paywall-border-radius, 0.5rem);
       --s-paywall-border-radius-desktop: var(--sesamy-paywall-border-radius-desktop, calc(var(--s-paywall-border-radius) * 3));
+      --s-paywall-theme: var(--sesamy-paywall-theme, ${autoDarkMode ? 'dark' : 'light'});
+      --s-paywall-btn-bg-color: var(--sesamy-paywall-btn-bg-color, var(--s-primary-color));
+      --s-paywall-btn-text-color: var(--sesamy-paywall-btn-text-color, ${autoBtnColor});
     }
   `;
 
   let style = '<sty' + 'le>' + sesamyPaywallDesignTokens + '</style>';
+
+  // Check for dark mode override from CSS variable
+  $effect(() => {
+    const computedStyle = getComputedStyle(host);
+    const darkModeVar = computedStyle.getPropertyValue('--sesamy-paywall-theme').trim();
+
+    if (darkModeVar === 'dark') {
+      darkMode = true;
+    } else if (darkModeVar === 'light') {
+      darkMode = false;
+    } else {
+      darkMode = autoDarkMode;
+    }
+  });
 </script>
 
 {#await checkAccess() then hasAccess}
@@ -183,9 +222,7 @@
     <div class="@container">
       <Column
         class={twMerge(
-          'w-full py-4 @md:py-6 rounded-[var(--s-paywall-border-radius)] @xl:rounded-[var(--s-paywall-border-radius-desktop)]',
-          styling?.showBackground &&
-            'bg-[var(--s-paywall-bg-color)] text-[var(--s-paywall-text-color)]',
+          'w-full py-4 @md:py-6 rounded-[var(--s-paywall-border-radius)] @xl:rounded-[var(--s-paywall-border-radius-desktop)] bg-[var(--s-paywall-bg-color)] text-[var(--s-paywall-text-color)]',
           styling?.showBackground && styling?.dropShadow && 'shadow-md @xl:shadow-lg',
           darkMode && 'dark'
         )}
@@ -235,7 +272,7 @@
           {/if}
 
           {#if checkout && !product?.preferBusiness}
-            <PayNowForm {api} {checkout} {t} {onResetCheckout} />
+            <PayNowForm {api} {paywall} {checkout} {t} {onResetCheckout} />
           {:else}
             <form class="contents" onsubmit={createCheckout}>
               {#if subscriptions.length}
@@ -264,7 +301,12 @@
                   />
                 {/if}
 
-                <Button {loading} disabled={loading} class="mt-2 w-full shadow-md" type="submit">
+                <Button
+                  {loading}
+                  disabled={loading}
+                  class="mt-2 w-full shadow-md bg-[var(--s-paywall-btn-bg-color)] text-[var(--s-paywall-btn-text-color)]"
+                  type="submit"
+                >
                   {t('continue')}
                 </Button>
               {/if}
@@ -274,9 +316,15 @@
             <Error text={error} />
           {/if}
 
-          <div class="column gap-4 @md:row !justify-between w-full mt-4 @md:mt-8">
-            <Row class="gap-2 text-[#5F6D85] dark:text-gray-400 text-xs">
-              <Icon name="lock" />{t('secure_payment')}
+          <div class="gap-3 row !justify-between w-full mt-4 @md:mt-8">
+            <Row up left class="gap-2 text-xs !flex-nowrap text-[var(--s-paywall-text-color-70)]">
+              <Icon name="lock" class="my-px" />
+              <span>
+                {@html t('powered_by_sesamy', {
+                  0: (text) =>
+                    `<a class="whitespace-nowrap text-[var(--s-paywall-text-color)]" href="https://sesamy.com/?utm_source=${encodeURIComponent(vendorId)}&utm_medium=referral&utm_campaign=paywall_component" target="_blank" rel="noopener">${text}</a>`
+                })}
+              </span>
             </Row>
             <Row class="gap-2">
               {#each footerPaymentMethods as IconName[] as paymentMethod}

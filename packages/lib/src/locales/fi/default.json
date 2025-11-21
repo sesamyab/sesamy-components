@@ -17,6 +17,8 @@
   "invalid_birth_month": "Virheellinen kuukausi",
   "invalid_birth_year": "Virheellinen vuosi",
   "invalid_email": "Virheellinen sähköpostiosoite",
+  "invalid_phone_number": "Virheellinen puhelinnumero",
+  "is_gift": "Anna lahjaksi",
   "last_name": "Sukunimi",
   "last_name_required": "Sukunimi vaaditaan",
   "login": "Kirjaudu sisään",
@@ -24,14 +26,18 @@
   "logout": "Kirjaudu ulos",
   "month": "Kuukausi",
   "my_account": "Tilini",
+  "not_gift": "Osta itsellesi",
   "pay_now": "Maksa nyt",
   "phone_number": "Puhelinnumero",
   "phone_number_required": "Puhelinnumero vaaditaan",
+  "powered_by_sesamy": "Maksut, maksuseinät ja tilaukset, joita tukee <0>Sesamy-tilausalusta</0>.",
   "read_more": "Lue lisää",
+  "recipient_details": "Vastaanottajan tiedot",
   "referral_email": "Suosittelusähköposti",
   "referral_email_required": "Suosittelusähköposti vaaditaan",
   "secure_payment": "Turvallinen SSL-salattu maksu",
   "something_went_wrong": "Jokin meni pieleen",
   "user_already_owns_item": "Omistat jo tämän tuotteen",
-  "year": "Vuosi"
+  "year": "Vuosi",
+  "your_details": "Tietosi"
 }

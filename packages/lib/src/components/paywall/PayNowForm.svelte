@@ -1,18 +1,19 @@
 <script lang="ts">
+  import flagstyles from '../../flags.css?inline';
+  import flagsImage from '../../flags_responsive.png?url';
   import { getCountriesOptions } from '../../utils/countries';
   import Button from '../../Button.wc.svelte';
   import type { TranslationFunction } from '../../i18n';
   import Input from '../Input.svelte';
   import InputGroup from '../InputGroup.svelte';
   import Select from '../Select.svelte';
-  import type { Checkout, SesamyAPI } from '@sesamy/sesamy-js';
+  import type { SesamyAPI, Checkout } from '@sesamy/sesamy-js';
   import Selection from './Selection.svelte';
   import SelectionGroup from './SelectionGroup.svelte';
   import PaymentMethod from '../PaymentMethod.svelte';
   import Icon from '../Icon.svelte';
   import Row from '../Row.svelte';
   import { isValidEmail } from '../../utils/email';
-  import Error from '../Error.svelte';
   import Column from '../Column.svelte';
   import { isSupportingApplePay, isSupportingGooglePay } from '../../utils/browser-support';
   import emailSpellChecker from '@zootools/email-spell-checker';
@@ -21,15 +22,20 @@
   import PaymentMethodLogo from '../PaymentMethodLogo.svelte';
   import { twMerge } from 'tailwind-merge';
   import BirthDateInput from '../BirthDateInput.svelte';
+  import { PAYMENT_METHODS_SORT_ORDER } from '../../constants/payment-methods';
+  import PhoneNumberInput from '../PhoneNumberInput.svelte';
+  import type { CountryCode } from 'svelte-tel-input/types';
+  import type { Paywall } from '../../types/Paywall';
 
   type Props = {
     api: SesamyAPI;
     t: TranslationFunction;
+    paywall: Paywall;
     checkout: Checkout;
     onResetCheckout: () => void;
   };
 
-  let { api, t, checkout, onResetCheckout }: Props = $props();
+  let { api, t, paywall, checkout, onResetCheckout }: Props = $props();
 
   const countries = getCountriesOptions(checkout.language).filter((country) => {
     // Filter out countries that are not allowed or blocked by the items in the checkout
@@ -48,7 +54,9 @@
   let firstName = $state('');
   let lastName = $state('');
   let phoneNumber = $state('');
+  let isValidPhoneNumber = $state(false);
   let country = $state(checkout.country || 'SE'); // Must provide a fallback value since `Checkout.country` is optional
+  let phoneCountry = $state<CountryCode>((checkout.country as CountryCode) || 'SE'); // Separate state for phone input country
   let birthYear = $state('');
   let birthMonth = $state('');
   let birthDay = $state('');
@@ -59,6 +67,8 @@
   let suggestionTimeout: any;
   let gotReferral = $state(false);
   let referralEmail = $state('');
+  let giftMode = $state(checkout.giftMode);
+  let payerEmail = $state('');
 
   $effect(() => {
     if (!countries.map((c) => c.value).includes(country)) {
@@ -82,12 +92,20 @@
       tempErrors.push(['email', 'invalid_email']);
     }
 
+    if (giftMode && !isValidEmail(payerEmail)) {
+      tempErrors.push(['payerEmail', 'invalid_email']);
+    }
+
     if (
       checkout?.fieldSettings?.phone?.enabled &&
       checkout?.fieldSettings?.phone?.required &&
       !phoneNumber
     ) {
       tempErrors.push(['phoneNumber', 'phone_number_required']);
+    }
+
+    if (checkout?.fieldSettings?.phone?.enabled && phoneNumber && !isValidPhoneNumber) {
+      tempErrors.push(['phoneNumber', 'invalid_phone_number']);
     }
 
     if (
@@ -152,11 +170,19 @@
       return;
     }
 
-    api.events.emit('sesamyPaywallCheckoutRedirect', {
-      checkoutId: checkout.id,
-      country,
-      paymentMethod
-    });
+    const redirectEvent = api.events.emit(
+      'sesamyPaywallCheckoutRedirect',
+      {
+        checkoutId: checkout.id,
+        country,
+        paymentMethod
+      },
+      true
+    );
+
+    if (redirectEvent.canceled) {
+      return;
+    }
 
     loading = true;
 
@@ -180,7 +206,8 @@
         givenName: firstName || undefined,
         familyName: lastName || undefined,
         birthDate,
-        referralEmail: gotReferral ? referralEmail : undefined
+        referralEmail: gotReferral ? referralEmail : undefined,
+        payerEmail: giftMode ? payerEmail : undefined
       });
 
       goToCheckout(checkout, paymentMethod);
@@ -198,25 +225,78 @@
     }
   };
 
-  const paymentMethods = checkout.availablePaymentMethods
-    .filter(({ provider }) => !['DUMMY', 'SESAMY', 'BILLOGRAM'].includes(provider))
-    .reduce(
-      (acc, { provider, methods }) => [
-        ...acc,
-        ...(methods?.length ? methods.map((method) => ({ provider, method })) : [])
-      ],
-      [] as PaymentMethodType[]
-    )
-    .filter(({ method }) => method !== 'STRIPE_KLARNA'); // Temporarily exclude STRIPE_KLARNA
+  const paymentMethods = checkout.availablePaymentMethods.reduce(
+    (acc, { provider, methods }) => [
+      ...acc,
+      ...(methods?.length && provider ? methods.map((method) => ({ provider, method })) : [])
+    ],
+    [] as PaymentMethodType[]
+  );
 
-  isSupportingGooglePay() && paymentMethods.push({ provider: 'STRIPE', method: 'GOOGLE-PAY' });
-  isSupportingApplePay() && paymentMethods.push({ provider: 'STRIPE', method: 'APPLE-PAY' });
+  // Add wallet payment methods if supported by browser
+  if (isSupportingGooglePay()) {
+    paymentMethods.push({ provider: 'STRIPE', method: 'GOOGLE-PAY' });
+  }
+  if (isSupportingApplePay()) {
+    paymentMethods.push({ provider: 'STRIPE', method: 'APPLE-PAY' });
+  }
 
-  paymentMethods.length && selectPaymentMethod(paymentMethods[0]);
+  // Remove KLARNA_PRIVATE if both STRIPE_KLARNA and KLARNA_PRIVATE are present
+  const hasStripeKlarna = paymentMethods.some((pm) => pm.method === 'STRIPE_KLARNA');
+  const hasKlarnaPrivate = paymentMethods.some((pm) => pm.method === 'KLARNA_PRIVATE');
+  if (hasStripeKlarna && hasKlarnaPrivate) {
+    const klarnaPrivateIndex = paymentMethods.findIndex((pm) => pm.method === 'KLARNA_PRIVATE');
+    if (klarnaPrivateIndex !== -1) {
+      paymentMethods.splice(klarnaPrivateIndex, 1);
+    }
+  }
+
+  // Filter and sort payment methods according to PAYMENT_METHODS_SORT_ORDER
+  const sortedPaymentMethods = PAYMENT_METHODS_SORT_ORDER.map((method) =>
+    paymentMethods.find((pm) => pm.method === method)
+  ).filter((pm) => pm !== undefined) as PaymentMethodType[];
+
+  sortedPaymentMethods.length && selectPaymentMethod(sortedPaymentMethods[0]);
 </script>
 
-<form class="contents" onsubmit={onSubmit}>
+<form class="contents" onsubmit={onSubmit} novalidate>
   <Column up left class="gap-2 w-full">
+    {#if paywall.settings.displayOptions?.enableGift}
+      <div
+        class="row w-full rounded-md bg-gray-200 dark:bg-black/25 dark:border dark:border-gray-800 p-1 gap-1 text-xs font-bold"
+      >
+        <button
+          class={twMerge('rounded-md px-3 py-2 flex-1', !giftMode && 'bg-white dark:bg-black/25')}
+          type="button"
+          onclick={() => (giftMode = false)}
+        >
+          {t('not_gift')}
+        </button>
+        <button
+          class={twMerge('rounded-md px-3 py-2 flex-1', giftMode && 'bg-white dark:bg-black/25')}
+          type="button"
+          onclick={() => (giftMode = true)}
+        >
+          {t('is_gift')}
+        </button>
+      </div>
+    {/if}
+
+    {#if giftMode}
+      <div class="text-sm uppercase font-bold pt-1 -mb-0.5">{t('your_details')}</div>
+      <InputGroup>
+        <Input
+          bind:value={payerEmail}
+          name="payer-email"
+          compact
+          placeholder={t('email')}
+          hasError={errors?.payerEmail}
+          onkeyup={() => (errors = undefined)}
+        />
+      </InputGroup>
+      <div class="text-sm uppercase font-bold pt-1 -mb-0.5">{t('recipient_details')}</div>
+    {/if}
+
     <InputGroup>
       <Input
         onkeyup={provideSuggestion}
@@ -225,6 +305,7 @@
         compact
         placeholder={t('email')}
         hasError={errors?.email}
+        autocomplete="email"
       />
       <Accordion isOpen={!!emailSuggestion}>
         <Row
@@ -255,13 +336,14 @@
         placeholder={t('country')}
       />
       {#if checkout?.fieldSettings?.phone?.enabled}
-        <Input
-          onkeyup={() => (errors = undefined)}
+        <PhoneNumberInput
           bind:value={phoneNumber}
+          bind:valid={isValidPhoneNumber}
+          bind:selectedCountry={phoneCountry}
+          {t}
+          hasError={!!errors?.phoneNumber}
+          onChange={() => (errors = undefined)}
           name="tel"
-          compact
-          placeholder={t('phone_number')}
-          hasError={errors?.phoneNumber}
         />
       {/if}
       {#if checkout?.fieldSettings?.name?.enabled}
@@ -272,6 +354,7 @@
           compact
           placeholder={t('first_name')}
           hasError={errors?.firstName}
+          autocomplete="given-name"
         />
         <Input
           onkeyup={() => (errors = undefined)}
@@ -280,6 +363,7 @@
           compact
           placeholder={t('last_name')}
           hasError={errors?.lastName}
+          autocomplete="family-name"
         />
       {/if}
     </InputGroup>
@@ -301,7 +385,7 @@
       <div class="w-full">
         <div
           class={twMerge(
-            'bg-white rounded-md border border-gray-200',
+            'bg-white rounded-md border border-gray-200 dark:bg-black/25 dark:border-gray-700',
             gotReferral && 'rounded-b-none'
           )}
         >
@@ -332,24 +416,27 @@
         </Accordion>
       </div>
     {/if}
-  </Column>
 
-  <div class="grid grid-cols-2 w-full gap-2 auto-rows-fr">
-    {#each paymentMethods as paymentMethod, i (`${paymentMethod.provider}-${paymentMethod.method}`)}
-      {@const { provider, method } = paymentMethod}
-      <SelectionGroup>
-        <Selection
-          checked={!i}
-          id={`${provider}-${method}`}
-          name="payment-method"
-          onchange={() => selectPaymentMethod(paymentMethod)}
-        >
-          <Row class="w-full !justify-between">
+    <div class="grid @sm:grid-cols-2 w-full gap-2 auto-rows-fr">
+      {#each sortedPaymentMethods as paymentMethod, i (`${paymentMethod.provider}-${paymentMethod.method}`)}
+        {@const { provider, method } = paymentMethod}
+        <SelectionGroup>
+          <Selection
+            checked={!i}
+            id={`${provider}-${method}`}
+            name="payment-method"
+            onchange={() => selectPaymentMethod(paymentMethod)}
+          >
             {#if method === 'CARD'}
               <Icon name="card" class="text-2xl" />
             {:else}
-              <div>
-                <PaymentMethodLogo {method} width="auto" height="25" />
+              <div class="[&>svg]:max-w-full">
+                <PaymentMethodLogo
+                  {method}
+                  width="auto"
+                  height={method.includes('KLARNA') ? '21' : '25'}
+                  darkModeSupport={true}
+                />
               </div>
             {/if}
             {#if method && ['CARD', 'GOOGLE-PAY', 'APPLE-PAY'].includes(method)}
@@ -359,15 +446,31 @@
                 <PaymentMethod size="sm" name="mastercard" />
               </div>
             {/if}
-          </Row>
-        </Selection>
-      </SelectionGroup>
-    {/each}
-  </div>
+          </Selection>
+        </SelectionGroup>
+      {/each}
+    </div>
+  </Column>
 
-  <Button {loading} disabled={loading} class="mt-2 w-full shadow-md" type="submit">
+  {#if errors}
+    <div
+      class="bg-white w-full dark:bg-black/25 border border-red-500 text-red-500 px-4 py-3 !text-sm rounded-md font-bold"
+    >
+      {#each Object.values(errors) as error}
+        <div>{t(error)}</div>
+      {/each}
+    </div>
+  {/if}
+
+  <Button
+    {loading}
+    disabled={loading}
+    class="mt-2 w-full shadow-md bg-[var(--s-paywall-btn-bg-color)] text-[var(--s-paywall-btn-text-color)]"
+    type="submit"
+  >
     {t('pay_now')}
   </Button>
+
   <button
     type="button"
     onclick={onResetCheckout}
@@ -378,10 +481,7 @@
   </button>
 </form>
 
-{#if errors}
-  <Column left>
-    {#each Object.values(errors) as error}
-      <Error text={t(error)} />
-    {/each}
-  </Column>
-{/if}
+{@html '<sty' +
+  'le>' +
+  flagstyles.replace('url(flags_responsive.png)', `url(${flagsImage})`) +
+  '</style>'}

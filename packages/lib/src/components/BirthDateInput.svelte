@@ -84,8 +84,12 @@
   };
 </script>
 
-<div class="bg-white w-full rounded-md border border-gray-200">
-  <div class="px-4 py-2 text-xs text-gray-600 font-bold">{t('date_of_birth')}</div>
+<div class="w-full rounded-md border border-gray-200 dark:border-gray-700">
+  <div
+    class="px-4 py-2 text-xs text-gray-600 font-bold dark:text-gray-100 bg-white dark:bg-black/25 rounded-t-md"
+  >
+    {t('date_of_birth')}
+  </div>
   <div class="grid grid-cols-3 w-[calc(100%+2px)] -m-px">
     <Input
       bind:this={birthYearInput}

@@ -17,6 +17,8 @@
   "invalid_birth_month": "Ugyldig måned",
   "invalid_birth_year": "Ugyldigt år",
   "invalid_email": "Ugyldig e-mailadresse",
+  "invalid_phone_number": "Ugyldigt telefonnummer",
+  "is_gift": "Giv en gave",
   "last_name": "Efternavn",
   "last_name_required": "Efternavn er påkrævet",
   "login": "Login",
@@ -24,14 +26,18 @@
   "logout": "Log ud",
   "month": "Måned",
   "my_account": "Min konto",
+  "not_gift": "Køb til dig",
   "pay_now": "Betal nu",
   "phone_number": "Telefonnummer",
   "phone_number_required": "Telefonnummer er påkrævet",
+  "powered_by_sesamy": "Betalinger, betalingsvæg og abonnementer via <0>Sesamys abonnementsplatform</0>.",
   "read_more": "Læs mere",
+  "recipient_details": "Modtagerens oplysninger",
   "referral_email": "Henvisnings-e-mail",
   "referral_email_required": "Henvisnings-e-mail er påkrævet",
   "secure_payment": "Sikker SSL-krypteret betaling",
   "something_went_wrong": "Noget gik galt",
   "user_already_owns_item": "Du ejer allerede dette produkt",
-  "year": "År"
+  "year": "År",
+  "your_details": "Dine oplysninger"
 }
