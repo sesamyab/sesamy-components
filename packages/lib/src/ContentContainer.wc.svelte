@@ -8,30 +8,22 @@
   let {
     'item-src': itemSrc = '',
     'publisher-content-id': publisherContentIdProp,
-    pass: passProp,
-    'access-level': accessLevelProp,
     'lock-mode': lockMode = 'embed',
     'locked-content-selector': lockedContentSelector
   }: ContentContainerProps = $props();
 
   async function checkAccess(api: SesamyAPI) {
-    const articleUrl = itemSrc || api.content.get($host())?.url || '';
-    const passes = passProp ? passProp.split(';') : api.content.get($host())?.pass?.split(';');
-    const accessLevel = accessLevelProp || api.content.get($host())?.accessLevel || 'entitlement';
-
-    api.log(
-      `Checking access for ${articleUrl} with passes: ${JSON.stringify(passes)}, articleUrl: ${articleUrl} and access level: ${accessLevel}`
-    );
-
-    switch (accessLevel) {
-      case 'public':
-        return true;
-      case 'logged-in':
-        return api.auth.isAuthenticated();
-      case 'entitlement':
-      default:
-        return api.entitlements.hasAccess(articleUrl, passes);
+    const content = api.content.get($host());
+    if (!content) {
+      api.log(`No content found for host`);
+      return false;
+    } else if (content.accessLevel === 'public') {
+      api.log(`Content is public`);
+      return true;
     }
+    api.log(`Checking access`);
+
+    return api.content.hasAccess($host());
   }
 
   function emitUnlockEvent(api: SesamyAPI) {

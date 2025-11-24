@@ -13,11 +13,10 @@ export default defineConfig({
     },
     outDir: 'dist/lib',
     rollupOptions: {
-      external: ['@sesamy/sesamy-js', '@sesamy/sdk'],
+      external: ['@sesamy/sesamy-js'],
       output: {
         globals: {
-          '@sesamy/sesamy-js': 'SesamyJS',
-          '@sesamy/sdk': 'SesamySDK'
+          '@sesamy/sesamy-js': 'SesamyJS'
         }
       }
     }

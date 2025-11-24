@@ -1,3 +1,186 @@
+## [2.21.1](https://github.com/sesamyab/sesamy-components/compare/v2.21.0...v2.21.1) (2025-11-19)
+
+
+### Bug Fixes
+
+* cancelable sesamyPaywallCheckoutRedirect event ([44484d5](https://github.com/sesamyab/sesamy-components/commit/44484d5c2deef2269da635d4da7ee945c0052dd0))
+* sesamyPaywallCreateCheckout event ([32bda0f](https://github.com/sesamyab/sesamy-components/commit/32bda0f6c19de67afd1c21cd000a4145b47c542c))
+* storybook build ([e6d9c73](https://github.com/sesamyab/sesamy-components/commit/e6d9c73961c9ebc01860b39f104a2258279aa301))
+* update sesamy-js with types and rem sdk dep ([98209e1](https://github.com/sesamyab/sesamy-components/commit/98209e1bd16fc0614c66d33e3ce0dca10775b687))
+
+# [2.21.0](https://github.com/sesamyab/sesamy-components/compare/v2.20.9...v2.21.0) (2025-11-14)
+
+
+### Bug Fixes
+
+* PhoneNumberInput focus handling ([70b18e3](https://github.com/sesamyab/sesamy-components/commit/70b18e3f0a011d51606064ae0726a2442625939a))
+* sdk types ([96f79c0](https://github.com/sesamyab/sesamy-components/commit/96f79c08950fa2b7e8f2065e147b03fb9ae15aaa))
+* selection group layout ([fb353be](https://github.com/sesamyab/sesamy-components/commit/fb353bec1e97179fb135633922221f53cc229b13))
+* sesamy-js update ([e6f8e03](https://github.com/sesamyab/sesamy-components/commit/e6f8e039e713125a382fafd563dbfcac432698ea))
+* sesamy-js update and correct types ([4641842](https://github.com/sesamyab/sesamy-components/commit/46418421a2f40b42589092fda670721afb6a7d36))
+* storybook importmap ([dadf065](https://github.com/sesamyab/sesamy-components/commit/dadf065494986ddb74d726ea17a154b319272815))
+* temp extend checkout type ([f81dfb1](https://github.com/sesamyab/sesamy-components/commit/f81dfb1f090b83c00f02df45c2f021f292145811))
+* translations ([6802f4a](https://github.com/sesamyab/sesamy-components/commit/6802f4a3a59ddcdb4bfc942c83a052b6560b6a60))
+
+
+### Features
+
+* paywall gift mode ([7b79072](https://github.com/sesamyab/sesamy-components/commit/7b79072c20b1e663d521700c07a24f14e85f843b))
+
+## [2.20.9](https://github.com/sesamyab/sesamy-components/compare/v2.20.8...v2.20.9) (2025-10-27)
+
+
+### Reverts
+
+* Revert "fix: temp remove stripe_klarna option" ([fcb69b0](https://github.com/sesamyab/sesamy-components/commit/fcb69b034eb6c7ca675170ac47fdfc10203e317b))
+
+## [2.20.8](https://github.com/sesamyab/sesamy-components/compare/v2.20.7...v2.20.8) (2025-10-27)
+
+
+### Bug Fixes
+
+* phonenumber input name attribute ([1ee2b72](https://github.com/sesamyab/sesamy-components/commit/1ee2b72dd7769d91856b6576532332187a9c5617))
+
+## [2.20.7](https://github.com/sesamyab/sesamy-components/compare/v2.20.6...v2.20.7) (2025-10-24)
+
+
+### Bug Fixes
+
+* always validate phonenr if present ([1ddf8cc](https://github.com/sesamyab/sesamy-components/commit/1ddf8cc44c4e133b5c5bdbdde2a8c5634ba27f76))
+
+## [2.20.6](https://github.com/sesamyab/sesamy-components/compare/v2.20.5...v2.20.6) (2025-10-24)
+
+
+### Bug Fixes
+
+* correct build handling external deps ([507b08c](https://github.com/sesamyab/sesamy-components/commit/507b08ca2a9aa4925d364bd105115e2c5be19e69))
+
+## [2.20.5](https://github.com/sesamyab/sesamy-components/compare/v2.20.4...v2.20.5) (2025-10-24)
+
+
+### Bug Fixes
+
+* paywall button color ([c635fda](https://github.com/sesamyab/sesamy-components/commit/c635fda9293fb5f08a0eabfbc714f57d064e51c9))
+* phone number validation ([b72f133](https://github.com/sesamyab/sesamy-components/commit/b72f133d9436cb421cb8f6f307850c1fb81ea6cd))
+
+## [2.20.4](https://github.com/sesamyab/sesamy-components/compare/v2.20.3...v2.20.4) (2025-10-23)
+
+
+### Bug Fixes
+
+* payment-method buttons responsiveness ([68f444a](https://github.com/sesamyab/sesamy-components/commit/68f444a5981c57818b527fe73a0e4bea12fa68cf))
+* temp remove stripe_klarna option ([f0c8fe8](https://github.com/sesamyab/sesamy-components/commit/f0c8fe868c395fabcbbbccba9a0fec7a393994b2))
+
+## [2.20.3](https://github.com/sesamyab/sesamy-components/compare/v2.20.2...v2.20.3) (2025-10-23)
+
+
+### Bug Fixes
+
+* better dark mode handling ([34a98c9](https://github.com/sesamyab/sesamy-components/commit/34a98c971c00da3d7bdf707fbfa09c298669846c))
+* set btn-color based on primary-color hsl ([e17f712](https://github.com/sesamyab/sesamy-components/commit/e17f712316f0c2457e10eb882b4226edbcbab88e))
+
+## [2.20.2](https://github.com/sesamyab/sesamy-components/compare/v2.20.1...v2.20.2) (2025-10-21)
+
+
+### Bug Fixes
+
+* enable stripe_klarna and set paymentmethods sort order ([9784eb9](https://github.com/sesamyab/sesamy-components/commit/9784eb9c9df6c57cdd82dc535698ff2eaa7c6cd1))
+
+## [2.20.1](https://github.com/sesamyab/sesamy-components/compare/v2.20.0...v2.20.1) (2025-10-06)
+
+
+### Bug Fixes
+
+* powered by link dark mode ([99f8b03](https://github.com/sesamyab/sesamy-components/commit/99f8b033caf529fd880bae511ed6474552972dbc))
+
+# [2.20.0](https://github.com/sesamyab/sesamy-components/compare/v2.19.2...v2.20.0) (2025-10-06)
+
+
+### Bug Fixes
+
+* rem hardcoded paymentmethod logo ([c4800ce](https://github.com/sesamyab/sesamy-components/commit/c4800ce08b70696b9c356e5f5747a11779cbed9d))
+* update translations ([1ede52c](https://github.com/sesamyab/sesamy-components/commit/1ede52cdab8f1252e6db82f9feb623b3e0475f40))
+
+
+### Features
+
+* powered by sesamy link ([69c54c9](https://github.com/sesamyab/sesamy-components/commit/69c54c99c7f5b6de3ef2198845b96f71cc1c0b38))
+
+## [2.19.2](https://github.com/sesamyab/sesamy-components/compare/v2.19.1...v2.19.2) (2025-09-19)
+
+
+### Bug Fixes
+
+* klarna payment method logo ([39655fc](https://github.com/sesamyab/sesamy-components/commit/39655fc0441d59c119c8eea7b4f641366ed37133))
+
+## [2.19.1](https://github.com/sesamyab/sesamy-components/compare/v2.19.0...v2.19.1) (2025-09-09)
+
+
+### Bug Fixes
+
+* html parse single purchase description ([0f552fb](https://github.com/sesamyab/sesamy-components/commit/0f552fbab957d1c91cdf004fcd9c790fdbb5124a))
+
+# [2.19.0](https://github.com/sesamyab/sesamy-components/compare/v2.18.2...v2.19.0) (2025-09-07)
+
+
+### Bug Fixes
+
+* playwright cron job ([6cd8b27](https://github.com/sesamyab/sesamy-components/commit/6cd8b2701712b21dcc6bed877cada0b7e82ddd54))
+
+
+### Features
+
+* read more link & markdown description ([a2066f7](https://github.com/sesamyab/sesamy-components/commit/a2066f7e84b34c7b0a7a5ffcb35c38f8a82b12d6))
+
+## [2.18.2](https://github.com/sesamyab/sesamy-components/compare/v2.18.1...v2.18.2) (2025-08-28)
+
+
+### Bug Fixes
+
+* centralize component registration ([2ae2cad](https://github.com/sesamyab/sesamy-components/commit/2ae2cadd223b37f5fa9f1d9420045f66c2cbec09))
+* slots and features handling in paywall ([162844d](https://github.com/sesamyab/sesamy-components/commit/162844d35d8bb79a0812b9b878fd047cc1493f3c))
+* temp exclude stripe_klarna payment method ([105c6ea](https://github.com/sesamyab/sesamy-components/commit/105c6eadf6464923b52159bfd1fdd649d7b88226))
+
+## [2.18.1](https://github.com/sesamyab/sesamy-components/compare/v2.18.0...v2.18.1) (2025-08-21)
+
+
+### Bug Fixes
+
+* add fieldsettings check ([9fbe586](https://github.com/sesamyab/sesamy-components/commit/9fbe5869f6160933a0ab9629663efd5ea7570be9))
+
+# [2.18.0](https://github.com/sesamyab/sesamy-components/compare/v2.17.1...v2.18.0) (2025-08-21)
+
+
+### Features
+
+* add birthdate & referralEmail to paywall ([40a7310](https://github.com/sesamyab/sesamy-components/commit/40a7310836577f4d0746a837c14b33de42604c97))
+
+## [2.17.1](https://github.com/sesamyab/sesamy-components/compare/v2.17.0...v2.17.1) (2025-08-15)
+
+
+### Bug Fixes
+
+* actually send name and phonenr to checkout ([fab8c48](https://github.com/sesamyab/sesamy-components/commit/fab8c483afcaf262d17c88e5f24956e6207d1839))
+
+# [2.17.0](https://github.com/sesamyab/sesamy-components/compare/v2.16.1...v2.17.0) (2025-07-03)
+
+
+### Bug Fixes
+
+* support zero prices ([693506b](https://github.com/sesamyab/sesamy-components/commit/693506b768b38f2ea0f881d40b9b99b64d18974d))
+
+
+### Features
+
+* paywall step2 back button ([5fead45](https://github.com/sesamyab/sesamy-components/commit/5fead45c6026ac760b75212a52ccdfc1ec2f1233))
+
+## [2.16.1](https://github.com/sesamyab/sesamy-components/compare/v2.16.0...v2.16.1) (2025-06-27)
+
+
+### Bug Fixes
+
+* use popup if incognito ([2d839ff](https://github.com/sesamyab/sesamy-components/commit/2d839ff93a009d4c18bf08c44d3e6e29bb689e5c))
+
 # [2.16.0](https://github.com/sesamyab/sesamy-components/compare/v2.15.0...v2.16.0) (2025-06-16)
 
 

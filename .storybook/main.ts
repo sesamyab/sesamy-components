@@ -21,10 +21,6 @@ const config: StorybookConfig = {
             {
               src: 'node_modules/@sesamy/sesamy-js/dist/sesamy-js.mjs',
               dest: 'assets'
-            },
-            {
-              src: 'node_modules/@sesamy/sdk/dist/sdk.mjs',
-              dest: 'assets'
             }
           ]
         })
