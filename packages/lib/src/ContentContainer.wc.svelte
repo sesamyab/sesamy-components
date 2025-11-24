@@ -13,6 +13,14 @@
   }: ContentContainerProps = $props();
 
   async function checkAccess(api: SesamyAPI) {
+    const content = api.content.get($host());
+    if (!content) {
+      api.log(`No content found for host`);
+      return false;
+    } else if (content.accessLevel === 'public') {
+      api.log(`Content is public`);
+      return true;
+    }
     api.log(`Checking access`);
 
     return api.content.hasAccess($host());
