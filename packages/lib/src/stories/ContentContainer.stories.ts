@@ -77,10 +77,12 @@ export const PublicContent: Story = {
   render: (args) =>
     html` <div>
       <sesamy-login></sesamy-login>
-      <sesamy-content-container access-level="public">
-        <div slot="preview">This is should not be visible</div>
-        <div slot="content">This is visible all users</div>
-      </sesamy-content-container>
+      <sesamy-article item-src="https://sesamy-js.sesamy.dev/article.html">
+        <sesamy-content-container access-level="public">
+          <div slot="preview">This is should not be visible</div>
+          <div slot="content">This is visible all users</div>
+        </sesamy-content-container>
+      </sesamy-article>
     </div>`
 };
 
