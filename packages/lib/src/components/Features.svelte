@@ -20,8 +20,4 @@
       </div>
     </li>
   {/each}
-  <li class="row-up-left gap-2" transition:slide>
-    <Icon class="text-primary text-[0.9em] mt-0.5" name="checkmark" />
-    <div class={twMerge('flex-1 leading-snug')}>dfgdfgdf</div>
-  </li>
 </ul>
