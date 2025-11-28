@@ -40,12 +40,19 @@
       redirectUrl,
       business: product.preferBusiness
     });
+
+  const hasAnyDisountedPrice = () =>
+    subscriptions.some(
+      (subscription) =>
+        typeof subscription.discountPrice === 'number' &&
+        subscription.discountPrice < (subscription.price || Infinity)
+    );
 </script>
 
 <SelectionGroup
   class={twMerge(
     horizontal && '@xl:grid-cols-3',
-    horizontal && subscriptions.length === 4 && '@xl:grid-cols-2 @4xl:grid-cols-4',
+    horizontal && subscriptions.length === 4 && '@xl:grid-cols-2 @7xl:grid-cols-4',
     horizontal && subscriptions.length === 2 && '@xl:grid-cols-2',
     horizontal && subscriptions.length === 1 && 'flex'
   )}
@@ -85,45 +92,29 @@
           <Column class="@xl:p-1" left>
             <div class="text-base @xl:text-lg font-bold leading-tight">{title}</div>
             {#if hasPrice}
-              <Column class="mb-0 @xl:mb-4" left>
-                {#if hasDiscountPrice}
-                  <div class="leading-none">
-                    <span class="font-bold text-2xl @xl:text-4xl whitespace-nowrap">
-                      {discountPrice}
-                      {currency}
-                    </span>
-                    {#if periodText}
-                      {' '}<span class="text-xl @xl:text-2xl whitespace-nowrap">/ {periodText}</span
-                      >
+              <div class="mb-3">
+                <div>
+                  <span class="font-bold text-xl @xl:text-2xl whitespace-nowrap">
+                    {hasDiscountPrice ? discountPrice : price}
+                    {currency}
+                  </span>
+                  <span class="font-bold whitespace-nowrap">{periodText && ` / ${periodText}`}</span
+                  >
+                </div>
+                {#if hasAnyDisountedPrice()}
+                  <div class="h-5">
+                    {#if hasDiscountPrice}
+                      <div class="text-sm text-gray-500 line-through">
+                        {price}
+                        {currency}
+                        {#if periodText}
+                          {' '}/ {periodText}
+                        {/if}
+                      </div>
                     {/if}
                   </div>
                 {/if}
-                <div class="relative leading-tight">
-                  <span
-                    class={twMerge(
-                      'font-bold text-2xl @xl:text-4xl',
-                      hasDiscountPrice && 'text-xl @xl:text-2xl text-gray-400'
-                    )}
-                  >
-                    {price}
-                    {currency}
-                  </span>
-                  <span
-                    class={twMerge(
-                      'text-xl @xl:text-2xl whitespace-nowrap',
-                      hasDiscountPrice && 'text-base @xl:text-lg text-gray-400'
-                    )}
-                  >
-                    {periodText && ` / ${periodText}`}
-                  </span>
-                  <div
-                    class={twMerge(
-                      'hidden absolute top-1/2 left-0 right-0 h-px bg-gray-400',
-                      hasDiscountPrice && 'block'
-                    )}
-                  ></div>
-                </div>
-              </Column>
+              </div>
             {/if}
 
             {#if description && (!features || features.length < 1)}
@@ -132,12 +123,12 @@
                 {readMoreLink}
                 {readMoreText}
                 {t}
-                class="text-gray-700 dark:text-gray-300"
+                class="text-gray-700 dark:text-gray-300 text-sm"
               />
             {/if}
 
             {#if features && features.length > 0}
-              <Features {features} />
+              <Features {features} class="text-gray-700 dark:text-gray-300 text-sm" />
             {/if}
           </Column>
 
