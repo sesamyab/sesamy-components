@@ -40,12 +40,19 @@
       redirectUrl,
       business: product.preferBusiness
     });
+
+  const hasAnyDiscountedPrice = () =>
+    subscriptions.some(
+      (subscription) =>
+        typeof subscription.discountPrice === 'number' &&
+        subscription.discountPrice < (subscription.price || Infinity)
+    );
 </script>
 
 <SelectionGroup
   class={twMerge(
     horizontal && '@xl:grid-cols-3',
-    horizontal && subscriptions.length === 4 && '@xl:grid-cols-2 @4xl:grid-cols-4',
+    horizontal && subscriptions.length === 4 && '@xl:grid-cols-2 @7xl:grid-cols-4',
     horizontal && subscriptions.length === 2 && '@xl:grid-cols-2',
     horizontal && subscriptions.length === 1 && 'flex'
   )}
@@ -71,97 +78,84 @@
     {@const hasDiscountPrice = typeof discountPrice === 'number'}
 
     {#if horizontal}
-      <Column
-        class={twMerge(
-          'border bg-white dark:bg-black/25 border-gray-300 rounded-lg relative',
-          tag && 'border-primary mt-0 border-2'
-        )}
-      >
-        {#if tag}
-          <Tag text={tag} {t} chunky />
-        {/if}
+      <div class="@container/box">
+        <Column
+          class={twMerge(
+            'border bg-white dark:bg-black/25 border-gray-300 rounded-lg relative h-full',
+            tag && 'border-primary mt-0 border-2'
+          )}
+        >
+          {#if tag}
+            <Tag text={tag} {t} chunky />
+          {/if}
 
-        <Column class="p-4 flex-1 gap-2 w-full !justify-between shadow-md" left up>
-          <Column class="@xl:p-1" left>
-            <div class="text-base @xl:text-lg font-bold leading-tight">{title}</div>
-            {#if hasPrice}
-              <Column class="mb-0 @xl:mb-4" left>
-                {#if hasDiscountPrice}
-                  <div class="leading-none">
-                    <span class="font-bold text-2xl @xl:text-4xl whitespace-nowrap">
-                      {discountPrice}
+          <Column class="p-4 flex-1 gap-2 w-full !justify-between shadow-md" left up>
+            <Column class="@xl:p-1" left>
+              <div class="text-base @xl:text-lg font-bold leading-tight">{title}</div>
+              {#if hasPrice}
+                <div class="mb-3">
+                  <div>
+                    <span class="font-bold text-2xl @xs/box:text-3xl whitespace-nowrap">
+                      {hasDiscountPrice ? discountPrice : price}
                       {currency}
                     </span>
-                    {#if periodText}
-                      {' '}<span class="text-xl @xl:text-2xl whitespace-nowrap">/ {periodText}</span
-                      >
-                    {/if}
+                    <span class="font-bold whitespace-nowrap @xs/box:text-lg">
+                      {periodText && ` / ${periodText}`}
+                    </span>
                   </div>
-                {/if}
-                <div class="relative leading-tight">
-                  <span
-                    class={twMerge(
-                      'font-bold text-2xl @xl:text-4xl',
-                      hasDiscountPrice && 'text-xl @xl:text-2xl text-gray-400'
-                    )}
-                  >
-                    {price}
-                    {currency}
-                  </span>
-                  <span
-                    class={twMerge(
-                      'text-xl @xl:text-2xl whitespace-nowrap',
-                      hasDiscountPrice && 'text-base @xl:text-lg text-gray-400'
-                    )}
-                  >
-                    {periodText && ` / ${periodText}`}
-                  </span>
-                  <div
-                    class={twMerge(
-                      'hidden absolute top-1/2 left-0 right-0 h-px bg-gray-400',
-                      hasDiscountPrice && 'block'
-                    )}
-                  ></div>
+                  {#if hasAnyDiscountedPrice()}
+                    <div class="h-6 @xs/box:h-7">
+                      {#if hasDiscountPrice}
+                        <div class="text-gray-500 line-through @xs/box:text-lg">
+                          {price}
+                          {currency}
+                          {#if periodText}
+                            {' '}/ {periodText}
+                          {/if}
+                        </div>
+                      {/if}
+                    </div>
+                  {/if}
                 </div>
-              </Column>
-            {/if}
+              {/if}
 
-            {#if description && (!features || features.length < 1)}
-              <DescriptionWithReadMore
-                {description}
-                {readMoreLink}
-                {readMoreText}
-                {t}
-                class="text-gray-700 dark:text-gray-300"
-              />
-            {/if}
+              {#if description && (!features || features.length < 1)}
+                <DescriptionWithReadMore
+                  {description}
+                  {readMoreLink}
+                  {readMoreText}
+                  {t}
+                  class="text-gray-700 dark:text-gray-300 text-sm"
+                />
+              {/if}
 
-            {#if features && features.length > 0}
-              <Features {features} />
-            {/if}
-          </Column>
+              {#if features && features.length > 0}
+                <Features {features} class="text-gray-700 dark:text-gray-300 text-sm" />
+              {/if}
+            </Column>
 
-          {#if url}
-            <Button
-              href={url}
-              class="w-full mt-4 bg-[var(--s-paywall-btn-bg-color)] text-[var(--s-paywall-btn-text-color)]"
-              variant="primary"
-            >
-              {buttonText || t('continue')}
-            </Button>
-          {:else}
-            {#await getCheckoutUrl(subscription) then checkoutUrl}
+            {#if url}
               <Button
-                href={checkoutUrl.replace('poId', 'option')}
+                href={url}
                 class="w-full mt-4 bg-[var(--s-paywall-btn-bg-color)] text-[var(--s-paywall-btn-text-color)]"
                 variant="primary"
               >
                 {buttonText || t('continue')}
               </Button>
-            {/await}
-          {/if}
+            {:else}
+              {#await getCheckoutUrl(subscription) then checkoutUrl}
+                <Button
+                  href={checkoutUrl.replace('poId', 'option')}
+                  class="w-full mt-4 bg-[var(--s-paywall-btn-bg-color)] text-[var(--s-paywall-btn-text-color)]"
+                  variant="primary"
+                >
+                  {buttonText || t('continue')}
+                </Button>
+              {/await}
+            {/if}
+          </Column>
         </Column>
-      </Column>
+      </div>
     {:else}
       {#if i}
         <hr class={twMerge('w-full border-primary opacity-25')} />
