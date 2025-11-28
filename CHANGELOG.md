@@ -1,3 +1,12 @@
+## [2.21.3](https://github.com/sesamyab/sesamy-components/compare/v2.21.2...v2.21.3) (2025-11-28)
+
+
+### Bug Fixes
+
+* box container breakpoint ([f3f8ebf](https://github.com/sesamyab/sesamy-components/commit/f3f8ebf9ce79be8c135f9b1d2c69ccea3782b9dc))
+* box paywall layout ([95897a0](https://github.com/sesamyab/sesamy-components/commit/95897a077e235bac4e0d9c6de3cc5ab7a0289bb9))
+* paywall tag colors ([444f6a4](https://github.com/sesamyab/sesamy-components/commit/444f6a48b6c2b8824e2225fed6f478921cfe6f27))
+
 ## [2.21.2](https://github.com/sesamyab/sesamy-components/compare/v2.21.1...v2.21.2) (2025-11-24)
 
 
