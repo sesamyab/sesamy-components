@@ -41,7 +41,7 @@
       business: product.preferBusiness
     });
 
-  const hasAnyDisountedPrice = () =>
+  const hasAnyDiscountedPrice = () =>
     subscriptions.some(
       (subscription) =>
         typeof subscription.discountPrice === 'number' &&
@@ -103,8 +103,8 @@
                       {periodText && ` / ${periodText}`}
                     </span>
                   </div>
-                  {#if hasAnyDisountedPrice()}
-                    <div class="h-6 @xs:box/h-7">
+                  {#if hasAnyDiscountedPrice()}
+                    <div class="h-6 @xs/box:h-7">
                       {#if hasDiscountPrice}
                         <div class="text-gray-500 line-through @xs/box:text-lg">
                           {price}
