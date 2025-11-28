@@ -197,6 +197,8 @@
       --s-paywall-theme: var(--sesamy-paywall-theme, ${autoDarkMode ? 'dark' : 'light'});
       --s-paywall-btn-bg-color: var(--sesamy-paywall-btn-bg-color, var(--s-primary-color));
       --s-paywall-btn-text-color: var(--sesamy-paywall-btn-text-color, ${autoBtnColor});
+      --s-paywall-tag-bg-color: var(--sesamy-paywall-tag-bg-color, var(--s-primary-color));
+      --s-paywall-tag-text-color: var(--sesamy-paywall-tag-text-color, ${autoBtnColor});
     }
   `;
 
