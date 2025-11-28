@@ -78,81 +78,84 @@
     {@const hasDiscountPrice = typeof discountPrice === 'number'}
 
     {#if horizontal}
-      <Column
-        class={twMerge(
-          'border bg-white dark:bg-black/25 border-gray-300 rounded-lg relative',
-          tag && 'border-primary mt-0 border-2'
-        )}
-      >
-        {#if tag}
-          <Tag text={tag} {t} chunky />
-        {/if}
+      <div class="@container/box">
+        <Column
+          class={twMerge(
+            'border bg-white dark:bg-black/25 border-gray-300 rounded-lg relative h-full',
+            tag && 'border-primary mt-0 border-2'
+          )}
+        >
+          {#if tag}
+            <Tag text={tag} {t} chunky />
+          {/if}
 
-        <Column class="p-4 flex-1 gap-2 w-full !justify-between shadow-md" left up>
-          <Column class="@xl:p-1" left>
-            <div class="text-base @xl:text-lg font-bold leading-tight">{title}</div>
-            {#if hasPrice}
-              <div class="mb-3">
-                <div>
-                  <span class="font-bold text-xl @xl:text-2xl whitespace-nowrap">
-                    {hasDiscountPrice ? discountPrice : price}
-                    {currency}
-                  </span>
-                  <span class="font-bold whitespace-nowrap">{periodText && ` / ${periodText}`}</span
-                  >
-                </div>
-                {#if hasAnyDisountedPrice()}
-                  <div class="h-5">
-                    {#if hasDiscountPrice}
-                      <div class="text-sm text-gray-500 line-through">
-                        {price}
-                        {currency}
-                        {#if periodText}
-                          {' '}/ {periodText}
-                        {/if}
-                      </div>
-                    {/if}
+          <Column class="p-4 flex-1 gap-2 w-full !justify-between shadow-md" left up>
+            <Column class="@xl:p-1" left>
+              <div class="text-base @xl:text-lg font-bold leading-tight">{title}</div>
+              {#if hasPrice}
+                <div class="mb-3">
+                  <div>
+                    <span class="font-bold text-2xl @xs/box:text-3xl whitespace-nowrap">
+                      {hasDiscountPrice ? discountPrice : price}
+                      {currency}
+                    </span>
+                    <span class="font-bold whitespace-nowrap @xs/box:text-lg">
+                      {periodText && ` / ${periodText}`}
+                    </span>
                   </div>
-                {/if}
-              </div>
-            {/if}
+                  {#if hasAnyDisountedPrice()}
+                    <div class="h-6 @xs:box/h-7">
+                      {#if hasDiscountPrice}
+                        <div class="text-gray-500 line-through @xs/box:text-lg">
+                          {price}
+                          {currency}
+                          {#if periodText}
+                            {' '}/ {periodText}
+                          {/if}
+                        </div>
+                      {/if}
+                    </div>
+                  {/if}
+                </div>
+              {/if}
 
-            {#if description && (!features || features.length < 1)}
-              <DescriptionWithReadMore
-                {description}
-                {readMoreLink}
-                {readMoreText}
-                {t}
-                class="text-gray-700 dark:text-gray-300 text-sm"
-              />
-            {/if}
+              {#if description && (!features || features.length < 1)}
+                <DescriptionWithReadMore
+                  {description}
+                  {readMoreLink}
+                  {readMoreText}
+                  {t}
+                  class="text-gray-700 dark:text-gray-300 text-sm"
+                />
+              {/if}
 
-            {#if features && features.length > 0}
-              <Features {features} class="text-gray-700 dark:text-gray-300 text-sm" />
-            {/if}
-          </Column>
+              {#if features && features.length > 0}
+                <Features {features} class="text-gray-700 dark:text-gray-300 text-sm" />
+              {/if}
+            </Column>
 
-          {#if url}
-            <Button
-              href={url}
-              class="w-full mt-4 bg-[var(--s-paywall-btn-bg-color)] text-[var(--s-paywall-btn-text-color)]"
-              variant="primary"
-            >
-              {buttonText || t('continue')}
-            </Button>
-          {:else}
-            {#await getCheckoutUrl(subscription) then checkoutUrl}
+            {#if url}
               <Button
-                href={checkoutUrl.replace('poId', 'option')}
+                href={url}
                 class="w-full mt-4 bg-[var(--s-paywall-btn-bg-color)] text-[var(--s-paywall-btn-text-color)]"
                 variant="primary"
               >
                 {buttonText || t('continue')}
               </Button>
-            {/await}
-          {/if}
+            {:else}
+              {#await getCheckoutUrl(subscription) then checkoutUrl}
+                <Button
+                  href={checkoutUrl.replace('poId', 'option')}
+                  class="w-full mt-4 bg-[var(--s-paywall-btn-bg-color)] text-[var(--s-paywall-btn-text-color)]"
+                  variant="primary"
+                >
+                  {buttonText || t('continue')}
+                </Button>
+              {/await}
+            {/if}
+          </Column>
         </Column>
-      </Column>
+      </div>
     {:else}
       {#if i}
         <hr class={twMerge('w-full border-primary opacity-25')} />
