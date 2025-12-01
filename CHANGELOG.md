@@ -1,3 +1,10 @@
+## [2.21.4](https://github.com/sesamyab/sesamy-components/compare/v2.21.3...v2.21.4) (2025-12-01)
+
+
+### Bug Fixes
+
+* single option boxes paywall ([78c412f](https://github.com/sesamyab/sesamy-components/commit/78c412f8b370175019a475ff176036a879ddb22f))
+
 ## [2.21.3](https://github.com/sesamyab/sesamy-components/compare/v2.21.2...v2.21.3) (2025-11-28)
 
 
