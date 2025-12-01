@@ -78,7 +78,7 @@
     {@const hasDiscountPrice = typeof discountPrice === 'number'}
 
     {#if horizontal}
-      <div class="@container/box">
+      <div class="@container/box w-full">
         <Column
           class={twMerge(
             'border bg-white dark:bg-black/25 border-gray-300 rounded-lg relative h-full',

@@ -49,6 +49,12 @@ export const Boxes: Story = {
   }
 };
 
+export const BoxesVariant: Story = {
+  args: {
+    'settings-url': 'https://api.sesamy.dev/paywall/paywalls/acme/FoPaafEt51445TsbYXTEu'
+  }
+};
+
 export const Slots: Story = {
   args: {
     'settings-url': 'https://api.sesamy.dev/paywall/paywalls/acme/OxHlsEHTUGs1tpF6EoRy8',
