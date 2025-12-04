@@ -1,3 +1,32 @@
+## [2.21.4](https://github.com/sesamyab/sesamy-components/compare/v2.21.3...v2.21.4) (2025-12-01)
+
+
+### Bug Fixes
+
+* single option boxes paywall ([78c412f](https://github.com/sesamyab/sesamy-components/commit/78c412f8b370175019a475ff176036a879ddb22f))
+
+## [2.21.3](https://github.com/sesamyab/sesamy-components/compare/v2.21.2...v2.21.3) (2025-11-28)
+
+
+### Bug Fixes
+
+* box container breakpoint ([f3f8ebf](https://github.com/sesamyab/sesamy-components/commit/f3f8ebf9ce79be8c135f9b1d2c69ccea3782b9dc))
+* box paywall layout ([95897a0](https://github.com/sesamyab/sesamy-components/commit/95897a077e235bac4e0d9c6de3cc5ab7a0289bb9))
+* paywall tag colors ([444f6a4](https://github.com/sesamyab/sesamy-components/commit/444f6a48b6c2b8824e2225fed6f478921cfe6f27))
+
+## [2.21.2](https://github.com/sesamyab/sesamy-components/compare/v2.21.1...v2.21.2) (2025-11-24)
+
+
+### Bug Fixes
+
+* bump sesamy-js ([fa53144](https://github.com/sesamyab/sesamy-components/commit/fa531445859e1b5bc1626ae1d278a17faa50d0f5))
+* bump sesamy-js version ([b29fc85](https://github.com/sesamyab/sesamy-components/commit/b29fc853a4f0443e26e7d513239c0000a90c32dc))
+* merge conflicts ([d0fa149](https://github.com/sesamyab/sesamy-components/commit/d0fa149ab6fbbfb6035b42e8e54bca005df7aae1))
+* unlock public content ([df0aac4](https://github.com/sesamyab/sesamy-components/commit/df0aac48c1283507744a23da87fdf3ecc7345b05))
+* update sesamy-js ([b3feb0b](https://github.com/sesamyab/sesamy-components/commit/b3feb0b7b0c5fdba5ad5a6c55cb12eb9fd991813))
+* update sesamy-js ([61672c5](https://github.com/sesamyab/sesamy-components/commit/61672c597814cdf37db00320960804ba72bd6828))
+* use content hasAccess ([3b1dcc3](https://github.com/sesamyab/sesamy-components/commit/3b1dcc38bfc70118d891b6ca253d3558b0977633))
+
 ## [2.21.1](https://github.com/sesamyab/sesamy-components/compare/v2.21.0...v2.21.1) (2025-11-19)
 
 

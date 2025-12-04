@@ -64,11 +64,12 @@
     event.preventDefault();
 
     try {
-      await api.auth.loginWithRedirect({
+      await api.auth.login({
         authorizationParams: {
           login_hint: email,
           metadata: loginFields?.name ? { firstName, lastName } : undefined
-        }
+        },
+        appState: { source: 'registration-wall' }
       });
     } catch (error) {
       console.error('Login failed:', error);

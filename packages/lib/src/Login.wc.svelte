@@ -19,7 +19,7 @@
   const login = async (api: SesamyAPI) => {
     disabled = true;
     try {
-      await api.auth.login();
+      await api.auth.login({ appState: { source: 'login-component' } });
     } catch (error) {
       disabled = false;
       console.error('Login failed:', error);
