@@ -55,7 +55,7 @@
 
 <Base let:api let:t>
   {@const host = $host()}
-  {fetchPaywall(api)}
+  {@const _ = fetchPaywall(api)}
 
   {#if loading}
     <div class="sesamy-paywall" style="display: contents">
