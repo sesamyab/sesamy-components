@@ -10,7 +10,26 @@
     environment: 'dev',
     api: {
       namespace: 'sesamy'
-    }
+    },
+    content: [
+      {
+        type: 'article',
+        paywallUrl: 'https://api.sesamy.dev/paywall/paywalls/acme/e53Z0HnYe4MO53KR4ujmJ.json',
+        queryParam: { key: 'lab_opts', value: 'paywall_loginonly' },
+        selectors: {
+          article: { selector: 'sesamy-article' },
+          image: { selector: 'img', attribute: 'src' },
+          title: { selector: 'h1', attribute: 'textContent' },
+          excerpt: { selector: 'p', attribute: 'textContent' },
+          price: { selector: 'sesamy-article', attribute: 'price' },
+          currency: { selector: 'sesamy-article', attribute: 'currency' },
+          url: { selector: 'sesamy-article', attribute: 'item-src' },
+          accessLevel: { selector: 'sesamy-article', attribute: 'access-level' },
+          id: { selector: 'sesamy-article', attribute: 'publisher-content-id' },
+          pass: { selector: 'sesamy-article', attribute: 'pass' }
+        }
+      }
+    ]
   });
 
   onMount(() => {

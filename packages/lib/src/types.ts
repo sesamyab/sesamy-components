@@ -11,9 +11,9 @@ export interface LoginProps {
   onLogin?: (event: CustomEvent) => void;
 }
 
-export type PaywallProps = HTMLElement & {
+export type PaywallProps = {
   template?: 'ARTICLE' | 'BOXES';
-  ['settings-url']: string;
+  ['settings-url']?: string;
   ['item-src']?: string;
   price?: string;
   currency?: string;
