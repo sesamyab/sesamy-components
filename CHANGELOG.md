@@ -1,3 +1,13 @@
+## [2.21.6](https://github.com/sesamyab/sesamy-components/compare/v2.21.5...v2.21.6) (2025-12-16)
+
+
+### Bug Fixes
+
+* add support for content paywall urls ([20f911f](https://github.com/sesamyab/sesamy-components/commit/20f911f90b630e42b182d6d1660c1e86f9452c9d))
+* handle refetching ([842ddf4](https://github.com/sesamyab/sesamy-components/commit/842ddf4aa01443bc3d2547f669568d4d61e022c4))
+* remove promise output ([d319aa1](https://github.com/sesamyab/sesamy-components/commit/d319aa18abc4a60995c8f2af0eb9f0df0886c843))
+* update storybook ([97a3dd4](https://github.com/sesamyab/sesamy-components/commit/97a3dd4fc287fed68225f06f7128d8171124c7ae))
+
 ## [2.21.5](https://github.com/sesamyab/sesamy-components/compare/v2.21.4...v2.21.5) (2025-12-04)
 
 
