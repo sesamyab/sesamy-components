@@ -13,8 +13,14 @@
 
   let paywall = $state<Paywall>();
   let template = $state<string>();
+  let loading = $state(true);
+  // Guard to prevent re-fetching on every render (not reactive to avoid state mutation errors in template)
+  let fetched = false;
 
   async function fetchPaywall(api: SesamyAPI) {
+    if (fetched) return;
+    fetched = true;
+
     const host = $host();
     const urlParams = new URLSearchParams(window.location.search);
     const hasLabOpts = urlParams.has('lab_opts');
@@ -27,27 +33,35 @@
       ? contentPaywallUrl || props['settings-url']
       : props['settings-url'] || contentPaywallUrl;
 
-    if (!settingsUrl) return;
+    if (!settingsUrl) {
+      loading = false;
+      return;
+    }
 
-    const response = await fetch(settingsUrl);
-    paywall = await response.json();
-    template = paywall?.settings.template || undefined;
+    try {
+      const response = await fetch(settingsUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch paywall: ${response.status} ${response.statusText}`);
+      }
+      paywall = await response.json();
+      template = paywall?.settings.template || undefined;
+    } catch (error) {
+      console.error('Error fetching paywall settings:', error);
+    } finally {
+      loading = false;
+    }
   }
 </script>
 
 <Base let:api let:t>
   {@const host = $host()}
-  {#if props['settings-url']}
+  {fetchPaywall(api)}
+
+  {#if loading}
     <div class="sesamy-paywall" style="display: contents">
       <slot {api} {t} {...props} />
     </div>
   {/if}
-
-  {#await fetchPaywall(api)}
-    <div class="sesamy-paywall" style="display: contents">
-      <slot {api} {t} {...props} />
-    </div>
-  {/await}
 
   {#if paywall}
     {api.log(`sesamy-paywall with template ${template}`)}
