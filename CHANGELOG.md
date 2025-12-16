@@ -1,3 +1,10 @@
+## [2.21.5](https://github.com/sesamyab/sesamy-components/compare/v2.21.4...v2.21.5) (2025-12-04)
+
+
+### Bug Fixes
+
+* add app state to login ([180cc0e](https://github.com/sesamyab/sesamy-components/commit/180cc0e57b9d49473b648d3f762c1ae393cb3ae3))
+
 ## [2.21.4](https://github.com/sesamyab/sesamy-components/compare/v2.21.3...v2.21.4) (2025-12-01)
 
 
