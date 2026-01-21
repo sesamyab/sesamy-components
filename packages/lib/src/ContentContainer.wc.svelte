@@ -12,6 +12,27 @@
     'locked-content-selector': lockedContentSelector
   }: ContentContainerProps = $props();
 
+  // Store the content slot element in memory
+  let storedContentElement: Element | null = null;
+
+  function extractAndStoreContent() {
+    const host = $host();
+    if (!host || storedContentElement) return;
+
+    const contentSlot = host.querySelector('[slot="content"]');
+    if (contentSlot) {
+      // Clone and store the content
+      storedContentElement = contentSlot.cloneNode(true) as Element;
+      // Remove from DOM
+      contentSlot.remove();
+    }
+  }
+
+  // Extract content on component initialization
+  $effect(() => {
+    extractAndStoreContent();
+  });
+
   async function checkAccess(api: SesamyAPI) {
     const content = api.content.get($host());
     if (!content) {
@@ -94,11 +115,9 @@
   }
 
   async function fetchContent(api: SesamyAPI): Promise<string> {
-    const content = $host().querySelector('div[slot="content"]');
-
     switch (lockMode) {
       case 'encode':
-        const base64 = content?.innerHTML || '';
+        const base64 = storedContentElement?.innerHTML || '';
         // Convert base64 to UTF-8 string
         try {
           return new TextDecoder().decode(Uint8Array.from(atob(base64), (c) => c.charCodeAt(0)));
@@ -113,7 +132,7 @@
       case 'signedUrl':
         return api.content.unlock($host().parentElement!, lockedContentSelector);
       case 'embed':
-        return '';
+        return storedContentElement?.innerHTML || '';
       default:
         console.error('Invalid lock mode');
         return '';
@@ -136,15 +155,11 @@
     <slot name="preview"></slot>
   {:then entitlement}
     {#if entitlement}
-      {#if lockMode === 'embed'}
-        <slot name="content"></slot>
-      {:else}
-        {#await unlockAndRenderContent(api)}
-          <slot name="preview"></slot>
-        {:then}
-          <!-- Once the content is unlocked it will displayed outside the shadow DOM. -->
-        {/await}
-      {/if}
+      {#await unlockAndRenderContent(api)}
+        <slot name="preview"></slot>
+      {:then}
+        <!-- Once the content is unlocked it will be displayed outside the shadow DOM. -->
+      {/await}
     {:else}
       <slot name="preview"></slot>
     {/if}
