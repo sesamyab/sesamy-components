@@ -4320,10 +4320,10 @@ lru-cache@^10.0.1, lru-cache@^10.2.0, lru-cache@^10.2.2, lru-cache@^10.4.3:
   resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-10.4.3.tgz#410fc8a17b70e598013df257c2446b7f3383f119"
   integrity sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==
 
-lucide-svelte@^0.473.0:
-  version "0.473.0"
-  resolved "https://registry.yarnpkg.com/lucide-svelte/-/lucide-svelte-0.473.0.tgz#782cbf85b7d73f8ec6a466a3459b0471330f0aef"
-  integrity sha512-Lw2+vrDmVlz/WC1/KcuCEV/1ENrHtChw4GH1cssMbbpdUFyVjZkt9S+7olCOGW8jOZJOrzZNfefV1DdaDw46jQ==
+lucide-svelte@^0.563.0:
+  version "0.563.0"
+  resolved "https://registry.yarnpkg.com/lucide-svelte/-/lucide-svelte-0.563.0.tgz#c2a5e72a16c5096843357150e902ba75a2de82f7"
+  integrity sha512-pjZKw7TpQcamfQrx7YdbOHgmrcNeKiGGMD0tKZQaVktwSsbqw28CsKc2Q97ttwjytiCWkJyOa8ij2Q+Og0nPfQ==
 
 lz-string@^1.5.0:
   version "1.5.0"
