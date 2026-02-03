@@ -1,3 +1,10 @@
+## [2.21.8](https://github.com/sesamyab/sesamy-components/compare/v2.21.7...v2.21.8) (2026-02-03)
+
+
+### Bug Fixes
+
+* use sesamy-js for lang ([99c9271](https://github.com/sesamyab/sesamy-components/commit/99c92718514d3b01a9f11b2d277536fab7a9cb33))
+
 ## [2.21.7](https://github.com/sesamyab/sesamy-components/compare/v2.21.6...v2.21.7) (2026-02-03)
 
 
