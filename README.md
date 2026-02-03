@@ -1,8 +1,25 @@
 # 🌐 sesamy-components
 
-> A shareable web components library using [Vite](https://vitejs.dev), [Svelte](https://svelte.dev), [storybook](https://storybook.js.org) and [TypeScript](https://www.typescriptlang.org).
+> A shareable web components library using [Vite](https://vitejs.dev), [Svelte](https://svelte.dev), [Storybook](https://storybook.js.org) and [TypeScript](https://www.typescriptlang.org).
 
 This library provides typed [web components](https://developer.mozilla.org/en-US/docs/Web/Web_Components) that can be used with [plain HTML](https://www.webcomponents.org/introduction#how-do-i-use-a-web-component-) or within any major frameworks, such as React, Angular, Vue or Svelte (see [compatibility](https://custom-elements-everywhere.com/)).
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Components](#components)
+  - [sesamy-login](#sesamy-login)
+  - [sesamy-content-container](#sesamy-content-container)
+  - [sesamy-paywall](#sesamy-paywall)
+  - [sesamy-visibility](#sesamy-visibility)
+  - [sesamy-avatar](#sesamy-avatar)
+  - [sesamy-button](#sesamy-button)
+  - [sesamy-login-menu-item](#sesamy-login-menu-item)
+- [Internationalization](#internationalization)
+- [Development](#development)
+- [Testing](#testing-your-components)
+- [Building](#building-the-library)
+- [Create a New Component](#create-a-new-component)
 
 ## Installation
 
@@ -13,6 +30,16 @@ npm install @sesamy/sesamy-components
 # or
 yarn add @sesamy/sesamy-components
 ```
+
+### CDN Usage
+
+You can also use the components directly via CDN:
+
+```html
+<script type="module" src="https://unpkg.com/@sesamy/sesamy-components"></script>
+```
+
+## Components
 
 # sesamy-login
 
@@ -203,9 +230,7 @@ A web component that displays a paywall for content, loading paywall settings fr
   price="99"
   currency="USD"
 >
-  <<<<<<< HEAD =======
   <div slot="features">✔️ Unlimited access<br />✔️ Cancel anytime</div>
-  >>>>>>> main
 </sesamy-paywall>
 
 <!-- Login paywall with below-headline slot -->
@@ -263,31 +288,167 @@ A simple web component that conditionally renders content based on user authenti
 </sesamy-visibility>
 ```
 
+# sesamy-avatar
+
+A web component that displays a user avatar image with configurable size and loading state.
+
+**Props/Attributes:**
+
+- `src`: URL of the avatar image
+- `alt`: Alt text for the image
+- `size`: Size of the avatar ('sm', 'md', or 'lg')
+- `loading`: Boolean to show loading state
+
+**Basic Usage Example:**
+
+```html
+<!-- Default avatar -->
+<sesamy-avatar src="https://example.com/user.jpg" alt="User avatar"></sesamy-avatar>
+
+<!-- Large avatar with loading state -->
+<sesamy-avatar src="https://example.com/user.jpg" size="lg" loading></sesamy-avatar>
+```
+
+# sesamy-button
+
+A customizable button web component with multiple variants and sizes.
+
+**Props/Attributes:**
+
+- `variant`: Button style variant ('primary', 'secondary', or 'tertiary')
+- `size`: Button size ('sm', 'md', or 'lg')
+- `loading`: Boolean to show loading spinner
+- `disabled`: Boolean to disable the button
+- `href`: URL if the button should act as a link
+- `type`: Button type ('button', 'submit', etc.)
+- `class`: Additional CSS classes
+
+**Basic Usage Example:**
+
+```html
+<!-- Primary button -->
+<sesamy-button variant="primary">Subscribe</sesamy-button>
+
+<!-- Secondary button with loading state -->
+<sesamy-button variant="secondary" loading>Processing...</sesamy-button>
+
+<!-- Button as a link -->
+<sesamy-button href="/checkout" variant="primary">Go to Checkout</sesamy-button>
+```
+
+# sesamy-login-menu-item
+
+A web component for individual menu items in the login dropdown menu. Can be used to customize the logged-in user menu.
+
+**Props/Attributes:**
+
+- `type`: Type of menu item ('EMAIL', 'ACCOUNT', 'LOGOUT', or 'LINK')
+- `href`: URL for link type items
+- `target`: Link target attribute (e.g., '\_blank')
+- `text`: Custom text for the menu item
+
+**Basic Usage Example:**
+
+```html
+<!-- Account link -->
+<sesamy-login-menu-item type="ACCOUNT"></sesamy-login-menu-item>
+
+<!-- Custom link -->
+<sesamy-login-menu-item
+  type="LINK"
+  href="https://example.com/settings"
+  text="Settings"
+></sesamy-login-menu-item>
+
+<!-- Logout button -->
+<sesamy-login-menu-item type="LOGOUT"></sesamy-login-menu-item>
+```
+
+## Internationalization
+
+The components support multiple languages out of the box. Supported languages:
+
+- 🇬🇧 English (en)
+- 🇸🇪 Swedish (sv)
+- 🇳🇴 Norwegian Bokmål (nb)
+- 🇩🇰 Danish (da)
+- 🇫🇮 Finnish (fi)
+- 🇮🇹 Italian (it)
+- 🇵🇱 Polish (pl)
+- 🇨🇿 Czech (cs)
+
+Set the language using the `lang` attribute on supported components:
+
+```html
+<sesamy-login lang="sv"></sesamy-login>
+```
+
 ## Development
 
-Your components source code lives in `lib/` folder. Only components with the `.wc.svelte` extension will be exported as web components and available in your library. This means that you can also use regular Svelte components with the `.svelte` extension as child components for your implementation details.
+Your components source code lives in `packages/lib/` folder. Only components with the `.wc.svelte` extension will be exported as web components and available in your library. This means that you can also use regular Svelte components with the `.svelte` extension as child components for your implementation details.
 
-You can add additional components by adding them to the `lib` folder and editing `lib/index.js`.
+You can add additional components by adding them to the `packages/lib/src` folder and editing `packages/lib/index.ts`.
+
+### Available Scripts
+
+| Command                | Description                                        |
+| ---------------------- | -------------------------------------------------- |
+| `yarn dev`             | Start the development server                       |
+| `yarn build`           | Build both library and demo                        |
+| `yarn build:lib`       | Build the library only                             |
+| `yarn storybook`       | Start Storybook for component development          |
+| `yarn build:storybook` | Build Storybook for deployment                     |
+| `yarn test`            | Run Playwright tests                               |
+| `yarn check`           | Run Svelte type checking                           |
+| `yarn pull-translations` | Pull latest translations from i18nexus          |
 
 ## Testing your components
 
 You can start a development server with:
 
 ```bash
-npm start
+yarn dev
 ```
 
 Then open your browser to [localhost:5173](http://localhost:5173).
 
-This will build the demo application located in the `demo/` folder, in which you can use and test your web components during development.
+This will build the demo application located in the `packages/demo/` folder, in which you can use and test your web components during development.
 
-If you need unit tests, you can take a look at [Jest](https://jestjs.io) and [Jest testing library](https://github.com/testing-library/svelte-testing-library).
+### Storybook
+
+For component development and visual testing, use Storybook:
+
+```bash
+yarn storybook
+```
+
+Then open your browser to [localhost:6006](http://localhost:6006).
+
+### End-to-End Tests
+
+Run Playwright tests with:
+
+```bash
+yarn test
+```
+
+For running E2E tests in Docker (ensuring consistent snapshots):
+
+```bash
+yarn e2e
+```
+
+To update snapshots:
+
+```bash
+yarn e2e:snapshots
+```
 
 ### Using the built web components with the demo app
 
-The demo application is provided for development and testing of your components, that's why it imports the `.svelte` files from the `lib/` folder directly by default.
+The demo application is provided for development and testing of your components, that's why it imports the `.svelte` files from the `packages/lib/` folder directly by default.
 
-If you prefer, you can import the built web components from the `dist/` folder instead, by editing `demo/src/App.svelte` and replacing the `import '../../lib';` statement with `import '../../../dist/lib';` if you have the `bundleComponents` option enabled, or individually import your components with `import import '../../dist/MyComponent.wc.js';` otherwise.
+If you prefer, you can import the built web components from the `dist/` folder instead, by editing `packages/demo/src/App.svelte` and replacing the import statement with `import '../../../dist/lib';` if you have the `bundleComponents` option enabled.
 
 You'll also have to make sure to run the `yarn build` script to generate the `dist/lib/` folder first.
 
@@ -337,7 +498,11 @@ Here's an example:
 
 These are the files needed to create a new component:
 
-- Add the `my-component.wc.svelte` file in the `lib/src` folder.
-- Add the class in the `lib/src/sesamy-component.d.ts` file to get the types exported.
-- Add the component to the `lib/src/index.ts` file to export it.
-- Add a story in the `stories` folder.
+1. Add the `my-component.wc.svelte` file in the `packages/lib/src` folder.
+2. Add the class in the `packages/lib/src/sesamy-components.d.ts` file to get the types exported.
+3. Add the component to the `packages/lib/index.ts` file to export it.
+4. Add a story in the `packages/lib/src/stories` folder.
+
+## License
+
+This project is proprietary software by Sesamy.
