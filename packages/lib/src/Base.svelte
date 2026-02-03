@@ -4,12 +4,14 @@
   import initTranslator from './i18n';
 
   let { lang, applyStyles = true }: { lang?: string; applyStyles?: boolean } = $props();
-  const htmlLocale = document.querySelector('html')?.getAttribute('lang');
-  const htmlLang = htmlLocale?.split('-')[0];
 
   const apiPromise = getApi();
 
-  const translator = initTranslator(lang || htmlLang || 'en');
+  // Use explicit lang prop if set, otherwise get language from sesamy.content.getLanguage()
+  const translatorPromise = apiPromise.then((api) => {
+    const language = lang || api.content.getLanguage();
+    return initTranslator(language);
+  });
 
   let sesamyDesignTokens = `
     :host {
@@ -43,10 +45,13 @@
   `;
 
   let style = applyStyles ? '<sty' + 'le>' + libstyles + sesamyDesignTokens + '</style>' : '';
+
+  // Combined promise that resolves both API and translator
+  const readyPromise = Promise.all([apiPromise, translatorPromise]).then(([api, t]) => ({ api, t }));
 </script>
 
-{#await apiPromise then api}
-  <slot {api} t={translator}></slot>
+{#await readyPromise then { api, t }}
+  <slot {api} {t}></slot>
 {:catch error}
   <p style="color: red">{error.message}</p>
 {/await}

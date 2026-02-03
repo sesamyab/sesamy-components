@@ -1,3 +1,11 @@
+## [2.21.7](https://github.com/sesamyab/sesamy-components/compare/v2.21.6...v2.21.7) (2026-02-03)
+
+
+### Bug Fixes
+
+* remove the content slot and store in memory ([50275e4](https://github.com/sesamyab/sesamy-components/commit/50275e423131a11af1216bbea75835e5a76f56d5))
+* update readme ([648e64a](https://github.com/sesamyab/sesamy-components/commit/648e64a55af7055a9cd4ddb20fa4578d4224e3bf))
+
 ## [2.21.6](https://github.com/sesamyab/sesamy-components/compare/v2.21.5...v2.21.6) (2025-12-16)
 
 
