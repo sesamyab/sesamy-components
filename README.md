@@ -275,6 +275,40 @@ The `sesamy-paywall` component provides two main slots for customization:
 
 - The `below-headline` slot adds to the paywall, while the `features` slot replaces the default features section entirely.
 
+## CSS Custom Properties
+
+The `sesamy-paywall` component exposes CSS custom properties for styling from the outside. Set these on the `sesamy-paywall` element or any ancestor.
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `--sesamy-paywall-primary-color` | Main color from paywall settings | Primary accent color |
+| `--sesamy-paywall-bg-color` | `#FFFFFF` (or settings background) | Paywall background color |
+| `--sesamy-paywall-text-color` | `#000000` / `#FFFFFF` (auto) | Main text color |
+| `--sesamy-paywall-border-radius` | `0.5rem` | Border radius (mobile) |
+| `--sesamy-paywall-border-radius-desktop` | `border-radius × 3` | Border radius (desktop) |
+| `--sesamy-paywall-theme` | `light` / `dark` (auto) | Force light or dark mode |
+| `--sesamy-paywall-btn-bg-color` | Primary color | Continue button background |
+| `--sesamy-paywall-btn-text-color` | Auto contrast color | Continue button text color |
+| `--sesamy-paywall-tag-bg-color` | Primary color | Tag/badge background |
+| `--sesamy-paywall-tag-text-color` | Auto contrast color | Tag/badge text color |
+| `--sesamy-paywall-login-text-color` | Primary color | Login link text color |
+| `--sesamy-paywall-login-font-size` | `inherit` | Login link font size |
+| `--sesamy-paywall-login-font-weight` | `700` | Login link font weight |
+| `--sesamy-paywall-login-text-decoration-hover` | `underline` | Login link hover text decoration |
+
+**Example:**
+
+```css
+sesamy-paywall {
+  --sesamy-paywall-primary-color: #e91e63;
+  --sesamy-paywall-bg-color: #1a1a2e;
+  --sesamy-paywall-theme: dark;
+  --sesamy-paywall-login-text-color: #ff6090;
+  --sesamy-paywall-login-font-weight: 400;
+  --sesamy-paywall-login-text-decoration-hover: none;
+}
+```
+
 # sesamy-visibility
 
 A simple web component that conditionally renders content based on user authentication status.

@@ -199,6 +199,10 @@
       --s-paywall-btn-text-color: var(--sesamy-paywall-btn-text-color, ${autoBtnColor});
       --s-paywall-tag-bg-color: var(--sesamy-paywall-tag-bg-color, var(--s-primary-color));
       --s-paywall-tag-text-color: var(--sesamy-paywall-tag-text-color, ${autoBtnColor});
+      --s-paywall-login-text-color: var(--sesamy-paywall-login-text-color, var(--s-primary-color));
+      --s-paywall-login-font-size: var(--sesamy-paywall-login-font-size, inherit);
+      --s-paywall-login-font-weight: var(--sesamy-paywall-login-font-weight, 700);
+      --s-paywall-login-text-decoration-hover: var(--sesamy-paywall-login-text-decoration-hover, underline);
     }
   `;
 
@@ -247,7 +251,7 @@
                 </div>
 
                 <sesamy-login
-                  class="p-0 border-none enabled:hover:bg-transparent hover:underline text-primary font-bold"
+                  class="p-0 border-none enabled:hover:bg-transparent text-[length:--s-paywall-login-font-size] font-[--s-paywall-login-font-weight] text-[color:--s-paywall-login-text-color] hover:[text-decoration:var(--s-paywall-login-text-decoration-hover)]"
                 ></sesamy-login>
               </Row>
               <div
