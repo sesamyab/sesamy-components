@@ -26,6 +26,7 @@
 
       --s-login-button-color: var(--sesamy-login-button-color, #000000);
       --s-login-button-text-color: var(--sesamy-login-button-color, var(--sesamy-login-button-text-color, #000000));
+      --s-login-button-text-size: var(--sesamy-login-button-text-size, 0.875rem);
       --s-login-button-border-color: var(--sesamy-login-button-color, var(--sesamy-login-button-border-color, #000000));
       --s-login-button-background-color: var(--sesamy-login-button-background-color, transparent);
       --s-login-button-border-width: var(--sesamy-login-button-border-width, 1px);
