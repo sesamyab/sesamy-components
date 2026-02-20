@@ -241,14 +241,13 @@
         >
           <NotLoggedIn {api}>
             {#if showLoginButton && !horizontal}
-              <Row class="text-sm gap-1 font-bold w-full">
-                <div>
-                  {t('already_subscribing')}
-                </div>
-
-                <sesamy-login
-                  class="p-0 border-none enabled:hover:bg-transparent hover:underline text-primary font-bold"
-                ></sesamy-login>
+              <Row class="w-full">
+                <sesamy-login class="border-0 p-0">
+                  <span slot="button-text">
+                    {t('already_subscribing')}
+                    {t('login')}
+                  </span>
+                </sesamy-login>
               </Row>
               <div
                 class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-primary opacity-30"
