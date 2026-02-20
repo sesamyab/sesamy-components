@@ -1,3 +1,11 @@
+## [2.21.9](https://github.com/sesamyab/sesamy-components/compare/v2.21.8...v2.21.9) (2026-02-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency lucide-svelte to ^0.575.0 ([f377c98](https://github.com/sesamyab/sesamy-components/commit/f377c987049971b5b83ce7e4e900c27e3efa8b3e))
+* paywall login btn layout ([3e135e3](https://github.com/sesamyab/sesamy-components/commit/3e135e380af41b0570f6e6d32718aa20ec27ae47))
+
 ## [2.21.8](https://github.com/sesamyab/sesamy-components/compare/v2.21.7...v2.21.8) (2026-02-03)
 
 
