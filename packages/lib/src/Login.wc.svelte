@@ -89,7 +89,7 @@
     {:else}
       <Button
         class={twMerge(
-          '!font-[--s-login-button-font-weight] row gap-1.5 bg-[color:--s-login-button-background-color] text-[color:--s-login-button-text-color] border-[color:--s-login-button-border-color] border-[length:--s-login-button-border-width] rounded-[--s-login-button-border-radius]',
+          '!font-[--s-login-button-font-weight] row gap-1.5 bg-[color:--s-login-button-background-color] text-[color:--s-login-button-text-color] border-[color:--s-login-button-border-color] border-[length:--s-login-button-border-width] rounded-[--s-login-button-border-radius] text-[length:--s-login-button-text-size] leading-[1.43]',
           classes
         )}
         variant="secondary"

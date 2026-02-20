@@ -74,6 +74,7 @@
         </sesamy-content-container>
 
         <sesamy-paywall
+          style="--sesamy-login-button-font-weight: 400; --sesamy-login-button-text-color: red; --sesamy-login-button-text-size: 20px;"
           settings-url="https://api.sesamy.dev/paywall/paywalls/acme/OxHlsEHTUGs1tpF6EoRy8"
         ></sesamy-paywall>
       </div>
