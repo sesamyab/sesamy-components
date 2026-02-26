@@ -76,28 +76,25 @@
     return hasAccess;
   };
 
-  const createCheckout = async (e: SubmitEvent) => {
+  const doCreateCheckout = async (selectedProduct: Product) => {
     error = '';
-    e.preventDefault();
-    if (!product) return;
-
     loading = true;
 
-    if (product?.url && product?.url !== articleUrl) {
-      window.location.assign(product.url);
+    if (selectedProduct?.url && selectedProduct?.url !== articleUrl) {
+      window.location.assign(selectedProduct.url);
       return;
     }
 
-    const item = product?.url
-      ? { url: product.url }
-      : { sku: product.sku, purchaseOptionId: product.poId };
+    const item = selectedProduct?.url
+      ? { url: selectedProduct.url }
+      : { sku: selectedProduct.sku, purchaseOptionId: selectedProduct.poId };
 
     try {
       const checkoutPayload = {
         items: [item],
-        requestedDiscountCodes: product.discountCode ? [product.discountCode] : undefined,
+        requestedDiscountCodes: selectedProduct.discountCode ? [selectedProduct.discountCode] : undefined,
         redirectUrl,
-        price: product.price,
+        price: selectedProduct.price,
         currency,
         attribution: {
           utmSource: userProps?.['utm-source'],
@@ -114,7 +111,7 @@
         'sesamyPaywallCreateCheckout',
         {
           payload: checkoutPayload,
-          product,
+          product: selectedProduct,
           paywallId: paywall.id
         },
         true
@@ -125,25 +122,47 @@
         return;
       }
 
-      checkout = await api.checkouts.create(checkoutPayload);
+      const createdCheckout = await api.checkouts.create(checkoutPayload);
 
       api.events.emit('sesamyPaywallProductSelected', {
-        product,
-        checkoutId: checkout.id,
+        product: selectedProduct,
+        checkoutId: createdCheckout.id,
         paywallId: paywall.id
       });
 
-      loading = false;
-
-      if (product.preferBusiness) {
-        goToCheckout(checkout, undefined, true);
+      if (horizontal || selectedProduct.preferBusiness) {
+        goToCheckout(createdCheckout, undefined, true);
+        return;
       }
+
+      checkout = createdCheckout;
+      loading = false;
     } catch (err) {
       console.error(err);
       error = t('something_went_wrong');
       loading = false;
       return;
     }
+  };
+
+  const createCheckout = async (e: SubmitEvent) => {
+    e.preventDefault();
+    if (!product) return;
+    await doCreateCheckout(product);
+  };
+
+  const onBoxCheckout = async (subscription: PaywallSubscription) => {
+    const selectedProduct: Product = {
+      ...subscription,
+      features:
+        Array.isArray(subscription.features) && subscription.features.length > 0
+          ? subscription.features
+          : Array.isArray(features)
+            ? features
+            : []
+    };
+    product = selectedProduct;
+    await doCreateCheckout(selectedProduct);
   };
 
   const selectProduct = (option: PaywallSubscription) => {
@@ -278,13 +297,14 @@
             <form class="contents" onsubmit={createCheckout}>
               {#if subscriptions.length}
                 <Subscriptions
-                  {api}
                   {horizontal}
                   {subscriptions}
                   {t}
                   {currency}
                   {selectProduct}
                   {redirectUrl}
+                  {loading}
+                  onCheckout={onBoxCheckout}
                 />
               {/if}
 

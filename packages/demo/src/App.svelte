@@ -113,6 +113,12 @@
       settings-url="https://api.sesamy.dev/paywall/paywalls/acme/Zt9jY_Ioc4SS6YG9hRkqp"
     ></sesamy-paywall>
   </section>
+  <section>
+    <h1>BOXES paywall (FoPaafEt51445TsbYXTEu)</h1>
+    <sesamy-paywall
+      settings-url="https://api.sesamy.dev/paywall/paywalls/acme/FoPaafEt51445TsbYXTEu.json"
+    ></sesamy-paywall>
+  </section>
 </main>
 
 <style>
