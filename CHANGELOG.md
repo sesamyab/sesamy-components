@@ -1,3 +1,11 @@
+## [2.21.10](https://github.com/sesamyab/sesamy-components/compare/v2.21.9...v2.21.10) (2026-02-27)
+
+
+### Bug Fixes
+
+* create checkout in boxes ([c9f446a](https://github.com/sesamyab/sesamy-components/commit/c9f446ae7e052d7fbf4bca7b96012e5f4cdf1a8f))
+* trigger unlock-event after content insertion ([379e5fb](https://github.com/sesamyab/sesamy-components/commit/379e5fbfd10d0c78936f1c73bdfdaff03e66591d))
+
 ## [2.21.9](https://github.com/sesamyab/sesamy-components/compare/v2.21.8...v2.21.9) (2026-02-20)
 
 
