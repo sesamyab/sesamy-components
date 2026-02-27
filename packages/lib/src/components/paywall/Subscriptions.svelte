@@ -8,38 +8,31 @@
   import Button from '../../Button.wc.svelte';
   import Tag from '../Tag.svelte';
   import Selection from './Selection.svelte';
-  import type { SesamyAPI } from '@sesamy/sesamy-js';
   import DescriptionWithReadMore from './DescriptionWithReadMore.svelte';
 
   type Props = {
-    api: SesamyAPI;
     t: TranslationFunction;
     horizontal?: boolean;
     subscriptions: PaywallSubscription[];
     currency: string;
     selectProduct: Function;
     redirectUrl: string;
+    loading?: boolean;
+    onCheckout?: (subscription: PaywallSubscription) => void;
   };
 
   let {
-    api,
     horizontal = false,
     subscriptions,
     currency,
     t,
     selectProduct,
-    redirectUrl
+    redirectUrl,
+    loading = false,
+    onCheckout
   }: Props = $props();
 
-  const getCheckoutUrl = async (product: PaywallSubscription) =>
-    api.generateLink({
-      target: 'checkout',
-      sku: product.sku,
-      purchaseOptionId: product.poId,
-      discountCode: product.discountCode,
-      redirectUrl,
-      business: product.preferBusiness
-    });
+  let loadingId = $state<string | undefined>(undefined);
 
   const hasAnyDiscountedPrice = () =>
     subscriptions.some(
@@ -143,15 +136,18 @@
                 {buttonText || t('continue')}
               </Button>
             {:else}
-              {#await getCheckoutUrl(subscription) then checkoutUrl}
-                <Button
-                  href={checkoutUrl.replace('poId', 'option')}
-                  class="w-full mt-4 bg-[var(--s-paywall-btn-bg-color)] text-[var(--s-paywall-btn-text-color)]"
-                  variant="primary"
-                >
-                  {buttonText || t('continue')}
-                </Button>
-              {/await}
+              <Button
+                loading={loadingId === id}
+                disabled={loading}
+                onclick={() => {
+                  loadingId = id;
+                  onCheckout?.(subscription);
+                }}
+                class="w-full mt-4 bg-[var(--s-paywall-btn-bg-color)] text-[var(--s-paywall-btn-text-color)]"
+                variant="primary"
+              >
+                {buttonText || t('continue')}
+              </Button>
             {/if}
           </Column>
         </Column>
