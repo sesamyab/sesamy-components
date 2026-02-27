@@ -143,6 +143,10 @@
     try {
       const contentHtml = await fetchContent(api);
       await injectContent(contentHtml);
+
+      if (lockMode !== 'event') {
+        emitUnlockEvent(api);
+      }
     } catch (err) {
       console.error('Error unlocking content:', err);
     }
