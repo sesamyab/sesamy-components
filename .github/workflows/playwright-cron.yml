@@ -40,7 +40,7 @@ jobs:
           if-no-files-found: ignore
       - name: Report failed test
         if: failure()
-        uses: fjogeleit/http-request-action@44816be1eabb9c1122d8d775923f39bbe55c67a3 # v1
+        uses: fjogeleit/http-request-action@c0b95d02a088b47c1f2f4db04fd8af8bd19eee54 # v1
         with:
           url: ${{ secrets.SLACK_HOOK_TEST_RESULTS }}
           method: 'POST'
@@ -52,7 +52,7 @@ jobs:
             }
       - name: Report successful test
         if: success()
-        uses: fjogeleit/http-request-action@44816be1eabb9c1122d8d775923f39bbe55c67a3 # v1
+        uses: fjogeleit/http-request-action@c0b95d02a088b47c1f2f4db04fd8af8bd19eee54 # v1
         with:
           url: ${{ secrets.SLACK_HOOK_TEST_RESULTS }}
           method: 'POST'
