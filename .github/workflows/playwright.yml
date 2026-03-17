@@ -5,18 +5,18 @@ on:
 jobs:
   test:
     timeout-minutes: 60
-    runs-on: buildjet-8vcpu-ubuntu-2204
+    runs-on: ubuntu-latest-8-cores
     container: mcr.microsoft.com/playwright:v1.49.1-noble
     steps:
       - name: Checkout ref
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Install dependencies
         run: yarn
       - name: Install Playwright Browsers
         run: yarn playwright install --with-deps
       - name: Run Playwright tests
         run: yarn test
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         if: ${{ !cancelled() }}
         with:
           name: playwright-report
