@@ -14,17 +14,30 @@
 
   // Store the content slot element in memory
   let storedContentElement: Element | null = null;
+  // Resolves once storedContentElement has been populated (or confirmed absent)
+  let contentReady: Promise<void> = Promise.resolve();
 
   function extractAndStoreContent() {
     const host = $host();
     if (!host || storedContentElement) return;
 
-    const contentSlot = host.querySelector('[slot="content"]');
-    if (contentSlot) {
-      // Clone and store the content
-      storedContentElement = contentSlot.cloneNode(true) as Element;
-      // Remove from DOM
-      contentSlot.remove();
+    const doExtract = () => {
+      const contentSlot = host.querySelector('[slot="content"]');
+      if (contentSlot) {
+        // Clone and store the content
+        storedContentElement = contentSlot.cloneNode(true) as Element;
+        // Remove from DOM
+        contentSlot.remove();
+      }
+    };
+
+    if (document.readyState === 'loading') {
+      // DOM still being parsed — slot children may not be fully appended yet
+      contentReady = new Promise<void>((resolve) => {
+        document.addEventListener('DOMContentLoaded', () => { doExtract(); resolve(); }, { once: true });
+      });
+    } else {
+      doExtract();
     }
   }
 
@@ -81,16 +94,18 @@
 
     // Handle scripts
     const scripts = lockedContentNode.querySelectorAll('script');
-    const scriptContents: string[] = [];
+    const inlineScripts: HTMLScriptElement[] = [];
 
     scripts.forEach((script) => {
       try {
+        const newScript = document.createElement('script');
+        // Preserve all attributes (type, async, defer, crossorigin, etc.)
+        Array.from(script.attributes).forEach((attr) => newScript.setAttribute(attr.name, attr.value));
         if (script.src) {
-          const newScript = document.createElement('script');
-          newScript.src = script.src;
           document.head.appendChild(newScript);
         } else {
-          scriptContents.push(script.textContent || '');
+          newScript.textContent = script.textContent;
+          inlineScripts.push(newScript);
         }
         script.parentNode?.removeChild(script);
       } catch (err) {
@@ -102,14 +117,14 @@
     host.parentElement?.insertBefore(lockedContentNode, host);
 
     // Execute inline scripts
-    scriptContents.forEach((code) => {
+    inlineScripts.forEach((script) => {
       try {
-        const script = document.createElement('script');
-        script.textContent = code;
         document.head.appendChild(script);
+        // Only remove synchronously for non-module scripts; modules execute async
+        // and removing after append does not interrupt execution either way
         document.head.removeChild(script);
       } catch (err) {
-        console.error('Failed to execute inline script:', err, code);
+        console.error('Failed to execute inline script:', err, script);
       }
     });
   }
@@ -117,6 +132,7 @@
   async function fetchContent(api: SesamyAPI): Promise<string> {
     switch (lockMode) {
       case 'encode':
+        await contentReady;
         const base64 = storedContentElement?.innerHTML || '';
         // Convert base64 to UTF-8 string
         try {
@@ -132,6 +148,7 @@
       case 'signedUrl':
         return api.content.unlock($host().parentElement!, lockedContentSelector);
       case 'embed':
+        await contentReady;
         return storedContentElement?.innerHTML || '';
       default:
         console.error('Invalid lock mode');
