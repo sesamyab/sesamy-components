@@ -1,3 +1,12 @@
+## [2.21.11](https://github.com/sesamyab/sesamy-components/compare/v2.21.10...v2.21.11) (2026-03-19)
+
+
+### Bug Fixes
+
+* **content-container:** extract slot content lazily in unlockAndRenderContent ([fc8f7bb](https://github.com/sesamyab/sesamy-components/commit/fc8f7bbe07dd5f69f503f072796b7f3fb40d1f29))
+* **content-container:** only remove non-module inline scripts after append ([d81dc6e](https://github.com/sesamyab/sesamy-components/commit/d81dc6e36c2b3a05462ebaf981c733605aa90178))
+* **content-container:** wait for DOMContentLoaded before extracting slot content, preserve script attributes ([759f6aa](https://github.com/sesamyab/sesamy-components/commit/759f6aa135713f05dc3e679fe9b032f6d0f8c926))
+
 ## [2.21.10](https://github.com/sesamyab/sesamy-components/compare/v2.21.9...v2.21.10) (2026-02-27)
 
 
