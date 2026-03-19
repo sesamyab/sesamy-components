@@ -14,44 +14,19 @@
 
   // Store the content slot element in memory
   let storedContentElement: Element | null = null;
-  // Resolves once storedContentElement has been populated (or confirmed absent)
-  let contentReady: Promise<void> = Promise.resolve();
 
   function extractAndStoreContent() {
     const host = $host();
     if (!host || storedContentElement) return;
 
-    const doExtract = () => {
-      const contentSlot = host.querySelector('[slot="content"]');
-      if (contentSlot) {
-        // Clone and store the content
-        storedContentElement = contentSlot.cloneNode(true) as Element;
-        // Remove from DOM
-        contentSlot.remove();
-      }
-    };
-
-    if (document.readyState === 'loading') {
-      // DOM still being parsed — slot children may not be fully appended yet
-      contentReady = new Promise<void>((resolve) => {
-        document.addEventListener(
-          'DOMContentLoaded',
-          () => {
-            doExtract();
-            resolve();
-          },
-          { once: true }
-        );
-      });
-    } else {
-      doExtract();
+    const contentSlot = host.querySelector('[slot="content"]');
+    if (contentSlot) {
+      // Clone and store the content
+      storedContentElement = contentSlot.cloneNode(true) as Element;
+      // Remove from DOM
+      contentSlot.remove();
     }
   }
-
-  // Extract content on component initialization
-  $effect(() => {
-    extractAndStoreContent();
-  });
 
   async function checkAccess(api: SesamyAPI) {
     const content = api.content.get($host());
@@ -144,7 +119,6 @@
   async function fetchContent(api: SesamyAPI): Promise<string> {
     switch (lockMode) {
       case 'encode':
-        await contentReady;
         const base64 = storedContentElement?.innerHTML || '';
         // Convert base64 to UTF-8 string
         try {
@@ -160,7 +134,6 @@
       case 'signedUrl':
         return api.content.unlock($host().parentElement!, lockedContentSelector);
       case 'embed':
-        await contentReady;
         return storedContentElement?.innerHTML || '';
       default:
         console.error('Invalid lock mode');
@@ -170,6 +143,9 @@
 
   async function unlockAndRenderContent(api: SesamyAPI) {
     try {
+      // sesamyJsReady (which resolves readyPromise) only fires after DOMContentLoaded,
+      // so the DOM is fully parsed by the time we reach here.
+      extractAndStoreContent();
       const contentHtml = await fetchContent(api);
       await injectContent(contentHtml);
 
