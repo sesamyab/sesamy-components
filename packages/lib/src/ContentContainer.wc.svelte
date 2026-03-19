@@ -34,7 +34,14 @@
     if (document.readyState === 'loading') {
       // DOM still being parsed — slot children may not be fully appended yet
       contentReady = new Promise<void>((resolve) => {
-        document.addEventListener('DOMContentLoaded', () => { doExtract(); resolve(); }, { once: true });
+        document.addEventListener(
+          'DOMContentLoaded',
+          () => {
+            doExtract();
+            resolve();
+          },
+          { once: true }
+        );
       });
     } else {
       doExtract();
@@ -100,7 +107,9 @@
       try {
         const newScript = document.createElement('script');
         // Preserve all attributes (type, async, defer, crossorigin, etc.)
-        Array.from(script.attributes).forEach((attr) => newScript.setAttribute(attr.name, attr.value));
+        Array.from(script.attributes).forEach((attr) =>
+          newScript.setAttribute(attr.name, attr.value)
+        );
         if (script.src) {
           document.head.appendChild(newScript);
         } else {
