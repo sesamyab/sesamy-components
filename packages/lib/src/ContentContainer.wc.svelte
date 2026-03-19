@@ -120,9 +120,12 @@
     inlineScripts.forEach((script) => {
       try {
         document.head.appendChild(script);
-        // Only remove synchronously for non-module scripts; modules execute async
-        // and removing after append does not interrupt execution either way
-        document.head.removeChild(script);
+        // Module scripts execute asynchronously; don't remove them so the browser
+        // can finish loading imports. Non-module scripts execute synchronously on
+        // append so they can be removed immediately after.
+        if (script.type !== 'module') {
+          document.head.removeChild(script);
+        }
       } catch (err) {
         console.error('Failed to execute inline script:', err, script);
       }
