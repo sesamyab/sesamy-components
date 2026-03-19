@@ -28,11 +28,6 @@
     }
   }
 
-  // Extract content on component initialization
-  $effect(() => {
-    extractAndStoreContent();
-  });
-
   async function checkAccess(api: SesamyAPI) {
     const content = api.content.get($host());
     if (!content) {
@@ -81,16 +76,20 @@
 
     // Handle scripts
     const scripts = lockedContentNode.querySelectorAll('script');
-    const scriptContents: string[] = [];
+    const inlineScripts: HTMLScriptElement[] = [];
 
     scripts.forEach((script) => {
       try {
+        const newScript = document.createElement('script');
+        // Preserve all attributes (type, async, defer, crossorigin, etc.)
+        Array.from(script.attributes).forEach((attr) =>
+          newScript.setAttribute(attr.name, attr.value)
+        );
         if (script.src) {
-          const newScript = document.createElement('script');
-          newScript.src = script.src;
           document.head.appendChild(newScript);
         } else {
-          scriptContents.push(script.textContent || '');
+          newScript.textContent = script.textContent;
+          inlineScripts.push(newScript);
         }
         script.parentNode?.removeChild(script);
       } catch (err) {
@@ -102,14 +101,17 @@
     host.parentElement?.insertBefore(lockedContentNode, host);
 
     // Execute inline scripts
-    scriptContents.forEach((code) => {
+    inlineScripts.forEach((script) => {
       try {
-        const script = document.createElement('script');
-        script.textContent = code;
         document.head.appendChild(script);
-        document.head.removeChild(script);
+        // Module scripts execute asynchronously; don't remove them so the browser
+        // can finish loading imports. Non-module scripts execute synchronously on
+        // append so they can be removed immediately after.
+        if (script.type !== 'module') {
+          document.head.removeChild(script);
+        }
       } catch (err) {
-        console.error('Failed to execute inline script:', err, code);
+        console.error('Failed to execute inline script:', err, script);
       }
     });
   }
@@ -141,6 +143,9 @@
 
   async function unlockAndRenderContent(api: SesamyAPI) {
     try {
+      // sesamyJsReady (which resolves readyPromise) only fires after DOMContentLoaded,
+      // so the DOM is fully parsed by the time we reach here.
+      extractAndStoreContent();
       const contentHtml = await fetchContent(api);
       await injectContent(contentHtml);
 
