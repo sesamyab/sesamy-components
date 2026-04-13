@@ -1,3 +1,10 @@
+## [2.21.12](https://github.com/sesamyab/sesamy-components/compare/v2.21.11...v2.21.12) (2026-04-13)
+
+
+### Bug Fixes
+
+* **paywall:** only set business flag when preferBusiness is true ([075122b](https://github.com/sesamyab/sesamy-components/commit/075122b743a1dcbc2e9f0fecb2d25b8304941562))
+
 ## [2.21.11](https://github.com/sesamyab/sesamy-components/compare/v2.21.10...v2.21.11) (2026-03-19)
 
 
