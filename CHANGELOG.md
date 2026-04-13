@@ -1,3 +1,27 @@
+## [2.21.12](https://github.com/sesamyab/sesamy-components/compare/v2.21.11...v2.21.12) (2026-04-13)
+
+
+### Bug Fixes
+
+* **paywall:** only set business flag when preferBusiness is true ([075122b](https://github.com/sesamyab/sesamy-components/commit/075122b743a1dcbc2e9f0fecb2d25b8304941562))
+
+## [2.21.11](https://github.com/sesamyab/sesamy-components/compare/v2.21.10...v2.21.11) (2026-03-19)
+
+
+### Bug Fixes
+
+* **content-container:** extract slot content lazily in unlockAndRenderContent ([fc8f7bb](https://github.com/sesamyab/sesamy-components/commit/fc8f7bbe07dd5f69f503f072796b7f3fb40d1f29))
+* **content-container:** only remove non-module inline scripts after append ([d81dc6e](https://github.com/sesamyab/sesamy-components/commit/d81dc6e36c2b3a05462ebaf981c733605aa90178))
+* **content-container:** wait for DOMContentLoaded before extracting slot content, preserve script attributes ([759f6aa](https://github.com/sesamyab/sesamy-components/commit/759f6aa135713f05dc3e679fe9b032f6d0f8c926))
+
+## [2.21.10](https://github.com/sesamyab/sesamy-components/compare/v2.21.9...v2.21.10) (2026-02-27)
+
+
+### Bug Fixes
+
+* create checkout in boxes ([c9f446a](https://github.com/sesamyab/sesamy-components/commit/c9f446ae7e052d7fbf4bca7b96012e5f4cdf1a8f))
+* trigger unlock-event after content insertion ([379e5fb](https://github.com/sesamyab/sesamy-components/commit/379e5fbfd10d0c78936f1c73bdfdaff03e66591d))
+
 ## [2.21.9](https://github.com/sesamyab/sesamy-components/compare/v2.21.8...v2.21.9) (2026-02-20)
 
 
