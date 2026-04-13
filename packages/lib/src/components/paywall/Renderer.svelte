@@ -131,7 +131,7 @@
       });
 
       if (horizontal || selectedProduct.preferBusiness) {
-        goToCheckout(createdCheckout, undefined, true);
+        goToCheckout(createdCheckout, undefined, selectedProduct.preferBusiness);
         return;
       }
 
