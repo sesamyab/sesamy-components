@@ -1,15 +1,33 @@
 <svelte:options customElement="sesamy-paywall" />
 
 <script lang="ts">
+  import { onDestroy } from 'svelte';
   import Base from './Base.svelte';
   import Renderer from './components/paywall/Renderer.svelte';
   import type { Paywall } from './types/Paywall';
   import LoginRenderer from './components/paywall/LoginRenderer.svelte';
   import type { SesamyAPI } from '@sesamy/sesamy-js';
+  import { dispatchSesamyEvent } from './events';
 
   import type { PaywallProps } from './types';
 
   let props: PaywallProps = $props();
+
+  let shown = false;
+  let accessGranted = false;
+
+  const markShown = () => {
+    shown = true;
+  };
+  const markAccessGranted = () => {
+    accessGranted = true;
+  };
+
+  onDestroy(() => {
+    if (shown && !accessGranted) {
+      dispatchSesamyEvent($host(), 'sesamy:paywall-dismissed', {});
+    }
+  });
 
   async function fetchPaywall(
     api: SesamyAPI
@@ -52,11 +70,35 @@
       {api.log(`sesamy-paywall with template ${result.template}`)}
 
       {#if result.template === 'ARTICLE'}
-        <Renderer {api} paywall={result.paywall} {host} {t} {...props} />
+        <Renderer
+          {api}
+          paywall={result.paywall}
+          {host}
+          {t}
+          onShown={markShown}
+          onAccessGranted={markAccessGranted}
+          {...props}
+        />
       {:else if result.template === 'BOXES'}
-        <Renderer horizontal {api} paywall={result.paywall} {host} {t} {...props} />
+        <Renderer
+          horizontal
+          {api}
+          paywall={result.paywall}
+          {host}
+          {t}
+          onShown={markShown}
+          onAccessGranted={markAccessGranted}
+          {...props}
+        />
       {:else if result.template === 'LOGIN'}
-        <LoginRenderer {api} {t} paywall={result.paywall} {...props} />
+        <LoginRenderer
+          {api}
+          {t}
+          paywall={result.paywall}
+          {host}
+          onShown={markShown}
+          {...props}
+        />
       {/if}
     {/if}
   {:catch error}

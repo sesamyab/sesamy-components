@@ -2,12 +2,20 @@
 
 <script lang="ts">
   import type { SesamyAPI, Profile } from '@sesamy/sesamy-js';
+  import { Events } from '@sesamy/sesamy-js';
+  import { onMount, onDestroy } from 'svelte';
   import Base from './Base.svelte';
   import type { LoginProps } from './types';
   import Button from './components/Button.svelte';
   import { twMerge } from 'tailwind-merge';
   import LoginMenuItemRenderer from './components/LoginMenuItemRenderer.svelte';
   import AvatarRenderer from './components/AvatarRenderer.svelte';
+  import {
+    dispatchSesamyEvent,
+    authTransition,
+    type AuthState,
+    type SesamyLoginSuccessDetail
+  } from './events';
 
   let { loading, loggedIn, class: classes = '' }: LoginProps & { class?: string } = $props();
 
@@ -16,19 +24,71 @@
   let user = $state<Profile | null>(null);
   let accountLink = $state<string | null>(null);
 
+  let authState: AuthState = 'unknown';
+  let apiRef: SesamyAPI | null = null;
+
+  const toUserinfo = (profile: Profile | null): SesamyLoginSuccessDetail['userinfo'] => {
+    const p = (profile ?? {}) as Record<string, unknown>;
+    return {
+      sub: typeof p.sub === 'string' ? p.sub : '',
+      ...p
+    } as SesamyLoginSuccessDetail['userinfo'];
+  };
+
+  const handleAuthTransition = async (next: AuthState) => {
+    const transition = authTransition(authState, next);
+    authState = next;
+    if (transition === 'login') {
+      const profile = apiRef ? await apiRef.auth.getUser().catch(() => null) : null;
+      dispatchSesamyEvent($host(), 'sesamy:login-success', {
+        userinfo: toUserinfo(profile)
+      });
+    } else if (transition === 'logout') {
+      dispatchSesamyEvent($host(), 'sesamy:logout', {});
+    }
+  };
+
+  const onAuthenticatedEvent = () => {
+    void handleAuthTransition('authenticated');
+  };
+  const onLogoutEvent = () => {
+    void handleAuthTransition('unauthenticated');
+  };
+
+  onMount(() => {
+    window.addEventListener(Events.AUTHENTICATED, onAuthenticatedEvent);
+    window.addEventListener(Events.LOGOUT, onLogoutEvent);
+  });
+  onDestroy(() => {
+    window.removeEventListener(Events.AUTHENTICATED, onAuthenticatedEvent);
+    window.removeEventListener(Events.LOGOUT, onLogoutEvent);
+  });
+
   const login = async (api: SesamyAPI) => {
     disabled = true;
     try {
       await api.auth.login({ appState: { source: 'login-component' } });
     } catch (error) {
       disabled = false;
+      const err = error instanceof Error ? error : undefined;
+      const code =
+        (err && (err as unknown as { code?: string }).code) || (err?.name ?? 'login_failed');
+      dispatchSesamyEvent($host(), 'sesamy:login-error', {
+        error: {
+          code,
+          message: err?.message ?? String(error),
+          cause: error
+        }
+      });
       console.error('Login failed:', error);
     }
   };
 
   const checkLoggedIn = async (api: SesamyAPI) => {
+    apiRef = api;
     try {
       loggedIn = await api.auth.isAuthenticated();
+      authState = loggedIn ? 'authenticated' : 'unauthenticated';
       if (loggedIn) {
         user = await api.auth.getUser();
         accountLink = await api.generateLink({ target: 'account' });

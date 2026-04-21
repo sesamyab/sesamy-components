@@ -10,14 +10,17 @@
   import InputGroup from '../InputGroup.svelte';
   import Icon from '../Icon.svelte';
   import { hexToHsl } from '../../utils/color';
+  import { dispatchSesamyEvent } from '../../events';
 
   type Props = {
     api: SesamyAPI;
     t: TranslationFunction;
     paywall: Paywall;
+    host?: HTMLElement;
+    onShown?: () => void;
   };
 
-  let { api, t, paywall }: Props = $props();
+  let { api, t, paywall, host, onShown }: Props = $props();
 
   let {
     headline,
@@ -60,6 +63,19 @@
     }, 400);
   };
 
+  const checkAuthAndAnnounce = async () => {
+    const isAuthenticated = await api.auth.isAuthenticated();
+    if (!isAuthenticated) {
+      onShown?.();
+      if (host) {
+        dispatchSesamyEvent(host, 'sesamy:paywall-shown', {
+          reason: 'unauthenticated'
+        });
+      }
+    }
+    return isAuthenticated;
+  };
+
   const login = async (event: SubmitEvent, api: SesamyAPI) => {
     event.preventDefault();
 
@@ -77,7 +93,7 @@
   };
 </script>
 
-{#await api.auth.isAuthenticated() then isAuthenticated}
+{#await checkAuthAndAnnounce() then isAuthenticated}
   {#if !isAuthenticated}
     <div class="@container">
       <form onsubmit={(e) => login(e, api)}>
