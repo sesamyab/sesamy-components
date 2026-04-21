@@ -1,3 +1,12 @@
+## [2.21.13](https://github.com/sesamyab/sesamy-components/compare/v2.21.12...v2.21.13) (2026-04-21)
+
+
+### Bug Fixes
+
+* add events ([fec202b](https://github.com/sesamyab/sesamy-components/commit/fec202b1719728c4cd6a60765752a23ee183c374))
+* readme ([53fdaaa](https://github.com/sesamyab/sesamy-components/commit/53fdaaab7438977a01edb3d821add5e1605b832d))
+* review comments ([a9e9da2](https://github.com/sesamyab/sesamy-components/commit/a9e9da2de0ccb00d2ed34b12d2d2db4b4ac49210))
+
 ## [2.21.12](https://github.com/sesamyab/sesamy-components/compare/v2.21.11...v2.21.12) (2026-04-13)
 
 
