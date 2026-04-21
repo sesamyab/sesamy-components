@@ -65,7 +65,12 @@
   };
 
   const checkAuthAndAnnounce = async () => {
-    const isAuthenticated = await api.auth.isAuthenticated();
+    let isAuthenticated = false;
+    try {
+      isAuthenticated = await api.auth.isAuthenticated();
+    } catch (error) {
+      console.error('Auth check failed:', error);
+    }
     if (!isAuthenticated) {
       onShown?.();
       if (host) {
@@ -81,7 +86,6 @@
     event.preventDefault();
 
     try {
-      onAccessGranted?.();
       await api.auth.login({
         authorizationParams: {
           login_hint: email,
@@ -89,6 +93,7 @@
         },
         appState: { source: 'registration-wall' }
       });
+      onAccessGranted?.();
     } catch (error) {
       console.error('Login failed:', error);
     }
