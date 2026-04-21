@@ -39,6 +39,32 @@ You can also use the components directly via CDN:
 <script type="module" src="https://unpkg.com/@sesamy/sesamy-components"></script>
 ```
 
+## Per-element events
+
+Each top-level component dispatches per-element `CustomEvent`s (`bubbles: true, composed: true`) that publishers can subscribe to directly on the element — no need to poll or listen on `window`. TypeScript consumers get typed `detail` via `HTMLElementEventMap` augmentation exported from the package:
+
+```ts
+import '@sesamy/sesamy-components'; // ambient augmentation
+
+const el = document.querySelector('sesamy-login')!;
+el.addEventListener('sesamy:login-success', (e) => {
+  // e.detail is typed as { userinfo: { sub: string; email?: string; … } }
+  console.log(e.detail.userinfo.sub);
+});
+```
+
+The full event map and detail interfaces are exported as named types:
+
+```ts
+import type {
+  SesamyElementEventMap,
+  SesamyLoginSuccessDetail,
+  SesamyPaywallShownDetail,
+  SesamyAccessGrantedDetail,
+  SesamyContentUnlockedDetail
+} from '@sesamy/sesamy-components';
+```
+
 ## Components
 
 # sesamy-login
@@ -57,7 +83,27 @@ A web component that provides authentication functionality, displaying a login b
 
 **Events:**
 
-- `login`: Dispatched when login action is triggered
+All per-element events are `CustomEvent`s dispatched on the `<sesamy-login>` element with `bubbles: true, composed: true`, so they cross shadow DOM boundaries and can be caught via event delegation.
+
+- `sesamy:login-success`: Fired when the authenticated state transitions from logged-out to logged-in. `detail: { userinfo: { sub: string; email?: string; name?: string; [key: string]: unknown } }`.
+- `sesamy:login-error`: Fired when a login attempt fails (popup closed, token exchange rejected, network error). `detail: { error: { code: string; message: string; cause?: unknown } }`.
+- `sesamy:logout`: Fired when the authenticated state transitions from logged-in to logged-out. `detail: {}`.
+- `login`: Legacy event, dispatched when the login action is triggered.
+
+```js
+const el = document.querySelector('sesamy-login');
+el.addEventListener('sesamy:login-success', (e) => {
+  console.log('welcome', e.detail.userinfo.sub);
+});
+el.addEventListener('sesamy:login-error', (e) => {
+  console.warn('login failed', e.detail.error.code, e.detail.error.message);
+});
+el.addEventListener('sesamy:logout', () => {
+  console.log('user logged out');
+});
+```
+
+See also the window-level `Events` enum emitted by `@sesamy/sesamy-js` (`AUTHENTICATED`, `LOGOUT`, …) for cross-page coordination.
 
 **Basic Usage Example:**
 
@@ -178,7 +224,17 @@ A web component that controls access to content based on user authentication and
 
 **Events:**
 
-- `sesamyUnlocked`: Dispatched when content is unlocked (with `item-src` and `publisher-content-id` in detail)
+All per-element events bubble and are composed (cross shadow roots).
+
+- `sesamy:content-unlocked`: Fired when gated content is decrypted and rendered into the element. `detail: { contentName: string }` — matches the element's `data-dca-content-name` attribute when present, otherwise falls back to the resolved `publisher-content-id`.
+- `sesamyUnlocked`: Legacy event, still dispatched alongside `sesamy:content-unlocked`. `detail: { publisherContentId, itemSrc }`.
+
+```js
+const el = document.querySelector('sesamy-content-container');
+el.addEventListener('sesamy:content-unlocked', (e) => {
+  analytics.track('content_unlocked', { name: e.detail.contentName });
+});
+```
 
 **Basic Usage Example:**
 
@@ -211,6 +267,24 @@ A web component that displays a paywall for content, loading paywall settings fr
 - `pass`: Pass ID for access
 
 **Events:**
+
+Per-element events dispatched directly on the `<sesamy-paywall>` element (bubble, composed):
+
+- `sesamy:paywall-shown`: Fired once per visible mount when the paywall becomes visible to the user. `detail: { reason: 'unauthenticated' | 'no-entitlement' | 'consent-required' | string }`.
+- `sesamy:paywall-dismissed`: Fired when the user dismisses the paywall without purchasing (element is removed while it was shown and access was never granted). `detail: {}`.
+- `sesamy:access-granted`: Fired when the paywall confirms the user has access and hides itself. `detail: { scopes: string[] }` — the entitlement scopes / passes that granted access.
+
+```js
+const el = document.querySelector('sesamy-paywall');
+el.addEventListener('sesamy:paywall-shown', (e) => {
+  console.log('paywall visible; reason:', e.detail.reason);
+});
+el.addEventListener('sesamy:access-granted', (e) => {
+  console.log('granted scopes:', e.detail.scopes);
+});
+```
+
+Legacy bus events (emitted on `window` via `api.events.emit`, unchanged):
 
 - `sesamyPaywallAccessChecked`: Emitted after access check, with `{ hasAccess, paywallId, articleUrl, passes }` in `detail`.
 - `sesamyPaywallProductSelected`: Emitted when a product/subscription is selected and the continue button is pressed, with `{ product, checkoutId, paywallId }` in `detail`.

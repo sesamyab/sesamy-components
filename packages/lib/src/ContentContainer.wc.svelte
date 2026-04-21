@@ -4,6 +4,7 @@
   import type { SesamyAPI } from '@sesamy/sesamy-js';
   import Base from './Base.svelte';
   import type { ContentContainerProps } from './types';
+  import { dispatchSesamyEvent } from './events';
 
   let {
     'item-src': itemSrc = '',
@@ -43,7 +44,8 @@
   }
 
   function emitUnlockEvent(api: SesamyAPI) {
-    const publisherContentId = publisherContentIdProp || api.content.get($host())?.id || '';
+    const host = $host();
+    const publisherContentId = publisherContentIdProp || api.content.get(host)?.id || '';
 
     const event = new CustomEvent('sesamyUnlocked', {
       detail: {
@@ -55,6 +57,12 @@
     });
 
     dispatchEvent(event);
+
+    const contentName = host.dataset?.dcaContentName ?? publisherContentId ?? '';
+
+    dispatchSesamyEvent(host, 'sesamy:content-unlocked', {
+      contentName
+    });
   }
 
   async function injectContent(contentHtml: string) {
