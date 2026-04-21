@@ -39,9 +39,35 @@ You can also use the components directly via CDN:
 <script type="module" src="https://unpkg.com/@sesamy/sesamy-components"></script>
 ```
 
+## Per-element events
+
+Each top-level component dispatches per-element `CustomEvent`s (`bubbles: true, composed: true`) that publishers can subscribe to directly on the element — no need to poll or listen on `window`. TypeScript consumers get typed `detail` via `HTMLElementEventMap` augmentation exported from the package:
+
+```ts
+import '@sesamy/sesamy-components'; // ambient augmentation
+
+const el = document.querySelector('sesamy-login')!;
+el.addEventListener('sesamy:login-success', (e) => {
+  // e.detail is typed as { userinfo: { sub: string; email?: string; … } }
+  console.log(e.detail.userinfo.sub);
+});
+```
+
+The full event map and detail interfaces are exported as named types:
+
+```ts
+import type {
+  SesamyElementEventMap,
+  SesamyLoginSuccessDetail,
+  SesamyPaywallShownDetail,
+  SesamyAccessGrantedDetail,
+  SesamyContentUnlockedDetail
+} from '@sesamy/sesamy-components';
+```
+
 ## Components
 
-# sesamy-login
+### sesamy-login
 
 A web component that provides authentication functionality, displaying a login button for unauthenticated users and an avatar with a dropdown menu for authenticated users.
 
@@ -57,7 +83,27 @@ A web component that provides authentication functionality, displaying a login b
 
 **Events:**
 
-- `login`: Dispatched when login action is triggered
+All per-element events are `CustomEvent`s dispatched on the `<sesamy-login>` element with `bubbles: true, composed: true`, so they cross shadow DOM boundaries and can be caught via event delegation.
+
+- `sesamy:login-success`: Fired when the authenticated state transitions from logged-out to logged-in. `detail: { userinfo: { sub: string; email?: string; name?: string; [key: string]: unknown } }`.
+- `sesamy:login-error`: Fired when a login attempt fails (popup closed, token exchange rejected, network error). `detail: { error: { code: string; message: string; cause?: unknown } }`.
+- `sesamy:logout`: Fired when the authenticated state transitions from logged-in to logged-out. `detail: {}`.
+- `login`: Legacy event, dispatched when the login action is triggered.
+
+```js
+const el = document.querySelector('sesamy-login');
+el.addEventListener('sesamy:login-success', (e) => {
+  console.log('welcome', e.detail.userinfo.sub);
+});
+el.addEventListener('sesamy:login-error', (e) => {
+  console.warn('login failed', e.detail.error.code, e.detail.error.message);
+});
+el.addEventListener('sesamy:logout', () => {
+  console.log('user logged out');
+});
+```
+
+See also the window-level `Events` enum emitted by `@sesamy/sesamy-js` (`AUTHENTICATED`, `LOGOUT`, …) for cross-page coordination.
 
 **Basic Usage Example:**
 
@@ -92,11 +138,11 @@ A web component that provides authentication functionality, displaying a login b
 ></sesamy-login>
 ```
 
-## Slots
+#### Slots
 
 The `sesamy-login` component provides several slots for customizing its appearance and behavior:
 
-### button-text
+##### button-text
 
 - **Purpose:** Replaces the default login button text.
 - **Behavior:** Content in this slot will be rendered as the main text of the login button, replacing the default (localized) "login" text.
@@ -107,7 +153,7 @@ The `sesamy-login` component provides several slots for customizing its appearan
   </sesamy-login>
   ```
 
-### button-text-prefix
+##### button-text-prefix
 
 - **Purpose:** Inserts content before the login button text.
 - **Behavior:** Content in this slot will appear before the main button text, useful for adding icons or labels.
@@ -118,7 +164,7 @@ The `sesamy-login` component provides several slots for customizing its appearan
   </sesamy-login>
   ```
 
-### button-text-suffix
+##### button-text-suffix
 
 - **Purpose:** Inserts content after the login button text.
 - **Behavior:** Content in this slot will appear after the main button text, useful for adding icons or additional info.
@@ -129,7 +175,7 @@ The `sesamy-login` component provides several slots for customizing its appearan
   </sesamy-login>
   ```
 
-### avatar
+##### avatar
 
 - **Purpose:** Replaces the default avatar shown when logged in.
 - **Behavior:** Content in this slot will be rendered instead of the default avatar image/button when the user is authenticated.
@@ -145,7 +191,7 @@ The `sesamy-login` component provides several slots for customizing its appearan
   </sesamy-login>
   ```
 
-### popup-menu
+##### popup-menu
 
 - **Purpose:** Replaces the default popup menu shown when clicking the avatar.
 - **Behavior:** Content in this slot will be rendered instead of the default menu (email/account/logout) when the user is authenticated and opens the menu.
@@ -178,7 +224,17 @@ A web component that controls access to content based on user authentication and
 
 **Events:**
 
-- `sesamyUnlocked`: Dispatched when content is unlocked (with `item-src` and `publisher-content-id` in detail)
+All per-element events bubble and are composed (cross shadow roots).
+
+- `sesamy:content-unlocked`: Fired when gated content is decrypted and rendered into the element. `detail: { contentName: string }` — matches the element's `data-dca-content-name` attribute when present, otherwise falls back to the resolved `publisher-content-id`.
+- `sesamyUnlocked`: Legacy event, still dispatched alongside `sesamy:content-unlocked`. `detail: { publisherContentId, itemSrc }`.
+
+```js
+const el = document.querySelector('sesamy-content-container');
+el.addEventListener('sesamy:content-unlocked', (e) => {
+  analytics.track('content_unlocked', { name: e.detail.contentName });
+});
+```
 
 **Basic Usage Example:**
 
@@ -196,7 +252,7 @@ A web component that controls access to content based on user authentication and
 </sesamy-content-container>
 ```
 
-# sesamy-paywall
+### sesamy-paywall
 
 A web component that displays a paywall for content, loading paywall settings from a remote URL and supporting different templates (Article, Boxes, Login).
 
@@ -212,10 +268,29 @@ A web component that displays a paywall for content, loading paywall settings fr
 
 **Events:**
 
+Per-element events dispatched directly on the `<sesamy-paywall>` element (bubble, composed):
+
+- `sesamy:paywall-shown`: Fired once per visible mount when the paywall becomes visible to the user. `detail: { reason: 'unauthenticated' | 'no-entitlement' | 'consent-required' | string }`.
+- `sesamy:paywall-dismissed`: Fired when the user dismisses the paywall without purchasing (element is removed while it was shown and access was never granted). `detail: {}`.
+- `sesamy:access-granted`: Fired when the paywall confirms the user has access and hides itself. `detail: { scopes: string[] }` — the entitlement scopes / passes that granted access.
+
+```js
+const el = document.querySelector('sesamy-paywall');
+el.addEventListener('sesamy:paywall-shown', (e) => {
+  console.log('paywall visible; reason:', e.detail.reason);
+});
+el.addEventListener('sesamy:access-granted', (e) => {
+  console.log('granted scopes:', e.detail.scopes);
+});
+```
+
+Legacy bus events (emitted on `window` via `api.events.emit`, unchanged):
+
 - `sesamyPaywallAccessChecked`: Emitted after access check, with `{ hasAccess, paywallId, articleUrl, passes }` in `detail`.
 - `sesamyPaywallProductSelected`: Emitted when a product/subscription is selected and the continue button is pressed, with `{ product, checkoutId, paywallId }` in `detail`.
 - `sesamyPaywallCheckoutRedirect`: Emitted before redirecting to checkout, with `{ checkout, paywallId, paymentMethod }` in `detail`.
-  **Slots:**
+
+**Slots:**
 
 - `below-headline`: Content rendered below the paywall headline (e.g., additional info, custom elements)
 - `features`: Content rendered in the features section of the paywall (e.g., feature list, benefits)
@@ -239,11 +314,11 @@ A web component that displays a paywall for content, loading paywall settings fr
 </sesamy-paywall>
 ```
 
-## Slots
+#### Slots
 
 The `sesamy-paywall` component provides two main slots for customization:
 
-### below-headline
+##### below-headline
 
 - **Purpose:** Inserts custom content directly below the paywall headline.
 - **Behavior:** The content you provide in this slot will be rendered in addition to the default paywall content, immediately below the headline. Use this for adding extra information, banners, or custom elements.
@@ -254,7 +329,7 @@ The `sesamy-paywall` component provides two main slots for customization:
   </sesamy-paywall>
   ```
 
-### features
+##### features
 
 - **Purpose:** Replaces the default features section of the paywall.
 - **Behavior:** When you provide content in the `features` slot, it will completely replace the built-in features list or section. Use this slot to fully customize the list of benefits, features, or selling points shown to the user.
@@ -275,7 +350,7 @@ The `sesamy-paywall` component provides two main slots for customization:
 
 - The `below-headline` slot adds to the paywall, while the `features` slot replaces the default features section entirely.
 
-# sesamy-visibility
+### sesamy-visibility
 
 A simple web component that conditionally renders content based on user authentication status.
 
@@ -288,7 +363,7 @@ A simple web component that conditionally renders content based on user authenti
 </sesamy-visibility>
 ```
 
-# sesamy-avatar
+### sesamy-avatar
 
 A web component that displays a user avatar image with configurable size and loading state.
 
@@ -309,7 +384,7 @@ A web component that displays a user avatar image with configurable size and loa
 <sesamy-avatar src="https://example.com/user.jpg" size="lg" loading></sesamy-avatar>
 ```
 
-# sesamy-button
+### sesamy-button
 
 A customizable button web component with multiple variants and sizes.
 
@@ -336,7 +411,7 @@ A customizable button web component with multiple variants and sizes.
 <sesamy-button href="/checkout" variant="primary">Go to Checkout</sesamy-button>
 ```
 
-# sesamy-login-menu-item
+### sesamy-login-menu-item
 
 A web component for individual menu items in the login dropdown menu. Can be used to customize the logged-in user menu.
 
@@ -491,7 +566,7 @@ Here's an example:
   const dispatchEvent = (name, detail) =>
     component.dispatchEvent(new CustomEvent(name, { detail }));
 </script>
-<button onclick="{()" ="">dispatchEvent("test", "Hello!")}> Click to dispatch event</button>
+<button on:click={() => dispatchEvent('test', 'Hello!')}>Click to dispatch event</button>
 ```
 
 ## Create a new component

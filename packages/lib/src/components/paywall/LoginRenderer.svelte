@@ -10,14 +10,18 @@
   import InputGroup from '../InputGroup.svelte';
   import Icon from '../Icon.svelte';
   import { hexToHsl } from '../../utils/color';
+  import { dispatchSesamyEvent } from '../../events';
 
   type Props = {
     api: SesamyAPI;
     t: TranslationFunction;
     paywall: Paywall;
+    host?: HTMLElement;
+    onShown?: () => void;
+    onAccessGranted?: () => void;
   };
 
-  let { api, t, paywall }: Props = $props();
+  let { api, t, paywall, host, onShown, onAccessGranted }: Props = $props();
 
   let {
     headline,
@@ -60,6 +64,24 @@
     }, 400);
   };
 
+  const checkAuthAndAnnounce = async () => {
+    let isAuthenticated = false;
+    try {
+      isAuthenticated = await api.auth.isAuthenticated();
+    } catch (error) {
+      console.error('Auth check failed:', error);
+    }
+    if (!isAuthenticated) {
+      onShown?.();
+      if (host) {
+        dispatchSesamyEvent(host, 'sesamy:paywall-shown', {
+          reason: 'unauthenticated'
+        });
+      }
+    }
+    return isAuthenticated;
+  };
+
   const login = async (event: SubmitEvent, api: SesamyAPI) => {
     event.preventDefault();
 
@@ -71,13 +93,14 @@
         },
         appState: { source: 'registration-wall' }
       });
+      onAccessGranted?.();
     } catch (error) {
       console.error('Login failed:', error);
     }
   };
 </script>
 
-{#await api.auth.isAuthenticated() then isAuthenticated}
+{#await checkAuthAndAnnounce() then isAuthenticated}
   {#if !isAuthenticated}
     <div class="@container">
       <form onsubmit={(e) => login(e, api)}>

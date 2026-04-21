@@ -19,6 +19,7 @@
   import NotLoggedIn from '../NotLoggedIn.svelte';
   import { parsePrice } from '../../utils/money';
   import { goToCheckout } from '../../utils/checkout';
+  import { dispatchSesamyEvent } from '../../events';
 
   type Props = {
     api: SesamyAPI;
@@ -26,11 +27,22 @@
     paywall: Paywall;
     t: TranslationFunction;
     horizontal?: boolean;
+    onShown?: () => void;
+    onAccessGranted?: () => void;
   } & PaywallProps;
 
   type Product = PaywallSubscription & { features: string[] };
 
-  let { api, t, horizontal = false, host, paywall, ...userProps }: Props = $props();
+  let {
+    api,
+    t,
+    horizontal = false,
+    host,
+    paywall,
+    onShown,
+    onAccessGranted,
+    ...userProps
+  }: Props = $props();
 
   let product = $state<Product>();
   let checkout = $state<Checkout>();
@@ -72,6 +84,24 @@
       articleUrl,
       passes
     });
+
+    if (hasAccess) {
+      onAccessGranted?.();
+      dispatchSesamyEvent(host, 'sesamy:access-granted', {
+        scopes: passes ?? []
+      });
+    } else {
+      onShown?.();
+      let isAuthed = false;
+      try {
+        isAuthed = await api.auth.isAuthenticated();
+      } catch (error) {
+        console.error('Auth check failed:', error);
+      }
+      dispatchSesamyEvent(host, 'sesamy:paywall-shown', {
+        reason: isAuthed ? 'no-entitlement' : 'unauthenticated'
+      });
+    }
 
     return hasAccess;
   };
