@@ -67,7 +67,7 @@ import type {
 
 ## Components
 
-# sesamy-login
+### sesamy-login
 
 A web component that provides authentication functionality, displaying a login button for unauthenticated users and an avatar with a dropdown menu for authenticated users.
 
@@ -138,11 +138,11 @@ See also the window-level `Events` enum emitted by `@sesamy/sesamy-js` (`AUTHENT
 ></sesamy-login>
 ```
 
-## Slots
+#### Slots
 
 The `sesamy-login` component provides several slots for customizing its appearance and behavior:
 
-### button-text
+##### button-text
 
 - **Purpose:** Replaces the default login button text.
 - **Behavior:** Content in this slot will be rendered as the main text of the login button, replacing the default (localized) "login" text.
@@ -153,7 +153,7 @@ The `sesamy-login` component provides several slots for customizing its appearan
   </sesamy-login>
   ```
 
-### button-text-prefix
+##### button-text-prefix
 
 - **Purpose:** Inserts content before the login button text.
 - **Behavior:** Content in this slot will appear before the main button text, useful for adding icons or labels.
@@ -164,7 +164,7 @@ The `sesamy-login` component provides several slots for customizing its appearan
   </sesamy-login>
   ```
 
-### button-text-suffix
+##### button-text-suffix
 
 - **Purpose:** Inserts content after the login button text.
 - **Behavior:** Content in this slot will appear after the main button text, useful for adding icons or additional info.
@@ -175,7 +175,7 @@ The `sesamy-login` component provides several slots for customizing its appearan
   </sesamy-login>
   ```
 
-### avatar
+##### avatar
 
 - **Purpose:** Replaces the default avatar shown when logged in.
 - **Behavior:** Content in this slot will be rendered instead of the default avatar image/button when the user is authenticated.
@@ -191,7 +191,7 @@ The `sesamy-login` component provides several slots for customizing its appearan
   </sesamy-login>
   ```
 
-### popup-menu
+##### popup-menu
 
 - **Purpose:** Replaces the default popup menu shown when clicking the avatar.
 - **Behavior:** Content in this slot will be rendered instead of the default menu (email/account/logout) when the user is authenticated and opens the menu.
@@ -252,7 +252,7 @@ el.addEventListener('sesamy:content-unlocked', (e) => {
 </sesamy-content-container>
 ```
 
-# sesamy-paywall
+### sesamy-paywall
 
 A web component that displays a paywall for content, loading paywall settings from a remote URL and supporting different templates (Article, Boxes, Login).
 
@@ -289,7 +289,8 @@ Legacy bus events (emitted on `window` via `api.events.emit`, unchanged):
 - `sesamyPaywallAccessChecked`: Emitted after access check, with `{ hasAccess, paywallId, articleUrl, passes }` in `detail`.
 - `sesamyPaywallProductSelected`: Emitted when a product/subscription is selected and the continue button is pressed, with `{ product, checkoutId, paywallId }` in `detail`.
 - `sesamyPaywallCheckoutRedirect`: Emitted before redirecting to checkout, with `{ checkout, paywallId, paymentMethod }` in `detail`.
-  **Slots:**
+
+**Slots:**
 
 - `below-headline`: Content rendered below the paywall headline (e.g., additional info, custom elements)
 - `features`: Content rendered in the features section of the paywall (e.g., feature list, benefits)
@@ -313,11 +314,11 @@ Legacy bus events (emitted on `window` via `api.events.emit`, unchanged):
 </sesamy-paywall>
 ```
 
-## Slots
+#### Slots
 
 The `sesamy-paywall` component provides two main slots for customization:
 
-### below-headline
+##### below-headline
 
 - **Purpose:** Inserts custom content directly below the paywall headline.
 - **Behavior:** The content you provide in this slot will be rendered in addition to the default paywall content, immediately below the headline. Use this for adding extra information, banners, or custom elements.
@@ -328,7 +329,7 @@ The `sesamy-paywall` component provides two main slots for customization:
   </sesamy-paywall>
   ```
 
-### features
+##### features
 
 - **Purpose:** Replaces the default features section of the paywall.
 - **Behavior:** When you provide content in the `features` slot, it will completely replace the built-in features list or section. Use this slot to fully customize the list of benefits, features, or selling points shown to the user.
@@ -349,7 +350,7 @@ The `sesamy-paywall` component provides two main slots for customization:
 
 - The `below-headline` slot adds to the paywall, while the `features` slot replaces the default features section entirely.
 
-# sesamy-visibility
+### sesamy-visibility
 
 A simple web component that conditionally renders content based on user authentication status.
 
@@ -362,7 +363,7 @@ A simple web component that conditionally renders content based on user authenti
 </sesamy-visibility>
 ```
 
-# sesamy-avatar
+### sesamy-avatar
 
 A web component that displays a user avatar image with configurable size and loading state.
 
@@ -383,7 +384,7 @@ A web component that displays a user avatar image with configurable size and loa
 <sesamy-avatar src="https://example.com/user.jpg" size="lg" loading></sesamy-avatar>
 ```
 
-# sesamy-button
+### sesamy-button
 
 A customizable button web component with multiple variants and sizes.
 
@@ -410,7 +411,7 @@ A customizable button web component with multiple variants and sizes.
 <sesamy-button href="/checkout" variant="primary">Go to Checkout</sesamy-button>
 ```
 
-# sesamy-login-menu-item
+### sesamy-login-menu-item
 
 A web component for individual menu items in the login dropdown menu. Can be used to customize the logged-in user menu.
 
@@ -565,7 +566,7 @@ Here's an example:
   const dispatchEvent = (name, detail) =>
     component.dispatchEvent(new CustomEvent(name, { detail }));
 </script>
-<button onclick="{()" ="">dispatchEvent("test", "Hello!")}> Click to dispatch event</button>
+<button on:click={() => dispatchEvent('test', 'Hello!')}>Click to dispatch event</button>
 ```
 
 ## Create a new component
