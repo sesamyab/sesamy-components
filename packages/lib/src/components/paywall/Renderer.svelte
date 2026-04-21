@@ -92,7 +92,12 @@
       });
     } else {
       onShown?.();
-      const isAuthed = await api.auth.isAuthenticated().catch(() => false);
+      let isAuthed = false;
+      try {
+        isAuthed = await api.auth.isAuthenticated();
+      } catch (error) {
+        console.error('Auth check failed:', error);
+      }
       dispatchSesamyEvent(host, 'sesamy:paywall-shown', {
         reason: isAuthed ? 'no-entitlement' : 'unauthenticated'
       });

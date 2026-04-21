@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import {
   authTransition,
   createSesamyEvent,
@@ -35,6 +35,11 @@ describe('dispatchSesamyEvent', () => {
   beforeEach(() => {
     el = document.createElement('div');
     document.body.appendChild(el);
+  });
+
+  afterEach(() => {
+    el.remove();
+    el = null as unknown as HTMLElement;
   });
 
   it('sesamy:login-success — fires with userinfo', () => {
@@ -157,6 +162,11 @@ describe('transition-guarded dispatch (integration of authTransition + dispatchS
   beforeEach(() => {
     el = document.createElement('div');
     document.body.appendChild(el);
+  });
+
+  afterEach(() => {
+    el.remove();
+    el = null as unknown as HTMLElement;
   });
 
   it('fires sesamy:login-success only on actual login transition', () => {

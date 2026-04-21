@@ -58,11 +58,7 @@
 
     dispatchEvent(event);
 
-    const contentName =
-      host.getAttribute('data-dca-content-name') ??
-      host.dataset?.dcaContentName ??
-      publisherContentId ??
-      '';
+    const contentName = host.dataset?.dcaContentName ?? publisherContentId ?? '';
 
     dispatchSesamyEvent(host, 'sesamy:content-unlocked', {
       contentName
