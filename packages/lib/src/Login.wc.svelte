@@ -55,13 +55,30 @@
     void handleAuthTransition('unauthenticated');
   };
 
+  const handleClickOutside = (e: Event) => {
+    const target = e.target as Node;
+    const popupMenu = $host().querySelector('[slot="popup-menu"]');
+
+    // Check if the click is on this component or within the popup menu
+    if (
+      target !== $host() &&
+      !$host().contains(target) &&
+      target !== popupMenu &&
+      !(popupMenu && popupMenu.contains(target))
+    ) {
+      showPopupMenu = false;
+    }
+  };
+
   onMount(() => {
     window.addEventListener(Events.AUTHENTICATED, onAuthenticatedEvent);
     window.addEventListener(Events.LOGOUT, onLogoutEvent);
+    document.addEventListener('pointerdown', handleClickOutside);
   });
   onDestroy(() => {
     window.removeEventListener(Events.AUTHENTICATED, onAuthenticatedEvent);
     window.removeEventListener(Events.LOGOUT, onLogoutEvent);
+    document.removeEventListener('pointerdown', handleClickOutside);
   });
 
   const login = async (api: SesamyAPI) => {
@@ -98,21 +115,6 @@
     }
   };
 
-  const handleClickOutside = (e: Event) => {
-    const target = e.target as Node;
-    const popupMenu = $host().querySelector('[slot="popup-menu"]');
-
-    // Check if the click is on this component or within the popup menu
-    if (
-      target !== $host() &&
-      !$host().contains(target) &&
-      target !== popupMenu &&
-      !(popupMenu && popupMenu.contains(target))
-    ) {
-      showPopupMenu = false;
-    }
-  };
-  document.addEventListener('pointerdown', handleClickOutside);
 </script>
 
 <Base let:api let:t>

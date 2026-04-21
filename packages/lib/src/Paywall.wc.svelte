@@ -97,6 +97,7 @@
           paywall={result.paywall}
           {host}
           onShown={markShown}
+          onAccessGranted={markAccessGranted}
           {...props}
         />
       {/if}

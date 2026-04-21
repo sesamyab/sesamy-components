@@ -18,9 +18,10 @@
     paywall: Paywall;
     host?: HTMLElement;
     onShown?: () => void;
+    onAccessGranted?: () => void;
   };
 
-  let { api, t, paywall, host, onShown }: Props = $props();
+  let { api, t, paywall, host, onShown, onAccessGranted }: Props = $props();
 
   let {
     headline,
@@ -80,6 +81,7 @@
     event.preventDefault();
 
     try {
+      onAccessGranted?.();
       await api.auth.login({
         authorizationParams: {
           login_hint: email,
