@@ -154,8 +154,11 @@
       // Give publisher scripts (e.g. ad SDKs) time to inject into the original
       // slot DOM before we clone+remove it, so the reinjected copy includes them.
       await new Promise((resolve) => setTimeout(resolve, 500));
+      if (!$host()?.isConnected) return;
       extractAndStoreContent();
+      if (!$host()?.isConnected) return;
       const contentHtml = await fetchContent(api);
+      if (!$host()?.isConnected) return;
       await injectContent(contentHtml);
 
       if (lockMode !== 'event') {
