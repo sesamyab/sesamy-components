@@ -151,8 +151,9 @@
 
   async function unlockAndRenderContent(api: SesamyAPI) {
     try {
-      // sesamyJsReady (which resolves readyPromise) only fires after DOMContentLoaded,
-      // so the DOM is fully parsed by the time we reach here.
+      // Give publisher scripts (e.g. ad SDKs) time to inject into the original
+      // slot DOM before we clone+remove it, so the reinjected copy includes them.
+      await new Promise((resolve) => setTimeout(resolve, 500));
       extractAndStoreContent();
       const contentHtml = await fetchContent(api);
       await injectContent(contentHtml);
