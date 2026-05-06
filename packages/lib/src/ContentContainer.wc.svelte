@@ -13,8 +13,11 @@
     'locked-content-selector': lockedContentSelector
   }: ContentContainerProps = $props();
 
-  // Store the content slot element in memory
+  // Stored only for non-embed modes (encode) that need to read the original
+  // slot HTML as their source. Embed mode never extracts; the slot is left in
+  // place and projected via <slot name="content">.
   let storedContentElement: Element | null = null;
+  let unlockEmitted = false;
 
   function extractAndStoreContent() {
     const host = $host();
@@ -22,11 +25,13 @@
 
     const contentSlot = host.querySelector('[slot="content"]');
     if (contentSlot) {
-      // Clone and store the content
       storedContentElement = contentSlot.cloneNode(true) as Element;
-      // Remove from DOM
       contentSlot.remove();
     }
+  }
+
+  function removeContentSlot() {
+    $host()?.querySelector('[slot="content"]')?.remove();
   }
 
   async function checkAccess(api: SesamyAPI) {
@@ -44,6 +49,8 @@
   }
 
   function emitUnlockEvent(api: SesamyAPI) {
+    if (unlockEmitted) return;
+    unlockEmitted = true;
     const host = $host();
     const publisherContentId = publisherContentIdProp || api.content.get(host)?.id || '';
 
@@ -142,7 +149,9 @@
       case 'signedUrl':
         return api.content.unlock($host().parentElement!, lockedContentSelector);
       case 'embed':
-        return storedContentElement?.innerHTML || '';
+        // Embed leaves the DOM untouched; this branch is unreachable in the
+        // entitled flow because the template projects <slot name="content">.
+        return '';
       default:
         console.error('Invalid lock mode');
         return '';
@@ -151,10 +160,15 @@
 
   async function unlockAndRenderContent(api: SesamyAPI) {
     try {
-      // Give publisher scripts (e.g. ad SDKs) time to inject into the original
-      // slot DOM before we clone+remove it, so the reinjected copy includes them.
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      if (!$host()?.isConnected) return;
+      // Embed mode: content is already in the slot. Cloning+reinjecting via
+      // innerHTML breaks ad iframes and any other stateful DOM injected by
+      // publisher scripts, so we leave the DOM untouched and let the browser
+      // project <slot name="content"> in the template.
+      if (lockMode === 'embed') {
+        emitUnlockEvent(api);
+        return;
+      }
+
       extractAndStoreContent();
       if (!$host()?.isConnected) return;
       const contentHtml = await fetchContent(api);
@@ -179,9 +193,15 @@
       {#await unlockAndRenderContent(api)}
         <slot name="preview"></slot>
       {:then}
-        <!-- Once the content is unlocked it will be displayed outside the shadow DOM. -->
+        {#if lockMode === 'embed'}
+          <!-- Embed: project the original slot content untouched so ads,
+               iframes, and any DOM injected by publisher scripts keep working. -->
+          <slot name="content"></slot>
+        {/if}
+        <!-- Other modes: content has been rendered outside the shadow DOM. -->
       {/await}
     {:else}
+      {removeContentSlot()}
       <slot name="preview"></slot>
     {/if}
   {/await}
