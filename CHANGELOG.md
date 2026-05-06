@@ -1,3 +1,10 @@
+## [2.21.15](https://github.com/sesamyab/sesamy-components/compare/v2.21.14...v2.21.15) (2026-05-06)
+
+
+### Bug Fixes
+
+* revert remove content for users with access ([fa9d6e2](https://github.com/sesamyab/sesamy-components/commit/fa9d6e24ab03cf6648c2cd4bfc5b8c88a42d7522))
+
 ## [2.21.14](https://github.com/sesamyab/sesamy-components/compare/v2.21.13...v2.21.14) (2026-05-06)
 
 
