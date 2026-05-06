@@ -1,3 +1,11 @@
+## [2.21.14](https://github.com/sesamyab/sesamy-components/compare/v2.21.13...v2.21.14) (2026-05-06)
+
+
+### Bug Fixes
+
+* add guard ([9ca1f10](https://github.com/sesamyab/sesamy-components/commit/9ca1f102e2a140195ce6b910a008b26576ff129d))
+* deay extracting of content ([c7822cf](https://github.com/sesamyab/sesamy-components/commit/c7822cfb35d7685f92a242ac589a923e47a67895))
+
 ## [2.21.13](https://github.com/sesamyab/sesamy-components/compare/v2.21.12...v2.21.13) (2026-04-21)
 
 
