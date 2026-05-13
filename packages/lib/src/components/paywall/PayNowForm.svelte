@@ -251,6 +251,16 @@
     }
   }
 
+  // Remove SWISH if both SWISH_DIRECT and SWISH are present
+  const hasSwishDirect = paymentMethods.some((pm) => pm.method === 'SWISH_DIRECT');
+  const hasSwish = paymentMethods.some((pm) => pm.method === 'SWISH');
+  if (hasSwishDirect && hasSwish) {
+    const swishIndex = paymentMethods.findIndex((pm) => pm.method === 'SWISH');
+    if (swishIndex !== -1) {
+      paymentMethods.splice(swishIndex, 1);
+    }
+  }
+
   // Filter and sort payment methods according to PAYMENT_METHODS_SORT_ORDER
   const sortedPaymentMethods = PAYMENT_METHODS_SORT_ORDER.map((method) =>
     paymentMethods.find((pm) => pm.method === method)
