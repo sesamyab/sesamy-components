@@ -7,7 +7,7 @@
   import Features from '../Features.svelte';
   import { twMerge } from 'tailwind-merge';
   import type { TranslationFunction } from '../../i18n';
-  import { hexToHsl } from '../../utils/color';
+  import { isLight } from '../../utils/color';
   import type { Paywall, PaywallSubscription } from '../../types/Paywall';
   import type { IconName } from '../../icons/types';
   import Subscriptions from './Subscriptions.svelte';
@@ -122,7 +122,9 @@
     try {
       const checkoutPayload = {
         items: [item],
-        requestedDiscountCodes: selectedProduct.discountCode ? [selectedProduct.discountCode] : undefined,
+        requestedDiscountCodes: selectedProduct.discountCode
+          ? [selectedProduct.discountCode]
+          : undefined,
         redirectUrl,
         price: selectedProduct.price,
         currency,
@@ -228,9 +230,9 @@
 
   const paywallBgColor =
     styling?.showBackground && styling?.backgroundColor ? styling.backgroundColor : '#FFFFFF';
-  const autoDarkMode = styling?.showBackground && hexToHsl(paywallBgColor)[2] < 50;
+  const autoDarkMode = styling?.showBackground && !isLight(paywallBgColor);
   const paywallTextColor = autoDarkMode ? '#FFFFFF' : '#000000';
-  const autoBtnColor = hexToHsl(mainColor)[2] < 60 ? '#FFFFFF' : '#000000';
+  const autoBtnColor = isLight(mainColor) ? '#000000' : '#FFFFFF';
 
   let darkMode = $state(autoDarkMode);
 
