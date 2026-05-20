@@ -4,6 +4,7 @@ export const PAYMENT_METHODS_SORT_ORDER = [
   'KLARNA_PRIVATE',
   'STRIPE_KLARNA',
   'VIPPS',
+  'SWISH_DIRECT',
   'SWISH',
   'CARD'
 ];
