@@ -1,5 +1,7 @@
+const HEX_COLOR_RE = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
+
 export const isLight = (hexColor: string): boolean => {
-  if (![4, 7].includes(hexColor.length)) return true;
+  if (!HEX_COLOR_RE.test(hexColor)) return true;
 
   let r = 0;
   let g = 0;
