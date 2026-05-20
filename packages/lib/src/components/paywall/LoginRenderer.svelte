@@ -9,7 +9,7 @@
   import Input from '../Input.svelte';
   import InputGroup from '../InputGroup.svelte';
   import Icon from '../Icon.svelte';
-  import { hexToHsl } from '../../utils/color';
+  import { isLight } from '../../utils/color';
   import { dispatchSesamyEvent } from '../../events';
 
   type Props = {
@@ -38,7 +38,7 @@
   let lastName = $state('');
 
   const paywallBgColor = styling?.backgroundColor || '#FFFFFF';
-  const darkMode = styling?.showBackground && hexToHsl(paywallBgColor)[2] < 50;
+  const darkMode = styling?.showBackground && !isLight(paywallBgColor);
   const paywallTextColor = darkMode ? '#FFFFFF' : '#000000';
 
   let sesamyPaywallDesignTokens = `
