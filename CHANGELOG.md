@@ -1,3 +1,15 @@
+# [2.22.0](https://github.com/sesamyab/sesamy-components/compare/v2.21.15...v2.22.0) (2026-05-20)
+
+
+### Bug Fixes
+
+* validate hex string with regex before parsing channels ([36bfcd1](https://github.com/sesamyab/sesamy-components/commit/36bfcd1d1ef36b30cdd41129d739f2d7d21dc611))
+
+
+### Features
+
+* show SWISH_DIRECT in paywall payment methods ([54ceee5](https://github.com/sesamyab/sesamy-components/commit/54ceee5c98c8da116e6ab0a1cee1561fa23d984f))
+
 ## [2.21.15](https://github.com/sesamyab/sesamy-components/compare/v2.21.14...v2.21.15) (2026-05-06)
 
 
