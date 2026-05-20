@@ -9,7 +9,7 @@
   $: methodLower = (method ?? '').toLowerCase();
 </script>
 
-{#if methodLower === 'swish'}
+{#if methodLower === 'swish' || methodLower === 'swish_direct'}
   <svg xmlns="http://www.w3.org/2000/svg" {width} {height} viewBox="0 0 578 176">
     <defs>
       <linearGradient
