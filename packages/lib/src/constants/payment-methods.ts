@@ -1,10 +1,10 @@
 export const PAYMENT_METHODS_SORT_ORDER = [
-  'APPLE-PAY',
-  'GOOGLE-PAY',
+  'VIPPS',
   'KLARNA_PRIVATE',
   'STRIPE_KLARNA',
-  'VIPPS',
   'SWISH_DIRECT',
   'SWISH',
+  'APPLE-PAY',
+  'GOOGLE-PAY',
   'CARD'
 ];
