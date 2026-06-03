@@ -1,7 +1,7 @@
 name: Playwright Tests - Cron runner
 on:
   schedule:
-    - cron: '0 5 * * 0-6'
+    - cron: '0 2 * * *' # every day at 02:00 (UTC)
 
 permissions:
   contents: read # Required for actions/checkout
