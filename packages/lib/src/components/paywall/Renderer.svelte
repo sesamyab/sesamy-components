@@ -134,6 +134,8 @@
           utmCampaign: userProps?.['utm-campaign'],
           utmTerm: userProps?.['utm-term'],
           utmContent: userProps?.['utm-content'],
+          // Override the article attribution when the vendor sets `item-src` explicitly on the paywall.
+          ...(userProps?.['item-src'] ? { itemSrc: articleUrl } : {}),
           source: 'PAYWALL' as const,
           sourceId: paywall.id
         }
