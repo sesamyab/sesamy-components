@@ -1,3 +1,10 @@
+## [2.22.1](https://github.com/sesamyab/sesamy-components/compare/v2.22.0...v2.22.1) (2026-06-05)
+
+
+### Bug Fixes
+
+* unfreeze login ([e217590](https://github.com/sesamyab/sesamy-components/commit/e2175901dc5d9a0701b8ae08d2f87323b0424153))
+
 # [2.22.0](https://github.com/sesamyab/sesamy-components/compare/v2.21.15...v2.22.0) (2026-05-20)
 
 
