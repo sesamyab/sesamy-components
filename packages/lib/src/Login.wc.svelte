@@ -26,6 +26,29 @@
 
   let authState: AuthState = 'unknown';
   let apiRef: SesamyAPI | null = null;
+  let resetTimer: ReturnType<typeof setTimeout> | null = null;
+
+  // Re-enable the login button after the redirect has had time to happen, so it
+  // can never get stuck disabled (max time we expect the redirect to take).
+  const RESET_DELAY_MS = 5000;
+
+  const enableButton = () => {
+    if (resetTimer) {
+      clearTimeout(resetTimer);
+      resetTimer = null;
+    }
+    disabled = false;
+  };
+
+  // Fires when the page is shown, including when it's restored from the
+  // back/forward cache (bfcache). On a bfcache restore the component state is
+  // preserved, so the button would otherwise stay disabled after the user
+  // navigates back from the login flow.
+  const onPageShow = (e: PageTransitionEvent) => {
+    if (e.persisted) {
+      enableButton();
+    }
+  };
 
   const toUserinfo = (profile: Profile | null): SesamyLoginSuccessDetail['userinfo'] => {
     const p = (profile ?? {}) as Record<string, unknown>;
@@ -73,20 +96,31 @@
   onMount(() => {
     window.addEventListener(Events.AUTHENTICATED, onAuthenticatedEvent);
     window.addEventListener(Events.LOGOUT, onLogoutEvent);
+    window.addEventListener('pageshow', onPageShow);
     document.addEventListener('pointerdown', handleClickOutside);
   });
   onDestroy(() => {
     window.removeEventListener(Events.AUTHENTICATED, onAuthenticatedEvent);
     window.removeEventListener(Events.LOGOUT, onLogoutEvent);
+    window.removeEventListener('pageshow', onPageShow);
     document.removeEventListener('pointerdown', handleClickOutside);
+    if (resetTimer) {
+      clearTimeout(resetTimer);
+      resetTimer = null;
+    }
   });
 
   const login = async (api: SesamyAPI) => {
     disabled = true;
+    // Safety net: re-enable after a short while so the button can't get stuck
+    // disabled if the redirect never happens or the page is restored without a
+    // bfcache event.
+    if (resetTimer) clearTimeout(resetTimer);
+    resetTimer = setTimeout(enableButton, RESET_DELAY_MS);
     try {
       await api.auth.login({ appState: { source: 'login-component' } });
     } catch (error) {
-      disabled = false;
+      enableButton();
       const err = error instanceof Error ? error : undefined;
       const code =
         (err && (err as unknown as { code?: string }).code) || (err?.name ?? 'login_failed');
