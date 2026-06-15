@@ -1,3 +1,10 @@
+## [2.22.2](https://github.com/sesamyab/sesamy-components/compare/v2.22.1...v2.22.2) (2026-06-15)
+
+
+### Bug Fixes
+
+* re-enable SWISH_DIRECT payment method ([d4190e6](https://github.com/sesamyab/sesamy-components/commit/d4190e6be9acd5358a6bd34b305ef7f789673165)), closes [#346](https://github.com/sesamyab/sesamy-components/issues/346)
+
 ## [2.22.1](https://github.com/sesamyab/sesamy-components/compare/v2.22.0...v2.22.1) (2026-06-05)
 
 
