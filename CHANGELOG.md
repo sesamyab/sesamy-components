@@ -1,3 +1,11 @@
+## [2.22.3](https://github.com/sesamyab/sesamy-components/compare/v2.22.2...v2.22.3) (2026-06-16)
+
+
+### Bug Fixes
+
+* **paywall:** attribute checkout to the paywall's own resolved article ([ee5648e](https://github.com/sesamyab/sesamy-components/commit/ee5648e256604ef2ca45f1bd82af074eed1f30ee))
+* **paywall:** forward explicit item-src to checkout attribution ([5b0a7c9](https://github.com/sesamyab/sesamy-components/commit/5b0a7c97d31023217b16ea7d72372f6bf5e75615))
+
 ## [2.22.2](https://github.com/sesamyab/sesamy-components/compare/v2.22.1...v2.22.2) (2026-06-15)
 
 
