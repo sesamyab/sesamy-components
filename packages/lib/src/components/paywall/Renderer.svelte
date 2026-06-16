@@ -49,10 +49,11 @@
   let loading = $state(false);
   let error = $state('');
 
+  const contentArticle = api.content.get(host);
   const singlePurchasePrice = userProps?.['price']
     ? parsePrice(userProps['price'])
-    : api.content.get(host)?.price;
-  const articleUrl = userProps?.['item-src'] || api.content.get(host)?.url;
+    : contentArticle?.price;
+  const articleUrl = userProps?.['item-src'] || contentArticle?.url;
   const redirectUrl = userProps?.['redirect-url'] || window.location.href;
 
   let {
@@ -134,6 +135,10 @@
           utmCampaign: userProps?.['utm-campaign'],
           utmTerm: userProps?.['utm-term'],
           utmContent: userProps?.['utm-content'],
+          // Attribute the checkout to this paywall's article: the explicit
+          // `item-src` attribute, or the URL resolved from the paywall host
+          // (which itself falls back to the page URL in sesamy-js).
+          ...(articleUrl ? { itemSrc: articleUrl } : {}),
           source: 'PAYWALL' as const,
           sourceId: paywall.id
         }
