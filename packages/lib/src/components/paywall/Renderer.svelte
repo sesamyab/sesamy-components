@@ -56,15 +56,6 @@
   const articleUrl = userProps?.['item-src'] || contentArticle?.url;
   const redirectUrl = userProps?.['redirect-url'] || window.location.href;
 
-  // URL to attribute the checkout to. Prefer an explicit `item-src` attribute,
-  // otherwise the URL of a content article resolved from a real ancestor
-  // element. When `content.get` falls back to the host itself (no article
-  // wrapper around the paywall) its `url` is just window.location.href — we skip
-  // that case and let sesamy-js resolve attribution instead of clobbering it.
-  const attributionItemSrc =
-    userProps?.['item-src'] ||
-    (contentArticle && contentArticle.element !== host ? contentArticle.url : undefined);
-
   let {
     subscriptions,
     singlePurchase,
@@ -144,10 +135,10 @@
           utmCampaign: userProps?.['utm-campaign'],
           utmTerm: userProps?.['utm-term'],
           utmContent: userProps?.['utm-content'],
-          // Attribute the checkout to this paywall's own article (explicit
-          // `item-src` or a resolved content article). Omitted when neither is
-          // available so sesamy-js's own attribution resolution stands.
-          ...(attributionItemSrc ? { itemSrc: attributionItemSrc } : {}),
+          // Attribute the checkout to this paywall's article: the explicit
+          // `item-src` attribute, or the URL resolved from the paywall host
+          // (which itself falls back to the page URL in sesamy-js).
+          ...(articleUrl ? { itemSrc: articleUrl } : {}),
           source: 'PAYWALL' as const,
           sourceId: paywall.id
         }
