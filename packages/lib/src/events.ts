@@ -37,6 +37,19 @@ export interface SesamyContentUnlockedDetail {
   contentName: string;
 }
 
+// Global `window` events that @sesamy/sesamy-js dispatches and the components
+// listen for. These mirror sesamy-js's `Events` enum but are inlined here on
+// purpose: the library build externalizes @sesamy/sesamy-js, so importing the
+// enum as a runtime value leaves a bare `@sesamy/sesamy-js` specifier in the
+// output bundle. That fails to resolve when the bundle is loaded directly in a
+// browser via a plain module script (as the demo does), with:
+//   "Failed to resolve module specifier '@sesamy/sesamy-js'".
+// The values below are sesamy-js's stable public event names.
+export const SesamyJsEvent = {
+  AUTHENTICATED: 'sesamyJsAuthenticated',
+  LOGOUT: 'sesamyJsLogout'
+} as const;
+
 export const SesamyEventName = {
   LOGIN_SUCCESS: 'sesamy:login-success',
   LOGIN_ERROR: 'sesamy:login-error',

@@ -2,7 +2,6 @@
 
 <script lang="ts">
   import type { SesamyAPI, Profile } from '@sesamy/sesamy-js';
-  import { Events } from '@sesamy/sesamy-js';
   import { onMount, onDestroy } from 'svelte';
   import Base from './Base.svelte';
   import type { LoginProps } from './types';
@@ -13,6 +12,7 @@
   import {
     dispatchSesamyEvent,
     authTransition,
+    SesamyJsEvent,
     type AuthState,
     type SesamyLoginSuccessDetail
   } from './events';
@@ -94,14 +94,14 @@
   };
 
   onMount(() => {
-    window.addEventListener(Events.AUTHENTICATED, onAuthenticatedEvent);
-    window.addEventListener(Events.LOGOUT, onLogoutEvent);
+    window.addEventListener(SesamyJsEvent.AUTHENTICATED, onAuthenticatedEvent);
+    window.addEventListener(SesamyJsEvent.LOGOUT, onLogoutEvent);
     window.addEventListener('pageshow', onPageShow);
     document.addEventListener('pointerdown', handleClickOutside);
   });
   onDestroy(() => {
-    window.removeEventListener(Events.AUTHENTICATED, onAuthenticatedEvent);
-    window.removeEventListener(Events.LOGOUT, onLogoutEvent);
+    window.removeEventListener(SesamyJsEvent.AUTHENTICATED, onAuthenticatedEvent);
+    window.removeEventListener(SesamyJsEvent.LOGOUT, onLogoutEvent);
     window.removeEventListener('pageshow', onPageShow);
     document.removeEventListener('pointerdown', handleClickOutside);
     if (resetTimer) {
