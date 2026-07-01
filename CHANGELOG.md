@@ -1,3 +1,10 @@
+## [2.22.4](https://github.com/sesamyab/sesamy-components/compare/v2.22.3...v2.22.4) (2026-07-01)
+
+
+### Bug Fixes
+
+* avoid bare @sesamy/sesamy-js specifier in the built bundle ([7c2f463](https://github.com/sesamyab/sesamy-components/commit/7c2f463c273e9e62c5eb8819be7935e003d78819))
+
 ## [2.22.3](https://github.com/sesamyab/sesamy-components/compare/v2.22.2...v2.22.3) (2026-06-16)
 
 
