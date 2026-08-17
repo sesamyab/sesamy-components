@@ -36,7 +36,7 @@
   "referral_email": "Referral email",
   "referral_email_required": "Referral email is required",
   "secure_payment": "Secure SSL encrypted payment",
-  "something_went_wrong": "Something went wrong",
+  "something_went_wrong": "Something went wrong. Please try again, and if the problem persists, contact our support.",
   "user_already_owns_item": "You already own this product",
   "year": "Year",
   "your_details": "Your details"
