@@ -1,3 +1,10 @@
+# [2.23.0](https://github.com/sesamyab/sesamy-components/compare/v2.22.4...v2.23.0) (2026-08-17)
+
+
+### Features
+
+* **paywall:** make the checkout error message clearer and harder to miss ([80462f2](https://github.com/sesamyab/sesamy-components/commit/80462f2150e2f6533fe9785cb46bb28dcee2c8f8))
+
 ## [2.22.4](https://github.com/sesamyab/sesamy-components/compare/v2.22.3...v2.22.4) (2026-07-01)
 
 
