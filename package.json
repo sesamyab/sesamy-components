@@ -32,8 +32,8 @@
     "pull-translations": "i18nexus pull -k UqoFFUDIqHedrUA4OlDXwg --path ./packages/lib/src/locales && prettier --write ./packages/lib/src/locales/**/*.json && yarn sort-translations",
     "push-translations": "i18nexus import ./packages/lib/src/locales/en/default.json -k UqoFFUDIqHedrUA4OlDXwg -ns default --overwrite",
     "sort-translations": "sort-json ./packages/lib/src/locales/**/*.json",
-    "e2e": "docker run --rm --network host -v $(pwd):/work/ -v /work/node_modules -w /work/ mcr.microsoft.com/playwright:v1.62.1-noble sh -c 'yarn install && yarn build:storybook && yarn playwright test'",
-    "e2e:snapshots": "docker run --rm --network host -v $(pwd):/work/ -v /work/node_modules -w /work/ mcr.microsoft.com/playwright:v1.62.1-noble sh -c 'yarn install && yarn build:storybook && yarn playwright test --update-snapshots'"
+    "e2e": "docker run --rm --network host -v $(pwd):/work/ -v /work/node_modules -w /work/ mcr.microsoft.com/playwright:v1.62.1-noble@sha256:dcc5531e97840b9b5e794f2814476b21571c5124a3fca2267d73041f56e7580e sh -c 'yarn install && yarn build:storybook && yarn playwright test'",
+    "e2e:snapshots": "docker run --rm --network host -v $(pwd):/work/ -v /work/node_modules -w /work/ mcr.microsoft.com/playwright:v1.62.1-noble@sha256:dcc5531e97840b9b5e794f2814476b21571c5124a3fca2267d73041f56e7580e sh -c 'yarn install && yarn build:storybook && yarn playwright test --update-snapshots'"
   },
   "release": {
     "branches": [
