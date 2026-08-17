@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { filterStories, navigate } from './utils';
-import manifest from '../storybook-static/index.json' assert { type: 'json' };
+import manifest from '../storybook-static/index.json' with { type: 'json' };
 
 const storybookUrl = 'localhost:8080';
 
