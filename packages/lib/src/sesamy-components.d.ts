@@ -20,5 +20,6 @@ declare namespace JSX {
     'sesamy-paywall': {
       'settings-url': string;
     };
+    'sesamy-paywall-strategy-debug': {};
   }
 }

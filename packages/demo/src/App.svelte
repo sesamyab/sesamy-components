@@ -119,6 +119,10 @@
       settings-url="https://api.sesamy.dev/paywall/paywalls/acme/FoPaafEt51445TsbYXTEu.json"
     ></sesamy-paywall>
   </section>
+  <section>
+    <h1>Paywall strategy debug</h1>
+    <sesamy-paywall-strategy-debug></sesamy-paywall-strategy-debug>
+  </section>
 </main>
 
 <style>
