@@ -58,6 +58,7 @@
       description,
       price,
       periodText,
+      comparePeriodText,
       features,
       selected,
       tag,
@@ -69,6 +70,8 @@
     } = subscription}
     {@const hasPrice = typeof price === 'number'}
     {@const hasDiscountPrice = typeof discountPrice === 'number'}
+    <!-- The regular price only gets its own period text while it is the compare-at line -->
+    {@const regularPeriodText = (hasDiscountPrice && comparePeriodText) || periodText}
 
     {#if horizontal}
       <div class="@container/box w-full">
@@ -102,8 +105,8 @@
                         <div class="text-gray-500 line-through @xs/box:text-lg">
                           {price}
                           {currency}
-                          {#if periodText}
-                            {' '}/ {periodText}
+                          {#if regularPeriodText}
+                            {' '}/ {regularPeriodText}
                           {/if}
                         </div>
                       {/if}
@@ -188,8 +191,8 @@
             >
               {price}
               {currency}
-              {#if periodText}
-                {' '}/ {periodText}
+              {#if regularPeriodText}
+                {' '}/ {regularPeriodText}
               {/if}
             </div>
           {/if}

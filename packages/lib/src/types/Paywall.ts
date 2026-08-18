@@ -18,7 +18,11 @@ export type PaywallSubscription = {
   tag?: string;
   selected: boolean;
   discountCode?: string;
+  // Period rendered next to the headline price (the discounted one when discountPrice is set)
   periodText?: string;
+  // Period rendered next to the struck-through regular price, for intro offers where the
+  // discount covers a different period than the recurring price. Defaults to periodText.
+  comparePeriodText?: string;
   price?: number;
   discountPrice?: number;
   features?: string[];
