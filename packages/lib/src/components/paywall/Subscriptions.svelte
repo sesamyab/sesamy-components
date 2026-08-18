@@ -112,7 +112,7 @@
                 </div>
               {/if}
 
-              {#if description && (!features || features.length < 1)}
+              {#if description}
                 <DescriptionWithReadMore
                   {description}
                   {readMoreLink}
