@@ -115,19 +115,21 @@
                 </div>
               {/if}
 
-              {#if description && (!features || features.length < 1)}
-                <DescriptionWithReadMore
-                  {description}
-                  {readMoreLink}
-                  {readMoreText}
-                  {t}
-                  class="text-gray-700 dark:text-gray-300 text-sm"
-                />
-              {/if}
+              <Column class="w-full gap-2" left>
+                {#if description}
+                  <DescriptionWithReadMore
+                    {description}
+                    {readMoreLink}
+                    {readMoreText}
+                    {t}
+                    class="text-gray-700 dark:text-gray-300 text-sm"
+                  />
+                {/if}
 
-              {#if features && features.length > 0}
-                <Features {features} class="text-gray-700 dark:text-gray-300 text-sm" />
-              {/if}
+                {#if features && features.length > 0}
+                  <Features {features} class="text-gray-700 dark:text-gray-300 text-sm" />
+                {/if}
+              </Column>
             </Column>
 
             {#if url}
