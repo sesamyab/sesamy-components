@@ -20,6 +20,7 @@
   import { parsePrice } from '../../utils/money';
   import { goToCheckout } from '../../utils/checkout';
   import { dispatchSesamyEvent } from '../../events';
+  import { resolveItemSrc, track } from '../../tracking';
 
   type Props = {
     api: SesamyAPI;
@@ -110,6 +111,19 @@
   const doCreateCheckout = async (selectedProduct: Product) => {
     error = '';
     loading = true;
+
+    // The user committed to a product — the new-components equivalent of the
+    // legacy `sesamy-button` click, tracked before we branch off to an external
+    // product URL so both purchase routes are counted.
+    track(api, 'addToCart', {
+      itemSrc: resolveItemSrc(articleUrl),
+      publisherContentId: contentArticle?.id,
+      sku: selectedProduct.sku,
+      purchaseOptionId: selectedProduct.poId,
+      price: selectedProduct.price,
+      currency,
+      paywallId: paywall.id
+    });
 
     if (selectedProduct?.url && selectedProduct?.url !== articleUrl) {
       window.location.assign(selectedProduct.url);

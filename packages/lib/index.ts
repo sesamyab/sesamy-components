@@ -18,4 +18,16 @@ export {
   type SesamyAccessGrantedDetail,
   type SesamyContentUnlockedDetail
 } from './src/events';
+export {
+  TrackEventName,
+  enableInteractions,
+  disableInteractions,
+  resetInteractions,
+  interactionsEnabled,
+  type ArticleState,
+  type TrackEventProperties,
+  type ViewArticleProperties,
+  type AddToCartProperties,
+  type ContentUnlockedProperties
+} from './src/tracking';
 export const sesamyComponentsVersion = version;
