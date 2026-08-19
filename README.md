@@ -502,16 +502,16 @@ You can add additional components by adding them to the `packages/lib/src` folde
 
 ### Available Scripts
 
-| Command                  | Description                               |
-| ------------------------ | ----------------------------------------- |
-| `yarn dev`               | Start the development server              |
-| `yarn build`             | Build both library and demo               |
-| `yarn build:lib`         | Build the library only                    |
-| `yarn storybook`         | Start Storybook for component development |
-| `yarn build:storybook`   | Build Storybook for deployment            |
-| `yarn test`              | Run Playwright tests                      |
-| `yarn check`             | Run Svelte type checking                  |
-| `yarn pull-translations` | Pull latest translations from i18nexus    |
+| Command                | Description                                        |
+| ---------------------- | -------------------------------------------------- |
+| `yarn dev`             | Start the development server                       |
+| `yarn build`           | Build both library and demo                        |
+| `yarn build:lib`       | Build the library only                             |
+| `yarn storybook`       | Start Storybook for component development          |
+| `yarn build:storybook` | Build Storybook for deployment                     |
+| `yarn test`            | Run Playwright tests                               |
+| `yarn check`           | Run Svelte type checking                           |
+| `yarn pull-translations` | Pull latest translations from i18nexus          |
 
 ## Testing your components
 
@@ -591,7 +591,7 @@ You need to use a workaround for that, by creating a `CustomEvent` and dispatchi
 
 Here's an example:
 
-```html
+```svelte
 // MyComponent.wc.svelte
 <svelte:options tag="my-component" />
 <script>
@@ -602,7 +602,7 @@ Here's an example:
   const dispatchEvent = (name, detail) =>
     component.dispatchEvent(new CustomEvent(name, { detail }));
 </script>
-<button on:click="{()" ="">dispatchEvent('test', 'Hello!')}>Click to dispatch event</button>
+<button on:click={() => dispatchEvent('test', 'Hello!')}>Click to dispatch event</button>
 ```
 
 ## Create a new component
