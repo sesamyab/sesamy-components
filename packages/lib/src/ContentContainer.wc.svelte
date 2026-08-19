@@ -5,6 +5,7 @@
   import Base from './Base.svelte';
   import type { ContentContainerProps } from './types';
   import { dispatchSesamyEvent } from './events';
+  import { resolveArticleState, resolveItemSrc, track } from './tracking';
 
   let {
     'item-src': itemSrc = '',
@@ -18,6 +19,9 @@
   // place and projected via <slot name="content">.
   let storedContentElement: Element | null = null;
   let unlockEmitted = false;
+  let viewTracked = false;
+
+  type Content = NonNullable<ReturnType<SesamyAPI['content']['get']>>;
 
   function extractAndStoreContent() {
     const host = $host();
@@ -34,6 +38,22 @@
     $host()?.querySelector('[slot="content"]')?.remove();
   }
 
+  /**
+   * Emitted once per container, as soon as the content container has resolved
+   * an article and knows whether it is locked. This is what feeds the article
+   * view rollups; the DOM events stay untouched for publisher-side hooks.
+   */
+  function trackViewArticle(api: SesamyAPI, content: Content, hasAccess: unknown) {
+    if (viewTracked) return;
+    viewTracked = true;
+
+    track(api, 'viewArticle', {
+      itemSrc: resolveItemSrc(itemSrc, content.url),
+      publisherContentId: publisherContentIdProp || content.id,
+      state: resolveArticleState(content.accessLevel, hasAccess)
+    });
+  }
+
   async function checkAccess(api: SesamyAPI) {
     const content = api.content.get($host());
     if (!content) {
@@ -41,18 +61,23 @@
       return false;
     } else if (content.accessLevel === 'public') {
       api.log(`Content is public`);
+      trackViewArticle(api, content, true);
       return true;
     }
     api.log(`Checking access`);
 
-    return api.content.hasAccess($host());
+    const hasAccess = await api.content.hasAccess($host());
+    trackViewArticle(api, content, hasAccess);
+
+    return hasAccess;
   }
 
   function emitUnlockEvent(api: SesamyAPI) {
     if (unlockEmitted) return;
     unlockEmitted = true;
     const host = $host();
-    const publisherContentId = publisherContentIdProp || api.content.get(host)?.id || '';
+    const content = api.content.get(host);
+    const publisherContentId = publisherContentIdProp || content?.id || '';
 
     const event = new CustomEvent('sesamyUnlocked', {
       detail: {
@@ -68,6 +93,12 @@
     const contentName = host.dataset?.dcaContentName ?? publisherContentId ?? '';
 
     dispatchSesamyEvent(host, 'sesamy:content-unlocked', {
+      contentName
+    });
+
+    track(api, 'content_unlocked', {
+      itemSrc: resolveItemSrc(itemSrc, content?.url),
+      publisherContentId,
       contentName
     });
   }
