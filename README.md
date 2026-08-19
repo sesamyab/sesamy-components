@@ -7,6 +7,7 @@ This library provides typed [web components](https://developer.mozilla.org/en-US
 ## Table of Contents
 
 - [Installation](#installation)
+- [Interaction tracking](#interaction-tracking)
 - [Components](#components)
   - [sesamy-login](#sesamy-login)
   - [sesamy-content-container](#sesamy-content-container)
@@ -64,6 +65,37 @@ import type {
   SesamyContentUnlockedDetail
 } from '@sesamy/sesamy-components';
 ```
+
+## Interaction tracking
+
+In addition to the DOM events above, the components emit first-party interactions through `sesamy-js` (`window.sesamy.analytics.track`), so they arrive with the sesamy-js context (anonymous id, user id, vendor, page) attached. This is additive: the DOM events keep firing exactly as before, and page views stay `sesamy-js`'s responsibility — the components never emit them.
+
+| Event              | Emitted by                 | When                                                                                          | Properties                                                                                   |
+| ------------------ | -------------------------- | --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `viewArticle`      | `sesamy-content-container` | Once per element, as soon as the container has resolved an article and knows its access state | `itemSrc`, `publisherContentId`, `state` (`public`/`logged-in`/`unlocked`/`locked`)          |
+| `content_unlocked` | `sesamy-content-container` | Alongside the `sesamy:content-unlocked` DOM event                                             | `itemSrc`, `publisherContentId`, `contentName`                                               |
+| `addToCart`        | `sesamy-paywall`           | When the user picks a product and continues to checkout                                       | `itemSrc`, `publisherContentId`, `sku`, `purchaseOptionId`, `price`, `currency`, `paywallId` |
+
+Event and property names match the ones `@sesamy/web-components` produced, so consumers of the interactions index keep working unchanged — only `context.library` differs (`@sesamy/sesamy-js` instead of `@sesamy/web-components`). Each event also repeats its own name in `properties.name`, as the legacy library did.
+
+### Opting out
+
+Tracking is on by default. A page opts out with the same meta tag the legacy components honoured:
+
+```html
+<meta name="sesamy:analytics" content="false" />
+```
+
+or at runtime:
+
+```ts
+import { disableInteractions, enableInteractions } from '@sesamy/sesamy-components';
+
+disableInteractions(); // stop emitting; DOM events keep firing
+enableInteractions(); // opt back in, overriding the meta tag
+```
+
+`resetInteractions()` drops an explicit call and returns to the meta-tag default, and `interactionsEnabled()` reports the current state. Turning `sesamy-js` analytics off (`analytics.enabled: false` in its config) suppresses these events too, since they go through its pipeline.
 
 ## Components
 
@@ -229,6 +261,8 @@ All per-element events bubble and are composed (cross shadow roots).
 - `sesamy:content-unlocked`: Fired when gated content is decrypted and rendered into the element. `detail: { contentName: string }` — matches the element's `data-dca-content-name` attribute when present, otherwise falls back to the resolved `publisher-content-id`.
 - `sesamyUnlocked`: Legacy event, still dispatched alongside `sesamy:content-unlocked`. `detail: { publisherContentId, itemSrc }`.
 
+The container also emits the `viewArticle` and `content_unlocked` interactions through sesamy-js — see [Interaction tracking](#interaction-tracking).
+
 ```js
 const el = document.querySelector('sesamy-content-container');
 el.addEventListener('sesamy:content-unlocked', (e) => {
@@ -289,6 +323,8 @@ Legacy bus events (emitted on `window` via `api.events.emit`, unchanged):
 - `sesamyPaywallAccessChecked`: Emitted after access check, with `{ hasAccess, paywallId, articleUrl, passes }` in `detail`.
 - `sesamyPaywallProductSelected`: Emitted when a product/subscription is selected and the continue button is pressed, with `{ product, checkoutId, paywallId }` in `detail`.
 - `sesamyPaywallCheckoutRedirect`: Emitted before redirecting to checkout, with `{ checkout, paywallId, paymentMethod }` in `detail`.
+
+The paywall also emits the `addToCart` interaction through sesamy-js when the user continues to checkout — see [Interaction tracking](#interaction-tracking).
 
 **Slots:**
 
@@ -466,16 +502,16 @@ You can add additional components by adding them to the `packages/lib/src` folde
 
 ### Available Scripts
 
-| Command                | Description                                        |
-| ---------------------- | -------------------------------------------------- |
-| `yarn dev`             | Start the development server                       |
-| `yarn build`           | Build both library and demo                        |
-| `yarn build:lib`       | Build the library only                             |
-| `yarn storybook`       | Start Storybook for component development          |
-| `yarn build:storybook` | Build Storybook for deployment                     |
-| `yarn test`            | Run Playwright tests                               |
-| `yarn check`           | Run Svelte type checking                           |
-| `yarn pull-translations` | Pull latest translations from i18nexus          |
+| Command                  | Description                               |
+| ------------------------ | ----------------------------------------- |
+| `yarn dev`               | Start the development server              |
+| `yarn build`             | Build both library and demo               |
+| `yarn build:lib`         | Build the library only                    |
+| `yarn storybook`         | Start Storybook for component development |
+| `yarn build:storybook`   | Build Storybook for deployment            |
+| `yarn test`              | Run Playwright tests                      |
+| `yarn check`             | Run Svelte type checking                  |
+| `yarn pull-translations` | Pull latest translations from i18nexus    |
 
 ## Testing your components
 
@@ -566,7 +602,7 @@ Here's an example:
   const dispatchEvent = (name, detail) =>
     component.dispatchEvent(new CustomEvent(name, { detail }));
 </script>
-<button on:click={() => dispatchEvent('test', 'Hello!')}>Click to dispatch event</button>
+<button on:click="{()" ="">dispatchEvent('test', 'Hello!')}>Click to dispatch event</button>
 ```
 
 ## Create a new component
