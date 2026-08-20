@@ -575,7 +575,7 @@ This template does not provide any web components polyfills for older browsers s
 
 ### Props
 
-Props on a `.wc.svelte` component are exposed as attributes on the custom element. HTML attribute names are case-insensitive, so a camelCase or PascalCase prop can't be set from markup — name each prop exactly as the attribute should be written: lowercase for a single word, kebab-case for several. Rename the kebab-case keys to camelCase locals in the `$props()` destructure so the component body stays readable:
+Props on a `.wc.svelte` component are exposed both as properties of the DOM element and, where possible, as attributes. The attribute name defaults to the prop name lowercased, so a camelCase prop like `buttonText` is only settable from markup as `buttontext` — name each prop exactly as the attribute should be written instead: lowercase for a single word, kebab-case for several. Rename the kebab-case keys to camelCase locals in the `$props()` destructure so the component body stays readable:
 
 ```svelte
 <!-- MyComponent.wc.svelte -->
@@ -590,11 +590,13 @@ Props on a `.wc.svelte` component are exposed as attributes on the custom elemen
 <my-component myvalue="Hello" item-src="https://example.com/article"></my-component>
 ```
 
+Values set through an attribute always arrive as strings. A prop that needs another type has to declare it in the `customElement.props` config (`{ type: 'Number' | 'Boolean' | 'Array' | 'Object' }`), or be assigned as a DOM property rather than an attribute.
+
 See [`ContentContainer.wc.svelte`](packages/lib/src/ContentContainer.wc.svelte) for the same pattern with the prop types declared in `types.ts`.
 
 ### Events
 
-Component-level events (callback props, `createEventDispatcher`) don't cross the custom element boundary, so a `.wc.svelte` component talks to the host page by dispatching a real DOM `CustomEvent`, and consumers listen with `addEventListener` on the element. Inside a component compiled as a custom element the `$host()` rune returns that element — under Svelte 5 this is the supported API rather than a workaround.
+Between plain Svelte components you'd signal the parent with a callback prop or `createEventDispatcher`; neither travels well across the custom element boundary. `createEventDispatcher` events are never re-dispatched on the element, and a callback prop only reaches the component if the consumer assigns it as a DOM property (`el.onLogin = fn`) — it can't be wired up from plain HTML. So a `.wc.svelte` component talks to the host page by dispatching a real DOM `CustomEvent`, which consumers listen for with `addEventListener`. Inside a component compiled as a custom element the `$host()` rune returns that element — under Svelte 5 this is the supported API rather than a workaround.
 
 Here's an example:
 
