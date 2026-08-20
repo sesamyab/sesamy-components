@@ -606,13 +606,14 @@ Here's an example:
 
 <script>
   // example function for dispatching events
-  const dispatchEvent = (name, detail) => $host().dispatchEvent(new CustomEvent(name, { detail }));
+  const dispatchEvent = (name, detail) =>
+    $host().dispatchEvent(new CustomEvent(name, { detail, bubbles: true, composed: true }));
 </script>
 
 <button onclick={() => dispatchEvent('test', 'Hello!')}>Click to dispatch event</button>
 ```
 
-The components in this repo dispatch through the typed `dispatchSesamyEvent` helper in `packages/lib/src/events.ts` instead of a raw `CustomEvent`: it sets `bubbles: true, composed: true` so the event escapes the shadow root, and type-checks `detail` against `SesamyElementEventMap`.
+Both flags matter. Without `bubbles: true` the event only reaches a listener bound directly to the element, so event delegation on a container won't see it; without `composed: true` it can't escape an enclosing shadow root, which bites as soon as the element is nested inside another component's shadow DOM. The components in this repo get both from the typed `dispatchSesamyEvent` helper in `packages/lib/src/events.ts`, which also type-checks `detail` against `SesamyElementEventMap` — prefer it over a raw `CustomEvent`.
 
 ## Create a new component
 
