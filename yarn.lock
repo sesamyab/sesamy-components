@@ -6548,9 +6548,9 @@ svelte-preprocess@^6.0.3:
   integrity sha512-PLG2k05qHdhmRG7zR/dyo5qKvakhm8IJ+hD2eFRQmMLHp7X3eJnjeupUtvuRpbNiF31RjVw45W+abDwHEmP5OA==
 
 svelte-tel-input@^3.6.0:
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/svelte-tel-input/-/svelte-tel-input-3.6.0.tgz#25c1fa078e16fdc9fb2976508839546df0677bba"
-  integrity sha512-bzgtYVWpO3cke8tqRM2JvcHO94wIp8X0C5E4SItobrmGWT8Do07jzkHN8Z+KU6RaY6Q1aBomH8neJ2LEAZAfqg==
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/svelte-tel-input/-/svelte-tel-input-3.6.1.tgz#bcc0a18749c27e28ebc98865b362f7cd697a770d"
+  integrity sha512-rUys8jXv4BTmpIub/GpOkZaxLYwrNZgh0tEFeo9ltl09rCxqFAbppT1XUL8W8fMHC6EzaivK28z0vhzsQZyBXA==
   dependencies:
     libphonenumber-js "1.10.43"
 
