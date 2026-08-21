@@ -1,3 +1,17 @@
+# [2.24.0](https://github.com/sesamyab/sesamy-components/compare/v2.23.0...v2.24.0) (2026-08-21)
+
+
+### Bug Fixes
+
+* **paywall:** always show subscription description in BOXES template ([b6a5ac1](https://github.com/sesamyab/sesamy-components/commit/b6a5ac1b50dc1fe4c23e178d40b9ee9bb92c24cd))
+* **paywall:** group description and features in a shared column ([ec97876](https://github.com/sesamyab/sesamy-components/commit/ec9787682c99d4a8ec7a13431f92fe5158283215))
+
+
+### Features
+
+* **paywall:** separate period text for the compare-at price ([e0709b4](https://github.com/sesamyab/sesamy-components/commit/e0709b4302304d2554f118cf4e7692a23462ab00))
+* **tracking:** emit viewArticle, addToCart and content_unlocked via sesamy-js ([23b85b3](https://github.com/sesamyab/sesamy-components/commit/23b85b31db59033a70d76fc80ca7a4a43bf152ec))
+
 # [2.23.0](https://github.com/sesamyab/sesamy-components/compare/v2.22.4...v2.23.0) (2026-08-17)
 
 
