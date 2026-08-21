@@ -575,35 +575,45 @@ This template does not provide any web components polyfills for older browsers s
 
 ### Props
 
-Any props accepted by your web component are automatically transformed to element attributes. Since camelCase or PascalCase does not work in HTML, you have to make sure to name your props in lowercase.
+Props on a `.wc.svelte` component are exposed both as properties of the DOM element and, where possible, as attributes. The attribute name defaults to the prop name lowercased, so a camelCase prop like `buttonText` is only settable from markup as `buttontext` — name each prop exactly as the attribute should be written instead: lowercase for a single word, kebab-case for several. Rename the kebab-case keys to camelCase locals in the `$props()` destructure so the component body stays readable:
 
-```html
-<script>
-  export let myvalue = 'Default';
+```svelte
+<!-- MyComponent.wc.svelte -->
+<svelte:options customElement={{ tag: 'my-component' }} />
+
+<script lang="ts">
+  let { myvalue = 'Default', 'item-src': itemSrc = '' } = $props();
 </script>
 ```
 
+```html
+<my-component myvalue="Hello" item-src="https://example.com/article"></my-component>
+```
+
+Values set through an attribute always arrive as strings. A prop that needs another type has to declare it in the `customElement.props` config (`{ type: 'Number' | 'Boolean' | 'Array' | 'Object' }`), or be assigned as a DOM property rather than an attribute.
+
+See [`ContentContainer.wc.svelte`](packages/lib/src/ContentContainer.wc.svelte) for the same pattern with the prop types declared in `types.ts`.
+
 ### Events
 
-The Svelte syntax event for listening to events like `on:myevent` doesn't work with events dispatched from a Svelte web component ([#3119](https://github.com/sveltejs/svelte/issues/3119)).
-
-You need to use a workaround for that, by creating a `CustomEvent` and dispatching it.
+Between plain Svelte components you'd signal the parent with a callback prop or `createEventDispatcher`; neither travels well across the custom element boundary. `createEventDispatcher` events are never re-dispatched on the element, and a callback prop only reaches the component if the consumer assigns it as a DOM property (`el.onLogin = fn`) — it can't be wired up from plain HTML. So a `.wc.svelte` component talks to the host page by dispatching a real DOM `CustomEvent`, which consumers listen for with `addEventListener`. Inside a component compiled as a custom element the `$host()` rune returns that element — under Svelte 5 this is the supported API rather than a workaround.
 
 Here's an example:
 
 ```svelte
-// MyComponent.wc.svelte
-<svelte:options tag="my-component" />
-<script>
-  import { get_current_component } from 'svelte/internal';
-  const component = get_current_component();
+<!-- MyComponent.wc.svelte -->
+<svelte:options customElement={{ tag: 'my-component' }} />
 
+<script>
   // example function for dispatching events
   const dispatchEvent = (name, detail) =>
-    component.dispatchEvent(new CustomEvent(name, { detail }));
+    $host().dispatchEvent(new CustomEvent(name, { detail, bubbles: true, composed: true }));
 </script>
-<button on:click={() => dispatchEvent('test', 'Hello!')}>Click to dispatch event</button>
+
+<button onclick={() => dispatchEvent('test', 'Hello!')}>Click to dispatch event</button>
 ```
+
+Both flags matter. Without `bubbles: true` the event only reaches a listener bound directly to the element, so event delegation on a container won't see it; without `composed: true` it can't escape an enclosing shadow root, which bites as soon as the element is nested inside another component's shadow DOM. The components in this repo get both from the typed `dispatchSesamyEvent` helper in `packages/lib/src/events.ts`, which also type-checks `detail` against `SesamyElementEventMap` — prefer it over a raw `CustomEvent`.
 
 ## Create a new component
 
