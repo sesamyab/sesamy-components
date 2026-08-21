@@ -2,10 +2,6 @@
   "name": "@sesamy/sesamy-components",
   "description": "Shareable web components library built with Vite + Svelte",
   "version": "2.23.0",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sesamyab/sesamy-components.git"
-  },
   "type": "module",
   "module": "dist/lib/sesamy-components.es.js",
   "main": "dist/lib/sesamy-components.umd.js",
@@ -18,6 +14,10 @@
     }
   },
   "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sesamyab/sesamy-components.git"
+  },
   "scripts": {
     "dev": "vite --config vite.demo.config.ts",
     "build": "yarn build:lib && yarn build:demo",
