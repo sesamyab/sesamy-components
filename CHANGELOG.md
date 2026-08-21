@@ -1,3 +1,10 @@
+## [2.24.1](https://github.com/sesamyab/sesamy-components/compare/v2.24.0...v2.24.1) (2026-08-21)
+
+
+### Bug Fixes
+
+* add repository field required by npm provenance ([45cbcdf](https://github.com/sesamyab/sesamy-components/commit/45cbcdfa2a1697be13d1242c81174640f683038d))
+
 # [2.24.0](https://github.com/sesamyab/sesamy-components/compare/v2.23.0...v2.24.0) (2026-08-21)
 
 
