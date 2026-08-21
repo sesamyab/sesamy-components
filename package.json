@@ -14,6 +14,10 @@
     }
   },
   "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sesamyab/sesamy-components.git"
+  },
   "scripts": {
     "dev": "vite --config vite.demo.config.ts",
     "build": "yarn build:lib && yarn build:demo",
