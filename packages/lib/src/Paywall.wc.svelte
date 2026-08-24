@@ -1,6 +1,7 @@
-<svelte:options customElement="sesamy-paywall" />
+<svelte:options customElement={{ tag: 'sesamy-paywall', extend: deferMountUntilParsed }} />
 
 <script lang="ts">
+  import { deferMountUntilParsed } from './defer-mount';
   import { onDestroy } from 'svelte';
   import Base from './Base.svelte';
   import Renderer from './components/paywall/Renderer.svelte';
