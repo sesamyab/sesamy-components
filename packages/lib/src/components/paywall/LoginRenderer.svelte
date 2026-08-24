@@ -46,7 +46,7 @@
       --s-primary-color: var(--sesamy-paywall-primary-color, ${mainColor});
       --s-paywall-bg-color: var(--sesamy-paywall-bg-color, ${paywallBgColor});
       --s-paywall-text-color: var(--sesamy-paywall-text-color, ${paywallTextColor});
-      --s-paywall-border-radius: var(--sesamy-paywall-border-radius, 0.5rem);
+      --s-paywall-border-radius: var(--sesamy-paywall-border-radius, calc(0.5 * var(--s-base-font-size, 16px)));
       --s-paywall-border-radius-desktop: var(--sesamy-paywall-border-radius-desktop, calc(var(--s-paywall-border-radius) * 3));
     }
   `;
@@ -102,7 +102,7 @@
 
 {#await checkAuthAndAnnounce() then isAuthenticated}
   {#if !isAuthenticated}
-    <div class="@container">
+    <div class="@container" style="font-size: var(--s-base-font-size, 16px)">
       <form onsubmit={(e) => login(e, api)}>
         <Column
           class={twMerge(

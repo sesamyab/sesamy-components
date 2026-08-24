@@ -262,7 +262,7 @@
       --s-paywall-text-color: var(--sesamy-paywall-text-color, ${paywallTextColor});
       --s-paywall-text-color-70: var(--s-paywall-text-color);
       --s-paywall-text-color-70: color-mix(in srgb, var(--s-paywall-text-color) 70%, transparent);
-      --s-paywall-border-radius: var(--sesamy-paywall-border-radius, 0.5rem);
+      --s-paywall-border-radius: var(--sesamy-paywall-border-radius, calc(0.5 * var(--s-base-font-size, 16px)));
       --s-paywall-border-radius-desktop: var(--sesamy-paywall-border-radius-desktop, calc(var(--s-paywall-border-radius) * 3));
       --s-paywall-theme: var(--sesamy-paywall-theme, ${autoDarkMode ? 'dark' : 'light'});
       --s-paywall-btn-bg-color: var(--sesamy-paywall-btn-bg-color, var(--s-primary-color));
@@ -291,7 +291,7 @@
 
 {#await checkAccess() then hasAccess}
   {#if !hasAccess}
-    <div class="@container">
+    <div class="@container" style="font-size: var(--s-base-font-size, 16px)">
       <Column
         class={twMerge(
           'w-full py-4 @md:py-6 rounded-[var(--s-paywall-border-radius)] @xl:rounded-[var(--s-paywall-border-radius-desktop)] bg-[var(--s-paywall-bg-color)] text-[var(--s-paywall-text-color)]',
