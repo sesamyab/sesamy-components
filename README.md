@@ -153,18 +153,19 @@ See also the window-level `Events` enum emitted by `@sesamy/sesamy-js` (`AUTHENT
 <sesamy-login
   style="
     --sesamy-font-family: Georgia; /* Sets font family, default Helvetica */
+    --sesamy-base-font-size: 18px; /* Base size (in px) that all component font sizes and spacing scale from, default 16px. Components never use rem, so they are unaffected by e.g. html { font-size: 62.5% } */
     --sesamy-login-button-background-color: blue; /* Sets background color of the login button, default transparent */
     --sesamy-login-button-text-color: green; /* Sets text color of the login button, default black */
     --sesamy-login-button-border-color: pink; /* Sets border color of the login button, default black */
     --sesamy-login-button-border-width: 5px; /* Sets border width of the login button, default 1px */
-    --sesamy-login-button-border-radius: 20px; /* Sets border radius of the login button, default */
+    --sesamy-login-button-border-radius: 20px; /* Sets border radius of the login button, default 6px at a 16px base size */
     --sesamy-login-button-font-weight: 100; /* Sets font weight of the login button, default 700 */
-    --sesamy-login-popup-width: 400px; /* Sets width of the login popup, default 18rem */
+    --sesamy-login-popup-width: 400px; /* Sets width of the login popup, default 288px */
     --sesamy-login-popup-bgcolor: green; /* Sets background color of the login popup, default white */
     --sesamy-login-popup-textcolor: pink; /* Sets text color of the login popup, default black */
     --sesamy-login-popup-border-color: red; /* Sets border color of the login popup, default #e5e7eb */
     --sesamy-login-popup-border-width: 5px; /* Sets border width of the login popup, default 1px */
-    --sesamy-login-popup-border-radius: 20px; /* Sets border radius of the login popup, default 0.125rem */
+    --sesamy-login-popup-border-radius: 20px; /* Sets border radius of the login popup, default 2px */
     --sesamy-login-popup-zindex: 100; /* Sets z-index of the login popup, default 10 */
   "
 ></sesamy-login>
