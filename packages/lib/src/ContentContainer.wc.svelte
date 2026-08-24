@@ -1,6 +1,13 @@
-<svelte:options customElement={{ tag: 'sesamy-content-container', shadow: 'open' }} />
+<svelte:options
+  customElement={{
+    tag: 'sesamy-content-container',
+    shadow: 'open',
+    extend: deferMountUntilParsed
+  }}
+/>
 
 <script lang="ts">
+  import { deferMountUntilParsed } from './defer-mount';
   import type { SesamyAPI } from '@sesamy/sesamy-js';
   import Base from './Base.svelte';
   import type { ContentContainerProps } from './types';

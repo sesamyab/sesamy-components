@@ -1,6 +1,7 @@
-<svelte:options customElement="sesamy-visibility" />
+<svelte:options customElement={{ tag: 'sesamy-visibility', extend: deferMountUntilParsed }} />
 
 <script lang="ts">
+  import { deferMountUntilParsed } from './defer-mount';
   import type { SesamyAPI } from '@sesamy/sesamy-js';
   import { getApi } from './api';
 
