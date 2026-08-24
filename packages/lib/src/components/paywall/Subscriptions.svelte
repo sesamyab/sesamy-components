@@ -45,7 +45,7 @@
 <SelectionGroup
   class={twMerge(
     horizontal && '@xl:grid-cols-3',
-    horizontal && subscriptions.length === 4 && '@xl:grid-cols-2 @7xl:grid-cols-4',
+    horizontal && subscriptions.length === 4 && '@xl:grid-cols-2',
     horizontal && subscriptions.length === 2 && '@xl:grid-cols-2',
     horizontal && subscriptions.length === 1 && 'flex'
   )}

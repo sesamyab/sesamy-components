@@ -29,6 +29,21 @@ const renderSubscriptions = (subscriptions: PaywallSubscription[], horizontal: b
 
 afterEach(cleanup);
 
+describe('Subscriptions grid (boxes template)', () => {
+  it('caps four subscriptions at two per row instead of four across', () => {
+    const subs = [1, 2, 3, 4].map((i) =>
+      subscription({ id: `sub_${i}`, sku: `sku_${i}`, poId: `po_${i}`, selected: i === 1 })
+    );
+    const { container } = renderSubscriptions(subs, true);
+
+    const grid = container.querySelector('.grid');
+    expect(grid?.className).toContain('@xl:grid-cols-2');
+    // Concatenated so Tailwind's content scanner doesn't pick the class name
+    // up from this file and emit the utility again
+    expect(grid?.className).not.toContain('grid-cols-' + '4');
+  });
+});
+
 describe.each([
   { name: 'article template', horizontal: false },
   { name: 'boxes template', horizontal: true }
