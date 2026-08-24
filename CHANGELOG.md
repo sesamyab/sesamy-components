@@ -1,3 +1,10 @@
+## [2.24.2](https://github.com/sesamyab/sesamy-components/compare/v2.24.1...v2.24.2) (2026-08-24)
+
+
+### Bug Fixes
+
+* defer custom element mount until the document is parsed ([879f9de](https://github.com/sesamyab/sesamy-components/commit/879f9de6dc155e268d3c7782c5a67fb3b7acdc47)), closes [#377](https://github.com/sesamyab/sesamy-components/issues/377)
+
 ## [2.24.1](https://github.com/sesamyab/sesamy-components/compare/v2.24.0...v2.24.1) (2026-08-21)
 
 
