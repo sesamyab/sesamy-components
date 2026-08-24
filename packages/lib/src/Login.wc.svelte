@@ -1,6 +1,7 @@
-<svelte:options customElement="sesamy-login" />
+<svelte:options customElement={{ tag: 'sesamy-login', extend: deferMountUntilParsed }} />
 
 <script lang="ts">
+  import { deferMountUntilParsed } from './defer-mount';
   import type { SesamyAPI, Profile } from '@sesamy/sesamy-js';
   import { onMount, onDestroy } from 'svelte';
   import Base from './Base.svelte';

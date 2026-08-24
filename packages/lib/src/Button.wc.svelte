@@ -1,6 +1,7 @@
-<svelte:options customElement="sesamy-button" />
+<svelte:options customElement={{ tag: 'sesamy-button', extend: deferMountUntilParsed }} />
 
 <script lang="ts">
+  import { deferMountUntilParsed } from './defer-mount';
   import { twMerge } from 'tailwind-merge';
   import Base from './Base.svelte';
   import type { ButtonProps } from './types';
