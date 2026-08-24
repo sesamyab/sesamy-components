@@ -1,3 +1,11 @@
+## [2.24.3](https://github.com/sesamyab/sesamy-components/compare/v2.24.2...v2.24.3) (2026-08-24)
+
+
+### Bug Fixes
+
+* make component sizing independent of host page root font-size ([e2397d3](https://github.com/sesamyab/sesamy-components/commit/e2397d31d5ca105bf8ed82848838216a5bb6a439))
+* never render four paywall boxes in a row ([de5a178](https://github.com/sesamyab/sesamy-components/commit/de5a17874c96c872a1ed20e033d86dbb224e3ccd))
+
 ## [2.24.2](https://github.com/sesamyab/sesamy-components/compare/v2.24.1...v2.24.2) (2026-08-24)
 
 
