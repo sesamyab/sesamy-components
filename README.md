@@ -301,6 +301,22 @@ A web component that displays a paywall for content, loading paywall settings fr
 - `utm-source`, `utm-medium`, `utm-campaign`, `utm-term`, `utm-content`: UTM parameters for tracking
 - `pass`: Pass ID for access
 
+**Post-purchase redirect:**
+
+Where the visitor lands after buying is resolved when they go to checkout, first
+usable value winning:
+
+1. `redirectUrl` on the chosen subscription option (from the paywall settings)
+2. `settings.redirectUrl` on the paywall (the paywall-wide default)
+3. the `redirect-url` attribute on the element
+4. the page the visitor is on
+
+Only an absolute URL counts as usable. Empty, whitespace-only and unparseable
+values fall through to the next level (the last with a `console.warn`) instead
+of sending a broken `redirect-url` to checkout. Single purchases have no
+per-option redirect, so they start at level 2; subscription options of type URL
+link straight out and never reach checkout at all.
+
 **Events:**
 
 Per-element events dispatched directly on the `<sesamy-paywall>` element (bubble, composed):

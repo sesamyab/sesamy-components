@@ -16,7 +16,6 @@
     subscriptions: PaywallSubscription[];
     currency: string;
     selectProduct: Function;
-    redirectUrl: string;
     loading?: boolean;
     onCheckout?: (subscription: PaywallSubscription) => void;
   };
@@ -27,7 +26,6 @@
     currency,
     t,
     selectProduct,
-    redirectUrl,
     loading = false,
     onCheckout
   }: Props = $props();
