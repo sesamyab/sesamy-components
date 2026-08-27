@@ -12,23 +12,23 @@ const ARTICLE_URL = 'https://vendor.example/article';
 
 // jsdom refuses to navigate, so swap `window.location` for a plain object: it
 // pins the page URL the last fall-through level reads, and captures wherever
-// the component sends the visitor.
-let restoreLocation: (() => void) | undefined;
+// the component sends the visitor. Captured once at module load, so restoring
+// puts the native location back however many times a test re-stubs.
+const nativeLocation = Object.getOwnPropertyDescriptor(window, 'location');
 
 const stubLocation = () => {
-  const original = Object.getOwnPropertyDescriptor(window, 'location');
   Object.defineProperty(window, 'location', {
     value: { href: PAGE_URL, assign: (href: string) => (window.location.href = href) },
     writable: true,
     configurable: true
   });
-  restoreLocation = () => {
-    if (original) {
-      Object.defineProperty(window, 'location', original);
-    }
-    restoreLocation = undefined;
-  };
   return window.location as unknown as { href: string };
+};
+
+const restoreLocation = () => {
+  if (nativeLocation) {
+    Object.defineProperty(window, 'location', nativeLocation);
+  }
 };
 
 type CreatedCheckout = { redirectUrl: string };
@@ -144,7 +144,7 @@ const redirectParam = (location: { href: string }) =>
 afterEach(() => {
   cleanup();
   document.body.replaceChildren();
-  restoreLocation?.();
+  restoreLocation();
   delete window.sesamy;
   vi.restoreAllMocks();
 });
