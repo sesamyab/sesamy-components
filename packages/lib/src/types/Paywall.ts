@@ -31,6 +31,9 @@ export type PaywallSubscription = {
   preferBusiness?: boolean;
   readMoreLink?: string;
   readMoreText?: string;
+  // Where the visitor lands after buying this option. Overrides the
+  // paywall-wide `settings.redirectUrl`; see `resolveRedirectUrl`.
+  redirectUrl?: string;
 };
 
 export type PaywallSinglePurchase = {
@@ -44,6 +47,9 @@ export type PaywallSettings = {
   useDefaultCurrency: boolean;
   useDefaultColor: boolean;
   template: PaywallTemplate;
+  // Paywall-wide default for where the visitor lands after a purchase, used for
+  // every option that does not carry its own `redirectUrl`.
+  redirectUrl?: string;
   styling: {
     showBackground: boolean;
     backgroundColor?: string;

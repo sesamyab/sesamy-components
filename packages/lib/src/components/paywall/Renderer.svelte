@@ -18,7 +18,7 @@
   import PayNowForm from './PayNowForm.svelte';
   import NotLoggedIn from '../NotLoggedIn.svelte';
   import { parsePrice } from '../../utils/money';
-  import { goToCheckout } from '../../utils/checkout';
+  import { goToCheckout, resolveRedirectUrl } from '../../utils/checkout';
   import { dispatchSesamyEvent } from '../../events';
   import { resolveItemSrc, track } from '../../tracking';
 
@@ -55,7 +55,6 @@
     ? parsePrice(userProps['price'])
     : contentArticle?.price;
   const articleUrl = userProps?.['item-src'] || contentArticle?.url;
-  const redirectUrl = userProps?.['redirect-url'] || window.location.href;
 
   let {
     subscriptions,
@@ -68,7 +67,7 @@
     footerPaymentMethods,
     logoUrl,
     vendorId,
-    settings: { useDefaultLogo, styling }
+    settings: { useDefaultLogo, styling, redirectUrl: paywallRedirectUrl }
   } = paywall;
 
   const checkAccess = async () => {
@@ -133,6 +132,15 @@
     const item = selectedProduct?.url
       ? { url: selectedProduct.url }
       : { sku: selectedProduct.sku, purchaseOptionId: selectedProduct.poId };
+
+    // Resolved per purchase, since the chosen option can carry its own
+    // redirect. Options of type URL never get here — they left above — and the
+    // single purchase has no per-option field, so it resolves paywall-wide.
+    const redirectUrl = resolveRedirectUrl(
+      selectedProduct.redirectUrl,
+      paywallRedirectUrl,
+      userProps?.['redirect-url']
+    );
 
     try {
       const checkoutPayload = {
@@ -353,7 +361,6 @@
                   {t}
                   {currency}
                   {selectProduct}
-                  {redirectUrl}
                   {loading}
                   onCheckout={onBoxCheckout}
                 />
