@@ -1,3 +1,15 @@
+# [2.25.0](https://github.com/sesamyab/sesamy-components/compare/v2.24.3...v2.25.0) (2026-08-31)
+
+
+### Bug Fixes
+
+* adapt paywall login text color to dark backgrounds ([febf742](https://github.com/sesamyab/sesamy-components/commit/febf742114be9c1c598e11ee6b2ff09c66f87f33))
+
+
+### Features
+
+* resolve post-purchase redirect from paywall settings ([5b25738](https://github.com/sesamyab/sesamy-components/commit/5b257386b1250d5aa5ffe0e3af46e809c1e86144))
+
 ## [2.24.3](https://github.com/sesamyab/sesamy-components/compare/v2.24.2...v2.24.3) (2026-08-24)
 
 
