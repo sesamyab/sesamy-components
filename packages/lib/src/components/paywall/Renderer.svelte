@@ -270,6 +270,7 @@
       --s-paywall-text-color: var(--sesamy-paywall-text-color, ${paywallTextColor});
       --s-paywall-text-color-70: var(--s-paywall-text-color);
       --s-paywall-text-color-70: color-mix(in srgb, var(--s-paywall-text-color) 70%, transparent);
+      --s-login-button-default-text-color: var(--s-paywall-text-color);
       --s-paywall-border-radius: var(--sesamy-paywall-border-radius, calc(0.5 * var(--s-base-font-size, 16px)));
       --s-paywall-border-radius-desktop: var(--sesamy-paywall-border-radius-desktop, calc(var(--s-paywall-border-radius) * 3));
       --s-paywall-theme: var(--sesamy-paywall-theme, ${autoDarkMode ? 'dark' : 'light'});
