@@ -26,7 +26,7 @@
       --s-base-font-size: var(--sesamy-base-font-size, 16px);
 
       --s-login-button-color: var(--sesamy-login-button-color, #000000);
-      --s-login-button-text-color: var(--sesamy-login-button-color, var(--sesamy-login-button-text-color, #000000));
+      --s-login-button-text-color: var(--sesamy-login-button-color, var(--sesamy-login-button-text-color, var(--s-login-button-default-text-color, #000000)));
       --s-login-button-text-size: var(--sesamy-login-button-text-size, calc(0.875 * var(--s-base-font-size, 16px)));
       --s-login-button-border-color: var(--sesamy-login-button-color, var(--sesamy-login-button-border-color, #000000));
       --s-login-button-background-color: var(--sesamy-login-button-background-color, transparent);

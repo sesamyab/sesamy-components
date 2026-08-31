@@ -22,8 +22,7 @@ const renderSubscriptions = (subscriptions: PaywallSubscription[], horizontal: b
       horizontal,
       subscriptions,
       currency: 'NOK',
-      selectProduct: () => {},
-      redirectUrl: 'https://example.com'
+      selectProduct: () => {}
     }
   });
 
