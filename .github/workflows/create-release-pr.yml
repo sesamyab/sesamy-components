@@ -40,15 +40,7 @@ jobs:
               throw error;
             }
 
-            // Get the last release date to bound the PR search
-            const mainCommit = await github.rest.git.getCommit({
-              owner,
-              repo,
-              commit_sha: lastReleaseSha
-            });
-            const lastReleaseDate = mainCommit.data.committer.date;
-
-            // Get all merged PRs to dev since the last release (with pagination)
+            // Get all merged PRs to dev (with pagination)
             const allClosedPRs = await github.paginate(github.rest.pulls.list, {
               owner,
               repo,
@@ -58,11 +50,9 @@ jobs:
               direction: 'desc',
               per_page: 100
             });
-            const mergedPRs = allClosedPRs.filter(pr =>
-              pr.merged_at && Date.parse(pr.merged_at) > Date.parse(lastReleaseDate)
-            );
+            const mergedPRs = allClosedPRs.filter(pr => pr.merged_at);
 
-            // Filter PRs that were merged after the last release
+            // Keep only PRs whose merge commit is in lastReleaseSha...dev, i.e. not yet on main.
             // Paginate compareCommits to handle repos with >100 commits between releases
             const pageSize = 100;
             const commitShas = new Set();
