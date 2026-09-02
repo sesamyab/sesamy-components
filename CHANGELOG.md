@@ -1,3 +1,10 @@
+## [2.26.1](https://github.com/sesamyab/sesamy-components/compare/v2.26.0...v2.26.1) (2026-09-02)
+
+
+### Bug Fixes
+
+* **i18n:** update Norwegian "already subscribing" copy ([fada133](https://github.com/sesamyab/sesamy-components/commit/fada133ccc0d409b3269a4172dc5c65ffd34f4ab)), closes [#399](https://github.com/sesamyab/sesamy-components/issues/399)
+
 # [2.26.0](https://github.com/sesamyab/sesamy-components/compare/v2.25.0...v2.26.0) (2026-09-02)
 
 
