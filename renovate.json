@@ -1,6 +1,57 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended"
-  ]
+    "config:best-practices",
+    ":automergeTypes",
+    ":automergeLinters",
+    ":automergeTesters",
+    ":automergeRequireAllStatusChecks",
+    "helpers:disableTypesNodeMajor"
+  ],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "automerge": true
+  },
+  "internalChecksFilter": "strict",
+  "packageRules": [
+    {
+      "description": "Automerge patch and minor updates",
+      "matchUpdateTypes": ["patch", "minor"],
+      "automerge": true
+    },
+    {
+      "description": "Get GitHub Actions updates once a month",
+      "matchDepTypes": ["action"],
+      "extends": ["schedule:monthly"]
+    },
+    {
+      "description": "Keep all Playwright references in sync",
+      "groupName": "playwright",
+      "matchPackageNames": [
+        "@playwright/test",
+        "playwright",
+        "mcr.microsoft.com/playwright"
+      ],
+      "automerge": false
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update the Playwright docker image referenced in package.json scripts",
+      "managerFilePatterns": ["/(^|/)package\\.json$/"],
+      "matchStrings": [
+        "mcr\\.microsoft\\.com/playwright:(?<currentValue>v[\\d.]+-[a-z]+)(?:@(?<currentDigest>sha256:[a-f0-9]+))?"
+      ],
+      "depNameTemplate": "mcr.microsoft.com/playwright",
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "docker"
+    }
+  ],
+  "automergeSchedule": [
+    "after 10pm every weekday",
+    "before 5am every weekday",
+    "every weekend"
+  ],
+  "branchConcurrentLimit": 2
 }
