@@ -1,3 +1,15 @@
+# [2.26.0](https://github.com/sesamyab/sesamy-components/compare/v2.25.0...v2.26.0) (2026-09-02)
+
+
+### Bug Fixes
+
+* **content-container:** honor the container's own access-level attribute ([b7183d2](https://github.com/sesamyab/sesamy-components/commit/b7183d27c567c3432b8ca9f4d137c6e4f92df8ec))
+
+
+### Features
+
+* **paywall:** expose nested login button text as a slot ([557fbc7](https://github.com/sesamyab/sesamy-components/commit/557fbc77187892d7e615a31d33d377e074c9ca07))
+
 # [2.25.0](https://github.com/sesamyab/sesamy-components/compare/v2.24.3...v2.25.0) (2026-08-31)
 
 
