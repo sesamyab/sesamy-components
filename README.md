@@ -345,8 +345,10 @@ The paywall also emits the `addToCart` interaction through sesamy-js when the us
 
 **Slots:**
 
+- `headline`: Replaces the headline from the paywall settings (e.g., placement-specific copy)
 - `below-headline`: Content rendered below the paywall headline (e.g., additional info, custom elements)
 - `features`: Content rendered in the features section of the paywall (e.g., feature list, benefits)
+- `login-button-text`: Replaces the text of the "already subscribing" login button
 
 **Basic Usage Example:**
 
@@ -369,7 +371,19 @@ The paywall also emits the `addToCart` interaction through sesamy-js when the us
 
 #### Slots
 
-The `sesamy-paywall` component provides three slots for customization:
+The `sesamy-paywall` component provides four slots for customization:
+
+##### headline
+
+- **Purpose:** Replaces the headline configured in the paywall settings.
+- **Behavior:** When you provide content in the `headline` slot, it is rendered in place of the stored headline, with the headline's own styling (size, weight, max width). When you leave it empty, the headline from the paywall settings is shown. Use this to vary the copy per placement (e.g., article vs. front page) while reusing one paywall configuration.
+- **Availability:** All templates (`ARTICLE`, `BOXES`, `LOGIN`).
+- **Example:**
+  ```html
+  <sesamy-paywall settings-url="https://api.example.com/paywall/settings">
+    <span slot="headline">Read the full investigation</span>
+  </sesamy-paywall>
+  ```
 
 ##### below-headline
 
@@ -385,7 +399,8 @@ The `sesamy-paywall` component provides three slots for customization:
 ##### features
 
 - **Purpose:** Replaces the default features section of the paywall.
-- **Behavior:** When you provide content in the `features` slot, it will completely replace the built-in features list or section. Use this slot to fully customize the list of benefits, features, or selling points shown to the user.
+- **Behavior:** When you provide content in the `features` slot, it will completely replace the built-in features list or section. Use this slot to fully customize the list of benefits, features, or selling points shown to the user. Slotted content is static: it does not switch when the visitor selects a different subscription option the way the built-in list does.
+- **Availability:** Only the `ARTICLE` template renders a paywall-wide features list. The `BOXES` template shows features inside each box, so the slot has no effect there.
 - **Example:**
   ```html
   <sesamy-paywall settings-url="https://api.example.com/paywall/settings">
@@ -414,7 +429,7 @@ The `sesamy-paywall` component provides three slots for customization:
 
 **Note:**
 
-- The `below-headline` slot adds to the paywall, while the `features` and `login-button-text` slots replace the default content entirely.
+- The `below-headline` slot adds to the paywall, while the `headline`, `features` and `login-button-text` slots replace the default content entirely.
 
 ### sesamy-visibility
 

@@ -69,6 +69,7 @@ export const Slots: Story = {
         currency="SEK"
       >
         <span slot="login-button-text">Custom <b>Login Button Text</b> Slot</span>
+        <span slot="headline">Custom <b>Headline</b> Slot</span>
         <div slot="below-headline" style="background: #f0f0f0; padding: 8px;">
           Custom <b>Below Headline</b> Slot
         </div>

@@ -127,7 +127,7 @@
               {/if}
               <Column left class="gap-3">
                 <div class="w-full text-2xl @md:text-3xl leading-tight font-bold">
-                  {headline}
+                  <svelte:element this={'slot'} name="headline">{headline}</svelte:element>
                 </div>
                 <svelte:element this={'slot'} name="below-headline" />
               </Column>
