@@ -5,6 +5,7 @@ import {
   enableInteractions,
   interactionsEnabled,
   resetInteractions,
+  resolveAccessLevel,
   resolveArticleState,
   resolveItemSrc,
   track
@@ -156,5 +157,25 @@ describe('resolveArticleState', () => {
     expect(resolveArticleState('entitlement', { id: 'ent_1' })).toBe('unlocked');
     expect(resolveArticleState('entitlement', false)).toBe('locked');
     expect(resolveArticleState(undefined, null)).toBe('locked');
+  });
+});
+
+describe('resolveAccessLevel', () => {
+  it('prefers the container attribute over what sesamy-js resolved', () => {
+    // A public container nested inside an entitlement article: sesamy-js
+    // reads the article's attributes, but the container's own setting wins.
+    expect(resolveAccessLevel('public', 'entitlement')).toBe('public');
+    expect(resolveAccessLevel('logged-in', undefined)).toBe('logged-in');
+  });
+
+  it('falls back to the resolved level when the container has none', () => {
+    expect(resolveAccessLevel(undefined, 'entitlement')).toBe('entitlement');
+    expect(resolveAccessLevel('', 'public')).toBe('public');
+    expect(resolveAccessLevel(undefined, undefined)).toBeUndefined();
+  });
+
+  it('keeps a public override out of the entitlement check', () => {
+    const level = resolveAccessLevel('public', 'entitlement');
+    expect(resolveArticleState(level, false)).toBe('public');
   });
 });
