@@ -344,8 +344,10 @@
             {#if useDefaultLogo}
               <img class="h-7 mb-6" src={logoUrl} alt={`${t('logo_of')} ${vendorId}`} />
             {/if}
+            <!-- The host page can swap the headline per placement without a second
+                 paywall; the copy from the paywall settings is the fallback. -->
             <div class="text-2xl leading-tight @md:text-3xl font-bold max-w-[600px]">
-              {headline}
+              <svelte:element this={'slot'} name="headline">{headline}</svelte:element>
             </div>
           </div>
 
