@@ -48,10 +48,6 @@
       "versioningTemplate": "docker"
     }
   ],
-  "automergeSchedule": [
-    "after 10pm every weekday",
-    "before 5am every weekday",
-    "every weekend"
-  ],
+  "automergeSchedule": ["* 0-4,22-23 * * 1-5", "* * * * 0,6"],
   "branchConcurrentLimit": 2
 }
