@@ -369,7 +369,7 @@ The paywall also emits the `addToCart` interaction through sesamy-js when the us
 
 #### Slots
 
-The `sesamy-paywall` component provides two main slots for customization:
+The `sesamy-paywall` component provides three slots for customization:
 
 ##### below-headline
 
@@ -399,9 +399,22 @@ The `sesamy-paywall` component provides two main slots for customization:
   </sesamy-paywall>
   ```
 
+##### login-button-text
+
+- **Purpose:** Replaces the text of the "already subscribing" login button the paywall renders above the headline.
+- **Behavior:** The paywall embeds a nested `sesamy-login` component and forwards this slot into that component's own `button-text` slot. When you leave it empty, the default translated text (`Already subscribing? Login`) is used.
+- **Availability:** Only the `ARTICLE` template renders this login button. The `BOXES` template hides it, and the `LOGIN` template doesn't embed a `sesamy-login` at all, so the slot has no effect there.
+- **Styling:** Inside the paywall this button is rendered borderless and underlined (4px offset), at the base font size (16px by default) rather than the 14px a standalone `sesamy-login` uses, and it fades to 80% opacity on hover. Set `--sesamy-login-button-text-size` on the paywall to override the size; the other `--sesamy-login-button-*` variables apply as usual.
+- **Example:**
+  ```html
+  <sesamy-paywall settings-url="https://api.example.com/paywall/settings">
+    <span slot="login-button-text">Already a subscriber? Sign in</span>
+  </sesamy-paywall>
+  ```
+
 **Note:**
 
-- The `below-headline` slot adds to the paywall, while the `features` slot replaces the default features section entirely.
+- The `below-headline` slot adds to the paywall, while the `features` and `login-button-text` slots replace the default content entirely.
 
 ### sesamy-visibility
 

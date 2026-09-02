@@ -362,3 +362,39 @@ describe('paywall redirect resolution (article template)', () => {
     expect(created[0].redirectUrl).toBe('https://vendor.example/thanks/yearly');
   });
 });
+
+describe('login button text slot (article template)', () => {
+  // The nested `sesamy-login` is a custom element that is never upgraded in
+  // jsdom, so the forwarded `<slot>` and its fallback stay queryable as plain
+  // elements rather than being flattened into a shadow tree.
+  const findForwardedSlot = () =>
+    waitFor(() => {
+      const slot = document.querySelector('sesamy-login slot[name="login-button-text"]');
+      if (!slot) throw new Error('forwarded slot has not rendered yet');
+      return slot;
+    });
+
+  const renderLoginButton = () =>
+    renderPaywall(
+      paywall({ showLoginButton: true, settings: { template: PaywallTemplate.ARTICLE } }),
+      {
+        horizontal: false
+      }
+    );
+
+  it('chains the paywall slot into the nested login `button-text` slot', async () => {
+    renderLoginButton();
+
+    expect((await findForwardedSlot()).getAttribute('slot')).toBe('button-text');
+  });
+
+  it('renders both translated words, separated, when the slot is unfilled', async () => {
+    renderLoginButton();
+
+    // Collapsed the way HTML collapses whitespace when it paints the fallback,
+    // so a missing separator would show up here as one run-together word.
+    const fallback = (await findForwardedSlot()).textContent?.replace(/\s+/g, ' ').trim();
+
+    expect(fallback).toBe('already_subscribing login');
+  });
+});

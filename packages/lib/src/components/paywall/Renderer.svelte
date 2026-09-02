@@ -271,6 +271,7 @@
       --s-paywall-text-color-70: var(--s-paywall-text-color);
       --s-paywall-text-color-70: color-mix(in srgb, var(--s-paywall-text-color) 70%, transparent);
       --s-login-button-default-text-color: var(--s-paywall-text-color);
+      --s-login-button-default-text-size: var(--s-base-font-size, 16px);
       --s-paywall-border-radius: var(--sesamy-paywall-border-radius, calc(0.5 * var(--s-base-font-size, 16px)));
       --s-paywall-border-radius-desktop: var(--sesamy-paywall-border-radius-desktop, calc(var(--s-paywall-border-radius) * 3));
       --s-paywall-theme: var(--sesamy-paywall-theme, ${autoDarkMode ? 'dark' : 'light'});
@@ -320,12 +321,17 @@
         >
           <NotLoggedIn {api}>
             {#if showLoginButton && !horizontal}
+              <!-- Chains the paywall's own `login-button-text` slot into the nested
+                   sesamy-login `button-text` slot, so the host page can override the
+                   text. Falls back to the translated default when left unfilled. -->
               <Row class="w-full">
-                <sesamy-login class="border-0 p-0">
-                  <span slot="button-text">
+                <sesamy-login
+                  class="border-0 p-0 underline underline-offset-4 transition-opacity enabled:hover:bg-transparent enabled:hover:opacity-80"
+                >
+                  <svelte:element this={'slot'} name="login-button-text" slot="button-text">
                     {t('already_subscribing')}
                     {t('login')}
-                  </span>
+                  </svelte:element>
                 </sesamy-login>
               </Row>
               <div
