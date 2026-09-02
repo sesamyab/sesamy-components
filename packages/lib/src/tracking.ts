@@ -117,6 +117,20 @@ export function resolveArticleState(
   return hasAccess ? 'unlocked' : 'locked';
 }
 
+/**
+ * Picks the access level a content container should enforce. The container's
+ * own `access-level` attribute wins over whatever sesamy-js resolved: since
+ * sesamy-js 1.126 `content.get(element)` reads attributes from the nearest
+ * <sesamy-article>, so a container nested inside an article would otherwise
+ * lose its own setting.
+ */
+export function resolveAccessLevel(
+  attribute: string | undefined,
+  resolved: string | undefined
+): string | undefined {
+  return attribute || resolved;
+}
+
 export function track<K extends TrackEventName>(
   api: SesamyAPI,
   name: K,
