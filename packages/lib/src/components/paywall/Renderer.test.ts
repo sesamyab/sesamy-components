@@ -363,6 +363,32 @@ describe('paywall redirect resolution (article template)', () => {
   });
 });
 
+describe('headline slot', () => {
+  // The `<slot>` is rendered as a plain element under jsdom (no shadow tree),
+  // so it and its fallback text stay queryable.
+  const findHeadlineSlot = () =>
+    waitFor(() => {
+      const slot = document.querySelector('slot[name="headline"]');
+      if (!slot) throw new Error('headline slot has not rendered yet');
+      return slot;
+    });
+
+  it('renders the stored headline as the slot fallback in the article template', async () => {
+    renderPaywall(
+      paywall({ headline: 'Stored headline', settings: { template: PaywallTemplate.ARTICLE } }),
+      { horizontal: false }
+    );
+
+    expect((await findHeadlineSlot()).textContent?.trim()).toBe('Stored headline');
+  });
+
+  it('renders the stored headline as the slot fallback in the boxes template', async () => {
+    renderPaywall(paywall({ headline: 'Stored headline' }));
+
+    expect((await findHeadlineSlot()).textContent?.trim()).toBe('Stored headline');
+  });
+});
+
 describe('login button text slot (article template)', () => {
   // The nested `sesamy-login` is a custom element that is never upgraded in
   // jsdom, so the forwarded `<slot>` and its fallback stay queryable as plain
