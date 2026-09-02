@@ -1,0 +1,158 @@
+name: Create Release PR
+
+on:
+  push:
+    branches:
+      - dev
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  create-release-pr:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Create or Update Release PR
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+
+            // Get the last merge commit from main (the previous release point)
+            let lastReleaseSha;
+            try {
+              const mainRef = await github.rest.git.getRef({
+                owner,
+                repo,
+                ref: 'heads/main'
+              });
+              lastReleaseSha = mainRef.data.object.sha;
+            } catch (error) {
+              if (error.status === 404) {
+                console.log('Main branch does not exist yet. Skipping release PR creation.');
+                return;
+              }
+              throw error;
+            }
+
+            // Get all merged PRs to dev (with pagination)
+            const allClosedPRs = await github.paginate(github.rest.pulls.list, {
+              owner,
+              repo,
+              base: 'dev',
+              state: 'closed',
+              sort: 'updated',
+              direction: 'desc',
+              per_page: 100
+            });
+            const mergedPRs = allClosedPRs.filter(pr => pr.merged_at);
+
+            // Keep only PRs whose merge commit is in lastReleaseSha...dev, i.e. not yet on main.
+            // Paginate compareCommits to handle repos with >100 commits between releases
+            const pageSize = 100;
+            const commitShas = new Set();
+            let commitPage = 1;
+            let hasMoreCommits = true;
+            while (hasMoreCommits) {
+              const comparison = await github.rest.repos.compareCommits({
+                owner,
+                repo,
+                base: lastReleaseSha,
+                head: 'dev',
+                per_page: pageSize,
+                page: commitPage
+              });
+              comparison.data.commits.forEach(c => commitShas.add(c.sha));
+              hasMoreCommits = comparison.data.commits.length === pageSize;
+              commitPage++;
+            }
+
+            const includedPRs = mergedPRs.filter(pr =>
+              pr.merged_at && pr.merge_commit_sha && commitShas.has(pr.merge_commit_sha)
+            );
+
+            // Build the PR description
+            let body = '## Automated release PR from dev to main\n\n';
+
+            if (includedPRs.length > 0) {
+              body += '### PRs included in this release:\n\n';
+              for (const pr of includedPRs) {
+                body += `- #${pr.number}\n`;
+              }
+            } else {
+              body += '_No PRs found since the last release._\n';
+            }
+
+            // Check if a PR from dev to main already exists
+            const existingPRs = await github.rest.pulls.list({
+              owner,
+              repo,
+              head: `${owner}:dev`,
+              base: 'main',
+              state: 'open'
+            });
+
+            if (existingPRs.data.length > 0) {
+              const existingPR = existingPRs.data[0];
+
+              // Check if the body has changed (new PRs were merged)
+              if (existingPR.body !== body) {
+                await github.rest.pulls.update({
+                  owner,
+                  repo,
+                  pull_number: existingPR.number,
+                  body: body
+                });
+                console.log('Updated Release PR with new PRs:', existingPR.html_url);
+              } else {
+                console.log('Release PR already exists and is up to date:', existingPR.html_url);
+              }
+              return;
+            }
+
+            // Create a new PR from dev to main
+            try {
+              const pr = await github.rest.pulls.create({
+                owner,
+                repo,
+                title: 'Release',
+                head: 'dev',
+                base: 'main',
+                body: body
+              });
+              console.log('Created Release PR:', pr.data.html_url);
+            } catch (error) {
+              if (error.status === 422) {
+                const code = error.response?.data?.errors?.[0]?.code;
+                if (code === 'no_commits_between') {
+                  console.log('No changes between dev and main. Skipping PR creation.');
+                  return;
+                }
+                if (code === 'already_exists') {
+                  const existingPRsRetry = await github.rest.pulls.list({
+                    owner,
+                    repo,
+                    head: `${owner}:dev`,
+                    base: 'main',
+                    state: 'open'
+                  });
+                  if (existingPRsRetry.data.length > 0) {
+                    const existing = existingPRsRetry.data[0];
+                    await github.rest.pulls.update({
+                      owner,
+                      repo,
+                      pull_number: existing.number,
+                      body: body
+                    });
+                    console.log('Updated existing Release PR:', existing.html_url);
+                  }
+                  return;
+                }
+              }
+              throw error;
+            }
