@@ -1,3 +1,10 @@
+# [2.27.0](https://github.com/sesamyab/sesamy-components/compare/v2.26.1...v2.27.0) (2026-09-02)
+
+
+### Features
+
+* **paywall:** expose the headline as a slot ([31ec3b9](https://github.com/sesamyab/sesamy-components/commit/31ec3b9f1085b7d1eaa260c5fd9416c85fbd08bf))
+
 ## [2.26.1](https://github.com/sesamyab/sesamy-components/compare/v2.26.0...v2.26.1) (2026-09-02)
 
 
