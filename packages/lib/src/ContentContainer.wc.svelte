@@ -12,7 +12,7 @@
   import Base from './Base.svelte';
   import type { ContentContainerProps } from './types';
   import { dispatchSesamyEvent } from './events';
-  import { resolveArticleState, resolveItemSrc, track } from './tracking';
+  import { resolveAccessLevel, resolveArticleState, resolveItemSrc, track } from './tracking';
 
   let {
     'item-src': itemSrc = '',
@@ -74,11 +74,9 @@
       return false;
     }
 
-    // sesamy-js resolves the nearest <sesamy-article> and reads attributes from
-    // it, so an access-level set on this container is not reflected in
-    // content.accessLevel when the container is nested inside an article. The
-    // container's own attribute is the documented contract, so it wins.
-    const accessLevel = accessLevelProp || content.accessLevel;
+    // The container's own access-level attribute is the documented contract and
+    // wins over what sesamy-js resolved from the surrounding <sesamy-article>.
+    const accessLevel = resolveAccessLevel(accessLevelProp, content.accessLevel);
 
     if (accessLevel === 'public') {
       api.log(`Content is public`);
