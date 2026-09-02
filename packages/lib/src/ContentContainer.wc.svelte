@@ -16,6 +16,7 @@
 
   let {
     'item-src': itemSrc = '',
+    'access-level': accessLevelProp,
     'publisher-content-id': publisherContentIdProp,
     'lock-mode': lockMode = 'embed',
     'locked-content-selector': lockedContentSelector
@@ -50,14 +51,19 @@
    * an article and knows whether it is locked. This is what feeds the article
    * view rollups; the DOM events stay untouched for publisher-side hooks.
    */
-  function trackViewArticle(api: SesamyAPI, content: Content, hasAccess: unknown) {
+  function trackViewArticle(
+    api: SesamyAPI,
+    content: Content,
+    accessLevel: string | undefined,
+    hasAccess: unknown
+  ) {
     if (viewTracked) return;
     viewTracked = true;
 
     track(api, 'viewArticle', {
       itemSrc: resolveItemSrc(itemSrc, content.url),
       publisherContentId: publisherContentIdProp || content.id,
-      state: resolveArticleState(content.accessLevel, hasAccess)
+      state: resolveArticleState(accessLevel, hasAccess)
     });
   }
 
@@ -66,15 +72,23 @@
     if (!content) {
       api.log(`No content found for host`);
       return false;
-    } else if (content.accessLevel === 'public') {
+    }
+
+    // sesamy-js resolves the nearest <sesamy-article> and reads attributes from
+    // it, so an access-level set on this container is not reflected in
+    // content.accessLevel when the container is nested inside an article. The
+    // container's own attribute is the documented contract, so it wins.
+    const accessLevel = accessLevelProp || content.accessLevel;
+
+    if (accessLevel === 'public') {
       api.log(`Content is public`);
-      trackViewArticle(api, content, true);
+      trackViewArticle(api, content, accessLevel, true);
       return true;
     }
     api.log(`Checking access`);
 
     const hasAccess = await api.content.hasAccess($host());
-    trackViewArticle(api, content, hasAccess);
+    trackViewArticle(api, content, accessLevel, hasAccess);
 
     return hasAccess;
   }
