@@ -92,7 +92,7 @@
     "@tsconfig/svelte": "^5.0.4",
     "@types/node": "^24.13.3",
     "autoprefixer": "^10.4.20",
-    "http-server": "14.1.1",
+    "http-server": "^14.1.1",
     "i18nexus-cli": "^3.5.0",
     "jsdom": "^25.0.1",
     "lit": "^3.2.1",
