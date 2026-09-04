@@ -7216,10 +7216,10 @@ vite-node@3.2.4:
     pathe "^2.0.3"
     vite "^5.0.0 || ^6.0.0 || ^7.0.0-0"
 
-vite-plugin-static-copy@^3.0.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/vite-plugin-static-copy/-/vite-plugin-static-copy-3.2.0.tgz#5d3adb40438530520b5fdbfa27d9a95c1985cdfd"
-  integrity sha512-g2k9z8B/1Bx7D4wnFjPLx9dyYGrqWMLTpwTtPHhcU+ElNZP2O4+4OsyaficiDClus0dzVhdGvoGFYMJxoXZ12Q==
+vite-plugin-static-copy@^3.2.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/vite-plugin-static-copy/-/vite-plugin-static-copy-3.4.0.tgz#4338cc73be3340c4c5c83dadf58a7edbeb8ccbe1"
+  integrity sha512-ekryzCw0ouAOE8tw4RvVL/dfqguXzumsV3FBKoKso4MQ1MUUrUXtl5RI4KpJQUNGqFEsg9kxl4EvDl02YtA9VQ==
   dependencies:
     chokidar "^3.6.0"
     p-map "^7.0.4"
