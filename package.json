@@ -125,7 +125,7 @@
   },
   "dependencies": {
     "@zootools/email-spell-checker": "^1.12.0",
-    "lucide-svelte": "^0.575.0",
+    "lucide-svelte": "^0.577.0",
     "svelte-tel-input": "^3.6.0"
   },
   "engines": {
