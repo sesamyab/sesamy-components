@@ -1,3 +1,10 @@
+## [2.27.1](https://github.com/sesamyab/sesamy-components/compare/v2.27.0...v2.27.1) (2026-09-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency lucide-svelte to ^0.577.0 ([#415](https://github.com/sesamyab/sesamy-components/issues/415)) ([f670cdb](https://github.com/sesamyab/sesamy-components/commit/f670cdb8000709abcfb13f2f069250b37e481c33))
+
 # [2.27.0](https://github.com/sesamyab/sesamy-components/compare/v2.26.1...v2.27.0) (2026-09-02)
 
 
