@@ -49,11 +49,10 @@
       return null;
     }
 
-    const response = await fetch(settingsUrl);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch paywall: ${response.status} ${response.statusText}`);
-    }
-    const paywall: Paywall = await response.json();
+    // Pass the full settings URL, not a bare id: sesamy-js requests a URL as-is,
+    // while an id goes via the api-proxy route, which validates the response
+    // against a stale schema and strips fields the renderer needs.
+    const paywall = (await api.paywalls.get(settingsUrl)) as Paywall;
     const template = paywall?.settings.template || '';
     return { paywall, template };
   }
