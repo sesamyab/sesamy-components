@@ -50,12 +50,25 @@
 
   // Combined promise that resolves both API and translator
   const readyPromise = Promise.all([apiPromise, translatorPromise]).then(([api, t]) => ({ api, t }));
+
+  let reported = false;
+  function reportUnavailable(error: unknown) {
+    if (reported) return;
+    reported = true;
+    console.error('[sesamy-components] sesamy-js is unavailable:', error);
+  }
 </script>
 
 {#await readyPromise then { api, t }}
   <slot {api} {t}></slot>
 {:catch error}
-  <p style="color: red">{error.message}</p>
+  <!-- sesamy-js never became usable. This renders on a live publisher page, so
+       it must not paint an error message into the article; components that have
+       something sensible to show when there is no api (a content container's
+       teaser) fill the `error` slot, everyone else renders nothing. The reason
+       goes to the console, where it is diagnosable without defacing the page. -->
+  {reportUnavailable(error)}
+  <slot name="error" {error}></slot>
 {/await}
 
 {@html style}

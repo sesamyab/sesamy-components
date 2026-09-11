@@ -9,10 +9,12 @@
 <script lang="ts">
   import { deferMountUntilParsed } from './defer-mount';
   import type { SesamyAPI } from '@sesamy/sesamy-js';
+  import { onDestroy } from 'svelte';
   import Base from './Base.svelte';
   import type { ContentContainerProps } from './types';
-  import { dispatchSesamyEvent } from './events';
+  import { dispatchSesamyEvent, SesamyJsEvent } from './events';
   import { resolveAccessLevel, resolveArticleState, resolveItemSrc, track } from './tracking';
+  import { ContentSlot, applyAccess, type AccessState } from './content-lock';
 
   let {
     'item-src': itemSrc = '',
@@ -29,6 +31,14 @@
   let unlockEmitted = false;
   let viewTracked = false;
 
+  // What we currently know about this reader. Starts `unknown`, which renders
+  // the preview and — crucially — touches nothing in the light DOM.
+  let access = $state<AccessState>('unknown');
+  let contentSlot: ContentSlot | null = null;
+  let apiRef: SesamyAPI | null = null;
+  let started = false;
+  let unlockStarted = false;
+
   type Content = NonNullable<ReturnType<SesamyAPI['content']['get']>>;
 
   function extractAndStoreContent() {
@@ -42,9 +52,6 @@
     }
   }
 
-  function removeContentSlot() {
-    $host()?.querySelector('[slot="content"]')?.remove();
-  }
 
   /**
    * Emitted once per container, as soon as the content container has resolved
@@ -67,29 +74,73 @@
     });
   }
 
-  async function checkAccess(api: SesamyAPI) {
-    const content = api.content.get($host());
-    if (!content) {
-      api.log(`No content found for host`);
-      return false;
-    }
+  /**
+   * Resolve access and bring the page into line with the answer, then keep
+   * doing so whenever the session changes.
+   *
+   * The first answer is not final. On a cold load — the first visit of the
+   * morning, when the overnight token has expired — the session can still be
+   * settling, or be unable to produce a token at all. A gate that decided once
+   * and removed the article left a paying subscriber looking at the teaser,
+   * with `<sesamy-login>` cheerfully showing them as signed in, until they
+   * reloaded. So: re-check on every auth transition, and only ever remove the
+   * article on a definite `denied`.
+   */
+  async function check(api: SesamyAPI) {
+    const host = $host();
+    if (!host || !contentSlot) return;
+
+    const content = api.content.get(host);
+    const previous = access;
 
     // The container's own access-level attribute is the documented contract and
     // wins over what sesamy-js resolved from the surrounding <sesamy-article>.
-    const accessLevel = resolveAccessLevel(accessLevelProp, content.accessLevel);
+    const accessLevel = resolveAccessLevel(accessLevelProp, content?.accessLevel);
 
     if (accessLevel === 'public') {
       api.log(`Content is public`);
-      trackViewArticle(api, content, accessLevel, true);
-      return true;
+      access = 'granted';
+    } else {
+      api.log(`Checking access`);
+      access = await applyAccess(api, host, contentSlot);
     }
-    api.log(`Checking access`);
 
-    const hasAccess = await api.content.hasAccess($host());
-    trackViewArticle(api, content, accessLevel, hasAccess);
+    // Report the article view once we actually know something. `unknown` says
+    // nothing about the reader and must not be counted as a locked view.
+    if (access !== 'unknown' && content) {
+      trackViewArticle(api, content, accessLevel, access === 'granted');
+    }
 
-    return hasAccess;
+    if (access === 'granted' && previous !== 'granted') {
+      await unlockAndRenderContent(api);
+    }
   }
+
+  function onSessionChanged() {
+    if (apiRef) void check(apiRef);
+  }
+
+  /** Called from the markup once Base has resolved a usable api. */
+  function start(api: SesamyAPI) {
+    if (started) return;
+    started = true;
+    apiRef = api;
+    contentSlot = new ContentSlot($host());
+
+    window.addEventListener(SesamyJsEvent.AUTHENTICATED, onSessionChanged);
+    window.addEventListener(SesamyJsEvent.LOGOUT, onSessionChanged);
+
+    // Off the render pass: `check()` assigns `access`, and for public content it
+    // gets there without awaiting anything. Svelte 5 discards a state mutation
+    // made while the component is rendering, so the article would never be
+    // projected.
+    queueMicrotask(() => void check(api));
+  }
+
+  onDestroy(() => {
+    window.removeEventListener(SesamyJsEvent.AUTHENTICATED, onSessionChanged);
+    window.removeEventListener(SesamyJsEvent.LOGOUT, onSessionChanged);
+  });
 
   function emitUnlockEvent(api: SesamyAPI) {
     if (unlockEmitted) return;
@@ -209,6 +260,12 @@
   }
 
   async function unlockAndRenderContent(api: SesamyAPI) {
+    // A re-check after a session change can grant access a second time; the
+    // fetch-and-inject modes must not run twice and stack two copies of the
+    // article into the page.
+    if (unlockStarted) return;
+    unlockStarted = true;
+
     try {
       // Embed mode: content is already in the slot. Cloning+reinjecting via
       // innerHTML breaks ad iframes and any other stateful DOM injected by
@@ -235,24 +292,23 @@
 </script>
 
 <Base let:api applyStyles={false}>
-  {#await checkAccess(api)}
-    <!-- Show the preview until we know if the user has access -->
+  {start(api) ?? ''}
+  {#if access === 'granted' && lockMode === 'embed'}
+    <!-- Embed: project the original slot content untouched so ads, iframes,
+         and any DOM injected by publisher scripts keep working. -->
+    <slot name="content"></slot>
+  {:else if access === 'granted'}
+    <!-- Other modes: content has been rendered outside the shadow DOM. -->
+  {:else}
+    <!-- Denied, or not known yet. The preview is what an undecided gate shows;
+         only a definite denial takes the article out of the light DOM. -->
     <slot name="preview"></slot>
-  {:then entitlement}
-    {#if entitlement}
-      {#await unlockAndRenderContent(api)}
-        <slot name="preview"></slot>
-      {:then}
-        {#if lockMode === 'embed'}
-          <!-- Embed: project the original slot content untouched so ads,
-               iframes, and any DOM injected by publisher scripts keep working. -->
-          <slot name="content"></slot>
-        {/if}
-        <!-- Other modes: content has been rendered outside the shadow DOM. -->
-      {/await}
-    {:else}
-      {removeContentSlot()}
-      <slot name="preview"></slot>
-    {/if}
-  {/await}
+  {/if}
+
+  <!-- sesamy-js never became usable. Show the teaser rather than an error on
+       the publisher's page — and leave the article in the light DOM, since
+       nothing was ever established about this reader. -->
+  <svelte:fragment slot="error">
+    <slot name="preview"></slot>
+  </svelte:fragment>
 </Base>
