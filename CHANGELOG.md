@@ -1,3 +1,12 @@
+## [2.27.2](https://github.com/sesamyab/sesamy-components/compare/v2.27.1...v2.27.2) (2026-09-11)
+
+
+### Bug Fixes
+
+* **content-container:** abort an unlock whose session changed mid-fetch ([cd1ae18](https://github.com/sesamyab/sesamy-components/commit/cd1ae1834798de6e27d411af15327e5dbc5c7e61))
+* **content-container:** lock injected content too, and ignore superseded checks ([2d6eb17](https://github.com/sesamyab/sesamy-components/commit/2d6eb175492a29222d8234d85a5ffab646ceca9f))
+* **content-container:** never lock an article on an unresolved access check ([96fbd6d](https://github.com/sesamyab/sesamy-components/commit/96fbd6de9d95e0b085967c174f42951214d118f4))
+
 ## [2.27.1](https://github.com/sesamyab/sesamy-components/compare/v2.27.0...v2.27.1) (2026-09-10)
 
 
