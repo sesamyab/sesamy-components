@@ -180,6 +180,54 @@ describe('<sesamy-content-container> in embed mode', () => {
     expect(projected(host)).toEqual(['content']);
   });
 
+  it('never touches the light DOM for a reader who has access', async () => {
+    // The happy path must stay byte-for-byte what it was. Publisher content
+    // carries ads, iframes and players whose state does not survive being
+    // removed from the document, which is why embed mode projects the slot
+    // rather than re-rendering it. A gate that "restores" content it never took
+    // away would reload every one of them on an ordinary page view.
+    window.sesamy = fakeApi(() => ({ id: 'ent_1' }));
+
+    const { host, content } = mount();
+    const mutations: MutationRecord[] = [];
+    const observer = new MutationObserver((records) => mutations.push(...records));
+    observer.observe(host, { childList: true, subtree: true, attributes: true });
+
+    await flush();
+    // A second session event, which is where a re-check could churn the DOM.
+    window.dispatchEvent(new CustomEvent('sesamyJsAuthenticated', { detail: {} }));
+    await flush();
+    observer.disconnect();
+
+    expect(mutations).toEqual([]);
+    expect(content.isConnected).toBe(true);
+  });
+
+  it('hands back the same node, so listeners and player state survive a re-lock', async () => {
+    // Restoring a *clone* would silently drop every event listener and any
+    // state publisher scripts hold on those nodes. It has to be the same node.
+    let entitled = true;
+    window.sesamy = fakeApi(() => (entitled ? { id: 'ent_1' } : null));
+
+    const { host, content } = mount();
+    const clicks: string[] = [];
+    content.addEventListener('click', () => clicks.push('clicked'));
+    await flush();
+
+    entitled = false;
+    window.dispatchEvent(new CustomEvent('sesamyJsLogout', { detail: {} }));
+    await flush();
+    expect(contentSlot(host)).toBeNull();
+
+    entitled = true;
+    window.dispatchEvent(new CustomEvent('sesamyJsAuthenticated', { detail: {} }));
+    await flush();
+
+    expect(contentSlot(host)).toBe(content);
+    content.dispatchEvent(new Event('click'));
+    expect(clicks).toEqual(['clicked']);
+  });
+
   it('ignores an access answer that a newer check has superseded', async () => {
     // Sign-in and sign-out overlap, and the requests need not come back in
     // order. A grant that was already in flight when the reader signed out must
@@ -242,11 +290,13 @@ describe('<sesamy-content-container> in a fetch-and-inject lock mode', () => {
 
   beforeEach(() => {
     document.body.innerHTML = '';
+    document.head.querySelectorAll('script').forEach((s) => s.remove());
   });
 
   afterEach(() => {
     delete (window as { sesamy?: SesamyAPI }).sesamy;
     document.body.innerHTML = '';
+    document.head.querySelectorAll('script').forEach((s) => s.remove());
   });
 
   it('does not insert an article that finished fetching after the reader signed out', async () => {
@@ -326,6 +376,45 @@ describe('<sesamy-content-container> in a fetch-and-inject lock mode', () => {
     expect(injectedText(host)).toContain('The full article');
     // Discarding the fetch would have meant paying for it twice.
     expect(unlock).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not re-run scripts embedded in the fetched article', async () => {
+    // injectContent hoists <script> tags out of the fetched HTML into <head> to
+    // make them execute. Re-running the injection on a later grant would run
+    // every one of them a second time — double-counted analytics, duplicated ad
+    // slots, players initialised twice.
+    let entitled = true;
+    const api = {
+      isReady: () => true,
+      log: vi.fn(),
+      content: {
+        get: () => ({ url: 'https://example.com/article', accessLevel: 'entitlement', id: 'a' }),
+        hasAccess: vi.fn(async () => (entitled ? { id: 'ent_1' } : null)),
+        getLanguage: () => 'en',
+        unlock: vi.fn(
+          async () => '<p>The full article</p><script src="https://example.com/ads.js"></script>'
+        )
+      },
+      analytics: { track: vi.fn() }
+    } as unknown as SesamyAPI;
+    window.sesamy = api;
+
+    const adScripts = () =>
+      document.head.querySelectorAll('script[src="https://example.com/ads.js"]').length;
+
+    mount({ 'lock-mode': 'proxy' });
+    await flush();
+    expect(adScripts()).toBe(1);
+
+    entitled = false;
+    window.dispatchEvent(new CustomEvent('sesamyJsLogout', { detail: {} }));
+    await flush();
+
+    entitled = true;
+    window.dispatchEvent(new CustomEvent('sesamyJsAuthenticated', { detail: {} }));
+    await flush();
+
+    expect(adScripts()).toBe(1);
   });
 
   it('does not stack a second copy when access is granted again', async () => {
