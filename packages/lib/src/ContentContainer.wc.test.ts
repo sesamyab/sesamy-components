@@ -230,3 +230,132 @@ describe('<sesamy-content-container> in embed mode', () => {
     expect(api.content.hasAccess).toHaveBeenCalledTimes(1);
   });
 });
+
+describe('<sesamy-content-container> in a fetch-and-inject lock mode', () => {
+  // proxy/signedUrl/encode render the article *beside* the host, after a
+  // network round trip. The reader can sign out while that fetch is in flight.
+  const injectedText = (host: HTMLElement) =>
+    Array.from(host.parentElement?.children ?? [])
+      .filter((el) => el !== host && el.tagName === 'DIV')
+      .map((el) => el.textContent)
+      .join('');
+
+  beforeEach(() => {
+    document.body.innerHTML = '';
+  });
+
+  afterEach(() => {
+    delete (window as { sesamy?: SesamyAPI }).sesamy;
+    document.body.innerHTML = '';
+  });
+
+  it('does not insert an article that finished fetching after the reader signed out', async () => {
+    let entitled = true;
+    let releaseFetch!: (html: string) => void;
+    const unlock = vi.fn(
+      () =>
+        new Promise<string>((resolve) => {
+          releaseFetch = resolve;
+        })
+    );
+    const api = {
+      isReady: () => true,
+      log: vi.fn(),
+      content: {
+        get: () => ({ url: 'https://example.com/article', accessLevel: 'entitlement', id: 'a' }),
+        hasAccess: vi.fn(async () => (entitled ? { id: 'ent_1' } : null)),
+        getLanguage: () => 'en',
+        unlock
+      },
+      analytics: { track: vi.fn() }
+    } as unknown as SesamyAPI;
+    window.sesamy = api;
+
+    const { host } = mount({ 'lock-mode': 'proxy' });
+    await flush();
+    expect(unlock).toHaveBeenCalledTimes(1);
+
+    // The fetch is still in flight when the reader signs out.
+    entitled = false;
+    window.dispatchEvent(new CustomEvent('sesamyJsLogout', { detail: {} }));
+    await flush();
+
+    // Only now does the article come back from the server.
+    releaseFetch('<p>The full article</p>');
+    await flush();
+
+    expect(injectedText(host)).toBe('');
+  });
+
+  it('renders the article it already fetched when the reader signs back in', async () => {
+    let entitled = true;
+    let releaseFetch!: (html: string) => void;
+    const unlock = vi.fn(
+      () =>
+        new Promise<string>((resolve) => {
+          releaseFetch = resolve;
+        })
+    );
+    const api = {
+      isReady: () => true,
+      log: vi.fn(),
+      content: {
+        get: () => ({ url: 'https://example.com/article', accessLevel: 'entitlement', id: 'a' }),
+        hasAccess: vi.fn(async () => (entitled ? { id: 'ent_1' } : null)),
+        getLanguage: () => 'en',
+        unlock
+      },
+      analytics: { track: vi.fn() }
+    } as unknown as SesamyAPI;
+    window.sesamy = api;
+
+    const { host } = mount({ 'lock-mode': 'proxy' });
+    await flush();
+
+    entitled = false;
+    window.dispatchEvent(new CustomEvent('sesamyJsLogout', { detail: {} }));
+    await flush();
+    releaseFetch('<p>The full article</p>');
+    await flush();
+    expect(injectedText(host)).toBe('');
+
+    entitled = true;
+    window.dispatchEvent(new CustomEvent('sesamyJsAuthenticated', { detail: {} }));
+    await flush();
+
+    expect(injectedText(host)).toContain('The full article');
+    // Discarding the fetch would have meant paying for it twice.
+    expect(unlock).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not stack a second copy when access is granted again', async () => {
+    let entitled = true;
+    const api = {
+      isReady: () => true,
+      log: vi.fn(),
+      content: {
+        get: () => ({ url: 'https://example.com/article', accessLevel: 'entitlement', id: 'a' }),
+        hasAccess: vi.fn(async () => (entitled ? { id: 'ent_1' } : null)),
+        getLanguage: () => 'en',
+        unlock: vi.fn(async () => '<p>The full article</p>')
+      },
+      analytics: { track: vi.fn() }
+    } as unknown as SesamyAPI;
+    window.sesamy = api;
+
+    const { host } = mount({ 'lock-mode': 'proxy' });
+    await flush();
+    expect(injectedText(host)).toContain('The full article');
+
+    entitled = false;
+    window.dispatchEvent(new CustomEvent('sesamyJsLogout', { detail: {} }));
+    await flush();
+    expect(injectedText(host)).toBe('');
+
+    entitled = true;
+    window.dispatchEvent(new CustomEvent('sesamyJsAuthenticated', { detail: {} }));
+    await flush();
+
+    expect(injectedText(host)).toBe('The full article');
+  });
+});

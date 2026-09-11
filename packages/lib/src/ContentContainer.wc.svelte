@@ -37,7 +37,11 @@
   let contentSlot: ContentSlot | null = null;
   let apiRef: SesamyAPI | null = null;
   let started = false;
-  let unlockStarted = false;
+  // The fetched article, kept so a re-grant renders without a second round trip.
+  let fetchedHtml: string | null = null;
+  let fetchInFlight = false;
+  // The node rendered beside the host, once it exists.
+  let injectedNode: Element | null = null;
   // Only the newest access check may change what the reader sees.
   let checkSeq = 0;
 
@@ -126,7 +130,7 @@
     }
 
     if (access === 'granted' && previous !== 'granted') {
-      await unlockAndRenderContent(api);
+      await unlockAndRenderContent(api, seq);
     }
   }
 
@@ -275,13 +279,19 @@
     }
   }
 
-  async function unlockAndRenderContent(api: SesamyAPI) {
-    // A re-check after a session change can grant access a second time; the
-    // fetch-and-inject modes must not run twice and stack two copies of the
-    // article into the page.
-    if (unlockStarted) return;
-    unlockStarted = true;
+  /**
+   * Whether this unlock still speaks for the current session.
+   *
+   * Fetching the article takes a network round trip, and the reader can sign
+   * out while it is in flight. Inserting the result then would hand the article
+   * to someone who has just been denied it — the access check's own sequence
+   * guard cannot catch that, because it returned long before.
+   */
+  function stillGranted(seq: number): boolean {
+    return seq === checkSeq && access === 'granted';
+  }
 
+  async function unlockAndRenderContent(api: SesamyAPI, seq: number) {
     try {
       // Embed mode: content is already in the slot. Cloning+reinjecting via
       // innerHTML breaks ad iframes and any other stateful DOM injected by
@@ -292,16 +302,37 @@
         return;
       }
 
-      extractAndStoreContent();
+      // Rendered once already. `ContentSlot` owns it from then on: a denial
+      // detaches it and a grant puts it back, so there is nothing to redo here.
+      if (injectedNode) return;
+      if (!stillGranted(seq)) return;
+
+      // Fetch at most once. A reader who signs out and back in gets the article
+      // without a second round trip, and `event` mode does not announce twice.
+      if (fetchedHtml === null) {
+        if (fetchInFlight) return;
+        fetchInFlight = true;
+        extractAndStoreContent();
+        if (!$host()?.isConnected) return;
+        try {
+          fetchedHtml = await fetchContent(api);
+        } finally {
+          fetchInFlight = false;
+        }
+      }
+
       if (!$host()?.isConnected) return;
-      const contentHtml = await fetchContent(api);
-      if (!$host()?.isConnected) return;
-      const injected = await injectContent(contentHtml);
+      // Re-checked after the await, not only before it: this is the window a
+      // logout lands in. The fetched HTML is kept, so a later grant renders it
+      // without asking again.
+      if (!stillGranted(seq)) return;
+
+      injectedNode = await injectContent(fetchedHtml);
 
       // The article now lives beside the host, outside anything `ContentSlot`
       // knows about. Hand it over so a later denial takes it off the page too —
       // and so a later grant puts it back without fetching it again.
-      if (injected) contentSlot?.adopt(injected);
+      if (injectedNode) contentSlot?.adopt(injectedNode);
 
       if (lockMode !== 'event') {
         emitUnlockEvent(api);
