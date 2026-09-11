@@ -27,17 +27,55 @@ export async function resolveAccess(api: SesamyAPI, host: Element): Promise<Acce
   }
 }
 
+/** A node that has been taken out of the page, and where to put it back. */
+interface Placement {
+  node: Element;
+  parent: Node;
+  anchor: Node | null;
+}
+
+/** Remove a node, remembering where it sat. */
+function take(node: Element): Placement | null {
+  const parent = node.parentNode;
+  if (!parent) return null;
+
+  const placement = { node, parent, anchor: node.nextSibling };
+  node.remove();
+  return placement;
+}
+
+/** Put it back exactly where it was. */
+function put(placement: Placement): void {
+  const { node, parent, anchor } = placement;
+  if (node.isConnected) return;
+
+  // The anchor can itself have been removed since (publisher scripts mutate
+  // these pages); appending is the safe fallback.
+  if (anchor && anchor.parentNode === parent) {
+    parent.insertBefore(node, anchor);
+  } else {
+    parent.appendChild(node);
+  }
+}
+
 /**
- * The article's light-DOM node, and where it belongs.
+ * Every node that carries the article, and where each belongs.
  *
- * Locking removes `[slot="content"]` from the page rather than hiding it with
- * CSS, so the text is not sitting in the DOM for a reader to dig out. Keeping
- * the detached node (and its position) is what makes that reversible: when the
- * reader signs in on the page, the article can come back without a reload.
+ * Locking removes them from the page rather than hiding them with CSS, so the
+ * text is not sitting in the DOM for a reader to dig out. Keeping the detached
+ * nodes is what makes that reversible: when the reader signs in on the page,
+ * the article comes back without a reload — and without being fetched again.
+ *
+ * There are two of them because the lock modes put the article in two places.
+ * `embed` and `encode` read the `[slot="content"]` child inside the host; the
+ * fetch-and-inject modes (`encode`, `proxy`, `signedUrl`) render a node *beside*
+ * the host. Removing only the first would leave the article on screen after a
+ * logout.
  */
 export class ContentSlot {
-  private detached: Element | null = null;
-  private anchor: Node | null = null;
+  private detachedSlot: Placement | null = null;
+  private injected: Element | null = null;
+  private detachedInjected: Placement | null = null;
 
   constructor(private readonly host: Element) {}
 
@@ -49,30 +87,49 @@ export class ContentSlot {
     return !!this.find();
   }
 
-  /** Take the article out of the page, remembering where it sat. */
+  /**
+   * Adopt a node this component rendered beside the host, so it is locked and
+   * unlocked along with the slot child.
+   */
+  adopt(node: Element): void {
+    this.injected = node;
+    this.detachedInjected = null;
+  }
+
+  /** Take the article out of the page, wherever it is. */
   detach(): void {
-    const content = this.find();
-    if (!content) return;
+    const slotChild = this.find();
+    if (slotChild) this.detachedSlot = take(slotChild) ?? this.detachedSlot;
 
-    this.detached = content;
-    this.anchor = content.nextSibling;
-    content.remove();
-  }
-
-  /** Put it back exactly where it was. */
-  restore(): void {
-    if (!this.detached || this.detached.isConnected) return;
-
-    // The anchor can itself have been removed since (publisher scripts mutate
-    // these pages); appending is the safe fallback.
-    if (this.anchor && this.anchor.parentNode === this.host) {
-      this.host.insertBefore(this.detached, this.anchor);
-    } else {
-      this.host.append(this.detached);
+    if (this.injected?.isConnected) {
+      this.detachedInjected = take(this.injected) ?? this.detachedInjected;
     }
-    this.detached = null;
-    this.anchor = null;
   }
+
+  /** Put it back. */
+  restore(): void {
+    if (this.detachedSlot) {
+      put(this.detachedSlot);
+      this.detachedSlot = null;
+    }
+    if (this.detachedInjected) {
+      put(this.detachedInjected);
+      this.detachedInjected = null;
+    }
+  }
+}
+
+/**
+ * Bring the page into line with an answer that has already been resolved.
+ *
+ * Split from `resolveAccess` so a caller can drop a result that a newer check
+ * has superseded *before* it touches the DOM: sign-in and sign-out can overlap,
+ * and their requests do not necessarily come back in the order they were sent.
+ */
+export function applyAccessState(state: AccessState, slot: ContentSlot): void {
+  if (state === 'granted') slot.restore();
+  if (state === 'denied') slot.detach();
+  // `unknown`: leave the page exactly as it is.
 }
 
 /**
@@ -88,10 +145,6 @@ export async function applyAccess(
   slot: ContentSlot
 ): Promise<AccessState> {
   const state = await resolveAccess(api, host);
-
-  if (state === 'granted') slot.restore();
-  if (state === 'denied') slot.detach();
-  // `unknown`: leave the page exactly as it is.
-
+  applyAccessState(state, slot);
   return state;
 }

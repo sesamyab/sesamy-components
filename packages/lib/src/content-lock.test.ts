@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import type { SesamyAPI } from '@sesamy/sesamy-js';
-import { ContentSlot, applyAccess, resolveAccess } from './content-lock';
+import { ContentSlot, applyAccess, applyAccessState, resolveAccess } from './content-lock';
 
 /**
  * The rule these tests exist to hold: a content gate may only remove the
@@ -11,6 +11,8 @@ import { ContentSlot, applyAccess, resolveAccess } from './content-lock';
  */
 
 function buildHost(): { host: HTMLElement; content: HTMLElement } {
+  const wrapper = document.createElement('div');
+  document.body.append(wrapper);
   const host = document.createElement('sesamy-content-container');
   const preview = document.createElement('div');
   preview.setAttribute('slot', 'preview');
@@ -24,7 +26,7 @@ function buildHost(): { host: HTMLElement; content: HTMLElement } {
   trailing.className = 'after';
 
   host.append(preview, content, trailing);
-  document.body.append(host);
+  wrapper.append(host);
   return { host, content };
 }
 
@@ -126,6 +128,58 @@ describe('ContentSlot', () => {
       slot.detach();
       slot.restore();
     }).not.toThrow();
+  });
+});
+
+describe('ContentSlot with an injected node', () => {
+  // The fetch-and-inject lock modes (encode, proxy, signedUrl) render the
+  // article *beside* the host. Removing the slot child alone would leave it on
+  // screen after a logout.
+  function inject(host: Element): Element {
+    const injected = document.createElement('div');
+    injected.textContent = 'The fetched article';
+    host.parentElement?.insertBefore(injected, host);
+    return injected;
+  }
+
+  it('takes the injected node off the page on a denial', () => {
+    const { host } = buildHost();
+    const slot = new ContentSlot(host);
+    const injected = inject(host);
+    slot.adopt(injected);
+
+    slot.detach();
+
+    expect(injected.isConnected).toBe(false);
+  });
+
+  it('puts it back, in place, on a later grant', () => {
+    const { host } = buildHost();
+    const slot = new ContentSlot(host);
+    const injected = inject(host);
+    slot.adopt(injected);
+
+    slot.detach();
+    slot.restore();
+
+    expect(injected.isConnected).toBe(true);
+    // Same node, so the article is not fetched again — and it sits where it did.
+    expect(injected.nextSibling).toBe(host);
+  });
+
+  it('locks the slot child and the injected node together', () => {
+    const { host, content } = buildHost();
+    const slot = new ContentSlot(host);
+    const injected = inject(host);
+    slot.adopt(injected);
+
+    slot.detach();
+    expect(host.querySelector('[slot="content"]')).toBeNull();
+    expect(injected.isConnected).toBe(false);
+
+    slot.restore();
+    expect(host.querySelector('[slot="content"]')).toBe(content);
+    expect(injected.isConnected).toBe(true);
   });
 });
 

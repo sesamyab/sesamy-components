@@ -180,6 +180,46 @@ describe('<sesamy-content-container> in embed mode', () => {
     expect(projected(host)).toEqual(['content']);
   });
 
+  it('ignores an access answer that a newer check has superseded', async () => {
+    // Sign-in and sign-out overlap, and the requests need not come back in
+    // order. A grant that was already in flight when the reader signed out must
+    // not hand the article back to them.
+    const pending: Array<(value: unknown) => void> = [];
+    const api = {
+      isReady: () => true,
+      log: vi.fn(),
+      content: {
+        get: () => ({ url: 'https://example.com/article', accessLevel: 'entitlement', id: 'a' }),
+        hasAccess: vi.fn(() => new Promise((resolve) => pending.push(resolve))),
+        getLanguage: () => 'en',
+        unlock: vi.fn()
+      },
+      analytics: { track: vi.fn() }
+    } as unknown as SesamyAPI;
+    window.sesamy = api;
+
+    const { host } = mount();
+    await flush();
+
+    // The first check (from mount) is in flight. A logout starts a second one.
+    window.dispatchEvent(new CustomEvent('sesamyJsLogout', { detail: {} }));
+    await flush();
+    expect(pending).toHaveLength(2);
+
+    // The newer check answers first: denied.
+    pending[1](null);
+    await flush();
+    expect(contentSlot(host)).toBeNull();
+
+    // The older, superseded check now comes back with a grant. It is stale and
+    // must change nothing.
+    pending[0]({ id: 'ent_1' });
+    await flush();
+
+    expect(contentSlot(host)).toBeNull();
+    expect(projected(host)).toEqual(['preview']);
+  });
+
   it('checks access once per session change, not once per render', async () => {
     const api = fakeApi(() => ({ id: 'ent_1' }));
     window.sesamy = api;

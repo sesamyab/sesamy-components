@@ -14,7 +14,7 @@
   import type { ContentContainerProps } from './types';
   import { dispatchSesamyEvent, SesamyJsEvent } from './events';
   import { resolveAccessLevel, resolveArticleState, resolveItemSrc, track } from './tracking';
-  import { ContentSlot, applyAccess, type AccessState } from './content-lock';
+  import { ContentSlot, applyAccessState, resolveAccess, type AccessState } from './content-lock';
 
   let {
     'item-src': itemSrc = '',
@@ -38,6 +38,8 @@
   let apiRef: SesamyAPI | null = null;
   let started = false;
   let unlockStarted = false;
+  // Only the newest access check may change what the reader sees.
+  let checkSeq = 0;
 
   type Content = NonNullable<ReturnType<SesamyAPI['content']['get']>>;
 
@@ -90,6 +92,12 @@
     const host = $host();
     if (!host || !contentSlot) return;
 
+    // Sign-in and sign-out can overlap, and their requests do not necessarily
+    // come back in the order they were sent. Without this, a slow grant landing
+    // after a logout would hand the article back to a reader who just signed
+    // out — so only the newest check is allowed to change anything.
+    const seq = ++checkSeq;
+
     const content = api.content.get(host);
     const previous = access;
 
@@ -97,13 +105,19 @@
     // wins over what sesamy-js resolved from the surrounding <sesamy-article>.
     const accessLevel = resolveAccessLevel(accessLevelProp, content?.accessLevel);
 
+    let resolved: AccessState;
     if (accessLevel === 'public') {
       api.log(`Content is public`);
-      access = 'granted';
+      resolved = 'granted';
     } else {
       api.log(`Checking access`);
-      access = await applyAccess(api, host, contentSlot);
+      resolved = await resolveAccess(api, host);
     }
+
+    if (seq !== checkSeq) return;
+
+    applyAccessState(resolved, contentSlot);
+    access = resolved;
 
     // Report the article view once we actually know something. `unknown` says
     // nothing about the reader and must not be counted as a locked view.
@@ -173,11 +187,11 @@
     });
   }
 
-  async function injectContent(contentHtml: string) {
-    if (!contentHtml) return;
+  async function injectContent(contentHtml: string): Promise<Element | null> {
+    if (!contentHtml) return null;
 
     const host = $host();
-    if (!host) return;
+    if (!host) return null;
 
     const lockedContentNode = document.createElement('div');
     lockedContentNode.setAttribute('position', 'relative');
@@ -213,7 +227,7 @@
       }
     });
 
-    // Insert in light DOM
+    // Insert in light DOM, beside the host rather than inside it.
     host.parentElement?.insertBefore(lockedContentNode, host);
 
     // Execute inline scripts
@@ -230,6 +244,8 @@
         console.error('Failed to execute inline script:', err, script);
       }
     });
+
+    return lockedContentNode;
   }
 
   async function fetchContent(api: SesamyAPI): Promise<string> {
@@ -280,7 +296,12 @@
       if (!$host()?.isConnected) return;
       const contentHtml = await fetchContent(api);
       if (!$host()?.isConnected) return;
-      await injectContent(contentHtml);
+      const injected = await injectContent(contentHtml);
+
+      // The article now lives beside the host, outside anything `ContentSlot`
+      // knows about. Hand it over so a later denial takes it off the page too —
+      // and so a later grant puts it back without fetching it again.
+      if (injected) contentSlot?.adopt(injected);
 
       if (lockMode !== 'event') {
         emitUnlockEvent(api);
