@@ -14,7 +14,14 @@
   import type { ContentContainerProps } from './types';
   import { dispatchSesamyEvent, SesamyJsEvent } from './events';
   import { resolveAccessLevel, resolveArticleState, resolveItemSrc, track } from './tracking';
-  import { ContentSlot, applyAccessState, resolveAccess, type AccessState } from './content-lock';
+  import {
+    ContentSlot,
+    accessRetryDelay,
+    applyAccessState,
+    resolveAccessWithin,
+    type AccessResolution,
+    type AccessState
+  } from './content-lock';
 
   let {
     'item-src': itemSrc = '',
@@ -42,10 +49,24 @@
   let fetchInFlight = false;
   // The node rendered beside the host, once it exists.
   let injectedNode: Element | null = null;
-  // Only the newest access check may change what the reader sees.
-  let checkSeq = 0;
+  // Sign-in and sign-out each start a new session epoch. An answer only counts
+  // for the epoch it was asked in.
+  let sessionEpoch = 0;
+  // The newest epoch with a definite answer (granted or denied).
+  let settledEpoch = -1;
+  // Checks still waiting on sesamy-js, before their timeout.
+  let pendingChecks = 0;
+  // Checks without an answer in the current epoch; drives the backoff.
+  let epochUnresolved = 0;
+  let retryTimer: ReturnType<typeof setTimeout> | null = null;
+  // For telemetry, over the life of the element rather than one epoch.
+  let unresolvedChecks = 0;
+  let unresolvedSince = 0;
+  let unresolvedReported = false;
+  let recoveryReported = false;
 
-  type Content = NonNullable<ReturnType<SesamyAPI['content']['get']>>;
+  type MaybeContent = ReturnType<SesamyAPI['content']['get']>;
+  type Content = NonNullable<MaybeContent>;
 
   function extractAndStoreContent() {
     const host = $host();
@@ -92,50 +113,163 @@
    * reloaded. So: re-check on every auth transition, and only ever remove the
    * article on a definite `denied`.
    */
-  async function check(api: SesamyAPI) {
+  async function check(api: SesamyAPI, sessionChanged = false) {
     const host = $host();
     if (!host || !contentSlot) return;
 
     // Sign-in and sign-out can overlap, and their requests do not necessarily
     // come back in the order they were sent. Without this, a slow grant landing
     // after a logout would hand the article back to a reader who just signed
-    // out — so only the newest check is allowed to change anything.
-    const seq = ++checkSeq;
+    // out — so an answer only counts for the session it was asked in.
+    if (sessionChanged) {
+      sessionEpoch++;
+      epochUnresolved = 0;
+    }
+    const epoch = sessionEpoch;
+    clearRetry();
 
     const content = api.content.get(host);
-    const previous = access;
 
     // The container's own access-level attribute is the documented contract and
     // wins over what sesamy-js resolved from the surrounding <sesamy-article>.
     const accessLevel = resolveAccessLevel(accessLevelProp, content?.accessLevel);
 
-    let resolved: AccessState;
+    let resolution: AccessResolution;
     if (accessLevel === 'public') {
       api.log(`Content is public`);
-      resolved = 'granted';
+      resolution = { state: 'granted' };
     } else {
       api.log(`Checking access`);
-      resolved = await resolveAccess(api, host);
+      pendingChecks++;
+      try {
+        resolution = await resolveAccessWithin(api, host);
+      } finally {
+        pendingChecks--;
+      }
     }
 
-    if (seq !== checkSeq) return;
+    // A check that timed out can still answer. Use it, unless this session has
+    // been answered some other way by then.
+    void resolution.late?.then((late) => {
+      if (late.state !== 'unknown' && settledEpoch !== epoch) {
+        void settle(api, epoch, late, content, accessLevel);
+      }
+    });
 
-    applyAccessState(resolved, contentSlot);
-    access = resolved;
+    await settle(api, epoch, resolution, content, accessLevel);
+  }
+
+  /**
+   * Bring the page into line with one check's outcome, if it still speaks for
+   * the current session.
+   *
+   * No answer is not a final answer either. A check can throw (no token, the
+   * network dropped) or never come back (a request stalled across a network
+   * change), and either leaves the container on its preview — which on a page
+   * with an empty preview slot is a blank gap where a subscriber's article
+   * should be. Waiting for the next auth event is not enough, since nothing
+   * promises there will be one, so the container asks again itself.
+   */
+  async function settle(
+    api: SesamyAPI,
+    epoch: number,
+    resolution: AccessResolution,
+    content: MaybeContent,
+    accessLevel: string | undefined
+  ) {
+    if (epoch !== sessionEpoch || !contentSlot) return;
+    // This session was answered already, by a retry or by a slow check that
+    // came back late. The first definite answer stands. A check that was still
+    // in flight when it arrived does not overturn it, and not knowing does not
+    // undo it either.
+    if (settledEpoch === epoch) return;
+
+    if (resolution.state === 'unknown') {
+      epochUnresolved++;
+      unresolvedChecks++;
+      unresolvedSince ||= Date.now();
+      reportUnresolved(api, content, resolution.reason);
+      scheduleRetry(api, resolution.reason);
+      // `access` stays as it is. Not knowing never takes back what the reader
+      // is already being shown, and never grants what they were refused.
+      return;
+    }
+
+    settledEpoch = epoch;
+    clearRetry();
+
+    applyAccessState(resolution.state, contentSlot);
+    access = resolution.state;
 
     // Report the article view once we actually know something. `unknown` says
     // nothing about the reader and must not be counted as a locked view.
-    if (access !== 'unknown' && content) {
+    if (content) {
       trackViewArticle(api, content, accessLevel, access === 'granted');
     }
+    reportRecovered(api, content, resolution.state);
 
-    if (access === 'granted' && previous !== 'granted') {
-      await unlockAndRenderContent(api, seq);
+    // On every grant, not only a change to one: the previous session may have
+    // been granted too, but have had its render cut short by this session
+    // starting. Rendering is idempotent, so a grant with nothing left to do
+    // costs nothing.
+    if (access === 'granted') {
+      await unlockAndRenderContent(api, epoch);
     }
   }
 
+  function clearRetry() {
+    if (retryTimer !== null) {
+      clearTimeout(retryTimer);
+      retryTimer = null;
+    }
+  }
+
+  function scheduleRetry(api: SesamyAPI, reason: string | undefined) {
+    clearRetry();
+    const delay = accessRetryDelay(epochUnresolved - 1);
+    api.log(`Access unresolved (${reason ?? 'unknown'}); checking again in ${delay}ms`);
+    retryTimer = setTimeout(() => {
+      retryTimer = null;
+      if ($host()?.isConnected) void check(api);
+    }, delay);
+  }
+
+  /**
+   * The browser is back online, or the reader is back on the tab. A check that
+   * failed a moment ago is likely to work now, so skip the rest of the backoff.
+   */
+  function onConditionsChanged() {
+    if (!apiRef || settledEpoch === sessionEpoch || epochUnresolved === 0) return;
+    if (pendingChecks > 0 || document.visibilityState === 'hidden') return;
+    void check(apiRef);
+  }
+
+  function reportUnresolved(api: SesamyAPI, content: MaybeContent, reason: string | undefined) {
+    if (unresolvedReported) return;
+    unresolvedReported = true;
+
+    track(api, 'content_access_unresolved', {
+      itemSrc: resolveItemSrc(itemSrc, content?.url),
+      publisherContentId: publisherContentIdProp || content?.id,
+      reason: reason ?? 'unknown'
+    });
+  }
+
+  function reportRecovered(api: SesamyAPI, content: MaybeContent, state: 'granted' | 'denied') {
+    if (!unresolvedReported || recoveryReported) return;
+    recoveryReported = true;
+
+    track(api, 'content_access_recovered', {
+      itemSrc: resolveItemSrc(itemSrc, content?.url),
+      publisherContentId: publisherContentIdProp || content?.id,
+      state,
+      attempts: unresolvedChecks,
+      elapsedMs: Date.now() - unresolvedSince
+    });
+  }
+
   function onSessionChanged() {
-    if (apiRef) void check(apiRef);
+    if (apiRef) void check(apiRef, true);
   }
 
   /** Called from the markup once Base has resolved a usable api. */
@@ -147,6 +281,8 @@
 
     window.addEventListener(SesamyJsEvent.AUTHENTICATED, onSessionChanged);
     window.addEventListener(SesamyJsEvent.LOGOUT, onSessionChanged);
+    window.addEventListener('online', onConditionsChanged);
+    document.addEventListener('visibilitychange', onConditionsChanged);
 
     // Off the render pass: `check()` assigns `access`, and for public content it
     // gets there without awaiting anything. Svelte 5 discards a state mutation
@@ -158,6 +294,15 @@
   onDestroy(() => {
     window.removeEventListener(SesamyJsEvent.AUTHENTICATED, onSessionChanged);
     window.removeEventListener(SesamyJsEvent.LOGOUT, onSessionChanged);
+    window.removeEventListener('online', onConditionsChanged);
+    document.removeEventListener('visibilitychange', onConditionsChanged);
+    clearRetry();
+    // Checks still queued or in flight must not act for an element that is
+    // gone: no unlock events, no tracking. A new epoch outdates them, and
+    // without a slot or an api there is nothing left for them to act on.
+    sessionEpoch++;
+    contentSlot = null;
+    apiRef = null;
   });
 
   function emitUnlockEvent(api: SesamyAPI) {
@@ -284,14 +429,17 @@
    *
    * Fetching the article takes a network round trip, and the reader can sign
    * out while it is in flight. Inserting the result then would hand the article
-   * to someone who has just been denied it — the access check's own sequence
+   * to someone who has just been denied it — the access check's own session
    * guard cannot catch that, because it returned long before.
    */
-  function stillGranted(seq: number): boolean {
-    return seq === checkSeq && access === 'granted';
+  function stillGranted(epoch: number): boolean {
+    // `access` alone is not enough. It keeps the previous session's grant
+    // while a new session's check is still out, so the epoch must have been
+    // answered too.
+    return epoch === sessionEpoch && settledEpoch === epoch && access === 'granted';
   }
 
-  async function unlockAndRenderContent(api: SesamyAPI, seq: number) {
+  async function unlockAndRenderContent(api: SesamyAPI, epoch: number) {
     try {
       // Embed mode: content is already in the slot. Cloning+reinjecting via
       // innerHTML breaks ad iframes and any other stateful DOM injected by
@@ -305,7 +453,7 @@
       // Rendered once already. `ContentSlot` owns it from then on: a denial
       // detaches it and a grant puts it back, so there is nothing to redo here.
       if (injectedNode) return;
-      if (!stillGranted(seq)) return;
+      if (!stillGranted(epoch)) return;
 
       // Fetch at most once. A reader who signs out and back in gets the article
       // without a second round trip, and `event` mode does not announce twice.
@@ -325,7 +473,11 @@
       // Re-checked after the await, not only before it: this is the window a
       // logout lands in. The fetched HTML is kept, so a later grant renders it
       // without asking again.
-      if (!stillGranted(seq)) return;
+      //
+      // Checked against the current session rather than the one the fetch
+      // began in. A session that started and was granted during the fetch found
+      // it in flight and left the rendering to it.
+      if (!stillGranted(sessionEpoch)) return;
 
       injectedNode = await injectContent(fetchedHtml);
 

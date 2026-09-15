@@ -15,7 +15,9 @@ import type { SesamyAPI } from '@sesamy/sesamy-js';
 export const TrackEventName = {
   VIEW_ARTICLE: 'viewArticle',
   ADD_TO_CART: 'addToCart',
-  CONTENT_UNLOCKED: 'content_unlocked'
+  CONTENT_UNLOCKED: 'content_unlocked',
+  CONTENT_ACCESS_UNRESOLVED: 'content_access_unresolved',
+  CONTENT_ACCESS_RECOVERED: 'content_access_recovered'
 } as const;
 
 export type TrackEventName = (typeof TrackEventName)[keyof typeof TrackEventName];
@@ -44,10 +46,31 @@ export interface ContentUnlockedProperties {
   contentName?: string;
 }
 
+/** The first time a container's access check came back without an answer. */
+export interface ContentAccessUnresolvedProperties {
+  itemSrc: string;
+  publisherContentId?: string;
+  /** `timeout`, or the error the check failed with. */
+  reason: string;
+}
+
+/** A definite answer, after at least one check that had none. */
+export interface ContentAccessRecoveredProperties {
+  itemSrc: string;
+  publisherContentId?: string;
+  state: 'granted' | 'denied';
+  /** How many checks came back without an answer first. */
+  attempts: number;
+  /** From the first unanswered check to the answer. */
+  elapsedMs: number;
+}
+
 export interface TrackEventProperties {
   viewArticle: ViewArticleProperties;
   addToCart: AddToCartProperties;
   content_unlocked: ContentUnlockedProperties;
+  content_access_unresolved: ContentAccessUnresolvedProperties;
+  content_access_recovered: ContentAccessRecoveredProperties;
 }
 
 /**

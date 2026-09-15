@@ -1,6 +1,14 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import type { SesamyAPI } from '@sesamy/sesamy-js';
-import { ContentSlot, applyAccess, applyAccessState, resolveAccess } from './content-lock';
+import {
+  ACCESS_RETRY_DELAYS_MS,
+  ContentSlot,
+  accessRetryDelay,
+  applyAccess,
+  applyAccessState,
+  resolveAccess,
+  resolveAccessWithin
+} from './content-lock';
 
 /**
  * The rule these tests exist to hold: a content gate may only remove the
@@ -226,5 +234,73 @@ describe('applyAccess', () => {
     await applyAccess(apiRejecting(new Error('offline')), host, slot);
 
     expect(host.querySelector('[slot="content"]')).toBeNull();
+  });
+});
+
+describe('resolveAccessWithin', () => {
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('passes a prompt answer straight through, leaving no timer behind', async () => {
+    await expect(
+      resolveAccessWithin(apiReturning({ id: 'ent_1' }), document.createElement('div'))
+    ).resolves.toEqual({ state: 'granted' });
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it('says why a failed check has no answer', async () => {
+    const error = Object.assign(new Error('session unavailable'), {
+      name: 'SessionUnavailableError'
+    });
+    await expect(
+      resolveAccessWithin(apiRejecting(error), document.createElement('div'))
+    ).resolves.toEqual({ state: 'unknown', reason: 'SessionUnavailableError: session unavailable' });
+  });
+
+  it('stops waiting at the deadline, and still hands over the late answer', async () => {
+    // The stalled request: nothing throws, nothing comes back. Awaiting it
+    // directly is what left the container undecided for the whole page view.
+    let release!: (value: unknown) => void;
+    const api = {
+      content: {
+        hasAccess: vi.fn(
+          () =>
+            new Promise((resolve) => {
+              release = resolve;
+            })
+        )
+      },
+      log: vi.fn()
+    } as unknown as SesamyAPI;
+
+    const pending = resolveAccessWithin(api, document.createElement('div'), 5_000);
+    await vi.advanceTimersByTimeAsync(5_000);
+    const resolution = await pending;
+
+    // Not a denial: running out of patience says nothing about the reader.
+    expect(resolution.state).toBe('unknown');
+    expect(resolution.reason).toBe('timeout');
+
+    release({ id: 'ent_1' });
+    await expect(resolution.late).resolves.toEqual({ state: 'granted' });
+  });
+});
+
+describe('accessRetryDelay', () => {
+  it('asks again quickly the first time', () => {
+    expect(accessRetryDelay(0)).toBeLessThanOrEqual(2_000);
+  });
+
+  it('backs off, then keeps repeating the longest pause rather than giving up', () => {
+    const delays = [0, 1, 2, 3, 4, 50].map(accessRetryDelay);
+    for (let i = 1; i < delays.length; i++) {
+      expect(delays[i]).toBeGreaterThanOrEqual(delays[i - 1]);
+    }
+    expect(accessRetryDelay(50)).toBe(ACCESS_RETRY_DELAYS_MS[ACCESS_RETRY_DELAYS_MS.length - 1]);
   });
 });
