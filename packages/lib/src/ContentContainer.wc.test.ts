@@ -269,6 +269,41 @@ describe('<sesamy-content-container> in embed mode', () => {
     expect(projected(host)).toEqual(['preview']);
   });
 
+  it('does nothing with an answer that arrives after it was taken off the page', async () => {
+    let release!: (value: unknown) => void;
+    const api = {
+      isReady: () => true,
+      log: vi.fn(),
+      content: {
+        get: () => ({ url: 'https://example.com/article', accessLevel: 'entitlement', id: 'a' }),
+        hasAccess: vi.fn(
+          () =>
+            new Promise((resolve) => {
+              release = resolve;
+            })
+        ),
+        getLanguage: () => 'en',
+        unlock: vi.fn()
+      },
+      analytics: { track: vi.fn() }
+    } as unknown as SesamyAPI;
+    window.sesamy = api;
+    const unlocked = vi.fn();
+    window.addEventListener('sesamyUnlocked', unlocked);
+
+    const { host } = mount();
+    await flush();
+    host.remove();
+    await flush();
+
+    release({ id: 'ent_1' });
+    await flush();
+    window.removeEventListener('sesamyUnlocked', unlocked);
+
+    expect(unlocked).not.toHaveBeenCalled();
+    expect(api.analytics.track).not.toHaveBeenCalled();
+  });
+
   it('checks access once per session change, not once per render', async () => {
     const api = fakeApi(() => ({ id: 'ent_1' }));
     window.sesamy = api;
@@ -377,6 +412,83 @@ describe('<sesamy-content-container> in a fetch-and-inject lock mode', () => {
     expect(injectedText(host)).toContain('The full article');
     // Discarding the fetch would have meant paying for it twice.
     expect(unlock).toHaveBeenCalledTimes(1);
+  });
+
+  describe('when the session changes while the article is being fetched', () => {
+    // A token refresh, or signing in again, starts a new session that is just
+    // as entitled. The fetch from the old session must still end up on the page.
+    function setup() {
+      const checks: Array<(value: unknown) => void> = [];
+      let releaseFetch!: (html: string) => void;
+      let deferChecks = false;
+      const unlock = vi.fn(
+        () =>
+          new Promise<string>((resolve) => {
+            releaseFetch = resolve;
+          })
+      );
+      const api = {
+        isReady: () => true,
+        log: vi.fn(),
+        content: {
+          get: () => ({ url: 'https://example.com/article', accessLevel: 'entitlement', id: 'a' }),
+          hasAccess: vi.fn(() =>
+            deferChecks
+              ? new Promise((resolve) => checks.push(resolve))
+              : Promise.resolve({ id: 'ent_1' })
+          ),
+          getLanguage: () => 'en',
+          unlock
+        },
+        analytics: { track: vi.fn() }
+      } as unknown as SesamyAPI;
+      window.sesamy = api;
+      return {
+        unlock,
+        checks,
+        deferNextChecks: () => (deferChecks = true),
+        releaseFetch: (html: string) => releaseFetch(html)
+      };
+    }
+
+    it('renders the article when the new session is granted before the fetch lands', async () => {
+      const { unlock, releaseFetch } = setup();
+
+      const { host } = mount({ 'lock-mode': 'proxy' });
+      await flush();
+      expect(unlock).toHaveBeenCalledTimes(1);
+
+      window.dispatchEvent(new CustomEvent('sesamyJsAuthenticated', { detail: {} }));
+      await flush();
+
+      releaseFetch('<p>The full article</p>');
+      await flush();
+
+      expect(injectedText(host)).toBe('The full article');
+      expect(unlock).toHaveBeenCalledTimes(1);
+    });
+
+    it('renders the article when the new session is granted after the fetch lands', async () => {
+      const { unlock, checks, deferNextChecks, releaseFetch } = setup();
+
+      const { host } = mount({ 'lock-mode': 'proxy' });
+      await flush();
+
+      deferNextChecks();
+      window.dispatchEvent(new CustomEvent('sesamyJsAuthenticated', { detail: {} }));
+      await flush();
+
+      // The new session has not been answered yet, so the article waits.
+      releaseFetch('<p>The full article</p>');
+      await flush();
+      expect(injectedText(host)).toBe('');
+
+      checks[0]({ id: 'ent_1' });
+      await flush();
+
+      expect(injectedText(host)).toBe('The full article');
+      expect(unlock).toHaveBeenCalledTimes(1);
+    });
   });
 
   it('does not re-run scripts embedded in the fetched article', async () => {
@@ -525,6 +637,29 @@ describe('<sesamy-content-container> when the access check has no answer', () =>
     release({ id: 'ent_1' });
     await advance();
 
+    expect(projected(host)).toEqual(['content']);
+  });
+
+  it('keeps the first definite answer over a retry that was already in flight', async () => {
+    const pending: Array<(value: unknown) => void> = [];
+    const api = fakeApi(() => new Promise((resolve) => pending.push(resolve)));
+    window.sesamy = api;
+
+    const { host, content } = mount();
+    // The first check times out, and the retry goes out.
+    await advance(ACCESS_CHECK_TIMEOUT_MS + accessRetryDelay(0));
+    expect(pending).toHaveLength(2);
+
+    // The slow first check comes back with a grant.
+    pending[0]({ id: 'ent_1' });
+    await advance();
+    expect(projected(host)).toEqual(['content']);
+
+    // The retry answers differently. The session is answered already.
+    pending[1](null);
+    await advance();
+
+    expect(contentSlot(host)).toBe(content);
     expect(projected(host)).toEqual(['content']);
   });
 

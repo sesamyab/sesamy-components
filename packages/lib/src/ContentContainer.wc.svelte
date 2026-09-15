@@ -178,12 +178,13 @@
     accessLevel: string | undefined
   ) {
     if (epoch !== sessionEpoch || !contentSlot) return;
+    // This session was answered already, by a retry or by a slow check that
+    // came back late. The first definite answer stands. A check that was still
+    // in flight when it arrived does not overturn it, and not knowing does not
+    // undo it either.
+    if (settledEpoch === epoch) return;
 
     if (resolution.state === 'unknown') {
-      // This session was answered already (by a retry, or a slow check that
-      // came back late). Not knowing now does not undo that.
-      if (settledEpoch === epoch) return;
-
       epochUnresolved++;
       unresolvedChecks++;
       unresolvedSince ||= Date.now();
@@ -194,7 +195,6 @@
       return;
     }
 
-    const previous = access;
     settledEpoch = epoch;
     clearRetry();
 
@@ -208,7 +208,11 @@
     }
     reportRecovered(api, content, resolution.state);
 
-    if (access === 'granted' && previous !== 'granted') {
+    // On every grant, not only a change to one: the previous session may have
+    // been granted too, but have had its render cut short by this session
+    // starting. Rendering is idempotent, so a grant with nothing left to do
+    // costs nothing.
+    if (access === 'granted') {
       await unlockAndRenderContent(api, epoch);
     }
   }
@@ -293,6 +297,12 @@
     window.removeEventListener('online', onConditionsChanged);
     document.removeEventListener('visibilitychange', onConditionsChanged);
     clearRetry();
+    // Checks still queued or in flight must not act for an element that is
+    // gone: no unlock events, no tracking. A new epoch outdates them, and
+    // without a slot or an api there is nothing left for them to act on.
+    sessionEpoch++;
+    contentSlot = null;
+    apiRef = null;
   });
 
   function emitUnlockEvent(api: SesamyAPI) {
@@ -423,7 +433,10 @@
    * guard cannot catch that, because it returned long before.
    */
   function stillGranted(epoch: number): boolean {
-    return epoch === sessionEpoch && access === 'granted';
+    // `access` alone is not enough. It keeps the previous session's grant
+    // while a new session's check is still out, so the epoch must have been
+    // answered too.
+    return epoch === sessionEpoch && settledEpoch === epoch && access === 'granted';
   }
 
   async function unlockAndRenderContent(api: SesamyAPI, epoch: number) {
@@ -460,7 +473,11 @@
       // Re-checked after the await, not only before it: this is the window a
       // logout lands in. The fetched HTML is kept, so a later grant renders it
       // without asking again.
-      if (!stillGranted(epoch)) return;
+      //
+      // Checked against the current session rather than the one the fetch
+      // began in. A session that started and was granted during the fetch found
+      // it in flight and left the rendering to it.
+      if (!stillGranted(sessionEpoch)) return;
 
       injectedNode = await injectContent(fetchedHtml);
 
