@@ -1,3 +1,11 @@
+## [2.27.3](https://github.com/sesamyab/sesamy-components/compare/v2.27.2...v2.27.3) (2026-09-15)
+
+
+### Bug Fixes
+
+* **content-container:** address review on unresolved-access retries ([9ca98b5](https://github.com/sesamyab/sesamy-components/commit/9ca98b5af466ae74f0bcf378cd97e204567daa82))
+* **content-container:** keep asking when an access check has no answer ([95cdb75](https://github.com/sesamyab/sesamy-components/commit/95cdb7545a18e42811306f43b7f1bb00cfa5924b))
+
 ## [2.27.2](https://github.com/sesamyab/sesamy-components/compare/v2.27.1...v2.27.2) (2026-09-11)
 
 
