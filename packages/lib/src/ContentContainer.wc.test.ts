@@ -768,4 +768,64 @@ describe('<sesamy-content-container> when the access check has no answer', () =>
     // The view is still counted once, and only as what it turned out to be.
     expect(tracked('viewArticle')).toEqual([expect.objectContaining({ state: 'unlocked' })]);
   });
+
+  it('sends the unresolved check and its recovery to error reporting', async () => {
+    // sesamy-js reports the auth and API failures behind a check with no
+    // answer. The container reports the other half, what the reader was left
+    // with, so a blank article can be traced in one place.
+    let calls = 0;
+    const api = fakeApi(() => (++calls <= 1 ? failure() : { id: 'ent_1' }));
+    const report = vi.fn();
+    (api as unknown as { errors: { report: typeof report } }).errors = { report };
+    window.sesamy = api;
+
+    mount();
+    await advance();
+    await advance(accessRetryDelay(0));
+
+    expect(report).toHaveBeenCalledTimes(2);
+    expect(report).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({ name: 'ContentAccessUnresolved' }),
+      {
+        details: expect.objectContaining({
+          component: 'content-container',
+          stage: 'unresolved',
+          reason: 'Failed to fetch',
+          publisherContentId: 'article-1',
+          lockMode: 'embed'
+        })
+      }
+    );
+    expect(report).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({ name: 'ContentAccessRecovered' }),
+      {
+        details: expect.objectContaining({
+          component: 'content-container',
+          stage: 'recovered',
+          state: 'granted',
+          attempts: 1,
+          elapsedMs: accessRetryDelay(0)
+        })
+      }
+    );
+  });
+
+  it('keeps gating when error reporting itself throws', async () => {
+    let calls = 0;
+    const api = fakeApi(() => (++calls <= 1 ? failure() : { id: 'ent_1' }));
+    (api as unknown as { errors: { report: () => void } }).errors = {
+      report: () => {
+        throw new Error('reporter broke');
+      }
+    };
+    window.sesamy = api;
+
+    const { host } = mount();
+    await advance();
+    await advance(accessRetryDelay(0));
+
+    expect(projected(host)).toEqual(['content']);
+  });
 });

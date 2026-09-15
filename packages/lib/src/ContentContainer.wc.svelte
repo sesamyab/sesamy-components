@@ -244,28 +244,65 @@
     void check(apiRef);
   }
 
+  type ErrorDetails = Record<string, string | number | boolean | null | undefined>;
+
+  /**
+   * Also send it to Sesamy's error reporting, where sesamy-js reports the auth
+   * and API failures behind a check with no answer, so both sides of a blank
+   * article land in one place. sesamy-js versions without `errors.report`
+   * simply skip it, and reporting never gets in the way of the gate.
+   */
+  function reportToErrors(api: SesamyAPI, error: { name: string; message: string }, details: ErrorDetails) {
+    try {
+      const errors = (api as { errors?: { report?: (error: unknown, options?: { details?: ErrorDetails }) => void } })
+        .errors;
+      errors?.report?.(error, { details: { component: 'content-container', ...details } });
+    } catch {
+      /* reporting must never break the gate */
+    }
+  }
+
   function reportUnresolved(api: SesamyAPI, content: MaybeContent, reason: string | undefined) {
     if (unresolvedReported) return;
     unresolvedReported = true;
 
+    const publisherContentId = publisherContentIdProp || content?.id;
     track(api, 'content_access_unresolved', {
       itemSrc: resolveItemSrc(itemSrc, content?.url),
-      publisherContentId: publisherContentIdProp || content?.id,
+      publisherContentId,
       reason: reason ?? 'unknown'
     });
+    reportToErrors(
+      api,
+      {
+        name: 'ContentAccessUnresolved',
+        message: `The content access check had no answer: ${reason ?? 'unknown'}`
+      },
+      { stage: 'unresolved', reason: reason ?? 'unknown', publisherContentId, lockMode }
+    );
   }
 
   function reportRecovered(api: SesamyAPI, content: MaybeContent, state: 'granted' | 'denied') {
     if (!unresolvedReported || recoveryReported) return;
     recoveryReported = true;
 
+    const publisherContentId = publisherContentIdProp || content?.id;
+    const elapsedMs = Date.now() - unresolvedSince;
     track(api, 'content_access_recovered', {
       itemSrc: resolveItemSrc(itemSrc, content?.url),
-      publisherContentId: publisherContentIdProp || content?.id,
+      publisherContentId,
       state,
       attempts: unresolvedChecks,
-      elapsedMs: Date.now() - unresolvedSince
+      elapsedMs
     });
+    reportToErrors(
+      api,
+      {
+        name: 'ContentAccessRecovered',
+        message: `The content access check was answered after ${unresolvedChecks} without an answer`
+      },
+      { stage: 'recovered', state, attempts: unresolvedChecks, elapsedMs, publisherContentId, lockMode }
+    );
   }
 
   function onSessionChanged() {
