@@ -70,11 +70,13 @@ import type {
 
 In addition to the DOM events above, the components emit first-party interactions through `sesamy-js` (`window.sesamy.analytics.track`), so they arrive with the sesamy-js context (anonymous id, user id, vendor, page) attached. This is additive: the DOM events keep firing exactly as before, and page views stay `sesamy-js`'s responsibility — the components never emit them.
 
-| Event              | Emitted by                 | When                                                                                          | Properties                                                                                   |
-| ------------------ | -------------------------- | --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| `viewArticle`      | `sesamy-content-container` | Once per element, as soon as the container has resolved an article and knows its access state | `itemSrc`, `publisherContentId`, `state` (`public`/`logged-in`/`unlocked`/`locked`)          |
-| `content_unlocked` | `sesamy-content-container` | Alongside the `sesamy:content-unlocked` DOM event                                             | `itemSrc`, `publisherContentId`, `contentName`                                               |
-| `addToCart`        | `sesamy-paywall`           | When the user picks a product and continues to checkout                                       | `itemSrc`, `publisherContentId`, `sku`, `purchaseOptionId`, `price`, `currency`, `paywallId` |
+| Event                       | Emitted by                 | When                                                                                          | Properties                                                                                   |
+| --------------------------- | -------------------------- | --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `viewArticle`               | `sesamy-content-container` | Once per element, as soon as the container has resolved an article and knows its access state | `itemSrc`, `publisherContentId`, `state` (`public`/`logged-in`/`unlocked`/`locked`)          |
+| `content_unlocked`          | `sesamy-content-container` | Alongside the `sesamy:content-unlocked` DOM event                                             | `itemSrc`, `publisherContentId`, `contentName`                                               |
+| `content_access_unresolved` | `sesamy-content-container` | Once per element, the first time an access check fails or runs past its timeout               | `itemSrc`, `publisherContentId`, `reason` (`timeout`, or the error)                          |
+| `content_access_recovered`  | `sesamy-content-container` | Once per element, when a definite answer arrives after an unresolved check                    | `itemSrc`, `publisherContentId`, `state` (`granted`/`denied`), `attempts`, `elapsedMs`       |
+| `addToCart`                 | `sesamy-paywall`           | When the user picks a product and continues to checkout                                       | `itemSrc`, `publisherContentId`, `sku`, `purchaseOptionId`, `price`, `currency`, `paywallId` |
 
 Event and property names match the ones `@sesamy/web-components` produced, so consumers of the interactions index keep working unchanged — only `context.library` differs (`@sesamy/sesamy-js` instead of `@sesamy/web-components`). Each event also repeats its own name in `properties.name`, as the legacy library did.
 
@@ -263,6 +265,10 @@ All per-element events bubble and are composed (cross shadow roots).
 - `sesamyUnlocked`: Legacy event, still dispatched alongside `sesamy:content-unlocked`. `detail: { publisherContentId, itemSrc }`.
 
 The container also emits the `viewArticle` and `content_unlocked` interactions through sesamy-js — see [Interaction tracking](#interaction-tracking).
+
+**When access cannot be resolved:**
+
+The container only removes the `content` slot on a definite denial. If the access check fails (no token, a network error) or does not answer within 10 seconds, the state is unknown and the `preview` slot is shown, with the article left in place. The container then checks again by itself after 1s, 3s and 10s, then every 30s, and straight away when the browser comes back online or the tab becomes visible again, until it gets an answer. A slow answer that arrives after its check timed out is still used. Once an article is shown, a later check that cannot be resolved does not hide it. `content_access_unresolved` and `content_access_recovered` report how often this happens.
 
 ```js
 const el = document.querySelector('sesamy-content-container');
@@ -547,16 +553,16 @@ You can add additional components by adding them to the `packages/lib/src` folde
 
 ### Available Scripts
 
-| Command                | Description                                        |
-| ---------------------- | -------------------------------------------------- |
-| `yarn dev`             | Start the development server                       |
-| `yarn build`           | Build both library and demo                        |
-| `yarn build:lib`       | Build the library only                             |
-| `yarn storybook`       | Start Storybook for component development          |
-| `yarn build:storybook` | Build Storybook for deployment                     |
-| `yarn test`            | Run Playwright tests                               |
-| `yarn check`           | Run Svelte type checking                           |
-| `yarn pull-translations` | Pull latest translations from i18nexus          |
+| Command                  | Description                               |
+| ------------------------ | ----------------------------------------- |
+| `yarn dev`               | Start the development server              |
+| `yarn build`             | Build both library and demo               |
+| `yarn build:lib`         | Build the library only                    |
+| `yarn storybook`         | Start Storybook for component development |
+| `yarn build:storybook`   | Build Storybook for deployment            |
+| `yarn test`              | Run Playwright tests                      |
+| `yarn check`             | Run Svelte type checking                  |
+| `yarn pull-translations` | Pull latest translations from i18nexus    |
 
 ## Testing your components
 
