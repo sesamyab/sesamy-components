@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import type { SesamyAPI } from '@sesamy/sesamy-js';
-import { getApi, API_READY_TIMEOUT_MS } from './api';
+import { getApi, resetApiReadyWait, API_READY_SLOW_MS, API_READY_TIMEOUT_MS } from './api';
 
 /**
  * `window.sesamy` is installed by `registerAPI()` at the very start of
@@ -20,7 +20,11 @@ function fakeApi(ready: boolean): SesamyAPI {
 
 /** Records how a promise settles without ever leaving a rejection unhandled. */
 function track<T>(promise: Promise<T>) {
-  const state = { settled: false, status: '' as 'resolved' | 'rejected' | '', value: undefined as unknown };
+  const state = {
+    settled: false,
+    status: '' as 'resolved' | 'rejected' | '',
+    value: undefined as unknown
+  };
   promise.then(
     (value) => {
       state.settled = true;
@@ -39,6 +43,7 @@ function track<T>(promise: Promise<T>) {
 describe('getApi', () => {
   beforeEach(() => {
     vi.useFakeTimers();
+    resetApiReadyWait();
     delete (window as { sesamy?: SesamyAPI }).sesamy;
   });
 
@@ -99,6 +104,174 @@ describe('getApi', () => {
   });
 
   it('rejects when sesamy-js never loaded at all', async () => {
+    const state = track(getApi());
+    await vi.advanceTimersByTimeAsync(API_READY_TIMEOUT_MS + 1);
+
+    expect(state.status).toBe('rejected');
+  });
+});
+
+/**
+ * A component that gives up on sesamy-js stays on its fallback for the rest of
+ * the page view, and the reason only ever reached the reader's console. These
+ * reports put it in the logs service, next to sesamy-js's own errors, so a
+ * stuck page is visible — and the late-ready report shows it would have worked.
+ */
+describe('getApi reporting', () => {
+  type Report = { error: Error; details: Record<string, unknown> };
+
+  function reportingApi(ready: boolean, reports: Report[]): SesamyAPI {
+    return {
+      isReady: () => ready,
+      errors: {
+        report: (error: Error, options?: { details?: Record<string, unknown> }) =>
+          reports.push({ error, details: options?.details ?? {} })
+      }
+    } as unknown as SesamyAPI;
+  }
+
+  /** Swap in a ready api that keeps reporting into the same list. */
+  function becomeReady(reports: Report[]) {
+    window.sesamy = reportingApi(true, reports);
+    window.dispatchEvent(new Event('sesamyJsReady'));
+  }
+
+  beforeEach(() => {
+    vi.useFakeTimers();
+    resetApiReadyWait();
+    localStorage.clear();
+    delete (window as { sesamy?: SesamyAPI }).sesamy;
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    localStorage.clear();
+    delete (window as { sesamy?: SesamyAPI }).sesamy;
+  });
+
+  it('reports the timeout once, however many components gave up', async () => {
+    const reports: Report[] = [];
+    window.sesamy = reportingApi(false, reports);
+
+    const states = [track(getApi()), track(getApi()), track(getApi())];
+    await vi.advanceTimersByTimeAsync(API_READY_TIMEOUT_MS + 1);
+
+    expect(states.every((s) => s.status === 'rejected')).toBe(true);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].error.name).toBe('SesamyApiUnavailableError');
+    expect(reports[0].details).toMatchObject({
+      stage: 'api-ready-timeout',
+      sesamyPresent: true,
+      hiddenWhileWaiting: false,
+      hiddenMs: 0
+    });
+  });
+
+  it('reports when sesamy-js becomes ready after the components stopped waiting', async () => {
+    const reports: Report[] = [];
+    window.sesamy = reportingApi(false, reports);
+
+    track(getApi());
+    await vi.advanceTimersByTimeAsync(API_READY_TIMEOUT_MS + 5_000);
+    becomeReady(reports);
+    becomeReady(reports);
+
+    expect(reports.map((r) => r.details.stage)).toEqual(['api-ready-timeout', 'api-ready-late']);
+    expect(reports[1].error.name).toBe('SesamyApiLateReady');
+    expect(reports[1].details.lateByMs).toBeGreaterThanOrEqual(4_999);
+  });
+
+  it('reports how long the tab was hidden, including a hidden spell still running', async () => {
+    let visibility: DocumentVisibilityState = 'visible';
+    const spy = vi.spyOn(document, 'visibilityState', 'get').mockImplementation(() => visibility);
+    const setVisibility = (next: DocumentVisibilityState) => {
+      visibility = next;
+      document.dispatchEvent(new Event('visibilitychange'));
+    };
+    const reports: Report[] = [];
+    window.sesamy = reportingApi(false, reports);
+
+    try {
+      track(getApi());
+      await vi.advanceTimersByTimeAsync(1_000);
+      setVisibility('hidden');
+      await vi.advanceTimersByTimeAsync(4_000);
+      setVisibility('visible');
+      await vi.advanceTimersByTimeAsync(5_000);
+      setVisibility('hidden');
+      await vi.advanceTimersByTimeAsync(API_READY_TIMEOUT_MS - 10_000 + 1);
+
+      expect(reports[0].details).toMatchObject({ hiddenWhileWaiting: true, visibility: 'hidden' });
+      // 4s from the finished spell, plus the 10s the tab has been hidden since.
+      expect(reports[0].details.hiddenMs).toBeGreaterThanOrEqual(13_999);
+      expect(reports[0].details.hiddenMs).toBeLessThanOrEqual(14_002);
+    } finally {
+      spy.mockRestore();
+    }
+  });
+
+  it('describes an expired Auth0 token, the cold morning load', async () => {
+    localStorage.setItem(
+      '@@auth0spajs@@::tjuefire::default::openid profile email',
+      JSON.stringify({
+        body: { access_token: 'x' },
+        expiresAt: Math.round(Date.now() / 1000) - 3600
+      })
+    );
+    const reports: Report[] = [];
+    window.sesamy = reportingApi(false, reports);
+
+    track(getApi());
+    await vi.advanceTimersByTimeAsync(API_READY_TIMEOUT_MS + 1);
+
+    expect(reports[0].details.authTokenCached).toBe(true);
+    expect(reports[0].details.authTokenSecondsLeft).toBeLessThan(0);
+  });
+
+  it('says when there was no cached token at all', async () => {
+    const reports: Report[] = [];
+    window.sesamy = reportingApi(false, reports);
+
+    track(getApi());
+    await vi.advanceTimersByTimeAsync(API_READY_TIMEOUT_MS + 1);
+
+    expect(reports[0].details).toMatchObject({
+      authTokenCached: false,
+      authTokenSecondsLeft: null
+    });
+  });
+
+  it('reports a slow init that still made the deadline', async () => {
+    const reports: Report[] = [];
+    window.sesamy = reportingApi(false, reports);
+
+    const state = track(getApi());
+    await vi.advanceTimersByTimeAsync(API_READY_SLOW_MS + 1_000);
+    becomeReady(reports);
+    await vi.advanceTimersByTimeAsync(0);
+
+    expect(state.status).toBe('resolved');
+    expect(reports).toHaveLength(1);
+    expect(reports[0].error.name).toBe('SesamyApiSlowReady');
+    expect(reports[0].details.stage).toBe('api-ready-slow');
+  });
+
+  it('reports nothing for an ordinary init', async () => {
+    const reports: Report[] = [];
+    window.sesamy = reportingApi(false, reports);
+
+    const state = track(getApi());
+    await vi.advanceTimersByTimeAsync(2_000);
+    becomeReady(reports);
+    await vi.advanceTimersByTimeAsync(API_READY_TIMEOUT_MS);
+
+    expect(state.status).toBe('resolved');
+    expect(reports).toHaveLength(0);
+  });
+
+  it('still rejects when sesamy-js predates errors.report', async () => {
+    window.sesamy = fakeApi(false);
+
     const state = track(getApi());
     await vi.advanceTimersByTimeAsync(API_READY_TIMEOUT_MS + 1);
 
