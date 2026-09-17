@@ -1,3 +1,11 @@
+## [2.27.4](https://github.com/sesamyab/sesamy-components/compare/v2.27.3...v2.27.4) (2026-09-17)
+
+
+### Bug Fixes
+
+* **api:** report how long the tab was hidden while waiting for sesamy-js ([8fc33f4](https://github.com/sesamyab/sesamy-components/commit/8fc33f4cc1e9b5ba0990baf44567ddb8a58940c5))
+* **api:** report when components give up waiting for sesamy-js ([b8e2134](https://github.com/sesamyab/sesamy-components/commit/b8e2134d4e196f79c0491c2d0d99e6c57fa72e5a))
+
 ## [2.27.3](https://github.com/sesamyab/sesamy-components/compare/v2.27.2...v2.27.3) (2026-09-15)
 
 
