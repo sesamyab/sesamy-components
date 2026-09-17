@@ -53,6 +53,10 @@ interface ErrorReporting {
 interface ReadyWait {
   startedAt: number;
   hiddenWhileWaiting: boolean;
+  /** Hidden time from intervals that have ended. */
+  hiddenMs: number;
+  /** When the current hidden interval began, while the tab is hidden. */
+  hiddenSince: number | null;
   authCache: ReportDetails;
   timedOutAt: number | null;
   reported: Set<'timeout' | 'late' | 'slow'>;
@@ -86,12 +90,25 @@ function describeAuthCache(): ReportDetails {
 function startWait(): ReadyWait {
   if (wait) return wait;
 
+  // A hidden tab has its timers and iframes throttled, so time spent hidden
+  // slows sesamy-js down for reasons that have nothing to do with the network.
   const onVisibilityChange = () => {
-    if (document.visibilityState === 'hidden') current.hiddenWhileWaiting = true;
+    const now = performance.now();
+    if (document.visibilityState === 'hidden') {
+      current.hiddenWhileWaiting = true;
+      current.hiddenSince ??= now;
+    } else if (current.hiddenSince !== null) {
+      current.hiddenMs += now - current.hiddenSince;
+      current.hiddenSince = null;
+    }
   };
+  const startedAt = performance.now();
+  const startedHidden = document.visibilityState === 'hidden';
   const current: ReadyWait = {
-    startedAt: performance.now(),
-    hiddenWhileWaiting: document.visibilityState === 'hidden',
+    startedAt,
+    hiddenWhileWaiting: startedHidden,
+    hiddenMs: 0,
+    hiddenSince: startedHidden ? startedAt : null,
     authCache: describeAuthCache(),
     timedOutAt: null,
     reported: new Set(),
@@ -126,6 +143,9 @@ function report(
         waitedMs: Math.round(now - current.startedAt),
         visibility: document.visibilityState,
         hiddenWhileWaiting: current.hiddenWhileWaiting,
+        hiddenMs: Math.round(
+          current.hiddenMs + (current.hiddenSince === null ? 0 : now - current.hiddenSince)
+        ),
         readyState: document.readyState,
         ...current.authCache,
         ...details

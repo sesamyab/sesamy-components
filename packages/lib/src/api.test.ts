@@ -162,7 +162,8 @@ describe('getApi reporting', () => {
     expect(reports[0].details).toMatchObject({
       stage: 'api-ready-timeout',
       sesamyPresent: true,
-      hiddenWhileWaiting: false
+      hiddenWhileWaiting: false,
+      hiddenMs: 0
     });
   });
 
@@ -178,6 +179,35 @@ describe('getApi reporting', () => {
     expect(reports.map((r) => r.details.stage)).toEqual(['api-ready-timeout', 'api-ready-late']);
     expect(reports[1].error.name).toBe('SesamyApiLateReady');
     expect(reports[1].details.lateByMs).toBeGreaterThanOrEqual(4_999);
+  });
+
+  it('reports how long the tab was hidden, including a hidden spell still running', async () => {
+    let visibility: DocumentVisibilityState = 'visible';
+    const spy = vi.spyOn(document, 'visibilityState', 'get').mockImplementation(() => visibility);
+    const setVisibility = (next: DocumentVisibilityState) => {
+      visibility = next;
+      document.dispatchEvent(new Event('visibilitychange'));
+    };
+    const reports: Report[] = [];
+    window.sesamy = reportingApi(false, reports);
+
+    try {
+      track(getApi());
+      await vi.advanceTimersByTimeAsync(1_000);
+      setVisibility('hidden');
+      await vi.advanceTimersByTimeAsync(4_000);
+      setVisibility('visible');
+      await vi.advanceTimersByTimeAsync(5_000);
+      setVisibility('hidden');
+      await vi.advanceTimersByTimeAsync(API_READY_TIMEOUT_MS - 10_000 + 1);
+
+      expect(reports[0].details).toMatchObject({ hiddenWhileWaiting: true, visibility: 'hidden' });
+      // 4s from the finished spell, plus the 10s the tab has been hidden since.
+      expect(reports[0].details.hiddenMs).toBeGreaterThanOrEqual(13_999);
+      expect(reports[0].details.hiddenMs).toBeLessThanOrEqual(14_002);
+    } finally {
+      spy.mockRestore();
+    }
   });
 
   it('describes an expired Auth0 token, the cold morning load', async () => {
