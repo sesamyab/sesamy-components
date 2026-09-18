@@ -299,7 +299,7 @@ A web component that displays a paywall for content, loading paywall settings fr
 
 **Props/Attributes:**
 
-- `settings-url`: URL to fetch paywall settings (required). Relative URLs (e.g. `/paywall/settings.json`) are supported and resolved against the page.
+- `settings-url`: URL to fetch paywall settings (required). Path-like relative URLs — starting with `/`, `./` or `../`, or containing `/` (e.g. `/paywall/settings.json`) — are supported and resolved against the page. A value with no slash is treated as a paywall id, so use `./settings.json` for a same-directory file.
 - `item-src`: URL of the content item
 - `price`: Price of the content
 - `currency`: Currency code for the price
