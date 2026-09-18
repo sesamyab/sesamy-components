@@ -30,6 +30,17 @@
     }
   });
 
+  // sesamy-js decides url-vs-id with `new URL(value)`, which a relative URL
+  // fails, so resolve a path-like value against the page before handing it over.
+  function resolveSettingsUrl(value: string): string {
+    const isPathLike =
+      value.startsWith('/') ||
+      value.startsWith('./') ||
+      value.startsWith('../') ||
+      value.includes('/');
+    return isPathLike ? new URL(value, document.baseURI).href : value;
+  }
+
   async function fetchPaywall(
     api: SesamyAPI
   ): Promise<{ paywall: Paywall; template: string } | null> {
@@ -52,7 +63,7 @@
     // Pass the full settings URL, not a bare id: sesamy-js requests a URL as-is,
     // while an id goes via the api-proxy route, which validates the response
     // against a stale schema and strips fields the renderer needs.
-    const paywall = (await api.paywalls.get(settingsUrl)) as Paywall;
+    const paywall = (await api.paywalls.get(resolveSettingsUrl(settingsUrl))) as Paywall;
     const template = paywall?.settings.template || '';
     return { paywall, template };
   }
