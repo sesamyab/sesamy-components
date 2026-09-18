@@ -64,6 +64,12 @@
   let unresolvedSince = 0;
   let unresolvedReported = false;
   let recoveryReported = false;
+  // The host's own inline `display`, as the page had it, kept while we are
+  // overriding it — `{ value: '', priority: '' }` when the page set none. Also
+  // marks the override as applied. Belt and braces against recapturing our own
+  // declaration: once it is in place the host no longer computes to `none`, so
+  // `revealHost` returns before reaching the capture anyway.
+  let hostDisplayBefore: { value: string; priority: string } | null = null;
 
   type MaybeContent = ReturnType<SesamyAPI['content']['get']>;
   type Content = NonNullable<MaybeContent>;
@@ -79,6 +85,78 @@
     }
   }
 
+
+  /**
+   * Show the host, over a publisher rule that hides it.
+   *
+   * Publisher stylesheets hide the container to keep the locked body from
+   * flashing before the bundle loads:
+   *
+   *     sesamy-content-container { display: none; }
+   *
+   * Until 2.21.15 that rule was harmless: the unlocked article was rebuilt as a
+   * *sibling* of the host, so hiding the host hid an element nobody looked at.
+   * Embed mode projects the article through the host's shadow root instead, and
+   * `display: none` on a shadow host hides its shadow tree with it — so the
+   * article we just unlocked never appears.
+   *
+   * Only on a definite grant, so the publisher's flash-prevention keeps working
+   * in every other state: while access is unknown, and for a reader who has
+   * been refused. And only inline on this one element, so a rule that hides
+   * some *other* container on purpose is left alone.
+   */
+  function revealHost() {
+    if (lockMode !== 'embed' || hostDisplayBefore) return;
+
+    const host = $host();
+    if (!host?.isConnected) return;
+    if (getComputedStyle(host).display !== 'none') return;
+
+    // `revert` rolls the property back to what the page would compute with no
+    // author rule at all: `inline`, the default for an unknown element, which
+    // is how this same markup already lays out on a publisher that never added
+    // the rule. Forcing a value instead would hand them a block box that page
+    // never had, so `.bodytext` padding and margins could apply twice — once on
+    // the host and once on the div inside it.
+    //
+    // Important, in one shot rather than escalating: a declaration in the style
+    // attribute outranks any normal rule in the publisher's stylesheet, and an
+    // important one outranks their `!important` too. Re-reading the computed
+    // style to decide whether to escalate would be the obvious alternative, but
+    // it cannot tell "the override worked" from "this browser ignored it".
+    // Remember what the page had here first. A page that hides the container
+    // with an inline `display` rather than a rule gets that back on a denial,
+    // instead of having it dropped by our clean-up.
+    hostDisplayBefore = {
+      value: host.style.getPropertyValue('display'),
+      priority: host.style.getPropertyPriority('display')
+    };
+    host.style.setProperty('display', revertOr('inline'), 'important');
+  }
+
+  /**
+   * `revert`, or `fallback` where the browser would drop it as an unknown
+   * value — Chrome before 84, Firefox before 67. Asking outright, rather than
+   * setting it and re-reading, because a declaration the browser discarded
+   * leaves no trace to read back.
+   */
+  function revertOr(fallback: string): string {
+    const supported = typeof CSS !== 'undefined' && CSS.supports?.('display', 'revert');
+    return supported ? 'revert' : fallback;
+  }
+
+  /** Hand the host back to the page, exactly as it was. */
+  function concealHost() {
+    const before = hostDisplayBefore;
+    if (!before) return;
+    hostDisplayBefore = null;
+
+    const host = $host();
+    if (!host) return;
+
+    if (before.value) host.style.setProperty('display', before.value, before.priority);
+    else host.style.removeProperty('display');
+  }
 
   /**
    * Emitted once per container, as soon as the content container has resolved
@@ -200,6 +278,11 @@
 
     applyAccessState(resolution.state, contentSlot);
     access = resolution.state;
+
+    // A grant is also the moment the host has to be visible, in case the page
+    // hides it until the bundle has decided. A denial gives it back.
+    if (access === 'granted') revealHost();
+    else concealHost();
 
     // Report the article view once we actually know something. `unknown` says
     // nothing about the reader and must not be counted as a locked view.

@@ -315,6 +315,216 @@ describe('<sesamy-content-container> in embed mode', () => {
   });
 });
 
+/**
+ * Publisher pages hide the container until the bundle has decided, so the
+ * locked body does not flash:
+ *
+ *     sesamy-content-container { display: none; }
+ *
+ * Older versions rebuilt the article beside the host, where the rule could not
+ * reach it. Embed mode projects it through the host's shadow root, and a hidden
+ * shadow host hides its shadow tree — so a subscriber was handed a blank space
+ * where the article they pay for should be (bilbransje24.no).
+ */
+describe('<sesamy-content-container> on a page that hides the container', () => {
+  let stylesheet: HTMLStyleElement;
+
+  const hide = (css: string) => {
+    stylesheet = document.createElement('style');
+    stylesheet.textContent = css;
+    document.head.append(stylesheet);
+  };
+
+  /**
+   * What the component declares on the host, not what jsdom computes.
+   *
+   * jsdom applies the stylesheet, so it can answer "is this element hidden"
+   * before the component touches it — but it stores `revert` verbatim instead
+   * of resolving it, and does not model the style attribute outranking an
+   * `!important` rule. Asserting the computed value after the override would
+   * pass whatever the component did, including nothing useful.
+   */
+  const override = (host: HTMLElement) =>
+    host.style.display && `${host.style.display} ${host.style.getPropertyPriority('display')}`.trim();
+
+  const hiddenByPage = (host: HTMLElement) => getComputedStyle(host).display === 'none';
+
+  /**
+   * What the override should read as here. `revert` is the intended value, but
+   * jsdom reports no support for it, so these runs exercise the fallback. The
+   * `revert` branch has a test of its own below.
+   */
+  const revertOrFallback = supportsRevert() ? 'revert important' : 'inline important';
+
+  function supportsRevert(): boolean {
+    const css = (globalThis as { CSS?: { supports?: (p: string, v: string) => boolean } }).CSS;
+    return css?.supports?.('display', 'revert') ?? false;
+  }
+
+  /** jsdom ships no `window.CSS`, so both branches have to be stood up here. */
+  function withRevertSupport(supported: boolean) {
+    const global = globalThis as { CSS?: unknown };
+    const had = 'CSS' in global;
+    const previous = global.CSS;
+    global.CSS = { supports: () => supported };
+    return () => {
+      if (had) global.CSS = previous;
+      else delete global.CSS;
+    };
+  }
+
+  beforeEach(() => {
+    document.body.innerHTML = '';
+  });
+
+  afterEach(() => {
+    delete (window as { sesamy?: SesamyAPI }).sesamy;
+    document.body.innerHTML = '';
+    stylesheet?.remove();
+  });
+
+  it('shows the article to a reader who has access', async () => {
+    hide('sesamy-content-container { display: none; }');
+    window.sesamy = fakeApi(() => ({ id: 'ent_1' }));
+
+    const { host } = mount();
+    await flush();
+
+    expect(projected(host)).toEqual(['content']);
+    // Whichever it lands on, it is the display this markup has on a page that
+    // never added the rule — not a block box the publisher's layout never had.
+    expect(override(host)).toBe(revertOrFallback);
+  });
+
+  it('declares the override important, so a publisher !important cannot win', async () => {
+    hide('sesamy-content-container { display: none !important; }');
+    window.sesamy = fakeApi(() => ({ id: 'ent_1' }));
+
+    const { host } = mount();
+    await flush();
+
+    // A style-attribute declaration outranks an author rule of the same
+    // importance, so this is what decides the real page.
+    expect(override(host)).toBe(revertOrFallback);
+  });
+
+  it('leaves the page hidden while access is still unknown', async () => {
+    // The rule is doing its job here: nothing has been established about this
+    // reader, so the locked body must not flash into view.
+    hide('sesamy-content-container { display: none; }');
+    window.sesamy = fakeApi(() => new Error('NetworkError: failed to fetch'));
+
+    const { host } = mount();
+    await flush();
+
+    expect(override(host)).toBe('');
+    expect(hiddenByPage(host)).toBe(true);
+  });
+
+  it('leaves the page hidden for a reader who has been refused', async () => {
+    hide('sesamy-content-container { display: none; }');
+    window.sesamy = fakeApi(() => null);
+
+    const { host } = mount();
+    await flush();
+
+    expect(override(host)).toBe('');
+    expect(hiddenByPage(host)).toBe(true);
+  });
+
+  it('hides the container again when the reader signs out', async () => {
+    hide('sesamy-content-container { display: none; }');
+    let entitled = true;
+    window.sesamy = fakeApi(() => (entitled ? { id: 'ent_1' } : null));
+
+    const { host } = mount();
+    await flush();
+    expect(override(host)).toBe(revertOrFallback);
+
+    entitled = false;
+    window.dispatchEvent(new CustomEvent('sesamyJsLogout', { detail: {} }));
+    await flush();
+
+    // The page's own rule is back in charge, teaser and all.
+    expect(override(host)).toBe('');
+    expect(hiddenByPage(host)).toBe(true);
+  });
+
+  it('prefers revert where the browser supports it', async () => {
+    // The value that matters in a real browser, which jsdom cannot report for
+    // itself: roll `display` back to what the page would compute with no author
+    // rule, rather than imposing one of our own.
+    hide('sesamy-content-container { display: none; }');
+    const restore = withRevertSupport(true);
+    window.sesamy = fakeApi(() => ({ id: 'ent_1' }));
+
+    const { host } = mount();
+    await flush();
+    restore();
+
+    expect(override(host)).toBe('revert important');
+  });
+
+  it('falls back to a usable display where revert would be dropped', async () => {
+    // Chrome before 84, Firefox before 67: an unknown value is discarded, which
+    // would leave the article hidden. jsdom reports no support, so this is the
+    // path these runs take by default.
+    hide('sesamy-content-container { display: none; }');
+    const restore = withRevertSupport(false);
+    window.sesamy = fakeApi(() => ({ id: 'ent_1' }));
+
+    const { host } = mount();
+    await flush();
+    restore();
+
+    expect(override(host)).toBe('inline important');
+  });
+
+  it('gives an inline display the page set of its own back on a denial', async () => {
+    // Some pages hide the container with an inline style rather than a rule.
+    // Clearing `display` outright on the way back would drop what the page put
+    // there, so the previous declaration is restored instead.
+    let entitled = true;
+    window.sesamy = fakeApi(() => (entitled ? { id: 'ent_1' } : null));
+
+    const { host } = mount();
+    host.style.setProperty('display', 'none');
+    await flush();
+    expect(override(host)).toBe(revertOrFallback);
+
+    entitled = false;
+    window.dispatchEvent(new CustomEvent('sesamyJsLogout', { detail: {} }));
+    await flush();
+
+    expect(override(host)).toBe('none');
+  });
+
+  it('keeps the page\'s own important inline display, priority and all', async () => {
+    let entitled = true;
+    window.sesamy = fakeApi(() => (entitled ? { id: 'ent_1' } : null));
+
+    const { host } = mount();
+    host.style.setProperty('display', 'none', 'important');
+    await flush();
+
+    entitled = false;
+    window.dispatchEvent(new CustomEvent('sesamyJsLogout', { detail: {} }));
+    await flush();
+
+    expect(override(host)).toBe('none important');
+  });
+
+  it('does not touch a container the page never hid', async () => {
+    window.sesamy = fakeApi(() => ({ id: 'ent_1' }));
+
+    const { host } = mount();
+    await flush();
+
+    // No inline display of our own: the publisher's own layout decides.
+    expect(host.style.display).toBe('');
+  });
+});
+
 describe('<sesamy-content-container> in a fetch-and-inject lock mode', () => {
   // proxy/signedUrl/encode render the article *beside* the host, after a
   // network round trip. The reader can sign out while that fetch is in flight.
