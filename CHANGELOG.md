@@ -1,3 +1,11 @@
+## [2.27.5](https://github.com/sesamyab/sesamy-components/compare/v2.27.4...v2.27.5) (2026-09-18)
+
+
+### Bug Fixes
+
+* **content-container:** restore the page's own inline display, not just ours ([b60986b](https://github.com/sesamyab/sesamy-components/commit/b60986be60c8be37bcea61838b9b1cad6892ba4f)), closes [#425](https://github.com/sesamyab/sesamy-components/issues/425)
+* **content-container:** show the article on a page that hides the container ([b37f1ad](https://github.com/sesamyab/sesamy-components/commit/b37f1ad348a8980963b9c0c936ed30fae4128aff))
+
 ## [2.27.4](https://github.com/sesamyab/sesamy-components/compare/v2.27.3...v2.27.4) (2026-09-17)
 
 
