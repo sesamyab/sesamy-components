@@ -64,8 +64,12 @@
   let unresolvedSince = 0;
   let unresolvedReported = false;
   let recoveryReported = false;
-  // Set while we are overriding a publisher rule that hides the host.
-  let hostRevealed = false;
+  // The host's own inline `display`, as the page had it, kept while we are
+  // overriding it — `{ value: '', priority: '' }` when the page set none. Also
+  // marks the override as applied. Belt and braces against recapturing our own
+  // declaration: once it is in place the host no longer computes to `none`, so
+  // `revealHost` returns before reaching the capture anyway.
+  let hostDisplayBefore: { value: string; priority: string } | null = null;
 
   type MaybeContent = ReturnType<SesamyAPI['content']['get']>;
   type Content = NonNullable<MaybeContent>;
@@ -102,7 +106,7 @@
    * some *other* container on purpose is left alone.
    */
   function revealHost() {
-    if (lockMode !== 'embed' || hostRevealed) return;
+    if (lockMode !== 'embed' || hostDisplayBefore) return;
 
     const host = $host();
     if (!host?.isConnected) return;
@@ -120,7 +124,13 @@
     // important one outranks their `!important` too. Re-reading the computed
     // style to decide whether to escalate would be the obvious alternative, but
     // it cannot tell "the override worked" from "this browser ignored it".
-    hostRevealed = true;
+    // Remember what the page had here first. A page that hides the container
+    // with an inline `display` rather than a rule gets that back on a denial,
+    // instead of having it dropped by our clean-up.
+    hostDisplayBefore = {
+      value: host.style.getPropertyValue('display'),
+      priority: host.style.getPropertyPriority('display')
+    };
     host.style.setProperty('display', revertOr('inline'), 'important');
   }
 
@@ -135,11 +145,17 @@
     return supported ? 'revert' : fallback;
   }
 
-  /** Hand the host back to the publisher's stylesheet. */
+  /** Hand the host back to the page, exactly as it was. */
   function concealHost() {
-    if (!hostRevealed) return;
-    hostRevealed = false;
-    $host()?.style.removeProperty('display');
+    const before = hostDisplayBefore;
+    if (!before) return;
+    hostDisplayBefore = null;
+
+    const host = $host();
+    if (!host) return;
+
+    if (before.value) host.style.setProperty('display', before.value, before.priority);
+    else host.style.removeProperty('display');
   }
 
   /**

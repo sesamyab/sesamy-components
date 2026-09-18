@@ -480,6 +480,40 @@ describe('<sesamy-content-container> on a page that hides the container', () => 
     expect(override(host)).toBe('inline important');
   });
 
+  it('gives an inline display the page set of its own back on a denial', async () => {
+    // Some pages hide the container with an inline style rather than a rule.
+    // Clearing `display` outright on the way back would drop what the page put
+    // there, so the previous declaration is restored instead.
+    let entitled = true;
+    window.sesamy = fakeApi(() => (entitled ? { id: 'ent_1' } : null));
+
+    const { host } = mount();
+    host.style.setProperty('display', 'none');
+    await flush();
+    expect(override(host)).toBe(revertOrFallback);
+
+    entitled = false;
+    window.dispatchEvent(new CustomEvent('sesamyJsLogout', { detail: {} }));
+    await flush();
+
+    expect(override(host)).toBe('none');
+  });
+
+  it('keeps the page\'s own important inline display, priority and all', async () => {
+    let entitled = true;
+    window.sesamy = fakeApi(() => (entitled ? { id: 'ent_1' } : null));
+
+    const { host } = mount();
+    host.style.setProperty('display', 'none', 'important');
+    await flush();
+
+    entitled = false;
+    window.dispatchEvent(new CustomEvent('sesamyJsLogout', { detail: {} }));
+    await flush();
+
+    expect(override(host)).toBe('none important');
+  });
+
   it('does not touch a container the page never hid', async () => {
     window.sesamy = fakeApi(() => ({ id: 'ent_1' }));
 
