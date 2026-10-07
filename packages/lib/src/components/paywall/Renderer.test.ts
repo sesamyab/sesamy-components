@@ -33,7 +33,8 @@ const restoreLocation = () => {
 
 type CreatedCheckout = { redirectUrl: string };
 
-type AuthOverrides = { isAuthenticated?: boolean; user?: { email?: string } | null };
+type FakeUser = { email?: string } | null;
+type AuthOverrides = { isAuthenticated?: boolean; user?: FakeUser | Promise<FakeUser> };
 
 const fakeApi = ({ isAuthenticated = false, user = null }: AuthOverrides = {}) => {
   const created: CreatedCheckout[] = [];
@@ -502,5 +503,28 @@ describe('login row auth states (article template)', () => {
 
     await screen.findByRole('button', { name: 'logout' });
     expect(screen.queryByText(/logged_in_as/)).toBeNull();
+  });
+
+  it('keeps the login row when a logout arrives while the user lookup is still running', async () => {
+    let resolveUser: (user: FakeUser) => void = () => {};
+    const pendingUser = new Promise<FakeUser>((resolve) => (resolveUser = resolve));
+    renderRow({ isAuthenticated: true, user: pendingUser });
+
+    await findHeadline();
+    window.dispatchEvent(new CustomEvent('sesamyJsLogout'));
+    resolveUser({ email: 'reader@example.com' });
+    // Lets the stale lookup settle before asserting, so it has had its chance to misfire.
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(document.querySelector(loginSlotSelector)).not.toBeNull();
+    expect(screen.queryByRole('button', { name: 'logout' })).toBeNull();
+  });
+
+  it('exposes the logout label through the `logout-button-text` slot', async () => {
+    renderRow({ isAuthenticated: true, user: { email: 'reader@example.com' } });
+
+    const button = await screen.findByRole('button', { name: 'logout' });
+    const slot = button.querySelector('slot[name="logout-button-text"]');
+    expect(slot?.textContent?.trim()).toBe('logout');
   });
 });

@@ -54,6 +54,8 @@
 
   const loadLoggedInUser = async () => {
     const user = await api.auth.getUser().catch(() => null);
+    // A logout that arrived while the lookup was in flight wins over the stale profile.
+    if (authState === 'logged-out') return;
     email = typeof user?.email === 'string' ? user.email : null;
     authState = 'logged-in';
   };
@@ -127,10 +129,10 @@
       } catch (error) {
         console.error('Auth check failed:', error);
       }
-      if (isAuthed) {
-        void loadLoggedInUser();
-      } else {
+      if (!isAuthed) {
         authState = 'logged-out';
+      } else if (showLoginButton) {
+        void loadLoggedInUser();
       }
       dispatchSesamyEvent(host, 'sesamy:paywall-shown', {
         reason: isAuthed ? 'no-entitlement' : 'unauthenticated'
@@ -372,14 +374,16 @@
                 class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-primary opacity-30"
               ></div>
             {:else if authState === 'logged-in'}
-              <Row class="w-full gap-1 text-[length:var(--s-login-button-default-text-size)]">
+              <Row
+                class="w-full gap-1 text-[length:var(--sesamy-login-button-text-size,var(--s-login-button-default-text-size))] text-[color:var(--sesamy-login-button-text-color,var(--s-paywall-text-color))]"
+              >
                 {#if email}
                   <span class="break-all">{t('logged_in_as')} {email}</span>
                   <span aria-hidden="true">·</span>
                 {/if}
                 <button
                   type="button"
-                  class="border-0 bg-transparent p-0 underline underline-offset-4 transition-opacity hover:opacity-80 text-[var(--s-paywall-text-color)]"
+                  class="border-0 bg-transparent p-0 underline underline-offset-4 transition-opacity hover:opacity-80"
                   onclick={logout}
                 >
                   <svelte:element this={'slot'} name="logout-button-text"
