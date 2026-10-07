@@ -448,7 +448,7 @@ The `sesamy-paywall` component provides five slots for customization:
 
 **Note:**
 
-- The `below-headline` slot adds to the paywall, while the `headline`, `features`, `login-button-text` and `logout-button-text` slots replace the default content entirely.
+- The `below-headline` slot adds to the paywall, while the `headline`, `features` and `login-button-text` slots replace the default content entirely. The `logout-button-text` slot replaces only the "Log out" label.
 
 ### sesamy-visibility
 
