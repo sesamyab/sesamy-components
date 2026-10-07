@@ -16,10 +16,10 @@
   import type { PaywallProps } from '../../types';
   import Error from '../Error.svelte';
   import PayNowForm from './PayNowForm.svelte';
-  import NotLoggedIn from '../NotLoggedIn.svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { parsePrice } from '../../utils/money';
   import { goToCheckout, resolveRedirectUrl } from '../../utils/checkout';
-  import { dispatchSesamyEvent } from '../../events';
+  import { dispatchSesamyEvent, SesamyJsEvent } from '../../events';
   import { resolveItemSrc, track } from '../../tracking';
 
   type Props = {
@@ -49,6 +49,34 @@
   let checkout = $state<Checkout>();
   let loading = $state(false);
   let error = $state('');
+  let authState = $state<'pending' | 'logged-out' | 'logged-in'>('pending');
+  let email = $state<string | null>(null);
+
+  const loadLoggedInUser = async () => {
+    const user = await api.auth.getUser().catch(() => null);
+    email = typeof user?.email === 'string' ? user.email : null;
+    authState = 'logged-in';
+  };
+
+  const syncAuthOnLogout = () => {
+    authState = 'logged-out';
+    email = null;
+  };
+
+  const logout = async () => {
+    try {
+      await api.auth.logout();
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
+  onMount(() => {
+    window.addEventListener(SesamyJsEvent.LOGOUT, syncAuthOnLogout);
+  });
+  onDestroy(() => {
+    window.removeEventListener(SesamyJsEvent.LOGOUT, syncAuthOnLogout);
+  });
 
   const contentArticle = api.content.get(host);
   const singlePurchasePrice = userProps?.['price']
@@ -98,6 +126,11 @@
         isAuthed = await api.auth.isAuthenticated();
       } catch (error) {
         console.error('Auth check failed:', error);
+      }
+      if (isAuthed) {
+        void loadLoggedInUser();
+      } else {
+        authState = 'logged-out';
       }
       dispatchSesamyEvent(host, 'sesamy:paywall-shown', {
         reason: isAuthed ? 'no-entitlement' : 'unauthenticated'
@@ -319,8 +352,9 @@
           up
           left
         >
-          <NotLoggedIn {api}>
-            {#if showLoginButton && !horizontal}
+          <!-- 'pending' renders neither row, so the wrong one never flashes while auth settles. -->
+          {#if showLoginButton && !horizontal}
+            {#if authState === 'logged-out'}
               <!-- Chains the paywall's own `login-button-text` slot into the nested
                    sesamy-login `button-text` slot, so the host page can override the
                    text. Falls back to the translated default when left unfilled. -->
@@ -337,8 +371,27 @@
               <div
                 class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-primary opacity-30"
               ></div>
+            {:else if authState === 'logged-in'}
+              <Row class="w-full gap-1 text-[length:var(--s-login-button-default-text-size)]">
+                {#if email}
+                  <span class="break-all">{t('logged_in_as')} {email}</span>
+                  <span aria-hidden="true">·</span>
+                {/if}
+                <button
+                  type="button"
+                  class="border-0 bg-transparent p-0 underline underline-offset-4 transition-opacity hover:opacity-80 text-[var(--s-paywall-text-color)]"
+                  onclick={logout}
+                >
+                  <svelte:element this={'slot'} name="logout-button-text"
+                    >{t('logout')}</svelte:element
+                  >
+                </button>
+              </Row>
+              <div
+                class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-primary opacity-30"
+              ></div>
             {/if}
-          </NotLoggedIn>
+          {/if}
 
           <div class={twMerge('w-full pt-2 @md:pt-4', horizontal && 'column text-center mb-6')}>
             {#if useDefaultLogo}

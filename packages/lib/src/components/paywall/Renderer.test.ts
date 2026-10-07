@@ -33,8 +33,11 @@ const restoreLocation = () => {
 
 type CreatedCheckout = { redirectUrl: string };
 
-const fakeApi = () => {
+type AuthOverrides = { isAuthenticated?: boolean; user?: { email?: string } | null };
+
+const fakeApi = ({ isAuthenticated = false, user = null }: AuthOverrides = {}) => {
   const created: CreatedCheckout[] = [];
+  let authed = isAuthenticated;
   const api = {
     log: () => {},
     isReady: () => true,
@@ -46,8 +49,13 @@ const fakeApi = () => {
       hasAccess: async () => false
     },
     auth: {
-      isAuthenticated: async () => false,
-      getUser: async () => null
+      isAuthenticated: async () => authed,
+      getUser: async () => user,
+      // Mirrors sesamy-js, which announces the logout on window before redirecting.
+      logout: vi.fn(async () => {
+        authed = false;
+        window.dispatchEvent(new CustomEvent('sesamyJsLogout'));
+      })
     },
     analytics: {
       track: () => {}
@@ -117,11 +125,15 @@ const paywall = (overrides: PaywallOverrides = {}): Paywall => ({
 
 const renderPaywall = (
   paywallDoc: Paywall,
-  { horizontal = true, ...userProps }: { horizontal?: boolean } & PaywallProps = {}
+  {
+    horizontal = true,
+    auth,
+    ...userProps
+  }: { horizontal?: boolean; auth?: AuthOverrides } & PaywallProps = {}
 ) => {
   const host = document.createElement('sesamy-paywall');
   document.body.appendChild(host);
-  const { api, created } = fakeApi();
+  const { api, created } = fakeApi(auth);
 
   render(Renderer, {
     props: {
@@ -134,7 +146,7 @@ const renderPaywall = (
     }
   });
 
-  return { created };
+  return { api, created };
 };
 
 /** The `redirect-url` the visitor is actually sent to checkout with. */
@@ -422,5 +434,73 @@ describe('login button text slot (article template)', () => {
     const fallback = (await findForwardedSlot()).textContent?.replace(/\s+/g, ' ').trim();
 
     expect(fallback).toBe('already_subscribing login');
+  });
+});
+
+describe('login row auth states (article template)', () => {
+  const loginSlotSelector = 'sesamy-login slot[name="login-button-text"]';
+
+  const findLoginSlot = () =>
+    waitFor(() => {
+      const slot = document.querySelector(loginSlotSelector);
+      if (!slot) throw new Error('login slot has not rendered yet');
+      return slot;
+    });
+
+  const findHeadline = () =>
+    waitFor(() => {
+      const slot = document.querySelector('slot[name="headline"]');
+      if (!slot) throw new Error('headline slot has not rendered yet');
+      return slot;
+    });
+
+  const renderRow = (auth: AuthOverrides, showLoginButton = true) =>
+    renderPaywall(paywall({ showLoginButton, settings: { template: PaywallTemplate.ARTICLE } }), {
+      horizontal: false,
+      auth
+    });
+
+  it('shows the login row and no logout button to a logged-out reader', async () => {
+    renderRow({ isAuthenticated: false });
+
+    await findLoginSlot();
+    expect(screen.queryByRole('button', { name: 'logout' })).toBeNull();
+  });
+
+  it('shows the account and a logout button to a logged-in reader without access', async () => {
+    renderRow({ isAuthenticated: true, user: { email: 'reader@example.com' } });
+
+    await screen.findByText(/logged_in_as reader@example\.com/);
+    await screen.findByRole('button', { name: 'logout' });
+    expect(document.querySelector(loginSlotSelector)).toBeNull();
+  });
+
+  it('shows neither row when the login button is turned off', async () => {
+    renderRow({ isAuthenticated: true, user: { email: 'reader@example.com' } }, false);
+
+    await findHeadline();
+    // Lets the user lookup settle so a late logged-in row would show up here.
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(document.querySelector(loginSlotSelector)).toBeNull();
+    expect(screen.queryByRole('button', { name: 'logout' })).toBeNull();
+  });
+
+  it('switches back to the login row after logging out, without a reload', async () => {
+    const { api } = renderRow({ isAuthenticated: true, user: { email: 'reader@example.com' } });
+
+    await userEvent.click(await screen.findByRole('button', { name: 'logout' }));
+
+    expect(api.auth.logout).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(document.querySelector(loginSlotSelector)).not.toBeNull();
+      expect(screen.queryByRole('button', { name: 'logout' })).toBeNull();
+    });
+  });
+
+  it('shows the logout button alone when the user lookup returns nothing', async () => {
+    renderRow({ isAuthenticated: true, user: null });
+
+    await screen.findByRole('button', { name: 'logout' });
+    expect(screen.queryByText(/logged_in_as/)).toBeNull();
   });
 });
