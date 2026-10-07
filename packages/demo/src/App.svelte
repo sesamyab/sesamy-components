@@ -1,10 +1,11 @@
 <script lang="ts">
   import '../../lib';
   import NavBar from './components/NavBar.svelte';
-  import { init } from '@sesamy/sesamy-js';
+  import { init, type Config } from '@sesamy/sesamy-js';
+  import { createAuth0Plugin } from '@sesamy/sesamy-js/auth0-plugin';
   import { onMount } from 'svelte';
 
-  init({
+  const config: Config = {
     clientId: 'acme',
     vendorId: 'acme',
     environment: 'dev',
@@ -30,7 +31,11 @@
         }
       }
     ]
-  });
+  };
+
+  // sesamy-js falls back to the cookie BFF plugin (same-origin /auth/...) when no
+  // auth plugin is given, and the demo has no BFF behind it.
+  init(config, { authPlugin: createAuth0Plugin() });
 
   onMount(() => {
     // Listen for all custom events on the document
