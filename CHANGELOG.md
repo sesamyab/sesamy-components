@@ -1,3 +1,17 @@
+# [2.28.0](https://github.com/sesamyab/sesamy-components/compare/v2.27.5...v2.28.0) (2026-10-08)
+
+
+### Bug Fixes
+
+* **demo:** register the auth0 plugin so demo login works ([607c2f9](https://github.com/sesamyab/sesamy-components/commit/607c2f932846ad672d2f9bb9a3ea2cfddf579ef3))
+* **paywall:** ignore a stale user lookup after logout and reuse the login-row styling ([77c6cad](https://github.com/sesamyab/sesamy-components/commit/77c6cad75781d31f9b9f050d6c268f5a148b2d66))
+* **paywall:** resolve a relative settings-url against the page ([a9b66b0](https://github.com/sesamyab/sesamy-components/commit/a9b66b03e67f93ce199c4d91adf173f63ecda281))
+
+
+### Features
+
+* **paywall:** show "Logged in as" and a log-out link to logged-in readers without access ([7d31e76](https://github.com/sesamyab/sesamy-components/commit/7d31e76c2bdfc2bc8971b8171481eea0ed440b73))
+
 ## [2.27.5](https://github.com/sesamyab/sesamy-components/compare/v2.27.4...v2.27.5) (2026-09-18)
 
 
