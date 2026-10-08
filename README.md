@@ -299,7 +299,7 @@ A web component that displays a paywall for content, loading paywall settings fr
 
 **Props/Attributes:**
 
-- `settings-url`: URL to fetch paywall settings (required)
+- `settings-url`: URL to fetch paywall settings (required). Path-like relative URLs — starting with `/`, `./` or `../`, or containing `/` (e.g. `/paywall/settings.json`) — are supported and resolved against the page. A value with no slash is treated as a paywall id, so use `./settings.json` for a same-directory file.
 - `item-src`: URL of the content item
 - `price`: Price of the content
 - `currency`: Currency code for the price
@@ -355,6 +355,7 @@ The paywall also emits the `addToCart` interaction through sesamy-js when the us
 - `below-headline`: Content rendered below the paywall headline (e.g., additional info, custom elements)
 - `features`: Content rendered in the features section of the paywall (e.g., feature list, benefits)
 - `login-button-text`: Replaces the text of the "already subscribing" login button
+- `logout-button-text`: Replaces the "Log out" text in the row a logged-in reader without access sees
 
 **Basic Usage Example:**
 
@@ -377,7 +378,7 @@ The paywall also emits the `addToCart` interaction through sesamy-js when the us
 
 #### Slots
 
-The `sesamy-paywall` component provides four slots for customization:
+The `sesamy-paywall` component provides five slots for customization:
 
 ##### headline
 
@@ -433,9 +434,21 @@ The `sesamy-paywall` component provides four slots for customization:
   </sesamy-paywall>
   ```
 
+##### logout-button-text
+
+- **Purpose:** Replaces the "Log out" label in the row a logged-in reader without access sees.
+- **Behavior:** When the reader is logged in but has no access and `showLoginButton` is on, the paywall shows "Logged in as {email} · Log out" in place of the login button. This slot replaces only the "Log out" label; the "Logged in as {email}" prefix is translated and can't be slotted. When you leave it empty, the default translated text is used. After the reader logs out, the paywall switches back to the login row without a page reload.
+- **Availability:** Only the `ARTICLE` template renders this row, so the slot has no effect in the `BOXES` and `LOGIN` templates.
+- **Example:**
+  ```html
+  <sesamy-paywall settings-url="https://api.example.com/paywall/settings">
+    <span slot="logout-button-text">Sign out</span>
+  </sesamy-paywall>
+  ```
+
 **Note:**
 
-- The `below-headline` slot adds to the paywall, while the `headline`, `features` and `login-button-text` slots replace the default content entirely.
+- The `below-headline` slot adds to the paywall, while the `headline`, `features` and `login-button-text` slots replace the default content entirely. The `logout-button-text` slot replaces only the "Log out" label.
 
 ### sesamy-visibility
 
