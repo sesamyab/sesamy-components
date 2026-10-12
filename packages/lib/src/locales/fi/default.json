@@ -21,6 +21,7 @@
   "is_gift": "Anna lahjaksi",
   "last_name": "Sukunimi",
   "last_name_required": "Sukunimi vaaditaan",
+  "logged_in_as": "Kirjautuneena käyttäjänä",
   "login": "Kirjaudu sisään",
   "logo_of": "Logo of",
   "logout": "Kirjaudu ulos",
