@@ -34,6 +34,10 @@ export type PaywallSubscription = {
   // Where the visitor lands after buying this option. Overrides the
   // paywall-wide `settings.redirectUrl`; see `resolveRedirectUrl`.
   redirectUrl?: string;
+  // Label for the button back to the publisher on the checkout confirmation
+  // page and in the order email. Overrides the paywall-wide
+  // `settings.redirectLabel`; see `resolveRedirectLabel`.
+  redirectLabel?: string;
 };
 
 export type PaywallSinglePurchase = {
@@ -50,6 +54,9 @@ export type PaywallSettings = {
   // Paywall-wide default for where the visitor lands after a purchase, used for
   // every option that does not carry its own `redirectUrl`.
   redirectUrl?: string;
+  // Paywall-wide default for the label of the button back to the publisher,
+  // used for every option that does not carry its own `redirectLabel`.
+  redirectLabel?: string;
   styling: {
     showBackground: boolean;
     backgroundColor?: string;

@@ -31,7 +31,7 @@ const restoreLocation = () => {
   }
 };
 
-type CreatedCheckout = { redirectUrl: string };
+type CreatedCheckout = { redirectUrl: string; redirectLabel?: string };
 
 const fakeApi = () => {
   const created: CreatedCheckout[] = [];
@@ -360,6 +360,84 @@ describe('paywall redirect resolution (article template)', () => {
 
     await waitFor(() => expect(created).toHaveLength(1));
     expect(created[0].redirectUrl).toBe('https://vendor.example/thanks/yearly');
+  });
+});
+
+describe('paywall redirect label', () => {
+  const buyFirstBox = async () => {
+    const button = await screen.findByRole('button', { name: 'continue' });
+    await userEvent.click(button);
+  };
+
+  it('sends the option label ahead of the paywall-wide one and the attribute', async () => {
+    stubLocation();
+    const { created } = renderPaywall(
+      paywall({
+        subscriptions: [subscription({ redirectLabel: 'Start reading ACME Plus' })],
+        settings: { redirectLabel: 'Go to ACME' }
+      }),
+      { 'redirect-label': 'Back to the article' }
+    );
+
+    await buyFirstBox();
+
+    await waitFor(() => expect(created).toHaveLength(1));
+    expect(created[0].redirectLabel).toBe('Start reading ACME Plus');
+  });
+
+  it('falls through to the paywall-wide label when the option has none', async () => {
+    stubLocation();
+    const { created } = renderPaywall(paywall({ settings: { redirectLabel: 'Go to ACME' } }), {
+      'redirect-label': 'Back to the article'
+    });
+
+    await buyFirstBox();
+
+    await waitFor(() => expect(created).toHaveLength(1));
+    expect(created[0].redirectLabel).toBe('Go to ACME');
+  });
+
+  it('falls through to the element attribute, skipping blank stored labels', async () => {
+    stubLocation();
+    const { created } = renderPaywall(
+      paywall({
+        subscriptions: [subscription({ redirectLabel: '  ' })],
+        settings: { redirectLabel: '' }
+      }),
+      { 'redirect-label': 'Back to the article' }
+    );
+
+    await buyFirstBox();
+
+    await waitFor(() => expect(created).toHaveLength(1));
+    expect(created[0].redirectLabel).toBe('Back to the article');
+  });
+
+  it('sends no label for a paywall without one, so the checkout keeps "Go to {vendor}"', async () => {
+    stubLocation();
+    const { created } = renderPaywall(paywall());
+
+    await buyFirstBox();
+
+    await waitFor(() => expect(created).toHaveLength(1));
+    expect(created[0].redirectLabel).toBeUndefined();
+  });
+
+  it('resolves paywall-wide for a single purchase, which has no per-option field', async () => {
+    stubLocation();
+    const { created } = renderPaywall(
+      paywall({
+        subscriptions: [],
+        singlePurchase: { enabled: true, title: 'Single purchase' },
+        settings: { template: PaywallTemplate.ARTICLE, redirectLabel: 'Go to ACME' }
+      }),
+      { horizontal: false, price: '49' }
+    );
+
+    await userEvent.click(await screen.findByRole('button', { name: 'continue' }));
+
+    await waitFor(() => expect(created).toHaveLength(1));
+    expect(created[0].redirectLabel).toBe('Go to ACME');
   });
 });
 

@@ -1,6 +1,6 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import type { Checkout } from '@sesamy/sesamy-js';
-import { goToCheckout, resolveRedirectUrl } from './checkout';
+import { goToCheckout, resolveRedirectLabel, resolveRedirectUrl } from './checkout';
 
 const PAGE_URL = 'https://vendor.example/article';
 
@@ -135,5 +135,39 @@ describe('goToCheckout', () => {
     expect(url.origin + url.pathname).toBe('https://checkout.sesamy.dev/checkout_1');
     expect(url.searchParams.get('redirect-url')).toBe('https://vendor.example/thanks');
     expect(url.searchParams.get('norecreate')).toBe('true');
+  });
+});
+
+describe('resolveRedirectLabel', () => {
+  const OPTION = 'Start reading ACME Plus';
+  const PAYWALL = 'Go to ACME';
+  const ELEMENT = 'Back to the article';
+
+  it('prefers the subscription option over every level below it', () => {
+    expect(resolveRedirectLabel(OPTION, PAYWALL, ELEMENT)).toBe(OPTION);
+  });
+
+  it('falls through to the paywall-wide label when the option has none', () => {
+    expect(resolveRedirectLabel(undefined, PAYWALL, ELEMENT)).toBe(PAYWALL);
+  });
+
+  it('falls through to the element attribute when the paywall has no label', () => {
+    expect(resolveRedirectLabel(undefined, undefined, ELEMENT)).toBe(ELEMENT);
+  });
+
+  it('leaves the label unset when nothing is configured, keeping the checkout default', () => {
+    expect(resolveRedirectLabel(undefined, undefined, undefined)).toBeUndefined();
+  });
+
+  it.each([
+    { level: 'option', candidates: ['', PAYWALL], expected: PAYWALL },
+    { level: 'option (whitespace)', candidates: ['   ', PAYWALL], expected: PAYWALL },
+    { level: 'every level', candidates: ['', ' ', '\t'], expected: undefined }
+  ])('lets a blank $level fall through', ({ candidates, expected }) => {
+    expect(resolveRedirectLabel(...candidates)).toBe(expected);
+  });
+
+  it('trims the label it picks', () => {
+    expect(resolveRedirectLabel('  Go to ACME  ')).toBe('Go to ACME');
   });
 });

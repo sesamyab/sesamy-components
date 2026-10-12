@@ -18,7 +18,7 @@
   import PayNowForm from './PayNowForm.svelte';
   import NotLoggedIn from '../NotLoggedIn.svelte';
   import { parsePrice } from '../../utils/money';
-  import { goToCheckout, resolveRedirectUrl } from '../../utils/checkout';
+  import { goToCheckout, resolveRedirectLabel, resolveRedirectUrl } from '../../utils/checkout';
   import { dispatchSesamyEvent } from '../../events';
   import { resolveItemSrc, track } from '../../tracking';
 
@@ -67,7 +67,12 @@
     footerPaymentMethods,
     logoUrl,
     vendorId,
-    settings: { useDefaultLogo, styling, redirectUrl: paywallRedirectUrl }
+    settings: {
+      useDefaultLogo,
+      styling,
+      redirectUrl: paywallRedirectUrl,
+      redirectLabel: paywallRedirectLabel
+    }
   } = paywall;
 
   const checkAccess = async () => {
@@ -141,6 +146,11 @@
       paywallRedirectUrl,
       userProps?.['redirect-url']
     );
+    const redirectLabel = resolveRedirectLabel(
+      selectedProduct.redirectLabel,
+      paywallRedirectLabel,
+      userProps?.['redirect-label']
+    );
 
     try {
       const checkoutPayload = {
@@ -149,6 +159,9 @@
           ? [selectedProduct.discountCode]
           : undefined,
         redirectUrl,
+        // Typed in sesamy-js from the release that adds it to checkout
+        // creation; older versions pass it through to api2 untyped.
+        redirectLabel,
         price: selectedProduct.price,
         currency,
         attribution: {
