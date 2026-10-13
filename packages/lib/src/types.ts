@@ -18,6 +18,7 @@ export type PaywallProps = {
   price?: string;
   currency?: string;
   ['redirect-url']?: string;
+  ['redirect-label']?: string;
   ['utm-source']?: string;
   ['utm-medium']?: string;
   ['utm-campaign']?: string;

@@ -304,6 +304,7 @@ A web component that displays a paywall for content, loading paywall settings fr
 - `price`: Price of the content
 - `currency`: Currency code for the price
 - `redirect-url`: URL to redirect after purchase
+- `redirect-label`: Label for the button back to the redirect URL on the checkout confirmation page and in the order confirmation email
 - `utm-source`, `utm-medium`, `utm-campaign`, `utm-term`, `utm-content`: UTM parameters for tracking
 - `pass`: Pass ID for access
 
@@ -322,6 +323,21 @@ values fall through to the next level (the last with a `console.warn`) instead
 of sending a broken `redirect-url` to checkout. Single purchases have no
 per-option redirect, so they start at level 2; subscription options of type URL
 link straight out and never reach checkout at all.
+
+**Redirect button label:**
+
+The checkout confirmation page and the order confirmation email have a button
+that takes the buyer back to the redirect URL. It reads "Go to {vendor}" unless
+a label is set. The label resolves through the same levels as the redirect,
+first non-blank value winning:
+
+1. `redirectLabel` on the chosen subscription option
+2. `settings.redirectLabel` on the paywall
+3. the `redirect-label` attribute on the element
+
+It is plain text and not translated. Blank values fall through. With none set,
+no label is sent and the checkout keeps its default. This needs an api2 that
+accepts `redirectLabel` on `POST /checkouts`. Older api2 versions ignore it.
 
 **Events:**
 

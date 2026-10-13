@@ -39,6 +39,25 @@ export const resolveRedirectUrl = (...candidates: (string | undefined)[]): strin
   return window.location.href;
 };
 
+/**
+ * Resolve the label of the button that takes the visitor back to the publisher
+ * on the checkout confirmation page and in the order confirmation email. The
+ * candidates and their order match `resolveRedirectUrl`: the chosen option's
+ * `redirectLabel`, the paywall-wide `settings.redirectLabel`, then the
+ * `redirect-label` attribute on the element.
+ *
+ * The first non-blank value wins, trimmed. With none, the label is left unset
+ * so the checkout keeps its own "Go to {vendor}" default.
+ */
+export const resolveRedirectLabel = (...candidates: (string | undefined)[]): string | undefined => {
+  for (const candidate of candidates) {
+    const redirectLabel = candidate?.trim();
+    if (redirectLabel) return redirectLabel;
+  }
+
+  return undefined;
+};
+
 export const goToCheckout = async (
   checkout: Checkout,
   paymentMethod?: PaymentMethodType,
