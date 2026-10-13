@@ -31,7 +31,7 @@ const restoreLocation = () => {
   }
 };
 
-type CreatedCheckout = { redirectUrl: string };
+type CreatedCheckout = { redirectUrl: string; redirectLabel?: string };
 
 type FakeUser = { email?: string } | null;
 type AuthOverrides = { isAuthenticated?: boolean; user?: FakeUser | Promise<FakeUser> };
@@ -376,6 +376,84 @@ describe('paywall redirect resolution (article template)', () => {
   });
 });
 
+describe('paywall redirect label', () => {
+  const buyFirstBox = async () => {
+    const button = await screen.findByRole('button', { name: 'continue' });
+    await userEvent.click(button);
+  };
+
+  it('sends the option label ahead of the paywall-wide one and the attribute', async () => {
+    stubLocation();
+    const { created } = renderPaywall(
+      paywall({
+        subscriptions: [subscription({ redirectLabel: 'Start reading ACME Plus' })],
+        settings: { redirectLabel: 'Go to ACME' }
+      }),
+      { 'redirect-label': 'Back to the article' }
+    );
+
+    await buyFirstBox();
+
+    await waitFor(() => expect(created).toHaveLength(1));
+    expect(created[0].redirectLabel).toBe('Start reading ACME Plus');
+  });
+
+  it('falls through to the paywall-wide label when the option has none', async () => {
+    stubLocation();
+    const { created } = renderPaywall(paywall({ settings: { redirectLabel: 'Go to ACME' } }), {
+      'redirect-label': 'Back to the article'
+    });
+
+    await buyFirstBox();
+
+    await waitFor(() => expect(created).toHaveLength(1));
+    expect(created[0].redirectLabel).toBe('Go to ACME');
+  });
+
+  it('falls through to the element attribute, skipping blank stored labels', async () => {
+    stubLocation();
+    const { created } = renderPaywall(
+      paywall({
+        subscriptions: [subscription({ redirectLabel: '  ' })],
+        settings: { redirectLabel: '' }
+      }),
+      { 'redirect-label': 'Back to the article' }
+    );
+
+    await buyFirstBox();
+
+    await waitFor(() => expect(created).toHaveLength(1));
+    expect(created[0].redirectLabel).toBe('Back to the article');
+  });
+
+  it('sends no label for a paywall without one, so the checkout keeps "Go to {vendor}"', async () => {
+    stubLocation();
+    const { created } = renderPaywall(paywall());
+
+    await buyFirstBox();
+
+    await waitFor(() => expect(created).toHaveLength(1));
+    expect(created[0].redirectLabel).toBeUndefined();
+  });
+
+  it('resolves paywall-wide for a single purchase, which has no per-option field', async () => {
+    stubLocation();
+    const { created } = renderPaywall(
+      paywall({
+        subscriptions: [],
+        singlePurchase: { enabled: true, title: 'Single purchase' },
+        settings: { template: PaywallTemplate.ARTICLE, redirectLabel: 'Go to ACME' }
+      }),
+      { horizontal: false, price: '49' }
+    );
+
+    await userEvent.click(await screen.findByRole('button', { name: 'continue' }));
+
+    await waitFor(() => expect(created).toHaveLength(1));
+    expect(created[0].redirectLabel).toBe('Go to ACME');
+  });
+});
+
 describe('headline slot', () => {
   // The `<slot>` is rendered as a plain element under jsdom (no shadow tree),
   // so it and its fallback text stay queryable.
@@ -526,5 +604,53 @@ describe('login row auth states (article template)', () => {
     const button = await screen.findByRole('button', { name: 'logout' });
     const slot = button.querySelector('slot[name="logout-button-text"]');
     expect(slot?.textContent?.trim()).toBe('logout');
+  });
+});
+
+describe('checkout attribution', () => {
+  const buyFirstBox = async () => {
+    const button = await screen.findByRole('button', { name: 'continue' });
+    await userEvent.click(button);
+  };
+
+  const sentAttribution = (created: CreatedCheckout[]) =>
+    (created[0] as unknown as { attribution: Record<string, unknown> }).attribution;
+
+  it('leaves out utm keys whose attributes are not set, so stored UTMs are kept', async () => {
+    stubLocation();
+    const { created } = renderPaywall(paywall());
+
+    await buyFirstBox();
+
+    await waitFor(() => expect(created).toHaveLength(1));
+    const attribution = sentAttribution(created);
+    expect(attribution).toEqual({
+      itemSrc: ARTICLE_URL,
+      source: 'PAYWALL',
+      sourceId: 'paywall_1'
+    });
+    for (const key of ['utmSource', 'utmMedium', 'utmCampaign', 'utmTerm', 'utmContent']) {
+      expect(attribution).not.toHaveProperty(key);
+    }
+  });
+
+  it('sends only the utm attributes that are set', async () => {
+    stubLocation();
+    const { created } = renderPaywall(paywall(), {
+      'utm-source': 'paywall-source',
+      'utm-campaign': 'spring-sale',
+      'utm-medium': ''
+    });
+
+    await buyFirstBox();
+
+    await waitFor(() => expect(created).toHaveLength(1));
+    expect(sentAttribution(created)).toEqual({
+      utmSource: 'paywall-source',
+      utmCampaign: 'spring-sale',
+      itemSrc: ARTICLE_URL,
+      source: 'PAYWALL',
+      sourceId: 'paywall_1'
+    });
   });
 });
