@@ -1,3 +1,15 @@
+# [2.29.0](https://github.com/sesamyab/sesamy-components/compare/v2.28.0...v2.29.0) (2026-10-13)
+
+
+### Bug Fixes
+
+* **paywall:** send only the utm attributes that are set on checkout ([5381885](https://github.com/sesamyab/sesamy-components/commit/5381885c420cb76033c806cdca04afeee1ddae27))
+
+
+### Features
+
+* **paywall:** pass a custom redirect button label to checkout ([05e5e09](https://github.com/sesamyab/sesamy-components/commit/05e5e09cd1df1e29d6ba247036e07d58d1c65cae))
+
 # [2.28.0](https://github.com/sesamyab/sesamy-components/compare/v2.27.5...v2.28.0) (2026-10-08)
 
 
