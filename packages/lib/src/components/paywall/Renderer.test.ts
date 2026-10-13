@@ -528,3 +528,51 @@ describe('login row auth states (article template)', () => {
     expect(slot?.textContent?.trim()).toBe('logout');
   });
 });
+
+describe('checkout attribution', () => {
+  const buyFirstBox = async () => {
+    const button = await screen.findByRole('button', { name: 'continue' });
+    await userEvent.click(button);
+  };
+
+  const sentAttribution = (created: CreatedCheckout[]) =>
+    (created[0] as unknown as { attribution: Record<string, unknown> }).attribution;
+
+  it('leaves out utm keys whose attributes are not set, so stored UTMs are kept', async () => {
+    stubLocation();
+    const { created } = renderPaywall(paywall());
+
+    await buyFirstBox();
+
+    await waitFor(() => expect(created).toHaveLength(1));
+    const attribution = sentAttribution(created);
+    expect(attribution).toEqual({
+      itemSrc: ARTICLE_URL,
+      source: 'PAYWALL',
+      sourceId: 'paywall_1'
+    });
+    for (const key of ['utmSource', 'utmMedium', 'utmCampaign', 'utmTerm', 'utmContent']) {
+      expect(attribution).not.toHaveProperty(key);
+    }
+  });
+
+  it('sends only the utm attributes that are set', async () => {
+    stubLocation();
+    const { created } = renderPaywall(paywall(), {
+      'utm-source': 'paywall-source',
+      'utm-campaign': 'spring-sale',
+      'utm-medium': ''
+    });
+
+    await buyFirstBox();
+
+    await waitFor(() => expect(created).toHaveLength(1));
+    expect(sentAttribution(created)).toEqual({
+      utmSource: 'paywall-source',
+      utmCampaign: 'spring-sale',
+      itemSrc: ARTICLE_URL,
+      source: 'PAYWALL',
+      sourceId: 'paywall_1'
+    });
+  });
+});
