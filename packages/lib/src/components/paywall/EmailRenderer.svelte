@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { SesamyAPI } from '@sesamy/sesamy-js';
   import emailSpellChecker from '@zootools/email-spell-checker';
+  import { onDestroy } from 'svelte';
   import { twMerge } from 'tailwind-merge';
   import type { TranslationFunction } from '../../i18n';
   import type { Paywall, PaywallSubscription } from '../../types/Paywall';
@@ -78,6 +79,8 @@
         ? features
         : [];
 
+  onDestroy(() => clearTimeout(suggestionTimeout));
+
   const checkAccess = async () => {
     const passes = userProps?.pass
       ? userProps.pass.split(';')
@@ -137,8 +140,11 @@
     event.preventDefault();
     if (!product || loading) return;
 
+    // An option that sends the reader to an external URL doesn't use the
+    // address, so it neither needs nor validates one.
+    const external = !!product.url && product.url !== articleUrl;
     const address = email.trim();
-    if (!isValidEmail(address)) {
+    if (!external && !isValidEmail(address)) {
       error = t('invalid_email');
       return;
     }
@@ -156,7 +162,7 @@
       paywallId: paywall.id
     });
 
-    if (product.url && product.url !== articleUrl) {
+    if (external) {
       window.location.assign(product.url);
       return;
     }
@@ -252,7 +258,10 @@
 </script>
 
 {#if product}
-  {#await checkAccess() then hasAccess}
+  {#await checkAccess().catch((err) => {
+    console.error('Access check failed:', err);
+    return true;
+  }) then hasAccess}
     {#if !hasAccess}
       <div class="@container" style="font-size: var(--s-base-font-size, 16px)">
         <!-- A compact, centered card: one offer, one field, one button. -->
@@ -295,7 +304,7 @@
 
             <svelte:element this={'slot'} name="features">
               {#if productFeatures.length}
-                <Features features={productFeatures} class="w-full text-left text-sm space-y-2 @md:space-y-2" />
+                <Features features={productFeatures} class="w-full text-left text-sm space-y-2" />
               {/if}
             </svelte:element>
 
@@ -303,7 +312,7 @@
               <Input
                 type="email"
                 autocomplete="email"
-                onkeyup={provideSuggestion}
+                oninput={provideSuggestion}
                 bind:value={email}
                 compact
                 hasError={!!error}
