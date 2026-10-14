@@ -6,7 +6,8 @@ export enum PaywallStatus {
 
 export enum PaywallTemplate {
   ARTICLE = 'ARTICLE',
-  BOXES = 'BOXES'
+  BOXES = 'BOXES',
+  EMAIL = 'EMAIL'
 }
 
 export type PaywallSubscription = {
