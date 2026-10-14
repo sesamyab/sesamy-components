@@ -216,6 +216,19 @@ describe('email template', () => {
     expect(created).toHaveLength(0);
   });
 
+  it('sends the reader to an external option URL without asking for an email', async () => {
+    const location = stubLocation();
+    const { created } = renderPaywall(
+      paywall({ subscriptions: [subscription({ url: 'https://shop.example/offer' })] })
+    );
+
+    await submit('');
+
+    await waitFor(() => expect(location.href).toBe('https://shop.example/offer'));
+    expect(screen.queryByText('invalid_email')).toBeNull();
+    expect(created).toHaveLength(0);
+  });
+
   it('does not create a checkout when a listener cancels it', async () => {
     stubLocation();
     const { created, emitted } = renderPaywall(paywall(), { api: { cancelCreate: true } });

@@ -363,6 +363,10 @@ other templates, and `email` set to the address. A reader who is logged in but
 has no access gets their account's address filled in. An option of type URL
 links straight out, as in the other templates.
 
+The address is part of the `payload` of the cancelable
+`sesamyPaywallCreateCheckout` event. A listener that forwards that payload to an
+analytics or tag manager is sending personal data, so pick the fields it sends.
+
 It renders as a compact, centered card. On top of the shared paywall tokens
 (`--sesamy-paywall-primary-color`, `--sesamy-paywall-bg-color`,
 `--sesamy-paywall-border-radius`, `--sesamy-paywall-btn-bg-color`, …) it reads:
