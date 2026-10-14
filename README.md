@@ -346,15 +346,15 @@ only for an email address, then sends the reader to checkout with the address
 filled in. Everything it shows comes from the paywall settings, so each
 publisher configures their own copy and branding:
 
-| Shown                      | Taken from                                                             |
-| -------------------------- | ---------------------------------------------------------------------- |
-| Logo                       | `logoUrl`, when `settings.useDefaultLogo` is on                        |
-| Headline                   | `headline`                                                             |
-| Text below the headline    | `description` of the offer                                             |
-| Benefits list              | `features` of the offer, else the paywall-wide `features`              |
-| Button text                | `buttonText` of the offer, else the translated "Continue"              |
-| "Already subscribing?" row | shown to logged-out readers when `showLoginButton` is on               |
-| Colors and background      | `mainColor` and `settings.styling`, like the other templates           |
+| Shown                      | Taken from                                                   |
+| -------------------------- | ------------------------------------------------------------ |
+| Logo                       | `logoUrl`, when `settings.useDefaultLogo` is on              |
+| Headline                   | `headline`                                                   |
+| Text below the headline    | `description` of the offer                                   |
+| Benefits list              | `features` of the offer, else the paywall-wide `features`    |
+| Button text                | `buttonText` of the offer, else the translated "Continue"    |
+| "Already subscribing?" row | shown to logged-out readers when `showLoginButton` is on     |
+| Colors and background      | `mainColor` and `settings.styling`, like the other templates |
 
 The offer is the subscription option marked `selected`, or the first one. With
 no options the paywall renders nothing. The checkout is created with the

@@ -142,9 +142,9 @@
 
     // An option that sends the reader to an external URL doesn't use the
     // address, so it neither needs nor validates one.
-    const external = !!product.url && product.url !== articleUrl;
+    const externalUrl = product.url && product.url !== articleUrl ? product.url : undefined;
     const address = email.trim();
-    if (!external && !isValidEmail(address)) {
+    if (!externalUrl && !isValidEmail(address)) {
       error = t('invalid_email');
       return;
     }
@@ -162,8 +162,8 @@
       paywallId: paywall.id
     });
 
-    if (external) {
-      window.location.assign(product.url);
+    if (externalUrl) {
+      window.location.assign(externalUrl);
       return;
     }
 
