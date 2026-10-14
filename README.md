@@ -363,6 +363,20 @@ other templates, and `email` set to the address. A reader who is logged in but
 has no access gets their account's address filled in. An option of type URL
 links straight out, as in the other templates.
 
+It renders as a compact, centered card. On top of the shared paywall tokens
+(`--sesamy-paywall-primary-color`, `--sesamy-paywall-bg-color`,
+`--sesamy-paywall-border-radius`, `--sesamy-paywall-btn-bg-color`, …) it reads:
+
+```css
+sesamy-paywall {
+  --sesamy-paywall-headline-font-family: Georgia, serif; /* default: --sesamy-font-family */
+  --sesamy-paywall-headline-font-weight: 500; /* default 700 */
+  --sesamy-paywall-max-width: 560px; /* default 490px at a 16px base size */
+}
+```
+
+The payment method logos are shown only when `footerPaymentMethods` is set.
+
 **Events:**
 
 Per-element events dispatched directly on the `<sesamy-paywall>` element (bubble, composed):

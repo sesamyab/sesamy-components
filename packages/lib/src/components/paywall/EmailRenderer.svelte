@@ -242,6 +242,9 @@
       --s-paywall-border-radius-desktop: var(--sesamy-paywall-border-radius-desktop, calc(var(--s-paywall-border-radius) * 3));
       --s-paywall-btn-bg-color: var(--sesamy-paywall-btn-bg-color, var(--s-primary-color));
       --s-paywall-btn-text-color: var(--sesamy-paywall-btn-text-color, ${autoBtnColor});
+      --s-paywall-headline-font-family: var(--sesamy-paywall-headline-font-family, var(--s-font-family));
+      --s-paywall-headline-font-weight: var(--sesamy-paywall-headline-font-weight, 700);
+      --s-paywall-max-width: var(--sesamy-paywall-max-width, calc(30.625 * var(--s-base-font-size, 16px)));
     }
   `;
 
@@ -252,128 +255,114 @@
   {#await checkAccess() then hasAccess}
     {#if !hasAccess}
       <div class="@container" style="font-size: var(--s-base-font-size, 16px)">
-        <form onsubmit={createCheckout} novalidate>
-          <Column
-            class={twMerge(
-              'w-full py-4 @md:py-6 rounded-[var(--s-paywall-border-radius)] @xl:rounded-[var(--s-paywall-border-radius-desktop)] bg-[var(--s-paywall-bg-color)] text-[var(--s-paywall-text-color)]',
-              styling?.showBackground && styling?.dropShadow && 'shadow-md @xl:shadow-lg',
-              darkMode && 'dark'
-            )}
-          >
-            <Column
-              class={twMerge(
-                'gap-4 @md:gap-6 pt-0 w-full max-w-[800px]',
-                styling?.showBackground && 'px-2 pb-6 @xs:px-8 @md:pb-8 @3xl:px-16'
-              )}
-              up
-              left
-            >
-              <Column left class="w-full gap-3 pt-2 @md:pt-4">
-                {#if useDefaultLogo}
-                  <img class="h-7 mb-3" src={logoUrl} alt={`${t('logo_of')} ${vendorId}`} />
-                {/if}
-                <div class="text-2xl leading-tight @md:text-3xl font-bold max-w-[600px]">
-                  <svelte:element this={'slot'} name="headline">{headline}</svelte:element>
-                </div>
-                <svelte:element this={'slot'} name="below-headline">
-                  {#if product.description}
-                    <DescriptionWithReadMore
-                      description={product.description}
-                      readMoreLink={product.readMoreLink}
-                      readMoreText={product.readMoreText}
-                      {t}
-                      class="text-[var(--s-paywall-text-color-70)]"
-                    />
-                  {/if}
-                </svelte:element>
-              </Column>
+        <!-- A compact, centered card: one offer, one field, one button. -->
+        <form
+          onsubmit={createCheckout}
+          novalidate
+          class={twMerge(
+            'mx-auto w-full max-w-[var(--s-paywall-max-width)] rounded-[var(--s-paywall-border-radius)] bg-[var(--s-paywall-bg-color)] text-[var(--s-paywall-text-color)]',
+            styling?.showBackground && 'px-5 py-8 @sm:px-10 @sm:pt-6 @sm:pb-10',
+            styling?.showBackground && styling?.dropShadow && 'shadow-md @xl:shadow-lg',
+            darkMode && 'dark'
+          )}
+        >
+          <Column class="w-full gap-4 text-center">
+            {#if useDefaultLogo}
+              <img class="h-8 max-w-full" src={logoUrl} alt={`${t('logo_of')} ${vendorId}`} />
+              <div class="w-full h-px bg-gray-200 dark:bg-gray-700"></div>
+            {/if}
 
-              <svelte:element this={'slot'} name="features">
-                {#if productFeatures.length}
-                  <Features features={productFeatures} class="font-bold" />
+            <Column class="w-full gap-2">
+              <div
+                class="text-2xl @sm:text-[2rem] leading-tight [font-weight:var(--s-paywall-headline-font-weight)] [font-family:var(--s-paywall-headline-font-family)]"
+              >
+                <svelte:element this={'slot'} name="headline">{headline}</svelte:element>
+              </div>
+              <svelte:element this={'slot'} name="below-headline">
+                {#if product.description}
+                  <DescriptionWithReadMore
+                    description={product.description}
+                    readMoreLink={product.readMoreLink}
+                    readMoreText={product.readMoreText}
+                    {t}
+                    class="text-sm"
+                  />
                 {/if}
               </svelte:element>
-
-              <InputGroup>
-                <Input
-                  type="email"
-                  autocomplete="email"
-                  onkeyup={provideSuggestion}
-                  bind:value={email}
-                  compact
-                  hasError={!!error}
-                  placeholder={t('email')}
-                />
-                {#if emailSuggestion}
-                  <button
-                    type="button"
-                    class="text-sm gap-1 row mt-2"
-                    onclick={() => {
-                      email = emailSuggestion;
-                      emailSuggestion = '';
-                    }}
-                  >
-                    <Icon class="text-primary text-xl" name="info" />
-                    <span>
-                      {t('did_you_mean')}{' '}
-                      <span class="text-primary">{emailSuggestion}</span>?
-                    </span>
-                  </button>
-                {/if}
-              </InputGroup>
-
-              <Button
-                {loading}
-                disabled={loading}
-                class="w-full shadow-md bg-[var(--s-paywall-btn-bg-color)] text-[var(--s-paywall-btn-text-color)]"
-                type="submit"
-              >
-                {product.buttonText || t('continue')}
-              </Button>
-
-              {#if error}
-                <Error text={error} />
-              {/if}
-
-              <svelte:element this={'slot'} name="below-button" />
-
-              {#if showLogin}
-                <div
-                  class="w-full h-px from-transparent bg-gradient-to-r to-transparent via-primary opacity-30"
-                ></div>
-                <Row class="w-full">
-                  <sesamy-login
-                    class="border-0 p-0 underline underline-offset-4 transition-opacity enabled:hover:bg-transparent enabled:hover:opacity-80"
-                  >
-                    <svelte:element this={'slot'} name="login-button-text" slot="button-text">
-                      {t('already_subscribing')}
-                      {t('login')}
-                    </svelte:element>
-                  </sesamy-login>
-                </Row>
-              {/if}
-
-              <div class="gap-3 row !justify-between w-full mt-2 @md:mt-4">
-                <Row
-                  up
-                  left
-                  class="gap-2 text-xs !flex-nowrap text-[var(--s-paywall-text-color-70)]"
-                >
-                  <Icon name="lock" class="my-px" />
-                  <span>
-                    {@html t('powered_by_sesamy', {
-                      0: (text) =>
-                        `<a class="whitespace-nowrap text-[var(--s-paywall-text-color)]" href="https://sesamy.com/?utm_source=${encodeURIComponent(vendorId)}&utm_medium=referral&utm_campaign=paywall_component" target="_blank" rel="noopener">${text}</a>`
-                    })}
-                  </span>
-                </Row>
-                <Row class="gap-2">
-                  {#each (footerPaymentMethods ?? []) as IconName[] as paymentMethod}
-                    <PaymentMethod name={paymentMethod} />
-                  {/each}
-                </Row>
-              </div>
             </Column>
+
+            <div class="w-full h-px bg-gray-200 dark:bg-gray-700"></div>
+
+            <svelte:element this={'slot'} name="features">
+              {#if productFeatures.length}
+                <Features features={productFeatures} class="w-full text-left text-sm space-y-2 @md:space-y-2" />
+              {/if}
+            </svelte:element>
+
+            <InputGroup class="text-left">
+              <Input
+                type="email"
+                autocomplete="email"
+                onkeyup={provideSuggestion}
+                bind:value={email}
+                compact
+                hasError={!!error}
+                placeholder={t('email')}
+              />
+              {#if emailSuggestion}
+                <button
+                  type="button"
+                  class="text-sm gap-1 row mt-2"
+                  onclick={() => {
+                    email = emailSuggestion;
+                    emailSuggestion = '';
+                  }}
+                >
+                  <Icon class="text-primary text-xl" name="info" />
+                  <span>
+                    {t('did_you_mean')}{' '}
+                    <span class="text-primary">{emailSuggestion}</span>?
+                  </span>
+                </button>
+              {/if}
+            </InputGroup>
+
+            <Button
+              {loading}
+              disabled={loading}
+              size="lg"
+              class="w-full shadow-md bg-[var(--s-paywall-btn-bg-color)] text-[var(--s-paywall-btn-text-color)]"
+              type="submit"
+            >
+              {product.buttonText || t('continue')}
+            </Button>
+
+            {#if error}
+              <Error text={error} />
+            {/if}
+
+            <svelte:element this={'slot'} name="below-button" />
+
+            {#if showLogin}
+              <Row class="w-full">
+                <sesamy-login
+                  class="border-0 p-0 text-sm transition-opacity enabled:hover:bg-transparent enabled:hover:opacity-80"
+                >
+                  <svelte:element this={'slot'} name="login-button-text" slot="button-text">
+                    {t('already_subscribing')}
+                    <span class="text-primary underline underline-offset-4">{t('login')}</span>
+                  </svelte:element>
+                </sesamy-login>
+              </Row>
+            {/if}
+
+            {#if footerPaymentMethods?.length}
+              <Row class="gap-2">
+                {#each footerPaymentMethods as IconName[] as paymentMethod}
+                  <PaymentMethod name={paymentMethod} />
+                {/each}
+              </Row>
+            {/if}
           </Column>
         </form>
       </div>
