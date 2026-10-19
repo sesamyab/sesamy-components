@@ -6,7 +6,7 @@
   import {
     formatPhoneNumber,
     getCallingCode,
-    isInternational,
+    getInternationalDigits,
     parsePhoneNumber,
     phoneCountryCodes
   } from '../utils/phone';
@@ -39,8 +39,10 @@
     onChange
   }: Props = $props();
 
-  // Starts from a value set by the parent; the field shows it as typed from then on
+  // What the user typed. Starts from, and follows, a value set by the parent.
   let input = $state(untrack(() => value) ?? '');
+  // The last value this component bound, to tell its own updates apart from the parent's
+  let bound = untrack(() => value);
   // Full validation and formatting, loaded on demand. Until it arrives (or if it fails to
   // load) the number is only checked for a plausible length.
   let lib = $state<typeof PhoneLib | null>(null);
@@ -63,12 +65,21 @@
       element.value = next;
     }
     input = next;
-    // A number typed in international format selects its own country. Only done here, on
-    // input, so picking another country in the dropdown afterwards isn't reverted.
-    if (isInternational(next)) {
-      const { country } = parsePhoneNumber(next, selectedCountry, lib);
-      if (country !== selectedCountry) selectedCountry = country;
+    // A number typed in international format with another calling code selects its country
+    if (parsed.country !== selectedCountry) selectedCountry = parsed.country;
+  };
+
+  // Picking a country while the field holds an international number for another country
+  // keeps the digits after the old calling code as a national number for the new country
+  const handleCountryChange = (event: Event & { currentTarget: HTMLSelectElement }) => {
+    const country = event.currentTarget.value;
+    const internationalDigits = getInternationalDigits(input);
+    const oldCallingCode = getCallingCode(selectedCountry);
+    if (internationalDigits?.startsWith(oldCallingCode)) {
+      const nationalNumber = internationalDigits.slice(oldCallingCode.length);
+      input = lib ? formatPhoneNumber(nationalNumber, country, lib) : nationalNumber;
     }
+    selectedCountry = country;
   };
 
   const countries = $derived(
@@ -80,10 +91,20 @@
       .sort((a, b) => a.label.localeCompare(b.label, locale))
   );
 
+  const parsed = $derived(parsePhoneNumber(input, selectedCountry, lib));
+
   $effect(() => {
-    const parsed = parsePhoneNumber(input, selectedCountry, lib);
+    bound = parsed.value;
     value = parsed.value;
     valid = parsed.valid;
+  });
+
+  // The parent set or reset the value, e.g. to null after a submit
+  $effect(() => {
+    const next = value;
+    untrack(() => {
+      if (next !== bound) input = next ?? '';
+    });
   });
 
   $effect(() => {
@@ -104,7 +125,8 @@
       id="phone-country-select"
       class="absolute peer inset-0 opacity-0 cursor-pointer"
       aria-label={t('country')}
-      bind:value={selectedCountry}
+      value={selectedCountry}
+      onchange={handleCountryChange}
     >
       {#each countries as country (country.code)}
         <option value={country.code}>{country.label}</option>

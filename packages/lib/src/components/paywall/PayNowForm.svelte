@@ -22,6 +22,7 @@
   import BirthDateInput from '../BirthDateInput.svelte';
   import { PAYMENT_METHODS_SORT_ORDER } from '../../constants/payment-methods';
   import PhoneNumberInput from '../PhoneNumberInput.svelte';
+  import { getCallingCode } from '../../utils/phone';
   import type { Paywall } from '../../types/Paywall';
 
   type Props = {
@@ -53,7 +54,10 @@
   let phoneNumber = $state<string | null>(null);
   let isValidPhoneNumber = $state(false);
   let country = $state(checkout.country || 'SE'); // Must provide a fallback value since `Checkout.country` is optional
-  let phoneCountry = $state(checkout.country || 'SE'); // Separate state for phone input country
+  // Separate state for phone input country. Some countries (e.g. Antarctica) have no calling code.
+  let phoneCountry = $state(
+    checkout.country && getCallingCode(checkout.country) ? checkout.country : 'SE'
+  );
   let birthYear = $state('');
   let birthMonth = $state('');
   let birthDay = $state('');

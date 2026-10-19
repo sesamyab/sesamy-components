@@ -96,6 +96,28 @@ describe('PhoneNumberInput without the full library, country selection', () => {
     flushSync();
     expect(props.selectedCountry).toBe('NO');
     expect(select.value).toBe('NO');
+    // The digits after +46 become a national number for Norway
+    expect(input.value).toBe('701234567');
+    expect(props.value).toBe('+47701234567');
+    // and typing on doesn't switch back to Sweden
+    await userEvent.type(input, '8');
+    flushSync();
+    expect(props.selectedCountry).toBe('NO');
+  });
+
+  it('follows a value reset by the parent', async () => {
+    const { props, input } = await setup({ withLib: false });
+    await userEvent.type(input, '070-123 45 67');
+    flushSync();
+    expect(props.value).toBe('+46701234567');
+    props.value = null;
+    flushSync();
+    expect(input.value).toBe('');
+    expect(props.value).toBeNull();
+    props.value = '+4741234567';
+    flushSync();
+    expect(input.value).toBe('+4741234567');
+    expect(props.valid).toBe(true);
   });
 
   it('shows a value set by the parent', async () => {
@@ -107,6 +129,15 @@ describe('PhoneNumberInput without the full library, country selection', () => {
 });
 
 describe('PhoneNumberInput with the full library', () => {
+  it('keeps a selected country that shares the calling code', async () => {
+    const { props, input } = await setup({ withLib: true, selectedCountry: 'CA' });
+    await userEvent.type(input, '+1 212 555 0123');
+    flushSync();
+    expect(props.selectedCountry).toBe('CA');
+    expect(props.value).toBe('+12125550123');
+    expect(props.valid).toBe(true);
+  });
+
   it('does not change the country for a national number', async () => {
     // With US selected, libphonenumber attributes 416 numbers to Canada
     const { props, input } = await setup({ withLib: true, selectedCountry: 'US' });

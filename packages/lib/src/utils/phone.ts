@@ -7,7 +7,10 @@ export type ParsedPhoneNumber = {
   value: string | null;
   /** Whether the number has a plausible length for its country. The server does full validation. */
   valid: boolean;
-  /** The country the number belongs to; differs from the selected one when typed in international format */
+  /**
+   * The country the number belongs to. The selected country, unless the number is typed in
+   * international format with another calling code; then the main country for that code.
+   */
   country: string;
 };
 
@@ -21,25 +24,38 @@ function isPossibleLength(country: string, nationalNumber: string) {
   return phonePlans[country]?.[2].includes(nationalNumber.length) ?? false;
 }
 
-function parseInternational(digits: string, selectedCountry: string): ParsedPhoneNumber {
-  const value = `+${digits}`;
-  // Prefer the selected country when the calling code matches (e.g. +1 for both US and CA),
-  // then the main country for the code, which phonePlans lists first
-  let firstMatch: string | undefined;
-  for (const country of [selectedCountry, ...phoneCountryCodes]) {
-    const callingCode = getCallingCode(country);
-    if (!callingCode || !digits.startsWith(callingCode)) continue;
-    if (isPossibleLength(country, digits.slice(callingCode.length))) {
-      return { value, valid: true, country };
-    }
-    firstMatch ??= country;
-  }
-  return { value, valid: false, country: firstMatch ?? selectedCountry };
+/**
+ * The digits after the exit code when the input is written in international format
+ * (`+46 70…` or `0046 70…` gives `4670…`), or `null` for a national number.
+ */
+export function getInternationalDigits(input: string): string | null {
+  const match = /^\s*(\+|00)(.*)$/.exec(input);
+  return match ? match[2].replace(/\D/g, '') : null;
 }
 
-/** Whether the input is written in international format, `+46…` or `0046…` */
-export function isInternational(input: string) {
-  return /^\s*(\+|00)/.test(input);
+/**
+ * The country for a number in international format: the selected country when the calling
+ * code matches (so +1 keeps CA selected), otherwise the main country for the code, which
+ * phonePlans lists first.
+ */
+function getInternationalCountry(digits: string, selectedCountry: string) {
+  return (
+    [selectedCountry, ...phoneCountryCodes].find((country) => {
+      const callingCode = getCallingCode(country);
+      return callingCode && digits.startsWith(callingCode);
+    }) ?? selectedCountry
+  );
+}
+
+function parseInternational(digits: string, selectedCountry: string): ParsedPhoneNumber {
+  const country = getInternationalCountry(digits, selectedCountry);
+  const callingCode = getCallingCode(country);
+  return {
+    value: `+${digits}`,
+    valid:
+      digits.startsWith(callingCode) && isPossibleLength(country, digits.slice(callingCode.length)),
+    country
+  };
 }
 
 /**
@@ -58,15 +74,14 @@ export function parsePhoneNumber(
   if (!lib || !basic.value) return basic;
 
   // libphonenumber only accepts the selected country's own exit code (011 in the US), so pass
-  // 00 as + to treat `0046…` the same as without the library
-  const normalized = input.trim().startsWith('00') ? `+${input.trim().slice(2)}` : input;
+  // international numbers with + to treat `0046…` the same as without the library
+  const internationalDigits = getInternationalDigits(input);
+  const normalized = internationalDigits === null ? input : `+${internationalDigits}`;
   const phone = lib.parsePhoneNumberFromString(normalized, selectedCountry as CountryCode);
+  // The country comes from the basic parse in both cases, so it doesn't depend on whether
+  // the library has loaded (libphonenumber would e.g. move +1 416 numbers from US to CA)
   if (!phone) return { ...basic, valid: false };
-  return {
-    value: phone.number,
-    valid: phone.isValid(),
-    country: phone.country ?? basic.country
-  };
+  return { value: phone.number, valid: phone.isValid(), country: basic.country };
 }
 
 /** Formats a partially typed number the way it is usually written in the country. */
@@ -78,8 +93,12 @@ function parseBasic(input: string, selectedCountry: string): ParsedPhoneNumber {
   const digits = input.replace(/\D/g, '');
   if (!digits) return { value: null, valid: false, country: selectedCountry };
 
-  if (input.trim().startsWith('+')) return parseInternational(digits, selectedCountry);
-  if (input.trim().startsWith('00')) return parseInternational(digits.slice(2), selectedCountry);
+  const internationalDigits = getInternationalDigits(input);
+  if (internationalDigits !== null) {
+    return internationalDigits
+      ? parseInternational(internationalDigits, selectedCountry)
+      : { value: null, valid: false, country: selectedCountry };
+  }
 
   const [callingCode = '', nationalPrefix = ''] = phonePlans[selectedCountry] ?? [];
   let nationalNumber = digits;
