@@ -1,7 +1,14 @@
 import { countryCodes } from '../constants/countries';
 
+// Country lists look up ~250 names at a time, so reuse one formatter per locale
+const displayNames = new Map<string, Intl.DisplayNames>();
+
 function getCountryNameByCountryCode(countryCode: string, locale = 'en') {
-  const countryName = new Intl.DisplayNames(locale, { type: 'region' });
+  let countryName = displayNames.get(locale);
+  if (!countryName) {
+    countryName = new Intl.DisplayNames(locale, { type: 'region' });
+    displayNames.set(locale, countryName);
+  }
 
   return countryName.of(countryCode.toUpperCase());
 }

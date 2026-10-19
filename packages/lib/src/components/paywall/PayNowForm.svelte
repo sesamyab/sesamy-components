@@ -1,6 +1,4 @@
 <script lang="ts">
-  import flagstyles from '../../flags.css?inline';
-  import flagsImage from '../../flags_responsive.png?url';
   import { getCountriesOptions } from '../../utils/countries';
   import Button from '../../Button.wc.svelte';
   import type { TranslationFunction } from '../../i18n';
@@ -24,7 +22,7 @@
   import BirthDateInput from '../BirthDateInput.svelte';
   import { PAYMENT_METHODS_SORT_ORDER } from '../../constants/payment-methods';
   import PhoneNumberInput from '../PhoneNumberInput.svelte';
-  import type { CountryCode } from 'svelte-tel-input/types';
+  import { getCallingCode } from '../../utils/phone';
   import type { Paywall } from '../../types/Paywall';
 
   type Props = {
@@ -53,10 +51,13 @@
   let email = $state('');
   let firstName = $state('');
   let lastName = $state('');
-  let phoneNumber = $state('');
+  let phoneNumber = $state<string | null>(null);
   let isValidPhoneNumber = $state(false);
   let country = $state(checkout.country || 'SE'); // Must provide a fallback value since `Checkout.country` is optional
-  let phoneCountry = $state<CountryCode>((checkout.country as CountryCode) || 'SE'); // Separate state for phone input country
+  // Separate state for phone input country. Some countries (e.g. Antarctica) have no calling code.
+  let phoneCountry = $state(
+    checkout.country && getCallingCode(checkout.country) ? checkout.country : 'SE'
+  );
   let birthYear = $state('');
   let birthMonth = $state('');
   let birthDay = $state('');
@@ -350,6 +351,8 @@
           bind:value={phoneNumber}
           bind:valid={isValidPhoneNumber}
           bind:selectedCountry={phoneCountry}
+          locale={checkout.language}
+          vendorId={paywall.vendorId}
           {t}
           hasError={!!errors?.phoneNumber}
           onChange={() => (errors = undefined)}
@@ -490,8 +493,3 @@
     <span>{t('go_back')}</span>
   </button>
 </form>
-
-{@html '<sty' +
-  'le>' +
-  flagstyles.replace('url(flags_responsive.png)', `url(${flagsImage})`) +
-  '</style>'}
