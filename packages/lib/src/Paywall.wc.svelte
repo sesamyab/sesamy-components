@@ -7,6 +7,7 @@
   import Renderer from './components/paywall/Renderer.svelte';
   import type { Paywall } from './types/Paywall';
   import LoginRenderer from './components/paywall/LoginRenderer.svelte';
+  import EmailRenderer from './components/paywall/EmailRenderer.svelte';
   import type { SesamyAPI } from '@sesamy/sesamy-js';
   import { dispatchSesamyEvent } from './events';
 
@@ -93,6 +94,16 @@
       {:else if result.template === 'BOXES'}
         <Renderer
           horizontal
+          {api}
+          paywall={result.paywall}
+          {host}
+          {t}
+          onShown={markShown}
+          onAccessGranted={markAccessGranted}
+          {...props}
+        />
+      {:else if result.template === 'EMAIL'}
+        <EmailRenderer
           {api}
           paywall={result.paywall}
           {host}

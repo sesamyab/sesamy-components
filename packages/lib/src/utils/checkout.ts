@@ -58,6 +58,33 @@ export const resolveRedirectLabel = (...candidates: (string | undefined)[]): str
   return undefined;
 };
 
+const UTM_ATTRIBUTES = [
+  ['utmSource', 'utm-source'],
+  ['utmMedium', 'utm-medium'],
+  ['utmCampaign', 'utm-campaign'],
+  ['utmTerm', 'utm-term'],
+  ['utmContent', 'utm-content']
+] as const;
+
+export type UtmAttribution = Partial<Record<(typeof UTM_ATTRIBUTES)[number][0], string>>;
+
+/**
+ * The checkout attribution for the `utm-*` attributes on the paywall element.
+ *
+ * Only the attributes that are actually set. An unset one sent as undefined
+ * would override the UTMs sesamy-js stored from the landing URL.
+ */
+export const utmAttribution = (
+  props?: Partial<Record<(typeof UTM_ATTRIBUTES)[number][1], string>>
+): UtmAttribution => {
+  const utm: UtmAttribution = {};
+  for (const [key, attribute] of UTM_ATTRIBUTES) {
+    const value = props?.[attribute];
+    if (value) utm[key] = value;
+  }
+  return utm;
+};
+
 export const goToCheckout = async (
   checkout: Checkout,
   paymentMethod?: PaymentMethodType,

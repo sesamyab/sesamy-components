@@ -12,7 +12,7 @@ export interface LoginProps {
 }
 
 export type PaywallProps = {
-  template?: 'ARTICLE' | 'BOXES';
+  template?: 'ARTICLE' | 'BOXES' | 'EMAIL';
   ['settings-url']?: string;
   ['item-src']?: string;
   price?: string;

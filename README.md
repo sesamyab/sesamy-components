@@ -268,7 +268,7 @@ The container also emits the `viewArticle` and `content_unlocked` interactions t
 
 **When access cannot be resolved:**
 
-The container only removes the `content` slot on a definite denial. If the access check fails (no token, a network error) or does not answer within 10 seconds, the state is unknown and the `preview` slot is shown, with the article left in place. The container then checks again by itself after 1s, 3s and 10s, then every 30s, and straight away when the browser comes back online or the tab becomes visible again, until it gets an answer. A slow answer that arrives after its check timed out is still used. Once an article is shown, a later check that cannot be resolved does not hide it. `content_access_unresolved` and `content_access_recovered` report how often this happens.
+The container only removes the `content` slot on a definite denial. If the access check fails (no token, a network error) or does not answer within 10 seconds, the state is unknown and the `preview` slot is shown, with the article left in place. The container then checks again by itself after 1s, 3s and 10s, then every 30s, and straight away when the browser comes back online or the tab becomes visible again, until it gets an answer. A slow answer that arrives after its check timed out is still used. Once an article is shown, a later check that cannot be resolved does not hide it. `content_access_unresolved` and `content_access_recovered` report how often this happens. With a sesamy-js that provides `sesamy.errors.report`, the same two moments are also sent to Sesamy's error reporting (category `component`, with the reason, attempts and elapsed time), alongside the auth and API failures sesamy-js reports itself.
 
 ```js
 const el = document.querySelector('sesamy-content-container');
@@ -295,7 +295,7 @@ el.addEventListener('sesamy:content-unlocked', (e) => {
 
 ### sesamy-paywall
 
-A web component that displays a paywall for content, loading paywall settings from a remote URL and supporting different templates (Article, Boxes, Login).
+A web component that displays a paywall for content, loading paywall settings from a remote URL and supporting different templates (Article, Boxes, Login, Email).
 
 **Props/Attributes:**
 
@@ -339,6 +339,48 @@ It is plain text and not translated. Blank values fall through. With none set,
 no label is sent and the checkout keeps its default. This needs an api2 that
 accepts `redirectLabel` on `POST /checkouts`. Older api2 versions ignore it.
 
+**Email template:**
+
+With `settings.template` set to `EMAIL`, the paywall sells one offer and asks
+only for an email address, then sends the reader to checkout with the address
+filled in. Everything it shows comes from the paywall settings, so each
+publisher configures their own copy and branding:
+
+| Shown                      | Taken from                                                   |
+| -------------------------- | ------------------------------------------------------------ |
+| Logo                       | `logoUrl`, when `settings.useDefaultLogo` is on              |
+| Headline                   | `headline`                                                   |
+| Text below the headline    | `description` of the offer                                   |
+| Benefits list              | `features` of the offer, else the paywall-wide `features`    |
+| Button text                | `buttonText` of the offer, else the translated "Continue"    |
+| "Already subscribing?" row | shown to logged-out readers when `showLoginButton` is on     |
+| Colors and background      | `mainColor` and `settings.styling`, like the other templates |
+
+The offer is the subscription option marked `selected`, or the first one. With
+no options the paywall renders nothing. The checkout is created with the
+option's discount code, the same redirect and redirect label resolution as the
+other templates, and `email` set to the address. A reader who is logged in but
+has no access gets their account's address filled in. An option of type URL
+links straight out, as in the other templates.
+
+The address is part of the `payload` of the cancelable
+`sesamyPaywallCreateCheckout` event. A listener that forwards that payload to an
+analytics or tag manager is sending personal data, so pick the fields it sends.
+
+It renders as a compact, centered card. On top of the shared paywall tokens
+(`--sesamy-paywall-primary-color`, `--sesamy-paywall-bg-color`,
+`--sesamy-paywall-border-radius`, `--sesamy-paywall-btn-bg-color`, …) it reads:
+
+```css
+sesamy-paywall {
+  --sesamy-paywall-headline-font-family: Georgia, serif; /* default: --sesamy-font-family */
+  --sesamy-paywall-headline-font-weight: 500; /* default 700 */
+  --sesamy-paywall-max-width: 560px; /* default 490px at a 16px base size */
+}
+```
+
+The payment method logos are shown only when `footerPaymentMethods` is set.
+
 **Events:**
 
 Per-element events dispatched directly on the `<sesamy-paywall>` element (bubble, composed):
@@ -372,6 +414,7 @@ The paywall also emits the `addToCart` interaction through sesamy-js when the us
 - `features`: Content rendered in the features section of the paywall (e.g., feature list, benefits)
 - `login-button-text`: Replaces the text of the "already subscribing" login button
 - `logout-button-text`: Replaces the "Log out" text in the row a logged-in reader without access sees
+- `below-button`: Content rendered below the continue button, for example terms or a privacy notice (`EMAIL` template only)
 
 **Basic Usage Example:**
 
@@ -394,13 +437,13 @@ The paywall also emits the `addToCart` interaction through sesamy-js when the us
 
 #### Slots
 
-The `sesamy-paywall` component provides five slots for customization:
+The `sesamy-paywall` component provides six slots for customization:
 
 ##### headline
 
 - **Purpose:** Replaces the headline configured in the paywall settings.
 - **Behavior:** When you provide content in the `headline` slot, it is rendered in place of the stored headline, with the headline's own styling (size, weight, max width). When you leave it empty, the headline from the paywall settings is shown. Use this to vary the copy per placement (e.g., article vs. front page) while reusing one paywall configuration.
-- **Availability:** All templates (`ARTICLE`, `BOXES`, `LOGIN`).
+- **Availability:** All templates (`ARTICLE`, `BOXES`, `LOGIN`, `EMAIL`).
 - **Example:**
   ```html
   <sesamy-paywall settings-url="https://api.example.com/paywall/settings">
@@ -411,7 +454,7 @@ The `sesamy-paywall` component provides five slots for customization:
 ##### below-headline
 
 - **Purpose:** Inserts custom content directly below the paywall headline.
-- **Behavior:** The content you provide in this slot will be rendered in addition to the default paywall content, immediately below the headline. Use this for adding extra information, banners, or custom elements.
+- **Behavior:** The content you provide in this slot will be rendered in addition to the default paywall content, immediately below the headline. Use this for adding extra information, banners, or custom elements. In the `EMAIL` template the slot replaces the offer's description, which is rendered there by default.
 - **Example:**
   ```html
   <sesamy-paywall settings-url="https://api.example.com/paywall/login-settings">
@@ -423,7 +466,7 @@ The `sesamy-paywall` component provides five slots for customization:
 
 - **Purpose:** Replaces the default features section of the paywall.
 - **Behavior:** When you provide content in the `features` slot, it will completely replace the built-in features list or section. Use this slot to fully customize the list of benefits, features, or selling points shown to the user. Slotted content is static: it does not switch when the visitor selects a different subscription option the way the built-in list does.
-- **Availability:** Only the `ARTICLE` template renders a paywall-wide features list. The `BOXES` template shows features inside each box, so the slot has no effect there.
+- **Availability:** The `ARTICLE` and `EMAIL` templates render a features list. The `BOXES` template shows features inside each box, so the slot has no effect there.
 - **Example:**
   ```html
   <sesamy-paywall settings-url="https://api.example.com/paywall/settings">
@@ -441,7 +484,7 @@ The `sesamy-paywall` component provides five slots for customization:
 
 - **Purpose:** Replaces the text of the "already subscribing" login button the paywall renders above the headline.
 - **Behavior:** The paywall embeds a nested `sesamy-login` component and forwards this slot into that component's own `button-text` slot. When you leave it empty, the default translated text (`Already subscribing? Login`) is used.
-- **Availability:** Only the `ARTICLE` template renders this login button. The `BOXES` template hides it, and the `LOGIN` template doesn't embed a `sesamy-login` at all, so the slot has no effect there.
+- **Availability:** The `ARTICLE` and `EMAIL` templates render this login button (the `EMAIL` template below the form). The `BOXES` template hides it, and the `LOGIN` template doesn't embed a `sesamy-login` at all, so the slot has no effect there.
 - **Styling:** Inside the paywall this button is rendered borderless and underlined (4px offset), at the base font size (16px by default) rather than the 14px a standalone `sesamy-login` uses, and it fades to 80% opacity on hover. Set `--sesamy-login-button-text-size` on the paywall to override the size; the other `--sesamy-login-button-*` variables apply as usual.
 - **Example:**
   ```html
@@ -462,9 +505,21 @@ The `sesamy-paywall` component provides five slots for customization:
   </sesamy-paywall>
   ```
 
+##### below-button
+
+- **Purpose:** Inserts custom content directly below the continue button.
+- **Behavior:** Rendered in addition to the default content. Use it for terms, a privacy notice or other small print that belongs next to the button.
+- **Availability:** Only the `EMAIL` template.
+- **Example:**
+  ```html
+  <sesamy-paywall settings-url="https://api.example.com/paywall/email-settings">
+    <small slot="below-button">By continuing you accept our terms.</small>
+  </sesamy-paywall>
+  ```
+
 **Note:**
 
-- The `below-headline` slot adds to the paywall, while the `headline`, `features` and `login-button-text` slots replace the default content entirely. The `logout-button-text` slot replaces only the "Log out" label.
+- The `below-headline` and `below-button` slots add to the paywall, while the `headline`, `features` and `login-button-text` slots replace the default content entirely. The `logout-button-text` slot replaces only the "Log out" label.
 
 ### sesamy-visibility
 
