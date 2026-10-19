@@ -1,3 +1,26 @@
+# [2.30.0](https://github.com/sesamyab/sesamy-components/compare/v2.29.0...v2.30.0) (2026-10-19)
+
+
+### Bug Fixes
+
+* **content-container:** send unresolved access checks to error reporting ([c6ac4df](https://github.com/sesamyab/sesamy-components/commit/c6ac4df16cc6e580b781b4106eea6d77d06d04c9))
+* **paywall:** address review feedback on the EMAIL template ([5292406](https://github.com/sesamyab/sesamy-components/commit/5292406752656d441dd9c3aff84f1fa36ada2ff0))
+* **paywall:** address review feedback on the phone input ([62e2749](https://github.com/sesamyab/sesamy-components/commit/62e2749b3d8d231374390012e51c30a9941cb7f0))
+* **paywall:** keep the external option URL narrowed for the redirect ([a9f7958](https://github.com/sesamyab/sesamy-components/commit/a9f7958cd8a4839dcdb3fe9c952be4bb0541b89d))
+* **paywall:** keep the phone input's country and value in sync ([57fd227](https://github.com/sesamyab/sesamy-components/commit/57fd227908ba2957430bf43f8e29d476faa095e5))
+* **paywall:** select the country of a phone number set by the parent ([83e19ba](https://github.com/sesamyab/sesamy-components/commit/83e19ba456ce96689b97e2200641211d9a5b8746))
+
+
+### Features
+
+* **paywall:** add an EMAIL template that asks only for an email before checkout ([12a55d2](https://github.com/sesamyab/sesamy-components/commit/12a55d208a1b6160177e88b45d47064ebc19dadf))
+* **paywall:** render the EMAIL template as a compact centered card ([360e4c1](https://github.com/sesamyab/sesamy-components/commit/360e4c14dfbae17ab9d0e81138bafe103ae22c98))
+
+
+### Performance Improvements
+
+* **paywall:** load libphonenumber-js on demand instead of bundling it ([408f9aa](https://github.com/sesamyab/sesamy-components/commit/408f9aa86cfff6daa159ded0b2f76b69f9f0d9ec))
+
 # [2.29.0](https://github.com/sesamyab/sesamy-components/compare/v2.28.0...v2.29.0) (2026-10-13)
 
 
