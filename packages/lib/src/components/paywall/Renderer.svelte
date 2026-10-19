@@ -18,7 +18,12 @@
   import PayNowForm from './PayNowForm.svelte';
   import { onMount, onDestroy } from 'svelte';
   import { parsePrice } from '../../utils/money';
-  import { goToCheckout, resolveRedirectLabel, resolveRedirectUrl } from '../../utils/checkout';
+  import {
+    goToCheckout,
+    resolveRedirectLabel,
+    resolveRedirectUrl,
+    utmAttribution
+  } from '../../utils/checkout';
   import { dispatchSesamyEvent, SesamyJsEvent } from '../../events';
   import { resolveItemSrc, track } from '../../tracking';
 
@@ -147,25 +152,6 @@
     return hasAccess;
   };
 
-  const UTM_ATTRIBUTES = [
-    ['utmSource', 'utm-source'],
-    ['utmMedium', 'utm-medium'],
-    ['utmCampaign', 'utm-campaign'],
-    ['utmTerm', 'utm-term'],
-    ['utmContent', 'utm-content']
-  ] as const;
-
-  // Only the utm-* attributes that are actually set. An unset one sent as
-  // undefined would override the UTMs sesamy-js stored from the landing URL.
-  const utmAttribution = () => {
-    const utm: Partial<Record<(typeof UTM_ATTRIBUTES)[number][0], string>> = {};
-    for (const [key, attribute] of UTM_ATTRIBUTES) {
-      const value = userProps?.[attribute];
-      if (value) utm[key] = value;
-    }
-    return utm;
-  };
-
   const doCreateCheckout = async (selectedProduct: Product) => {
     error = '';
     loading = true;
@@ -219,7 +205,7 @@
         price: selectedProduct.price,
         currency,
         attribution: {
-          ...utmAttribution(),
+          ...utmAttribution(userProps),
           // Attribute the checkout to this paywall's article: the explicit
           // `item-src` attribute, or the URL resolved from the paywall host
           // (which itself falls back to the page URL in sesamy-js).
