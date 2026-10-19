@@ -2,10 +2,11 @@
   import { twMerge } from 'tailwind-merge';
   import type { TranslationFunction } from '../i18n';
   import { getCountryNameByCountryCode } from '../utils/countries';
-  import { onMount } from 'svelte';
+  import { onMount, untrack } from 'svelte';
   import {
     formatPhoneNumber,
     getCallingCode,
+    isInternational,
     parsePhoneNumber,
     phoneCountryCodes
   } from '../utils/phone';
@@ -38,7 +39,8 @@
     onChange
   }: Props = $props();
 
-  let input = $state('');
+  // Starts from a value set by the parent; the field shows it as typed from then on
+  let input = $state(untrack(() => value) ?? '');
   // Full validation and formatting, loaded on demand. Until it arrives (or if it fails to
   // load) the number is only checked for a plausible length.
   let lib = $state<typeof PhoneLib | null>(null);
@@ -46,7 +48,9 @@
   onMount(() => {
     loadPhoneLib(vendorId)
       .then((loaded) => (lib = loaded))
-      .catch(() => {});
+      .catch((error) => {
+        console.warn('[sesamy] Phone number library unavailable, using basic validation', error);
+      });
   });
 
   const handleInput = (event: Event & { currentTarget: HTMLInputElement }) => {
@@ -59,6 +63,12 @@
       element.value = next;
     }
     input = next;
+    // A number typed in international format selects its own country. Only done here, on
+    // input, so picking another country in the dropdown afterwards isn't reverted.
+    if (isInternational(next)) {
+      const { country } = parsePhoneNumber(next, selectedCountry, lib);
+      if (country !== selectedCountry) selectedCountry = country;
+    }
   };
 
   const countries = $derived(
@@ -74,8 +84,6 @@
     const parsed = parsePhoneNumber(input, selectedCountry, lib);
     value = parsed.value;
     valid = parsed.valid;
-    // A number typed in international format selects its own country
-    if (parsed.country !== selectedCountry) selectedCountry = parsed.country;
   });
 
   $effect(() => {

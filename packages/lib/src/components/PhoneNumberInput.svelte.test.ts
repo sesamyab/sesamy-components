@@ -15,16 +15,24 @@ afterEach(() => {
   document.body.innerHTML = '';
 });
 
-const setup = async ({ withLib }: { withLib: boolean }) => {
+const setup = async ({
+  withLib,
+  selectedCountry = 'SE',
+  value = null
+}: {
+  withLib: boolean;
+  selectedCountry?: string;
+  value?: string | null;
+}) => {
   const loading = withLib
     ? import('libphonenumber-js/max')
     : Promise.reject(new Error('blocked by the page'));
   vi.mocked(loadPhoneLib).mockReturnValue(loading);
   const props = $state({
     t: (key: string) => key,
-    value: null as string | null,
+    value: value as string | null,
     valid: false,
-    selectedCountry: 'SE',
+    selectedCountry,
     vendorId: 'vendor',
     locale: 'en'
   });
@@ -78,7 +86,36 @@ describe('PhoneNumberInput without the full library', () => {
   });
 });
 
+describe('PhoneNumberInput without the full library, country selection', () => {
+  it('keeps a country picked after typing an international number', async () => {
+    const { props, input, select } = await setup({ withLib: false });
+    await userEvent.type(input, '+46 70 123 45 67');
+    flushSync();
+    expect(select.value).toBe('SE');
+    await userEvent.selectOptions(select, 'NO');
+    flushSync();
+    expect(props.selectedCountry).toBe('NO');
+    expect(select.value).toBe('NO');
+  });
+
+  it('shows a value set by the parent', async () => {
+    const { props, input } = await setup({ withLib: false, value: '+46701234567' });
+    expect(input.value).toBe('+46701234567');
+    expect(props.value).toBe('+46701234567');
+    expect(props.valid).toBe(true);
+  });
+});
+
 describe('PhoneNumberInput with the full library', () => {
+  it('does not change the country for a national number', async () => {
+    // With US selected, libphonenumber attributes 416 numbers to Canada
+    const { props, input } = await setup({ withLib: true, selectedCountry: 'US' });
+    await userEvent.type(input, '416 555 0123');
+    flushSync();
+    expect(props.selectedCountry).toBe('US');
+    expect(props.value).toBe('+14165550123');
+  });
+
   it('formats the number as it is typed', async () => {
     const { props, input } = await setup({ withLib: true });
     await userEvent.type(input, '0701234567');

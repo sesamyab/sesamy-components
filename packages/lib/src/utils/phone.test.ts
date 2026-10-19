@@ -76,6 +76,18 @@ describe('parsePhoneNumber', () => {
   });
 });
 
+describe('parsePhoneNumber for shared calling codes', () => {
+  it('picks the main country, not the first alphabetically', () => {
+    expect(parsePhoneNumber('+358 40 1234567', 'SE')).toMatchObject({ country: 'FI' });
+    expect(parsePhoneNumber('+7 912 345 67 89', 'SE')).toMatchObject({ country: 'RU' });
+    expect(parsePhoneNumber('+1 212 555 0123', 'SE')).toMatchObject({ country: 'US' });
+  });
+
+  it('has no value when only the national prefix is typed', () => {
+    expect(parsePhoneNumber('0', 'SE')).toEqual({ value: null, valid: false, country: 'SE' });
+  });
+});
+
 describe('parsePhoneNumber with libphonenumber-js', async () => {
   const lib = await import('libphonenumber-js/max');
 
@@ -95,6 +107,15 @@ describe('parsePhoneNumber with libphonenumber-js', async () => {
       value: '+4741234567',
       valid: true,
       country: 'NO'
+    });
+  });
+
+  it('accepts 00 as the exit code whatever the selected country', () => {
+    // The US exit code is 011, so libphonenumber alone would read this as a national number
+    expect(parsePhoneNumber('0046 70 123 45 67', 'US', lib)).toEqual({
+      value: '+46701234567',
+      valid: true,
+      country: 'SE'
     });
   });
 
