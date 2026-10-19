@@ -118,6 +118,7 @@ describe('PhoneNumberInput without the full library, country selection', () => {
     flushSync();
     expect(input.value).toBe('+4741234567');
     expect(props.valid).toBe(true);
+    expect(props.selectedCountry).toBe('NO');
   });
 
   it('shows a value set by the parent', async () => {
@@ -125,6 +126,18 @@ describe('PhoneNumberInput without the full library, country selection', () => {
     expect(input.value).toBe('+46701234567');
     expect(props.value).toBe('+46701234567');
     expect(props.valid).toBe(true);
+  });
+
+  it('selects the country of an international value passed in', async () => {
+    const { props, input, select } = await setup({ withLib: false, value: '+4741234567' });
+    expect(props.selectedCountry).toBe('NO');
+    expect(select.value).toBe('NO');
+    // Picking another country then turns the rest into a national number for it
+    await userEvent.selectOptions(select, 'DK');
+    flushSync();
+    expect(input.value).toBe('41234567');
+    expect(props.value).toBe('+4541234567');
+    expect(props.selectedCountry).toBe('DK');
   });
 });
 

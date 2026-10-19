@@ -65,8 +65,6 @@
       element.value = next;
     }
     input = next;
-    // A number typed in international format with another calling code selects its country
-    if (parsed.country !== selectedCountry) selectedCountry = parsed.country;
   };
 
   // Picking a country while the field holds an international number for another country
@@ -97,6 +95,10 @@
     bound = parsed.value;
     value = parsed.value;
     valid = parsed.valid;
+    // An international number with another calling code, typed or set by the parent, selects
+    // its country. A country picked in the dropdown sticks, as picking one makes the number
+    // national (see handleCountryChange).
+    if (parsed.country !== selectedCountry) selectedCountry = parsed.country;
   });
 
   // The parent set or reset the value, e.g. to null after a submit
