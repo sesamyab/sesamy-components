@@ -345,7 +345,8 @@ describe('<sesamy-content-container> on a page that hides the container', () => 
    * pass whatever the component did, including nothing useful.
    */
   const override = (host: HTMLElement) =>
-    host.style.display && `${host.style.display} ${host.style.getPropertyPriority('display')}`.trim();
+    host.style.display &&
+    `${host.style.display} ${host.style.getPropertyPriority('display')}`.trim();
 
   const hiddenByPage = (host: HTMLElement) => getComputedStyle(host).display === 'none';
 
@@ -499,7 +500,7 @@ describe('<sesamy-content-container> on a page that hides the container', () => 
     expect(override(host)).toBe('none');
   });
 
-  it('keeps the page\'s own important inline display, priority and all', async () => {
+  it("keeps the page's own important inline display, priority and all", async () => {
     let entitled = true;
     window.sesamy = fakeApi(() => (entitled ? { id: 'ent_1' } : null));
 

@@ -85,7 +85,6 @@
     }
   }
 
-
   /**
    * Show the host, over a publisher rule that hides it.
    *
@@ -335,10 +334,17 @@
    * article land in one place. sesamy-js versions without `errors.report`
    * simply skip it, and reporting never gets in the way of the gate.
    */
-  function reportToErrors(api: SesamyAPI, error: { name: string; message: string }, details: ErrorDetails) {
+  function reportToErrors(
+    api: SesamyAPI,
+    error: { name: string; message: string },
+    details: ErrorDetails
+  ) {
     try {
-      const errors = (api as { errors?: { report?: (error: unknown, options?: { details?: ErrorDetails }) => void } })
-        .errors;
+      const errors = (
+        api as {
+          errors?: { report?: (error: unknown, options?: { details?: ErrorDetails }) => void };
+        }
+      ).errors;
       errors?.report?.(error, { details: { component: 'content-container', ...details } });
     } catch {
       /* reporting must never break the gate */
@@ -384,7 +390,14 @@
         name: 'ContentAccessRecovered',
         message: `The content access check was answered after ${unresolvedChecks} without an answer`
       },
-      { stage: 'recovered', state, attempts: unresolvedChecks, elapsedMs, publisherContentId, lockMode }
+      {
+        stage: 'recovered',
+        state,
+        attempts: unresolvedChecks,
+        elapsedMs,
+        publisherContentId,
+        lockMode
+      }
     );
   }
 
