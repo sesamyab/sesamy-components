@@ -46,6 +46,8 @@
   let started = false;
   // The fetched article, kept so a re-grant renders without a second round trip.
   let fetchedHtml: string | null = null;
+  let encodedGrantEpoch = -1;
+  let encodedReadInFlightEpoch = -1;
   let fetchInFlight = false;
   // The node rendered beside the host, once it exists.
   let injectedNode: Element | null = null;
@@ -84,7 +86,6 @@
       contentSlot.remove();
     }
   }
-
 
   /**
    * Show the host, over a publisher rule that hides it.
@@ -335,10 +336,17 @@
    * article land in one place. sesamy-js versions without `errors.report`
    * simply skip it, and reporting never gets in the way of the gate.
    */
-  function reportToErrors(api: SesamyAPI, error: { name: string; message: string }, details: ErrorDetails) {
+  function reportToErrors(
+    api: SesamyAPI,
+    error: { name: string; message: string },
+    details: ErrorDetails
+  ) {
     try {
-      const errors = (api as { errors?: { report?: (error: unknown, options?: { details?: ErrorDetails }) => void } })
-        .errors;
+      const errors = (
+        api as {
+          errors?: { report?: (error: unknown, options?: { details?: ErrorDetails }) => void };
+        }
+      ).errors;
       errors?.report?.(error, { details: { component: 'content-container', ...details } });
     } catch {
       /* reporting must never break the gate */
@@ -384,7 +392,14 @@
         name: 'ContentAccessRecovered',
         message: `The content access check was answered after ${unresolvedChecks} without an answer`
       },
-      { stage: 'recovered', state, attempts: unresolvedChecks, elapsedMs, publisherContentId, lockMode }
+      {
+        stage: 'recovered',
+        state,
+        attempts: unresolvedChecks,
+        elapsedMs,
+        publisherContentId,
+        lockMode
+      }
     );
   }
 
@@ -520,14 +535,9 @@
   async function fetchContent(api: SesamyAPI): Promise<string> {
     switch (lockMode) {
       case 'encode':
-        const base64 = storedContentElement?.innerHTML || '';
-        // Convert base64 to UTF-8 string
-        try {
-          return new TextDecoder().decode(Uint8Array.from(atob(base64), (c) => c.charCodeAt(0)));
-        } catch (e) {
-          console.error('Error decoding content:', e);
-          return '';
-        }
+        return api.content.unlock($host().parentElement!, {
+          encodedContent: storedContentElement?.innerHTML || ''
+        });
       case 'event':
         emitUnlockEvent(api);
         return '';
@@ -570,6 +580,21 @@
         return;
       }
 
+      // A cached local decode cannot stand in for registration by a new reader.
+      if (lockMode === 'encode' && encodedGrantEpoch !== epoch) {
+        if (encodedReadInFlightEpoch === epoch) return;
+        encodedReadInFlightEpoch = epoch;
+        try {
+          extractAndStoreContent();
+          const html = await fetchContent(api);
+          if (epoch !== sessionEpoch) return;
+          fetchedHtml = html;
+          encodedGrantEpoch = epoch;
+        } finally {
+          if (encodedReadInFlightEpoch === epoch) encodedReadInFlightEpoch = -1;
+        }
+      }
+
       // Rendered once already. `ContentSlot` owns it from then on: a denial
       // detaches it and a grant puts it back, so there is nothing to redo here.
       if (injectedNode) return;
@@ -610,6 +635,11 @@
         emitUnlockEvent(api);
       }
     } catch (err) {
+      if (lockMode === 'encode' && epoch === sessionEpoch) {
+        access = 'denied';
+        if (contentSlot) applyAccessState('denied', contentSlot);
+        concealHost();
+      }
       console.error('Error unlocking content:', err);
     }
   }
