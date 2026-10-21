@@ -49,7 +49,10 @@
   let style = applyStyles ? '<sty' + 'le>' + libstyles + sesamyDesignTokens + '</style>' : '';
 
   // Combined promise that resolves both API and translator
-  const readyPromise = Promise.all([apiPromise, translatorPromise]).then(([api, t]) => ({ api, t }));
+  const readyPromise = Promise.all([apiPromise, translatorPromise]).then(([api, t]) => ({
+    api,
+    t
+  }));
 
   let reported = false;
   function reportUnavailable(error: unknown) {

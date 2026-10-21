@@ -997,6 +997,11 @@
   resolved "https://registry.yarnpkg.com/@pkgjs/parseargs/-/parseargs-0.11.0.tgz#a77ea742fab25775145434eb1d2328cf5013ac33"
   integrity sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==
 
+"@pkgr/core@^0.2.7":
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/@pkgr/core/-/core-0.2.10.tgz#a8cc84f2e5a207b81b1000737f1c10942e4025cb"
+  integrity sha512-x6fFWCeak8aCGfqZfe6CXYt5xVjxe9Os1cIPmVRcToInKLjhJkRVXvJ/L3/1KxFkjDQdbZV/YsuLKqa8t/xKpA==
+
 "@playwright/test@1.62.1":
   version "1.62.1"
   resolved "https://registry.yarnpkg.com/@playwright/test/-/test-1.62.1.tgz#68e1aaf6e480e1923936dee6c66fae1921d3a65a"
@@ -4109,6 +4114,11 @@ ignore@^5.2.0:
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-5.3.2.tgz#3cd40e729f3643fd87cb04e50bf0eb722bc596f5"
   integrity sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==
 
+ignore@^7.0.5:
+  version "7.0.13"
+  resolved "https://registry.yarnpkg.com/ignore/-/ignore-7.0.13.tgz#f19dfb5374313cf84e1976bb4b650235ebfd948c"
+  integrity sha512-2E8Q6rh+1RRSq/YdaGsNfXsEZy9FVqv6BSSrkmZJP7BnaoPnRfKL+YaofPvP+5rzdk144qSm6i4+hvPgUcbV4Q==
+
 import-fresh@^3.0.0, import-fresh@^3.2.1, import-fresh@^3.3.0:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/import-fresh/-/import-fresh-3.3.1.tgz#9cecb56503c0ada1f2741dbbd6546e4b13b57ccf"
@@ -5022,7 +5032,7 @@ mkdirp@^3.0.1:
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-3.0.1.tgz#e44e4c5607fb279c168241713cc6e0fea9adcb50"
   integrity sha512-+NsyUUAZDmo6YVHzL/stxSu3t9YS1iljliy3BSDrXJ/dkn1KYdmtZODGGjLcc9XLgVVpH4KshHB8XmZgMhaBXg==
 
-mri@^1.1.0:
+mri@^1.1.0, mri@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/mri/-/mri-1.2.0.tgz#6721480fec2a11a4889861115a48b6cbe7cc8f0b"
   integrity sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==
@@ -5786,6 +5796,19 @@ pretty-ms@^9.0.0:
   dependencies:
     parse-ms "^4.0.0"
 
+pretty-quick@4.2.2:
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/pretty-quick/-/pretty-quick-4.2.2.tgz#0fc31da666f182fe14e119905fc9829b5b85a234"
+  integrity sha512-uAh96tBW1SsD34VhhDmWuEmqbpfYc/B3j++5MC/6b3Cb8Ow7NJsvKFhg0eoGu2xXX+o9RkahkTK6sUdd8E7g5w==
+  dependencies:
+    "@pkgr/core" "^0.2.7"
+    ignore "^7.0.5"
+    mri "^1.2.0"
+    picocolors "^1.1.1"
+    picomatch "^4.0.2"
+    tinyexec "^0.3.2"
+    tslib "^2.8.1"
+
 proc-log@^6.0.0, proc-log@^6.1.0:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/proc-log/-/proc-log-6.1.0.tgz#18519482a37d5198e231133a70144a50f21f0215"
@@ -6372,6 +6395,11 @@ sigstore@^4.0.0:
     "@sigstore/sign" "^4.1.1"
     "@sigstore/tuf" "^4.0.2"
     "@sigstore/verify" "^3.1.1"
+
+simple-git-hooks@2.14.0:
+  version "2.14.0"
+  resolved "https://registry.yarnpkg.com/simple-git-hooks/-/simple-git-hooks-2.14.0.tgz#7ad36fadbd322f373caacd399664b85305a08ca8"
+  integrity sha512-kkTORPAuxQz2g1QUuN0J8yGWT28tjGBfPOdJ4xT7Vbeu30veKUZQIoID2qGgCDAakaQn59UeZJJ4cFGB8PVP2A==
 
 skin-tone@^2.0.0:
   version "2.0.0"

@@ -25,6 +25,8 @@
     "build:demo": "vite build --config vite.demo.config.ts",
     "preview": "vite preview --config vite.demo.config.ts",
     "check": "svelte-check --tsconfig ./tsconfig.json",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "prepublishOnly": "yarn run build:lib",
     "semantic-release": "semantic-release",
     "storybook:serve": "http-server storybook-static",
@@ -38,7 +40,8 @@
     "push-translations": "i18nexus import ./packages/lib/src/locales/en/default.json -k UqoFFUDIqHedrUA4OlDXwg -ns default --overwrite",
     "sort-translations": "sort-json ./packages/lib/src/locales/**/*.json",
     "e2e": "docker run --rm --network host -v $(pwd):/work/ -v /work/node_modules -w /work/ mcr.microsoft.com/playwright:v1.62.1-noble@sha256:dcc5531e97840b9b5e794f2814476b21571c5124a3fca2267d73041f56e7580e sh -c 'yarn install && yarn build:storybook && yarn playwright test'",
-    "e2e:snapshots": "docker run --rm --network host -v $(pwd):/work/ -v /work/node_modules -w /work/ mcr.microsoft.com/playwright:v1.62.1-noble@sha256:dcc5531e97840b9b5e794f2814476b21571c5124a3fca2267d73041f56e7580e sh -c 'yarn install && yarn build:storybook && yarn playwright test --update-snapshots'"
+    "e2e:snapshots": "docker run --rm --network host -v $(pwd):/work/ -v /work/node_modules -w /work/ mcr.microsoft.com/playwright:v1.62.1-noble@sha256:dcc5531e97840b9b5e794f2814476b21571c5124a3fca2267d73041f56e7580e sh -c 'yarn install && yarn build:storybook && yarn playwright test --update-snapshots'",
+    "prepare": "simple-git-hooks"
   },
   "release": {
     "branches": [
@@ -104,7 +107,9 @@
     "postcss-value-parser": "^4.2.0",
     "prettier": "^3.5.3",
     "prettier-plugin-svelte": "^3.4.0",
+    "pretty-quick": "4.2.2",
     "semantic-release": "^25.0.9",
+    "simple-git-hooks": "2.14.0",
     "sort-json": "^2.0.1",
     "storybook": "^8.4.7",
     "svelte": "5.57.0",
@@ -118,6 +123,9 @@
     "vite": "^6.3.5",
     "vite-plugin-static-copy": "^3.2.0",
     "vitest": "^3.2.3"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "yarn pretty-quick --staged"
   },
   "files": [
     "dist/lib"

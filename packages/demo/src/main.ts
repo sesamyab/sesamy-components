@@ -1,11 +1,11 @@
-import "./app.css";
-import "./../../lib/src/app.css";
-import { mount } from "svelte";
-import App from "./App.svelte";
+import './app.css';
+import './../../lib/src/app.css';
+import { mount } from 'svelte';
+import App from './App.svelte';
 
-const appElement = document.getElementById("app");
+const appElement = document.getElementById('app');
 if (!appElement) {
-  throw new Error("Failed to find app element");
+  throw new Error('Failed to find app element');
 }
 
 const app = mount(App, { target: appElement });
