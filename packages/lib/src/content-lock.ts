@@ -54,6 +54,20 @@ function describeError(error: unknown): string {
   return String(error).slice(0, 200);
 }
 
+/**
+ * Whether a failed request is worth sending again: the network dropped, the
+ * request was cut off, or the server was down or busy. A refusal — a 4xx, or
+ * sesamy-js deciding the reader has no access — answers the same every time.
+ */
+export function isTransientFailure(error: unknown): boolean {
+  const status = (error as { status?: unknown } | null)?.status;
+  if (typeof status === 'number') return status >= 500 || status === 408 || status === 429;
+  // `fetch` rejects with a TypeError when the request never got an answer.
+  if (error instanceof TypeError) return true;
+  const name = (error as { name?: unknown } | null)?.name;
+  return name === 'AbortError' || name === 'TimeoutError';
+}
+
 async function askForAccess(api: SesamyAPI, host: Element): Promise<AccessResolution> {
   try {
     const entitlement = await api.content.hasAccess(host);
@@ -184,13 +198,22 @@ export class ContentSlot {
 
   /** Put it back. */
   restore(): void {
-    if (this.detachedSlot) {
-      put(this.detachedSlot);
-      this.detachedSlot = null;
-    }
+    this.restoreSlot();
     if (this.detachedInjected) {
       put(this.detachedInjected);
       this.detachedInjected = null;
+    }
+  }
+
+  /**
+   * Put back only the slot child, leaving a rendered copy off the page. For a
+   * grant that is not final yet: `encode` still has to read the slot child to
+   * register the read that lets the rendered copy back.
+   */
+  restoreSlot(): void {
+    if (this.detachedSlot) {
+      put(this.detachedSlot);
+      this.detachedSlot = null;
     }
   }
 }
