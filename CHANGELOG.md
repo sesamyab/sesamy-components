@@ -1,3 +1,10 @@
+## [2.30.1](https://github.com/sesamyab/sesamy-components/compare/v2.30.0...v2.30.1) (2026-10-21)
+
+
+### Bug Fixes
+
+* register encoded reads before revealing content ([cdaef73](https://github.com/sesamyab/sesamy-components/commit/cdaef73b22a806b497af4d08051f1fbbd80295aa))
+
 # [2.30.0](https://github.com/sesamyab/sesamy-components/compare/v2.29.0...v2.30.0) (2026-10-19)
 
 
