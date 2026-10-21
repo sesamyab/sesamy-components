@@ -54,9 +54,9 @@ function apiRejecting(error: Error): SesamyAPI {
 
 describe('resolveAccess', () => {
   it('grants on an entitlement', async () => {
-    await expect(resolveAccess(apiReturning({ id: 'ent_1' }), document.createElement('div'))).resolves.toBe(
-      'granted'
-    );
+    await expect(
+      resolveAccess(apiReturning({ id: 'ent_1' }), document.createElement('div'))
+    ).resolves.toBe('granted');
   });
 
   it('grants on a plain true (public or logged-in content)', async () => {
@@ -259,7 +259,10 @@ describe('resolveAccessWithin', () => {
     });
     await expect(
       resolveAccessWithin(apiRejecting(error), document.createElement('div'))
-    ).resolves.toEqual({ state: 'unknown', reason: 'SessionUnavailableError: session unavailable' });
+    ).resolves.toEqual({
+      state: 'unknown',
+      reason: 'SessionUnavailableError: session unavailable'
+    });
   });
 
   it('stops waiting at the deadline, and still hands over the late answer', async () => {

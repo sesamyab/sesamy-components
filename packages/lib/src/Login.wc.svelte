@@ -149,7 +149,6 @@
       console.error('Error checking login status:', error);
     }
   };
-
 </script>
 
 <Base let:api let:t>

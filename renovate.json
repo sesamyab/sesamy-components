@@ -27,11 +27,7 @@
     {
       "description": "Keep all Playwright references in sync",
       "groupName": "playwright",
-      "matchPackageNames": [
-        "@playwright/test",
-        "playwright",
-        "mcr.microsoft.com/playwright"
-      ],
+      "matchPackageNames": ["@playwright/test", "playwright", "mcr.microsoft.com/playwright"],
       "automerge": false
     }
   ],
