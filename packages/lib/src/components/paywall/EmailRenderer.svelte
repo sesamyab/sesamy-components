@@ -192,7 +192,9 @@
           ...utmAttribution(userProps),
           ...(articleUrl ? { itemSrc: articleUrl } : {}),
           source: 'PAYWALL' as const,
-          sourceId: paywall.id
+          sourceId: paywall.id,
+          ...(paywall.decisionId ? { decisionId: paywall.decisionId } : {}),
+          ...(paywall.strategyId ? { strategyId: paywall.strategyId } : {})
         }
       };
 

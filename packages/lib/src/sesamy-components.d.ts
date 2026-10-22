@@ -18,7 +18,8 @@ declare namespace JSX {
       loggedIn?: boolean;
     };
     'sesamy-paywall': {
-      'settings-url': string;
+      paywall?: string;
+      'settings-url'?: string;
     };
   }
 }

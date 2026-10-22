@@ -10,12 +10,12 @@ import './Paywall.wc.svelte';
 
 const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
 
-function fakeApi(): SesamyAPI {
+function fakeApi(contentPaywallUrl?: string): SesamyAPI {
   return {
     isReady: () => true,
     log: vi.fn(),
     content: {
-      get: () => undefined,
+      get: () => (contentPaywallUrl ? { paywallUrl: contentPaywallUrl } : undefined),
       getLanguage: () => 'en'
     },
     paywalls: {
@@ -24,12 +24,17 @@ function fakeApi(): SesamyAPI {
   } as unknown as SesamyAPI;
 }
 
-async function mount(settingsUrl: string): Promise<Mock> {
-  const api = fakeApi();
+async function mount(
+  settingsUrl: string,
+  attributes: Record<string, string> = {},
+  contentPaywallUrl?: string
+): Promise<Mock> {
+  const api = fakeApi(contentPaywallUrl);
   window.sesamy = api;
 
   const host = document.createElement('sesamy-paywall');
-  host.setAttribute('settings-url', settingsUrl);
+  if (settingsUrl) host.setAttribute('settings-url', settingsUrl);
+  for (const [name, value] of Object.entries(attributes)) host.setAttribute(name, value);
   document.body.append(host);
   await flush();
 
@@ -70,5 +75,41 @@ describe('<sesamy-paywall> settings-url', () => {
     const get = await mount('pay_abc123');
 
     expect(get).toHaveBeenCalledWith('pay_abc123');
+  });
+});
+
+describe('<sesamy-paywall> paywall', () => {
+  afterEach(() => {
+    delete (window as { sesamy?: SesamyAPI }).sesamy;
+    document.body.innerHTML = '';
+  });
+
+  it('fetches a strategy id through sesamy-js', async () => {
+    const get = await mount('', { paywall: 'st_strategy_1' });
+
+    expect(get).toHaveBeenCalledWith('st_strategy_1');
+  });
+
+  it('takes precedence over settings-url and the content paywall', async () => {
+    const get = await mount('pay_settings', { paywall: 'st_strategy_1' }, 'pay_content');
+
+    expect(get).toHaveBeenCalledWith('st_strategy_1');
+  });
+
+  it('yields to the content paywall under lab_opts', async () => {
+    window.history.replaceState(null, '', '/?lab_opts=1');
+    try {
+      const get = await mount('', { paywall: 'st_strategy_1' }, 'pay_content');
+
+      expect(get).toHaveBeenCalledWith('pay_content');
+    } finally {
+      window.history.replaceState(null, '', '/');
+    }
+  });
+
+  it('falls back to the content paywall without an attribute', async () => {
+    const get = await mount('', {}, 'st_strategy_2');
+
+    expect(get).toHaveBeenCalledWith('st_strategy_2');
   });
 });

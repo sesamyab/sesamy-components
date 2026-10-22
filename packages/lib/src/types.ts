@@ -27,6 +27,11 @@ export type PaywallProps = {
   pass?: string;
 };
 
+export type PaywallElementProps = PaywallProps & {
+  // A paywall id, a strategy id (`st_…`) or a paywall URL.
+  paywall?: string;
+};
+
 export type ButtonVariant = 'primary' | 'secondary' | 'tertiary';
 
 export type ButtonProps = HTMLButtonAttributes & {
