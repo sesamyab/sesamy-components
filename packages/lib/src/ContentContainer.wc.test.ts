@@ -1076,4 +1076,117 @@ describe('encoded read registration', () => {
     expect(projected(host)).toContain('preview');
     error.mockRestore();
   });
+
+  describe('when the reader is denied and then granted again', () => {
+    function setup() {
+      let entitled = true;
+      const api = fakeApi(() => (entitled ? { id: 'ent_1' } : null));
+      const unlock = vi.fn(async () => '<p>Registered article</p>');
+      api.content.unlock = unlock as unknown as SesamyAPI['content']['unlock'];
+      window.sesamy = api;
+      const signOut = async () => {
+        entitled = false;
+        window.dispatchEvent(new CustomEvent('sesamyJsLogout', { detail: {} }));
+        await flush();
+      };
+      const signIn = async () => {
+        entitled = true;
+        window.dispatchEvent(new CustomEvent('sesamyJsAuthenticated', { detail: {} }));
+        await flush();
+      };
+      return { unlock, signOut, signIn };
+    }
+
+    it('keeps the article off the page until the new read is registered', async () => {
+      const { unlock, signOut, signIn } = setup();
+      const { host } = mount({ 'lock-mode': 'encode' });
+      await flush();
+      expect(host.parentElement?.textContent).toContain('Registered article');
+
+      await signOut();
+      expect(host.parentElement?.textContent).not.toContain('Registered article');
+
+      let deliver!: (html: string) => void;
+      unlock.mockImplementationOnce(
+        () =>
+          new Promise<string>((resolve) => {
+            deliver = resolve;
+          })
+      );
+      await signIn();
+      expect(unlock).toHaveBeenCalledTimes(2);
+      expect(host.parentElement?.textContent).not.toContain('Registered article');
+
+      deliver('<p>Registered article</p>');
+      await flush();
+      expect(host.parentElement?.textContent).toContain('Registered article');
+    });
+
+    it('keeps the article off the page when the new read is refused', async () => {
+      const { unlock, signOut, signIn } = setup();
+      const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const { host } = mount({ 'lock-mode': 'encode' });
+      await flush();
+      await signOut();
+
+      unlock.mockRejectedValueOnce(new Error('User does not have access to the content'));
+      await signIn();
+
+      expect(host.parentElement?.textContent).not.toContain('Registered article');
+      expect(projected(host)).toEqual(['preview']);
+      error.mockRestore();
+    });
+  });
+
+  describe('when registration fails', () => {
+    beforeEach(() => {
+      vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'Date'] });
+      vi.spyOn(console, 'error').mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+      vi.restoreAllMocks();
+    });
+
+    const advance = (ms = 0) => vi.advanceTimersByTimeAsync(ms);
+
+    it('tries again after a failure in transit, and shows the article once it registers', async () => {
+      const api = fakeApi(() => ({ id: 'ent_1' }));
+      const unlock = vi
+        .fn()
+        .mockRejectedValueOnce(new TypeError('Failed to fetch'))
+        .mockResolvedValue('<p>Registered article</p>');
+      api.content.unlock = unlock;
+      window.sesamy = api;
+
+      const { host } = mount({ 'lock-mode': 'encode' });
+      await advance();
+      expect(host.parentElement?.textContent).not.toContain('Registered article');
+      expect(projected(host)).toEqual(['preview']);
+
+      await advance(accessRetryDelay(0));
+
+      expect(unlock).toHaveBeenCalledTimes(2);
+      expect(host.parentElement?.textContent).toContain('Registered article');
+    });
+
+    it('does not ask again after a refusal', async () => {
+      const api = fakeApi(() => ({ id: 'ent_1' }));
+      const unlock = vi
+        .fn()
+        .mockRejectedValue(new Error('User does not have access to the content'));
+      api.content.unlock = unlock;
+      window.sesamy = api;
+
+      const { host } = mount({ 'lock-mode': 'encode' });
+      await advance();
+      window.dispatchEvent(new Event('online'));
+      await advance(120_000);
+
+      expect(unlock).toHaveBeenCalledTimes(1);
+      expect(api.content.hasAccess).toHaveBeenCalledTimes(1);
+      expect(projected(host)).toEqual(['preview']);
+    });
+  });
 });

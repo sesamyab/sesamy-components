@@ -6,6 +6,7 @@ import {
   accessRetryDelay,
   applyAccess,
   applyAccessState,
+  isTransientFailure,
   resolveAccess,
   resolveAccessWithin
 } from './content-lock';
@@ -305,5 +306,23 @@ describe('accessRetryDelay', () => {
       expect(delays[i]).toBeGreaterThanOrEqual(delays[i - 1]);
     }
     expect(accessRetryDelay(50)).toBe(ACCESS_RETRY_DELAYS_MS[ACCESS_RETRY_DELAYS_MS.length - 1]);
+  });
+});
+
+describe('isTransientFailure', () => {
+  const apiError = (status: number) => Object.assign(new Error(`API Error ${status}`), { status });
+
+  it('retries a request that never got an answer, or a server that was down or busy', () => {
+    expect(isTransientFailure(new TypeError('Failed to fetch'))).toBe(true);
+    expect(isTransientFailure(new DOMException('aborted', 'AbortError'))).toBe(true);
+    expect(isTransientFailure(apiError(503))).toBe(true);
+    expect(isTransientFailure(apiError(429))).toBe(true);
+  });
+
+  it('does not retry a refusal', () => {
+    expect(isTransientFailure(apiError(403))).toBe(false);
+    expect(isTransientFailure(apiError(401))).toBe(false);
+    expect(isTransientFailure(new Error('User does not have access to the content'))).toBe(false);
+    expect(isTransientFailure(undefined)).toBe(false);
   });
 });

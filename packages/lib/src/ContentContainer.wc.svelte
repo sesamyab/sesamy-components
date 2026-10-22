@@ -15,9 +15,11 @@
   import { dispatchSesamyEvent, SesamyJsEvent } from './events';
   import { resolveAccessLevel, resolveArticleState, resolveItemSrc, track } from './tracking';
   import {
+    ACCESS_RETRY_DELAYS_MS,
     ContentSlot,
     accessRetryDelay,
     applyAccessState,
+    isTransientFailure,
     resolveAccessWithin,
     type AccessResolution,
     type AccessState
@@ -48,6 +50,9 @@
   let fetchedHtml: string | null = null;
   let encodedGrantEpoch = -1;
   let encodedReadInFlightEpoch = -1;
+  // Timed retries left in this epoch after a registration that failed in
+  // transit.
+  let registrationRetries = ACCESS_RETRY_DELAYS_MS.length;
   let fetchInFlight = false;
   // The node rendered beside the host, once it exists.
   let injectedNode: Element | null = null;
@@ -203,6 +208,7 @@
     if (sessionChanged) {
       sessionEpoch++;
       epochUnresolved = 0;
+      registrationRetries = ACCESS_RETRY_DELAYS_MS.length;
     }
     const epoch = sessionEpoch;
     clearRetry();
@@ -277,7 +283,14 @@
     settledEpoch = epoch;
     clearRetry();
 
-    applyAccessState(resolution.state, contentSlot);
+    // An encoded article is the reader's only once this session's read is
+    // registered. A grant after a denial leaves the copy rendered earlier off
+    // the page until `unlockAndRenderContent` has done that.
+    if (resolution.state === 'granted' && lockMode === 'encode' && encodedGrantEpoch !== epoch) {
+      contentSlot.restoreSlot();
+    } else {
+      applyAccessState(resolution.state, contentSlot);
+    }
     access = resolution.state;
 
     // A grant is also the moment the host has to be visible, in case the page
@@ -326,6 +339,21 @@
     if (!apiRef || settledEpoch === sessionEpoch || epochUnresolved === 0) return;
     if (pendingChecks > 0 || document.visibilityState === 'hidden') return;
     void check(apiRef);
+  }
+
+  /**
+   * A registration that failed in transit — the network dropped, the server
+   * was down — says nothing about the reader. Re-open the session so a fresh
+   * check can grant it: on the backoff a few times, then only when the browser
+   * comes back online or the reader returns to the tab. A refusal never gets
+   * here, so it never loops.
+   */
+  function retryRegistration(api: SesamyAPI, err: unknown) {
+    settledEpoch = -1;
+    epochUnresolved++;
+    if (registrationRetries === 0) return;
+    registrationRetries--;
+    scheduleRetry(api, `registration failed: ${(err as Error)?.message}`);
   }
 
   type ErrorDetails = Record<string, string | number | boolean | null | undefined>;
@@ -593,6 +621,8 @@
         } finally {
           if (encodedReadInFlightEpoch === epoch) encodedReadInFlightEpoch = -1;
         }
+        // Registered, so a copy a previous grant rendered can come back.
+        if (stillGranted(epoch)) contentSlot?.restore();
       }
 
       // Rendered once already. `ContentSlot` owns it from then on: a denial
@@ -639,6 +669,7 @@
         access = 'denied';
         if (contentSlot) applyAccessState('denied', contentSlot);
         concealHost();
+        if (isTransientFailure(err)) retryRegistration(api, err);
       }
       console.error('Error unlocking content:', err);
     }
