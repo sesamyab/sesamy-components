@@ -50,6 +50,11 @@ export const SesamyJsEvent = {
   LOGOUT: 'sesamyJsLogout'
 } as const;
 
+// Dispatched on `window` between components, not part of the public API.
+export const SesamyInternalEvent = {
+  CONTENT_GRANTED: 'sesamyContentGranted'
+} as const;
+
 export const SesamyEventName = {
   LOGIN_SUCCESS: 'sesamy:login-success',
   LOGIN_ERROR: 'sesamy:login-error',

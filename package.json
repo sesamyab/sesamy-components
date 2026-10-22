@@ -77,7 +77,7 @@
     "@playwright/test": "1.62.1",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
-    "@sesamy/sesamy-js": "1.126.0",
+    "@sesamy/sesamy-js": "1.137.1",
     "@storybook/addon-controls": "^8.5.3",
     "@storybook/addon-essentials": "^8.5.3",
     "@storybook/addon-interactions": "^8.5.3",
@@ -131,7 +131,7 @@
     "dist/lib"
   ],
   "peerDependencies": {
-    "@sesamy/sesamy-js": "1.126.0"
+    "@sesamy/sesamy-js": "1.137.1"
   },
   "dependencies": {
     "@zootools/email-spell-checker": "^1.12.0",
