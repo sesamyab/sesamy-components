@@ -298,6 +298,28 @@ describe('unified paywall visibility over time', () => {
     expect(form(host)).toBe(before);
   });
 
+  it('renders a new decision when a re-check returns the same paywall', async () => {
+    const { api } = setup({ hasAccess: async () => false });
+    await flush();
+    await flush();
+    // Each render of a result announces its template.
+    const rendered = () =>
+      (api.log as unknown as Mock).mock.calls.filter(
+        ([message]) => message === 'sesamy-paywall with template LOGIN'
+      ).length;
+    expect(rendered()).toBe(1);
+    const resolved = { ...loginPaywall, decisionId: 'dec_2', strategyId: 'st_acme' };
+    vi.mocked(api.content.get).mockReturnValue({
+      id: 'article-1',
+      legacyContentAccess: false,
+      resolvedPaywall: resolved
+    } as never);
+    window.dispatchEvent(new Event('online'));
+    await flush();
+    await flush();
+    expect(rendered()).toBe(2);
+  });
+
   it('does not re-run the legacy flow on session changes', async () => {
     const { api } = setup({ hasAccess: async () => false, legacy: true });
     await flush();

@@ -42,8 +42,11 @@
 
   function sameResult(a: PaywallResult, b: PaywallResult): boolean {
     if (a === null || b === null) return a === b;
+    // A new decision for the same paywall must reach the checkout it sends.
     return (
       a.paywall?.id === b.paywall?.id &&
+      a.paywall?.decisionId === b.paywall?.decisionId &&
+      a.paywall?.strategyId === b.paywall?.strategyId &&
       a.template === b.template &&
       a.accessDenied === b.accessDenied
     );
