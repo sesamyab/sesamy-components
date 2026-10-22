@@ -10,12 +10,12 @@ import './Paywall.wc.svelte';
 
 const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
 
-function fakeApi(): SesamyAPI {
+function fakeApi(contentPaywallUrl?: string): SesamyAPI {
   return {
     isReady: () => true,
     log: vi.fn(),
     content: {
-      get: () => undefined,
+      get: () => (contentPaywallUrl ? { paywallUrl: contentPaywallUrl } : undefined),
       getLanguage: () => 'en'
     },
     paywalls: {
@@ -24,12 +24,17 @@ function fakeApi(): SesamyAPI {
   } as unknown as SesamyAPI;
 }
 
-async function mount(settingsUrl: string): Promise<Mock> {
-  const api = fakeApi();
+async function mount(
+  settingsUrl: string,
+  attributes: Record<string, string> = {},
+  contentPaywallUrl?: string
+): Promise<Mock> {
+  const api = fakeApi(contentPaywallUrl);
   window.sesamy = api;
 
   const host = document.createElement('sesamy-paywall');
-  host.setAttribute('settings-url', settingsUrl);
+  if (settingsUrl) host.setAttribute('settings-url', settingsUrl);
+  for (const [name, value] of Object.entries(attributes)) host.setAttribute(name, value);
   document.body.append(host);
   await flush();
 
@@ -73,6 +78,42 @@ describe('<sesamy-paywall> settings-url', () => {
   });
 });
 
+describe('<sesamy-paywall> paywall', () => {
+  afterEach(() => {
+    delete (window as { sesamy?: SesamyAPI }).sesamy;
+    document.body.innerHTML = '';
+  });
+
+  it('fetches a strategy id through sesamy-js', async () => {
+    const get = await mount('', { paywall: 'st_strategy_1' });
+
+    expect(get).toHaveBeenCalledWith('st_strategy_1');
+  });
+
+  it('takes precedence over settings-url and the content paywall', async () => {
+    const get = await mount('pay_settings', { paywall: 'st_strategy_1' }, 'pay_content');
+
+    expect(get).toHaveBeenCalledWith('st_strategy_1');
+  });
+
+  it('yields to the content paywall under lab_opts', async () => {
+    window.history.replaceState(null, '', '/?lab_opts=1');
+    try {
+      const get = await mount('', { paywall: 'st_strategy_1' }, 'pay_content');
+
+      expect(get).toHaveBeenCalledWith('pay_content');
+    } finally {
+      window.history.replaceState(null, '', '/');
+    }
+  });
+
+  it('falls back to the content paywall without an attribute', async () => {
+    const get = await mount('', {}, 'st_strategy_2');
+
+    expect(get).toHaveBeenCalledWith('st_strategy_2');
+  });
+});
+
 describe('default content access decisions', () => {
   afterEach(() => {
     delete (window as { sesamy?: SesamyAPI }).sesamy;
@@ -103,6 +144,28 @@ describe('default content access decisions', () => {
   it('renders the paywall selected by the server without another strategy request', async () => {
     const { api } = setup(null);
     await flush();
+    expect(api.content.hasAccess).toHaveBeenCalledTimes(1);
+    expect(api.paywalls.get).not.toHaveBeenCalled();
+    expect(api.log).toHaveBeenCalledWith('sesamy-paywall with template ');
+  });
+  it('renders the selected paywall for a paywall attribute, keeping its decision', async () => {
+    const api = fakeApi();
+    const selected = {
+      id: 'selected',
+      settings: { template: '' },
+      decisionId: 'dec_1',
+      strategyId: 'st_acme'
+    };
+    api.content.get = vi.fn(
+      () => ({ legacyContentAccess: false, resolvedPaywall: selected }) as never
+    );
+    api.content.hasAccess = vi.fn().mockResolvedValue(null);
+    window.sesamy = api;
+    const host = document.createElement('sesamy-paywall');
+    host.setAttribute('paywall', 'st_acme');
+    document.body.append(host);
+    await flush();
+
     expect(api.content.hasAccess).toHaveBeenCalledTimes(1);
     expect(api.paywalls.get).not.toHaveBeenCalled();
     expect(api.log).toHaveBeenCalledWith('sesamy-paywall with template ');
@@ -233,6 +296,28 @@ describe('unified paywall visibility over time', () => {
     await flush();
     expect(api.content.hasAccess).toHaveBeenCalledTimes(2);
     expect(form(host)).toBe(before);
+  });
+
+  it('renders a new decision when a re-check returns the same paywall', async () => {
+    const { api } = setup({ hasAccess: async () => false });
+    await flush();
+    await flush();
+    // Each render of a result announces its template.
+    const rendered = () =>
+      (api.log as unknown as Mock).mock.calls.filter(
+        ([message]) => message === 'sesamy-paywall with template LOGIN'
+      ).length;
+    expect(rendered()).toBe(1);
+    const resolved = { ...loginPaywall, decisionId: 'dec_2', strategyId: 'st_acme' };
+    vi.mocked(api.content.get).mockReturnValue({
+      id: 'article-1',
+      legacyContentAccess: false,
+      resolvedPaywall: resolved
+    } as never);
+    window.dispatchEvent(new Event('online'));
+    await flush();
+    await flush();
+    expect(rendered()).toBe(2);
   });
 
   it('does not re-run the legacy flow on session changes', async () => {
