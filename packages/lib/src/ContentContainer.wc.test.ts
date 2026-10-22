@@ -1040,3 +1040,40 @@ describe('<sesamy-content-container> when the access check has no answer', () =>
     expect(projected(host)).toEqual(['content']);
   });
 });
+
+describe('encoded read registration', () => {
+  afterEach(() => {
+    delete (window as { sesamy?: SesamyAPI }).sesamy;
+    document.body.innerHTML = '';
+  });
+  it('awaits content.unlock before revealing decoded content', async () => {
+    const api = fakeApi(() => true);
+    let deliver!: (html: string) => void;
+    const unlock = vi.fn(
+      () =>
+        new Promise<string>((resolve) => {
+          deliver = resolve;
+        })
+    );
+    api.content.unlock = unlock;
+    window.sesamy = api;
+    const { host } = mount({ 'lock-mode': 'encode' });
+    await flush();
+    expect(unlock).toHaveBeenCalledWith(host.parentElement, { encodedContent: 'The full article' });
+    expect(host.parentElement?.textContent).not.toContain('Registered article');
+    deliver('<p>Registered article</p>');
+    await flush();
+    expect(host.parentElement?.textContent).toContain('Registered article');
+  });
+  it('does not reveal content when the consuming registration rejects', async () => {
+    const api = fakeApi(() => true);
+    api.content.unlock = vi.fn().mockRejectedValue(new Error('Read limit reached'));
+    window.sesamy = api;
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const { host } = mount({ 'lock-mode': 'encode' });
+    await flush();
+    expect(host.parentElement?.textContent).not.toContain('The full article');
+    expect(projected(host)).toContain('preview');
+    error.mockRestore();
+  });
+});

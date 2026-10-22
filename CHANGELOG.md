@@ -1,3 +1,173 @@
+## [2.30.1](https://github.com/sesamyab/sesamy-components/compare/v2.30.0...v2.30.1) (2026-10-21)
+
+
+### Bug Fixes
+
+* register encoded reads before revealing content ([cdaef73](https://github.com/sesamyab/sesamy-components/commit/cdaef73b22a806b497af4d08051f1fbbd80295aa))
+
+# [2.30.0](https://github.com/sesamyab/sesamy-components/compare/v2.29.0...v2.30.0) (2026-10-19)
+
+
+### Bug Fixes
+
+* **content-container:** send unresolved access checks to error reporting ([c6ac4df](https://github.com/sesamyab/sesamy-components/commit/c6ac4df16cc6e580b781b4106eea6d77d06d04c9))
+* **paywall:** address review feedback on the EMAIL template ([5292406](https://github.com/sesamyab/sesamy-components/commit/5292406752656d441dd9c3aff84f1fa36ada2ff0))
+* **paywall:** address review feedback on the phone input ([62e2749](https://github.com/sesamyab/sesamy-components/commit/62e2749b3d8d231374390012e51c30a9941cb7f0))
+* **paywall:** keep the external option URL narrowed for the redirect ([a9f7958](https://github.com/sesamyab/sesamy-components/commit/a9f7958cd8a4839dcdb3fe9c952be4bb0541b89d))
+* **paywall:** keep the phone input's country and value in sync ([57fd227](https://github.com/sesamyab/sesamy-components/commit/57fd227908ba2957430bf43f8e29d476faa095e5))
+* **paywall:** select the country of a phone number set by the parent ([83e19ba](https://github.com/sesamyab/sesamy-components/commit/83e19ba456ce96689b97e2200641211d9a5b8746))
+
+
+### Features
+
+* **paywall:** add an EMAIL template that asks only for an email before checkout ([12a55d2](https://github.com/sesamyab/sesamy-components/commit/12a55d208a1b6160177e88b45d47064ebc19dadf))
+* **paywall:** render the EMAIL template as a compact centered card ([360e4c1](https://github.com/sesamyab/sesamy-components/commit/360e4c14dfbae17ab9d0e81138bafe103ae22c98))
+
+
+### Performance Improvements
+
+* **paywall:** load libphonenumber-js on demand instead of bundling it ([408f9aa](https://github.com/sesamyab/sesamy-components/commit/408f9aa86cfff6daa159ded0b2f76b69f9f0d9ec))
+
+# [2.29.0](https://github.com/sesamyab/sesamy-components/compare/v2.28.0...v2.29.0) (2026-10-13)
+
+
+### Bug Fixes
+
+* **paywall:** send only the utm attributes that are set on checkout ([5381885](https://github.com/sesamyab/sesamy-components/commit/5381885c420cb76033c806cdca04afeee1ddae27))
+
+
+### Features
+
+* **paywall:** pass a custom redirect button label to checkout ([05e5e09](https://github.com/sesamyab/sesamy-components/commit/05e5e09cd1df1e29d6ba247036e07d58d1c65cae))
+
+# [2.28.0](https://github.com/sesamyab/sesamy-components/compare/v2.27.5...v2.28.0) (2026-10-08)
+
+
+### Bug Fixes
+
+* **demo:** register the auth0 plugin so demo login works ([607c2f9](https://github.com/sesamyab/sesamy-components/commit/607c2f932846ad672d2f9bb9a3ea2cfddf579ef3))
+* **paywall:** ignore a stale user lookup after logout and reuse the login-row styling ([77c6cad](https://github.com/sesamyab/sesamy-components/commit/77c6cad75781d31f9b9f050d6c268f5a148b2d66))
+* **paywall:** resolve a relative settings-url against the page ([a9b66b0](https://github.com/sesamyab/sesamy-components/commit/a9b66b03e67f93ce199c4d91adf173f63ecda281))
+
+
+### Features
+
+* **paywall:** show "Logged in as" and a log-out link to logged-in readers without access ([7d31e76](https://github.com/sesamyab/sesamy-components/commit/7d31e76c2bdfc2bc8971b8171481eea0ed440b73))
+
+## [2.27.5](https://github.com/sesamyab/sesamy-components/compare/v2.27.4...v2.27.5) (2026-09-18)
+
+
+### Bug Fixes
+
+* **content-container:** restore the page's own inline display, not just ours ([b60986b](https://github.com/sesamyab/sesamy-components/commit/b60986be60c8be37bcea61838b9b1cad6892ba4f)), closes [#425](https://github.com/sesamyab/sesamy-components/issues/425)
+* **content-container:** show the article on a page that hides the container ([b37f1ad](https://github.com/sesamyab/sesamy-components/commit/b37f1ad348a8980963b9c0c936ed30fae4128aff))
+
+## [2.27.4](https://github.com/sesamyab/sesamy-components/compare/v2.27.3...v2.27.4) (2026-09-17)
+
+
+### Bug Fixes
+
+* **api:** report how long the tab was hidden while waiting for sesamy-js ([8fc33f4](https://github.com/sesamyab/sesamy-components/commit/8fc33f4cc1e9b5ba0990baf44567ddb8a58940c5))
+* **api:** report when components give up waiting for sesamy-js ([b8e2134](https://github.com/sesamyab/sesamy-components/commit/b8e2134d4e196f79c0491c2d0d99e6c57fa72e5a))
+
+## [2.27.3](https://github.com/sesamyab/sesamy-components/compare/v2.27.2...v2.27.3) (2026-09-15)
+
+
+### Bug Fixes
+
+* **content-container:** address review on unresolved-access retries ([9ca98b5](https://github.com/sesamyab/sesamy-components/commit/9ca98b5af466ae74f0bcf378cd97e204567daa82))
+* **content-container:** keep asking when an access check has no answer ([95cdb75](https://github.com/sesamyab/sesamy-components/commit/95cdb7545a18e42811306f43b7f1bb00cfa5924b))
+
+## [2.27.2](https://github.com/sesamyab/sesamy-components/compare/v2.27.1...v2.27.2) (2026-09-11)
+
+
+### Bug Fixes
+
+* **content-container:** abort an unlock whose session changed mid-fetch ([cd1ae18](https://github.com/sesamyab/sesamy-components/commit/cd1ae1834798de6e27d411af15327e5dbc5c7e61))
+* **content-container:** lock injected content too, and ignore superseded checks ([2d6eb17](https://github.com/sesamyab/sesamy-components/commit/2d6eb175492a29222d8234d85a5ffab646ceca9f))
+* **content-container:** never lock an article on an unresolved access check ([96fbd6d](https://github.com/sesamyab/sesamy-components/commit/96fbd6de9d95e0b085967c174f42951214d118f4))
+
+## [2.27.1](https://github.com/sesamyab/sesamy-components/compare/v2.27.0...v2.27.1) (2026-09-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency lucide-svelte to ^0.577.0 ([#415](https://github.com/sesamyab/sesamy-components/issues/415)) ([f670cdb](https://github.com/sesamyab/sesamy-components/commit/f670cdb8000709abcfb13f2f069250b37e481c33))
+
+# [2.27.0](https://github.com/sesamyab/sesamy-components/compare/v2.26.1...v2.27.0) (2026-09-02)
+
+
+### Features
+
+* **paywall:** expose the headline as a slot ([31ec3b9](https://github.com/sesamyab/sesamy-components/commit/31ec3b9f1085b7d1eaa260c5fd9416c85fbd08bf))
+
+## [2.26.1](https://github.com/sesamyab/sesamy-components/compare/v2.26.0...v2.26.1) (2026-09-02)
+
+
+### Bug Fixes
+
+* **i18n:** update Norwegian "already subscribing" copy ([fada133](https://github.com/sesamyab/sesamy-components/commit/fada133ccc0d409b3269a4172dc5c65ffd34f4ab)), closes [#399](https://github.com/sesamyab/sesamy-components/issues/399)
+
+# [2.26.0](https://github.com/sesamyab/sesamy-components/compare/v2.25.0...v2.26.0) (2026-09-02)
+
+
+### Bug Fixes
+
+* **content-container:** honor the container's own access-level attribute ([b7183d2](https://github.com/sesamyab/sesamy-components/commit/b7183d27c567c3432b8ca9f4d137c6e4f92df8ec))
+
+
+### Features
+
+* **paywall:** expose nested login button text as a slot ([557fbc7](https://github.com/sesamyab/sesamy-components/commit/557fbc77187892d7e615a31d33d377e074c9ca07))
+
+# [2.25.0](https://github.com/sesamyab/sesamy-components/compare/v2.24.3...v2.25.0) (2026-08-31)
+
+
+### Bug Fixes
+
+* adapt paywall login text color to dark backgrounds ([febf742](https://github.com/sesamyab/sesamy-components/commit/febf742114be9c1c598e11ee6b2ff09c66f87f33))
+
+
+### Features
+
+* resolve post-purchase redirect from paywall settings ([5b25738](https://github.com/sesamyab/sesamy-components/commit/5b257386b1250d5aa5ffe0e3af46e809c1e86144))
+
+## [2.24.3](https://github.com/sesamyab/sesamy-components/compare/v2.24.2...v2.24.3) (2026-08-24)
+
+
+### Bug Fixes
+
+* make component sizing independent of host page root font-size ([e2397d3](https://github.com/sesamyab/sesamy-components/commit/e2397d31d5ca105bf8ed82848838216a5bb6a439))
+* never render four paywall boxes in a row ([de5a178](https://github.com/sesamyab/sesamy-components/commit/de5a17874c96c872a1ed20e033d86dbb224e3ccd))
+
+## [2.24.2](https://github.com/sesamyab/sesamy-components/compare/v2.24.1...v2.24.2) (2026-08-24)
+
+
+### Bug Fixes
+
+* defer custom element mount until the document is parsed ([879f9de](https://github.com/sesamyab/sesamy-components/commit/879f9de6dc155e268d3c7782c5a67fb3b7acdc47)), closes [#377](https://github.com/sesamyab/sesamy-components/issues/377)
+
+## [2.24.1](https://github.com/sesamyab/sesamy-components/compare/v2.24.0...v2.24.1) (2026-08-21)
+
+
+### Bug Fixes
+
+* add repository field required by npm provenance ([45cbcdf](https://github.com/sesamyab/sesamy-components/commit/45cbcdfa2a1697be13d1242c81174640f683038d))
+
+# [2.24.0](https://github.com/sesamyab/sesamy-components/compare/v2.23.0...v2.24.0) (2026-08-21)
+
+
+### Bug Fixes
+
+* **paywall:** always show subscription description in BOXES template ([b6a5ac1](https://github.com/sesamyab/sesamy-components/commit/b6a5ac1b50dc1fe4c23e178d40b9ee9bb92c24cd))
+* **paywall:** group description and features in a shared column ([ec97876](https://github.com/sesamyab/sesamy-components/commit/ec9787682c99d4a8ec7a13431f92fe5158283215))
+
+
+### Features
+
+* **paywall:** separate period text for the compare-at price ([e0709b4](https://github.com/sesamyab/sesamy-components/commit/e0709b4302304d2554f118cf4e7692a23462ab00))
+* **tracking:** emit viewArticle, addToCart and content_unlocked via sesamy-js ([23b85b3](https://github.com/sesamyab/sesamy-components/commit/23b85b31db59033a70d76fc80ca7a4a43bf152ec))
+
 # [2.23.0](https://github.com/sesamyab/sesamy-components/compare/v2.22.4...v2.23.0) (2026-08-17)
 
 
