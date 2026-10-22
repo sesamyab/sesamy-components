@@ -96,7 +96,9 @@ export const goToCheckout = async (
   if (checkout.language) {
     checkoutURL.searchParams.set('lang', checkout.language);
   }
-  checkoutURL.searchParams.set('redirect-url', checkout.redirectUrl);
+  if (checkout.redirectUrl) {
+    checkoutURL.searchParams.set('redirect-url', checkout.redirectUrl);
+  }
   if (paymentMethod) {
     checkoutURL.searchParams.set('payment-method', paymentMethod.method);
   }
