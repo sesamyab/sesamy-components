@@ -33,11 +33,21 @@
     host: HTMLElement;
     paywall: Paywall;
     t: TranslationFunction;
+    accessDenied?: boolean;
     onShown?: () => void;
     onAccessGranted?: () => void;
   } & PaywallProps;
 
-  let { api, t, host, paywall, onShown, onAccessGranted, ...userProps }: Props = $props();
+  let {
+    accessDenied = false,
+    api,
+    t,
+    host,
+    paywall,
+    onShown,
+    onAccessGranted,
+    ...userProps
+  }: Props = $props();
 
   let email = $state('');
   let emailSuggestion = $state('');
@@ -86,7 +96,9 @@
       ? userProps.pass.split(';')
       : api.content.get(host)?.pass?.split(';');
 
-    const hasAccess = await api.entitlements.hasAccess(articleUrl || '', passes);
+    const hasAccess = accessDenied
+      ? false
+      : await api.entitlements.hasAccess(articleUrl || '', passes);
 
     api.events.emit('sesamyPaywallAccessChecked', {
       hasAccess,

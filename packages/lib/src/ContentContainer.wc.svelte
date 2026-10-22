@@ -12,7 +12,7 @@
   import { onDestroy } from 'svelte';
   import Base from './Base.svelte';
   import type { ContentContainerProps } from './types';
-  import { dispatchSesamyEvent, SesamyJsEvent } from './events';
+  import { dispatchSesamyEvent, SesamyInternalEvent, SesamyJsEvent } from './events';
   import { resolveAccessLevel, resolveArticleState, resolveItemSrc, track } from './tracking';
   import {
     ACCESS_RETRY_DELAYS_MS,
@@ -263,6 +263,7 @@
     accessLevel: string | undefined
   ) {
     if (epoch !== sessionEpoch || !contentSlot) return;
+    const host = $host();
     // This session was answered already, by a retry or by a slow check that
     // came back late. The first definite answer stands. A check that was still
     // in flight when it arrived does not overturn it, and not knowing does not
@@ -270,16 +271,57 @@
     if (settledEpoch === epoch) return;
 
     if (resolution.state === 'unknown') {
-      epochUnresolved++;
-      unresolvedChecks++;
-      unresolvedSince ||= Date.now();
-      reportUnresolved(api, content, resolution.reason);
-      scheduleRetry(api, resolution.reason);
+      markUnresolved(api, content, resolution.reason);
       // `access` stays as it is. Not knowing never takes back what the reader
       // is already being shown, and never grants what they were refused.
       return;
     }
 
+    // Register before projecting embed content; failed or outdated grants never reveal it.
+    if (
+      resolution.state === 'granted' &&
+      lockMode === 'embed' &&
+      accessLevel !== 'public' &&
+      content?.legacyContentAccess === false &&
+      encodedGrantEpoch !== epoch
+    ) {
+      if (encodedReadInFlightEpoch === epoch) return;
+      encodedReadInFlightEpoch = epoch;
+      try {
+        await api.content.unlock(host, { delivery: 'embed' });
+        // A retry can settle this session while the unlock is out. Its answer
+        // stands: a late unlock neither reveals nor schedules anything.
+        if (epoch !== sessionEpoch || settledEpoch === epoch || !host.isConnected) return;
+        encodedGrantEpoch = epoch;
+      } catch (error) {
+        if (epoch !== sessionEpoch || settledEpoch === epoch) return;
+        // Only a 403 is a refusal. A 401 is a session that is still settling
+        // (an expired token mid-refresh), so it is retried like a network or
+        // server failure rather than leaving a subscriber on the teaser. Any
+        // other client error will not clear by itself, so it is not polled; a
+        // session change, coming back online or returning to the tab still
+        // asks again.
+        const status = (error as { status?: number }).status;
+        if (status !== 403) {
+          const transient =
+            status === undefined ||
+            status >= 500 ||
+            status === 401 ||
+            status === 408 ||
+            status === 429;
+          markUnresolved(
+            api,
+            content,
+            transient ? 'unlock-failed' : `unlock-rejected-${status}`,
+            transient
+          );
+          return;
+        }
+        resolution = { state: 'denied' };
+      } finally {
+        if (encodedReadInFlightEpoch === epoch) encodedReadInFlightEpoch = -1;
+      }
+    }
     settledEpoch = epoch;
     clearRetry();
 
@@ -312,6 +354,19 @@
     if (access === 'granted') {
       await unlockAndRenderContent(api, epoch);
     }
+  }
+
+  function markUnresolved(
+    api: SesamyAPI,
+    content: MaybeContent,
+    reason: string | undefined,
+    retry = true
+  ) {
+    epochUnresolved++;
+    unresolvedChecks++;
+    unresolvedSince ||= Date.now();
+    reportUnresolved(api, content, reason);
+    if (retry) scheduleRetry(api, reason);
   }
 
   function clearRetry() {
@@ -469,11 +524,18 @@
   });
 
   function emitUnlockEvent(api: SesamyAPI) {
-    if (unlockEmitted) return;
-    unlockEmitted = true;
     const host = $host();
     const content = api.content.get(host);
     const publisherContentId = publisherContentIdProp || content?.id || '';
+
+    // On every grant, for the paywall: a new session can re-register after the
+    // public `sesamyUnlocked` below has already been announced once.
+    dispatchEvent(
+      new CustomEvent(SesamyInternalEvent.CONTENT_GRANTED, { detail: { publisherContentId } })
+    );
+
+    if (unlockEmitted) return;
+    unlockEmitted = true;
 
     const event = new CustomEvent('sesamyUnlocked', {
       detail: {

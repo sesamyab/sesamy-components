@@ -33,6 +33,7 @@
     paywall: Paywall;
     t: TranslationFunction;
     horizontal?: boolean;
+    accessDenied?: boolean;
     onShown?: () => void;
     onAccessGranted?: () => void;
   } & PaywallProps;
@@ -40,6 +41,7 @@
   type Product = PaywallSubscription & { features: string[] };
 
   let {
+    accessDenied = false,
     api,
     t,
     horizontal = false,
@@ -117,7 +119,9 @@
       ? userProps.pass.split(';')
       : api.content.get(host)?.pass?.split(';');
 
-    const hasAccess = await api.entitlements.hasAccess(articleUrl || '', passes);
+    const hasAccess = accessDenied
+      ? false
+      : await api.entitlements.hasAccess(articleUrl || '', passes);
 
     api.events.emit('sesamyPaywallAccessChecked', {
       hasAccess,
