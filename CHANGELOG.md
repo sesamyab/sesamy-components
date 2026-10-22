@@ -1,3 +1,18 @@
+# [2.31.0](https://github.com/sesamyab/sesamy-components/compare/v2.30.1...v2.31.0) (2026-10-22)
+
+
+### Bug Fixes
+
+* address review findings on unified content access ([78bff04](https://github.com/sesamyab/sesamy-components/commit/78bff04672de9d8b6b621e74a2f915edd31a3c40))
+* keep encoded content concealed until re-grant registration and retry transient failures ([030edc9](https://github.com/sesamyab/sesamy-components/commit/030edc90d537baa4346c3b028588c5d277362e26))
+* keep settled access decisions from late unlocks and paywall rechecks ([d01f220](https://github.com/sesamyab/sesamy-components/commit/d01f220f1b02b714b61536a803b209ba0f227445))
+* stop polling embed unlocks that fail with a client error ([b19cba7](https://github.com/sesamyab/sesamy-components/commit/b19cba70d88b3e27a23ac30030ef26eae6da2dd2))
+
+
+### Features
+
+* use unified content access by default ([28e8ba5](https://github.com/sesamyab/sesamy-components/commit/28e8ba5885e9dad1c016c89565abf6a5bd7a2924))
+
 ## [2.30.1](https://github.com/sesamyab/sesamy-components/compare/v2.30.0...v2.30.1) (2026-10-21)
 
 
