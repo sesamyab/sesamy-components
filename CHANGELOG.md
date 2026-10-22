@@ -1,3 +1,15 @@
+# [2.32.0](https://github.com/sesamyab/sesamy-components/compare/v2.31.0...v2.32.0) (2026-10-22)
+
+
+### Bug Fixes
+
+* **paywall:** render a new strategy decision for the same paywall ([d4d1689](https://github.com/sesamyab/sesamy-components/commit/d4d1689e22ca7db251b4799ce2fe3ef461a3b748))
+
+
+### Features
+
+* **paywall:** send the strategy decision with paywall checkouts ([5aa608c](https://github.com/sesamyab/sesamy-components/commit/5aa608cdc109b86003617a11bbe66e169bf246fc))
+
 # [2.31.0](https://github.com/sesamyab/sesamy-components/compare/v2.30.1...v2.31.0) (2026-10-22)
 
 
