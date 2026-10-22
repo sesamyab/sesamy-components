@@ -634,6 +634,24 @@ describe('checkout attribution', () => {
     }
   });
 
+  it('sends the strategy decision that picked the paywall', async () => {
+    stubLocation();
+    const { created } = renderPaywall(
+      paywall({ decisionId: 'decision_1', strategyId: 'st_strategy_1' })
+    );
+
+    await buyFirstBox();
+
+    await waitFor(() => expect(created).toHaveLength(1));
+    expect(sentAttribution(created)).toEqual({
+      itemSrc: ARTICLE_URL,
+      source: 'PAYWALL',
+      sourceId: 'paywall_1',
+      decisionId: 'decision_1',
+      strategyId: 'st_strategy_1'
+    });
+  });
+
   it('sends only the utm attributes that are set', async () => {
     stubLocation();
     const { created } = renderPaywall(paywall(), {

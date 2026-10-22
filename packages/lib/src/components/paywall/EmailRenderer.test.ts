@@ -189,6 +189,26 @@ describe('email template', () => {
     );
   });
 
+  it('sends the strategy decision that picked the paywall', async () => {
+    stubLocation();
+    const { created } = renderPaywall(
+      paywall({ decisionId: 'decision_1', strategyId: 'st_strategy_1' })
+    );
+
+    await submit('reader@example.com');
+
+    await waitFor(() => expect(created).toHaveLength(1));
+    expect(created[0]).toMatchObject({
+      attribution: {
+        itemSrc: ARTICLE_URL,
+        source: 'PAYWALL',
+        sourceId: 'paywall_1',
+        decisionId: 'decision_1',
+        strategyId: 'st_strategy_1'
+      }
+    });
+  });
+
   it('falls back to the first option when none is selected', async () => {
     stubLocation();
     const { created } = renderPaywall(

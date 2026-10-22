@@ -90,6 +90,9 @@ export type Paywall = {
   subscriptions: PaywallSubscription[];
   version?: number;
   settings: PaywallSettings;
+  // Set when a paywall strategy picked this paywall; sent with its checkouts.
+  decisionId?: string;
+  strategyId?: string;
   footerPaymentMethods?: (
     | 'visa'
     | 'apple-pay'

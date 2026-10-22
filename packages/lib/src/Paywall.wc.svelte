@@ -11,9 +11,14 @@
   import type { SesamyAPI } from '@sesamy/sesamy-js';
   import { dispatchSesamyEvent, SesamyInternalEvent, SesamyJsEvent } from './events';
 
-  import type { PaywallProps } from './types';
+  import type { PaywallElementProps } from './types';
 
-  let props: PaywallProps = $props();
+  let props: PaywallElementProps = $props();
+  // The renderers take the fetched paywall as `paywall`, so the reference attribute must not reach them.
+  const rendererProps = $derived.by(() => {
+    const { paywall: _reference, ...rest } = props;
+    return rest;
+  });
 
   type PaywallResult = { paywall: Paywall; template: string; accessDenied?: boolean } | null;
   type LoadState =
@@ -37,8 +42,11 @@
 
   function sameResult(a: PaywallResult, b: PaywallResult): boolean {
     if (a === null || b === null) return a === b;
+    // A new decision for the same paywall must reach the checkout it sends.
     return (
       a.paywall?.id === b.paywall?.id &&
+      a.paywall?.decisionId === b.paywall?.decisionId &&
+      a.paywall?.strategyId === b.paywall?.strategyId &&
       a.template === b.template &&
       a.accessDenied === b.accessDenied
     );
@@ -153,18 +161,15 @@
     // Get paywall-url from content config
     const contentPaywallUrl = api.content.get(host)?.paywallUrl;
 
-    // If lab_opts is set, content paywallUrl takes priority; otherwise settings-url takes priority
-    const settingsUrl = hasLabOpts
-      ? contentPaywallUrl || props['settings-url']
-      : props['settings-url'] || contentPaywallUrl;
+    // If lab_opts is set, content paywallUrl takes priority; otherwise the element's own reference does
+    const explicit = props.paywall || props['settings-url'];
+    const settingsUrl = hasLabOpts ? contentPaywallUrl || explicit : explicit || contentPaywallUrl;
 
     if (!settingsUrl) {
       return null;
     }
 
-    // Pass the full settings URL, not a bare id: sesamy-js requests a URL as-is,
-    // while an id goes via the api-proxy route, which validates the response
-    // against a stale schema and strips fields the renderer needs.
+    // sesamy-js fetches a URL as-is and resolves an id (incl. a strategy `st_…`) via api-proxy.
     const paywall = (await api.paywalls.get(resolveSettingsUrl(settingsUrl))) as Paywall;
     const template = paywall?.settings.template || '';
     return { paywall, template, accessDenied };
@@ -193,7 +198,7 @@
           {t}
           onShown={markShown}
           onAccessGranted={markAccessGranted}
-          {...props}
+          {...rendererProps}
         />
       {:else if result.template === 'BOXES'}
         <Renderer
@@ -205,7 +210,7 @@
           {t}
           onShown={markShown}
           onAccessGranted={markAccessGranted}
-          {...props}
+          {...rendererProps}
         />
       {:else if result.template === 'EMAIL'}
         <EmailRenderer
@@ -216,7 +221,7 @@
           {t}
           onShown={markShown}
           onAccessGranted={markAccessGranted}
-          {...props}
+          {...rendererProps}
         />
       {:else if result.template === 'LOGIN'}
         <LoginRenderer
@@ -226,7 +231,7 @@
           {host}
           onShown={markShown}
           onAccessGranted={markAccessGranted}
-          {...props}
+          {...rendererProps}
         />
       {/if}
     {/if}
