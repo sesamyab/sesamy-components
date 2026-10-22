@@ -1211,6 +1211,21 @@ describe('default embedded content grants that fail', () => {
     expect(projected(host)).toContain('content');
   });
 
+  it('does not poll a client error from the unlock, but asks again when back online', async () => {
+    let calls = 0;
+    const api = unifiedApi(() => (++calls <= 1 ? failWith(404) : Promise.resolve('')));
+    window.sesamy = api;
+    const { host } = mount();
+    await advance();
+    await advance(accessRetryDelay(10));
+    expect(api.content.unlock).toHaveBeenCalledTimes(1);
+    expect(projected(host)).toContain('preview');
+    window.dispatchEvent(new Event('online'));
+    await advance();
+    expect(api.content.unlock).toHaveBeenCalledTimes(2);
+    expect(projected(host)).toContain('content');
+  });
+
   it('announces every grant to the paywall, even after the first public unlock event', async () => {
     const api = unifiedApi(() => Promise.resolve(''));
     window.sesamy = api;

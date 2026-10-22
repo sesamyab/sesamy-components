@@ -288,10 +288,25 @@
       } catch (error) {
         if (epoch !== sessionEpoch) return;
         // Only a 403 is a refusal. A 401 is a session that is still settling
-        // (an expired token mid-refresh), so it is retried like any other
-        // failure rather than leaving a subscriber on the teaser.
-        if ((error as { status?: number }).status !== 403) {
-          markUnresolved(api, content, 'unlock-failed');
+        // (an expired token mid-refresh), so it is retried like a network or
+        // server failure rather than leaving a subscriber on the teaser. Any
+        // other client error will not clear by itself, so it is not polled; a
+        // session change, coming back online or returning to the tab still
+        // asks again.
+        const status = (error as { status?: number }).status;
+        if (status !== 403) {
+          const transient =
+            status === undefined ||
+            status >= 500 ||
+            status === 401 ||
+            status === 408 ||
+            status === 429;
+          markUnresolved(
+            api,
+            content,
+            transient ? 'unlock-failed' : `unlock-rejected-${status}`,
+            transient
+          );
           return;
         }
         resolution = { state: 'denied' };
@@ -326,12 +341,17 @@
     }
   }
 
-  function markUnresolved(api: SesamyAPI, content: MaybeContent, reason: string | undefined) {
+  function markUnresolved(
+    api: SesamyAPI,
+    content: MaybeContent,
+    reason: string | undefined,
+    retry = true
+  ) {
     epochUnresolved++;
     unresolvedChecks++;
     unresolvedSince ||= Date.now();
     reportUnresolved(api, content, reason);
-    scheduleRetry(api, reason);
+    if (retry) scheduleRetry(api, reason);
   }
 
   function clearRetry() {
