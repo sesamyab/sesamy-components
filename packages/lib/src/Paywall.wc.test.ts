@@ -172,6 +172,32 @@ describe('unified paywall visibility over time', () => {
     expect((host.shadowRoot ?? host).textContent).not.toContain('Error loading paywall');
   });
 
+  it('does not make its own entitlement decision when the access check fails', async () => {
+    const { api, host } = setup({ hasAccess: () => Promise.reject(new Error('offline')) });
+    const entitlements = vi.fn().mockResolvedValue(true);
+    (api as unknown as { entitlements: unknown }).entitlements = { hasAccess: entitlements };
+    (api as unknown as { events: unknown }).events = { emit: () => ({ canceled: false }) };
+    (api.paywalls.get as Mock).mockResolvedValue({
+      id: 'configured',
+      vendorId: 'demo',
+      headline: 'Subscribe',
+      mainColor: '#000000',
+      currency: 'SEK',
+      features: [],
+      subscriptions: [],
+      footerPaymentMethods: [],
+      settings: { template: 'ARTICLE', styling: {}, loginFields: {} }
+    });
+    (api as unknown as { auth: unknown }).auth = { isAuthenticated: async () => true };
+    const granted = vi.fn();
+    host.addEventListener('sesamy:access-granted', granted);
+    await flush();
+    await flush();
+    expect(api.log).toHaveBeenCalledWith('sesamy-paywall with template ARTICLE');
+    expect(entitlements).not.toHaveBeenCalled();
+    expect(granted).not.toHaveBeenCalled();
+  });
+
   it('hides when the container reports a grant for the article id from metadata', async () => {
     const { api, host } = setup({ hasAccess: async () => false });
     await flush();

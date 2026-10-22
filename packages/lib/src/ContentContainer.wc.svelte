@@ -283,10 +283,12 @@
       encodedReadInFlightEpoch = epoch;
       try {
         await api.content.unlock(host, { delivery: 'embed' });
-        if (epoch !== sessionEpoch || !host.isConnected) return;
+        // A retry can settle this session while the unlock is out. Its answer
+        // stands: a late unlock neither reveals nor schedules anything.
+        if (epoch !== sessionEpoch || settledEpoch === epoch || !host.isConnected) return;
         encodedGrantEpoch = epoch;
       } catch (error) {
-        if (epoch !== sessionEpoch) return;
+        if (epoch !== sessionEpoch || settledEpoch === epoch) return;
         // Only a 403 is a refusal. A 401 is a session that is still settling
         // (an expired token mid-refresh), so it is retried like a network or
         // server failure rather than leaving a subscriber on the teaser. Any

@@ -120,8 +120,9 @@
     const metadata = api.content.get(host);
     unified =
       metadata?.legacyContentAccess === false && typeof api.content.hasAccess === 'function';
-    // Whether the server has decided against this reader. When it could not be
-    // asked, the configured paywall renders and checks entitlements itself.
+    // Whether the renderer should show without deciding entitlements itself.
+    // A failed check counts too: the paywall stays until the content container
+    // reports a grant, rather than a second check deciding on its own.
     let accessDenied = false;
     if (unified) {
       let hasAccess: unknown;
@@ -137,9 +138,9 @@
         markAccessGranted();
         return null;
       }
+      accessDenied = true;
+      accessGranted = false;
       if (hasAccess !== undefined) {
-        accessDenied = true;
-        accessGranted = false;
         const selected = api.content.get(host)?.resolvedPaywall as Paywall | undefined;
         if (selected?.settings) {
           return { paywall: selected, template: selected.settings.template, accessDenied };

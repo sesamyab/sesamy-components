@@ -1226,6 +1226,34 @@ describe('default embedded content grants that fail', () => {
     expect(projected(host)).toContain('content');
   });
 
+  it('does not let an unlock still in flight overturn a later denial', async () => {
+    let release!: (value: string) => void;
+    const api = unifiedApi(
+      () =>
+        new Promise<string>((resolve) => {
+          release = resolve;
+        })
+    );
+    // The first check times out, then grants late and starts the unlock. The
+    // retry it scheduled answers with a denial while that unlock is still out.
+    let calls = 0;
+    (api.content.hasAccess as Mock).mockImplementation(() =>
+      ++calls === 1
+        ? new Promise((resolve) => setTimeout(() => resolve(true), ACCESS_CHECK_TIMEOUT_MS + 1))
+        : Promise.resolve(false)
+    );
+    window.sesamy = api;
+    const { host } = mount();
+    await advance(ACCESS_CHECK_TIMEOUT_MS + 1);
+    expect(api.content.unlock).toHaveBeenCalledTimes(1);
+    await advance(accessRetryDelay(0));
+    expect(calls).toBe(2);
+    expect(contentSlot(host)).toBeNull();
+    release('');
+    await advance();
+    expect(projected(host)).toContain('preview');
+  });
+
   it('announces every grant to the paywall, even after the first public unlock event', async () => {
     const api = unifiedApi(() => Promise.resolve(''));
     window.sesamy = api;
