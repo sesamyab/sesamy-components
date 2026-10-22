@@ -72,3 +72,52 @@ describe('<sesamy-paywall> settings-url', () => {
     expect(get).toHaveBeenCalledWith('pay_abc123');
   });
 });
+
+describe('default content access decisions', () => {
+  afterEach(() => {
+    delete (window as { sesamy?: SesamyAPI }).sesamy;
+    document.body.innerHTML = '';
+  });
+  function setup(result: unknown, legacy = false) {
+    const api = fakeApi();
+    api.content.get = vi.fn(
+      () =>
+        ({
+          legacyContentAccess: legacy,
+          resolvedPaywall: { id: 'selected', settings: { template: '' } }
+        }) as never
+    );
+    api.content.hasAccess = vi.fn().mockResolvedValue(result);
+    window.sesamy = api;
+    const host = document.createElement('sesamy-paywall');
+    host.setAttribute('settings-url', 'st_acme');
+    document.body.append(host);
+    return { api, host };
+  }
+  it('does not fetch or show a paywall when unified access is granted', async () => {
+    const { api } = setup(true);
+    await flush();
+    expect(api.content.hasAccess).toHaveBeenCalled();
+    expect(api.paywalls.get).not.toHaveBeenCalled();
+  });
+  it('renders the paywall selected by the server without another strategy request', async () => {
+    const { api } = setup(null);
+    await flush();
+    expect(api.content.hasAccess).toHaveBeenCalledTimes(1);
+    expect(api.paywalls.get).not.toHaveBeenCalled();
+    expect(api.log).toHaveBeenCalledWith('sesamy-paywall with template ');
+  });
+  it('rechecks access after authentication changes', async () => {
+    const { api } = setup(true);
+    await flush();
+    window.dispatchEvent(new CustomEvent('sesamyJsLogout'));
+    await flush();
+    expect(api.content.hasAccess).toHaveBeenCalledTimes(2);
+  });
+  it('keeps the prior rendering flow for integrations that opt out', async () => {
+    const { api } = setup(null, true);
+    await flush();
+    expect(api.content.hasAccess).not.toHaveBeenCalled();
+    expect(api.paywalls.get).toHaveBeenCalledWith('st_acme');
+  });
+});

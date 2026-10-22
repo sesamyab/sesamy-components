@@ -257,6 +257,7 @@
     accessLevel: string | undefined
   ) {
     if (epoch !== sessionEpoch || !contentSlot) return;
+    const host = $host();
     // This session was answered already, by a retry or by a slow check that
     // came back late. The first definite answer stands. A check that was still
     // in flight when it arrived does not overturn it, and not knowing does not
@@ -274,6 +275,34 @@
       return;
     }
 
+    // Register before projecting embed content; failed or outdated grants never reveal it.
+    if (
+      resolution.state === 'granted' &&
+      lockMode === 'embed' &&
+      accessLevel !== 'public' &&
+      content?.legacyContentAccess === false &&
+      encodedGrantEpoch !== epoch
+    ) {
+      if (encodedReadInFlightEpoch === epoch) return;
+      encodedReadInFlightEpoch = epoch;
+      try {
+        await api.content.unlock(host, { delivery: 'embed' });
+        if (epoch !== sessionEpoch || !host.isConnected) return;
+        encodedGrantEpoch = epoch;
+      } catch (error) {
+        if (epoch !== sessionEpoch) return;
+        const status = (error as { status?: number }).status;
+        if (status !== 401 && status !== 403) {
+          reportUnresolved(api, content, 'unlock-failed');
+          scheduleRetry(api, 'unlock-failed');
+          return;
+        }
+        resolution = { state: 'denied' };
+      } finally {
+        if (encodedReadInFlightEpoch === epoch) encodedReadInFlightEpoch = -1;
+      }
+    }
+    if (resolution.state === 'unknown') return;
     settledEpoch = epoch;
     clearRetry();
 
@@ -535,6 +564,11 @@
   async function fetchContent(api: SesamyAPI): Promise<string> {
     switch (lockMode) {
       case 'encode':
+        if (api.content.get($host())?.legacyContentAccess === true) {
+          return new TextDecoder().decode(
+            Uint8Array.from(atob(storedContentElement?.innerHTML || ''), (c) => c.charCodeAt(0))
+          );
+        }
         return api.content.unlock($host().parentElement!, {
           encodedContent: storedContentElement?.innerHTML || ''
         });

@@ -762,3 +762,11 @@ These are the files needed to create a new component:
 ## License
 
 This project is proprietary software by Sesamy.
+
+## Unified content access by default
+
+With the corresponding sesamy-js release, content containers and paywalls use the unified content API by default. Non-public embed content waits for a consuming `content.unlock()` decision before its existing DOM is revealed; applicable successful reads now count toward strategy limits. Paywalls use `content.hasAccess()` and the same selected server policy for visibility and rendering, rather than a second entitlement decision.
+
+Set `legacyContentAccess: true` at the top of the sesamy-js initialization configuration to retain legacy checks and display without new embed registration. Older sesamy-js versions without the metadata marker retain the legacy component flow too. Explicit article policies take priority over automatic discovery, and ambiguous paywall matches are ignored. A fixed paywall remains fixed; configuring the strategy is still required for strategy-based free reads.
+
+Deploy the API and SDK/sesamy-js changes before the component release. This is a minor behavior release: opt out affected integrations before rollout if their embedded reads must retain previous counting behavior. The opt-out is supplied by sesamy-js configuration, not a component HTML attribute.

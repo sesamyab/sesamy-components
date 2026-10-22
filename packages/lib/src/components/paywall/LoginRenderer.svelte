@@ -17,11 +17,12 @@
     t: TranslationFunction;
     paywall: Paywall;
     host?: HTMLElement;
+    accessDenied?: boolean;
     onShown?: () => void;
     onAccessGranted?: () => void;
   };
 
-  let { api, t, paywall, host, onShown, onAccessGranted }: Props = $props();
+  let { api, t, paywall, host, accessDenied = false, onShown, onAccessGranted }: Props = $props();
 
   let {
     headline,
@@ -67,7 +68,7 @@
   const checkAuthAndAnnounce = async () => {
     let isAuthenticated = false;
     try {
-      isAuthenticated = await api.auth.isAuthenticated();
+      isAuthenticated = accessDenied ? false : await api.auth.isAuthenticated();
     } catch (error) {
       console.error('Auth check failed:', error);
     }

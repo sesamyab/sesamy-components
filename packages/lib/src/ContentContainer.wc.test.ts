@@ -1077,3 +1077,73 @@ describe('encoded read registration', () => {
     error.mockRestore();
   });
 });
+
+describe('default embedded content grants', () => {
+  afterEach(() => {
+    delete (window as { sesamy?: SesamyAPI }).sesamy;
+    document.body.innerHTML = '';
+  });
+  function unifiedApi() {
+    const api = fakeApi(() => true);
+    const original = api.content.get;
+    api.content.get = vi.fn((...args: Parameters<typeof original>) => ({
+      ...original(...args)!,
+      legacyContentAccess: false
+    }));
+    return api;
+  }
+  it('waits for server authorization before exposing the existing embedded nodes', async () => {
+    const api = unifiedApi();
+    let release!: (value: string) => void;
+    api.content.unlock = vi.fn(
+      () =>
+        new Promise<string>((resolve) => {
+          release = resolve;
+        })
+    );
+    window.sesamy = api;
+    const { host, content } = mount();
+    await flush();
+    expect(api.content.unlock).toHaveBeenCalledWith(host, { delivery: 'embed' });
+    expect(projected(host)).not.toContain('content');
+    release('');
+    await flush();
+    expect(contentSlot(host)).toBe(content);
+    expect(projected(host)).toContain('content');
+  });
+  it('keeps content hidden when the grant denies access', async () => {
+    const api = unifiedApi();
+    api.content.unlock = vi
+      .fn()
+      .mockRejectedValue(Object.assign(new Error('Denied'), { status: 403 }));
+    window.sesamy = api;
+    const { host } = mount();
+    await flush();
+    expect(contentSlot(host)).toBeNull();
+    expect(projected(host)).toContain('preview');
+  });
+  it('registers again after an authentication transition but only once per settled session', async () => {
+    const api = unifiedApi();
+    api.content.unlock = vi.fn().mockResolvedValue('');
+    window.sesamy = api;
+    mount();
+    await flush();
+    expect(api.content.unlock).toHaveBeenCalledTimes(1);
+    window.dispatchEvent(new CustomEvent('sesamyJsAuthenticated'));
+    await flush();
+    expect(api.content.unlock).toHaveBeenCalledTimes(2);
+  });
+  it('preserves local embed display under the legacy opt-out', async () => {
+    const api = unifiedApi();
+    const original = api.content.get;
+    api.content.get = vi.fn((...args: Parameters<typeof original>) => ({
+      ...original(...args)!,
+      legacyContentAccess: true
+    }));
+    window.sesamy = api;
+    const { host } = mount();
+    await flush();
+    expect(projected(host)).toContain('content');
+    expect(api.content.unlock).not.toHaveBeenCalled();
+  });
+});
