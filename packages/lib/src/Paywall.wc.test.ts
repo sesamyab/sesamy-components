@@ -121,3 +121,126 @@ describe('default content access decisions', () => {
     expect(api.paywalls.get).toHaveBeenCalledWith('st_acme');
   });
 });
+
+describe('unified paywall visibility over time', () => {
+  afterEach(() => {
+    delete (window as { sesamy?: SesamyAPI }).sesamy;
+    document.body.innerHTML = '';
+  });
+  const loginPaywall = {
+    id: 'selected',
+    headline: 'Log in to read',
+    settings: { template: 'LOGIN' }
+  };
+  function setup({
+    hasAccess,
+    authenticated = false,
+    legacy = false,
+    id
+  }: {
+    hasAccess: () => Promise<unknown>;
+    authenticated?: boolean;
+    legacy?: boolean;
+    id?: string;
+  }) {
+    const api = fakeApi();
+    api.content.get = vi.fn(
+      () =>
+        ({
+          id: 'article-1',
+          legacyContentAccess: legacy,
+          resolvedPaywall: loginPaywall
+        }) as never
+    );
+    api.content.hasAccess = vi.fn(hasAccess);
+    (api as unknown as { auth: unknown }).auth = {
+      isAuthenticated: vi.fn().mockResolvedValue(authenticated)
+    };
+    window.sesamy = api;
+    const host = document.createElement('sesamy-paywall');
+    host.setAttribute('settings-url', 'st_acme');
+    if (id) host.setAttribute('publisher-content-id', id);
+    document.body.append(host);
+    return { api, host };
+  }
+  const form = (host: HTMLElement) => (host.shadowRoot ?? host).querySelector('form');
+
+  it('falls back to the configured paywall when the access check fails', async () => {
+    const { api, host } = setup({ hasAccess: () => Promise.reject(new Error('offline')) });
+    await flush();
+    expect(api.paywalls.get).toHaveBeenCalledWith('st_acme');
+    expect((host.shadowRoot ?? host).textContent).not.toContain('Error loading paywall');
+  });
+
+  it('hides when the container reports a grant for the article id from metadata', async () => {
+    const { api, host } = setup({ hasAccess: async () => false });
+    await flush();
+    await flush();
+    expect(form(host)).not.toBeNull();
+    window.dispatchEvent(
+      new CustomEvent('sesamyContentGranted', { detail: { publisherContentId: 'article-1' } })
+    );
+    await flush();
+    expect(form(host)).toBeNull();
+    expect(api.content.hasAccess).toHaveBeenCalledTimes(1);
+  });
+
+  it('ignores grants for other content', async () => {
+    const { host } = setup({ hasAccess: async () => false });
+    await flush();
+    await flush();
+    window.dispatchEvent(
+      new CustomEvent('sesamyContentGranted', { detail: { publisherContentId: 'other' } })
+    );
+    await flush();
+    expect(form(host)).not.toBeNull();
+  });
+
+  it('keeps the mounted paywall when a re-check reaches the same answer', async () => {
+    const { api, host } = setup({ hasAccess: async () => false });
+    await flush();
+    await flush();
+    const before = form(host);
+    expect(before).not.toBeNull();
+    window.dispatchEvent(new Event('online'));
+    await flush();
+    await flush();
+    expect(api.content.hasAccess).toHaveBeenCalledTimes(2);
+    expect(form(host)).toBe(before);
+  });
+
+  it('does not re-run the legacy flow on session changes', async () => {
+    const { api } = setup({ hasAccess: async () => false, legacy: true });
+    await flush();
+    window.dispatchEvent(new CustomEvent('sesamyJsAuthenticated'));
+    window.dispatchEvent(new Event('online'));
+    await flush();
+    expect(api.paywalls.get).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not offer a login form to a signed-in reader the server denied', async () => {
+    const { host } = setup({ hasAccess: async () => false, authenticated: true });
+    const shown = vi.fn();
+    host.addEventListener('sesamy:paywall-shown', shown);
+    await flush();
+    await flush();
+    expect(form(host)).toBeNull();
+    expect(shown).not.toHaveBeenCalled();
+  });
+
+  it('announces a dismissal for a paywall shown after an earlier grant', async () => {
+    let allowed = true;
+    const { host } = setup({ hasAccess: async () => allowed });
+    await flush();
+    allowed = false;
+    window.dispatchEvent(new CustomEvent('sesamyJsLogout'));
+    await flush();
+    await flush();
+    expect(form(host)).not.toBeNull();
+    const dismissed = vi.fn();
+    host.addEventListener('sesamy:paywall-dismissed', dismissed);
+    host.remove();
+    await flush();
+    expect(dismissed).toHaveBeenCalledTimes(1);
+  });
+});

@@ -1147,3 +1147,108 @@ describe('default embedded content grants', () => {
     expect(api.content.unlock).not.toHaveBeenCalled();
   });
 });
+
+describe('default embedded content grants that fail', () => {
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'Date'] });
+    document.body.innerHTML = '';
+  });
+  afterEach(() => {
+    delete (window as { sesamy?: SesamyAPI }).sesamy;
+    document.body.innerHTML = '';
+    vi.useRealTimers();
+  });
+  const advance = (ms = 0) => vi.advanceTimersByTimeAsync(ms);
+  function unifiedApi(unlock: () => Promise<string>) {
+    const api = fakeApi(() => true);
+    const original = api.content.get;
+    api.content.get = vi.fn((...args: Parameters<typeof original>) => ({
+      ...original(...args)!,
+      legacyContentAccess: false
+    }));
+    api.content.unlock = vi.fn(unlock);
+    return api;
+  }
+  const failWith = (status: number) =>
+    Promise.reject(Object.assign(new Error(`HTTP ${status}`), { status }));
+
+  it('backs off transient unlock failures and reports the recovery', async () => {
+    let calls = 0;
+    const api = unifiedApi(() => (++calls <= 2 ? failWith(500) : Promise.resolve('')));
+    window.sesamy = api;
+    const { host } = mount();
+    await advance();
+    expect(api.content.unlock).toHaveBeenCalledTimes(1);
+    await advance(accessRetryDelay(0));
+    expect(api.content.unlock).toHaveBeenCalledTimes(2);
+    // The second failure waits the longer delay, not the first one again.
+    await advance(accessRetryDelay(0));
+    if (accessRetryDelay(1) > accessRetryDelay(0)) {
+      expect(api.content.unlock).toHaveBeenCalledTimes(2);
+    }
+    await advance(accessRetryDelay(1) - accessRetryDelay(0));
+    expect(api.content.unlock).toHaveBeenCalledTimes(3);
+    expect(projected(host)).toContain('content');
+    const recovered = (api.analytics.track as Mock).mock.calls
+      .filter(([event]) => event === 'content_access_recovered')
+      .map(([, properties]) => properties);
+    expect(recovered).toEqual([
+      expect.objectContaining({
+        attempts: 2,
+        elapsedMs: accessRetryDelay(0) + accessRetryDelay(1)
+      })
+    ]);
+  });
+
+  it('retries a 401 from the unlock instead of settling on a denial', async () => {
+    let calls = 0;
+    const api = unifiedApi(() => (++calls <= 1 ? failWith(401) : Promise.resolve('')));
+    window.sesamy = api;
+    const { host } = mount();
+    await advance();
+    expect(contentSlot(host)).not.toBeNull();
+    await advance(accessRetryDelay(0));
+    expect(projected(host)).toContain('content');
+  });
+
+  it('announces every grant to the paywall, even after the first public unlock event', async () => {
+    const api = unifiedApi(() => Promise.resolve(''));
+    window.sesamy = api;
+    const granted = vi.fn();
+    const unlocked = vi.fn();
+    window.addEventListener('sesamyContentGranted', granted);
+    window.addEventListener('sesamyUnlocked', unlocked);
+    mount();
+    await advance();
+    window.dispatchEvent(new CustomEvent('sesamyJsAuthenticated'));
+    await advance();
+    window.removeEventListener('sesamyContentGranted', granted);
+    window.removeEventListener('sesamyUnlocked', unlocked);
+    expect(unlocked).toHaveBeenCalledTimes(1);
+    expect(granted).toHaveBeenCalledTimes(2);
+    expect(granted.mock.calls[1][0].detail).toEqual({ publisherContentId: 'article-1' });
+  });
+});
+
+describe('encoded content under the legacy opt-out', () => {
+  afterEach(() => {
+    delete (window as { sesamy?: SesamyAPI }).sesamy;
+    document.body.innerHTML = '';
+  });
+  it('still registers the read through content.unlock', async () => {
+    const api = fakeApi(() => true);
+    const original = api.content.get;
+    api.content.get = vi.fn((...args: Parameters<typeof original>) => ({
+      ...original(...args)!,
+      legacyContentAccess: true
+    }));
+    api.content.unlock = vi.fn().mockResolvedValue('<p>Registered article</p>');
+    window.sesamy = api;
+    const { host } = mount({ 'lock-mode': 'encode' });
+    await flush();
+    expect(api.content.unlock).toHaveBeenCalledWith(host.parentElement, {
+      encodedContent: 'The full article'
+    });
+    expect(host.parentElement?.textContent).toContain('Registered article');
+  });
+});

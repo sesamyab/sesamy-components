@@ -12,7 +12,7 @@
   import { onDestroy } from 'svelte';
   import Base from './Base.svelte';
   import type { ContentContainerProps } from './types';
-  import { dispatchSesamyEvent, SesamyJsEvent } from './events';
+  import { dispatchSesamyEvent, SesamyInternalEvent, SesamyJsEvent } from './events';
   import { resolveAccessLevel, resolveArticleState, resolveItemSrc, track } from './tracking';
   import {
     ContentSlot,
@@ -265,11 +265,7 @@
     if (settledEpoch === epoch) return;
 
     if (resolution.state === 'unknown') {
-      epochUnresolved++;
-      unresolvedChecks++;
-      unresolvedSince ||= Date.now();
-      reportUnresolved(api, content, resolution.reason);
-      scheduleRetry(api, resolution.reason);
+      markUnresolved(api, content, resolution.reason);
       // `access` stays as it is. Not knowing never takes back what the reader
       // is already being shown, and never grants what they were refused.
       return;
@@ -291,10 +287,11 @@
         encodedGrantEpoch = epoch;
       } catch (error) {
         if (epoch !== sessionEpoch) return;
-        const status = (error as { status?: number }).status;
-        if (status !== 401 && status !== 403) {
-          reportUnresolved(api, content, 'unlock-failed');
-          scheduleRetry(api, 'unlock-failed');
+        // Only a 403 is a refusal. A 401 is a session that is still settling
+        // (an expired token mid-refresh), so it is retried like any other
+        // failure rather than leaving a subscriber on the teaser.
+        if ((error as { status?: number }).status !== 403) {
+          markUnresolved(api, content, 'unlock-failed');
           return;
         }
         resolution = { state: 'denied' };
@@ -302,7 +299,6 @@
         if (encodedReadInFlightEpoch === epoch) encodedReadInFlightEpoch = -1;
       }
     }
-    if (resolution.state === 'unknown') return;
     settledEpoch = epoch;
     clearRetry();
 
@@ -328,6 +324,14 @@
     if (access === 'granted') {
       await unlockAndRenderContent(api, epoch);
     }
+  }
+
+  function markUnresolved(api: SesamyAPI, content: MaybeContent, reason: string | undefined) {
+    epochUnresolved++;
+    unresolvedChecks++;
+    unresolvedSince ||= Date.now();
+    reportUnresolved(api, content, reason);
+    scheduleRetry(api, reason);
   }
 
   function clearRetry() {
@@ -470,11 +474,18 @@
   });
 
   function emitUnlockEvent(api: SesamyAPI) {
-    if (unlockEmitted) return;
-    unlockEmitted = true;
     const host = $host();
     const content = api.content.get(host);
     const publisherContentId = publisherContentIdProp || content?.id || '';
+
+    // On every grant, for the paywall: a new session can re-register after the
+    // public `sesamyUnlocked` below has already been announced once.
+    dispatchEvent(
+      new CustomEvent(SesamyInternalEvent.CONTENT_GRANTED, { detail: { publisherContentId } })
+    );
+
+    if (unlockEmitted) return;
+    unlockEmitted = true;
 
     const event = new CustomEvent('sesamyUnlocked', {
       detail: {
@@ -564,11 +575,6 @@
   async function fetchContent(api: SesamyAPI): Promise<string> {
     switch (lockMode) {
       case 'encode':
-        if (api.content.get($host())?.legacyContentAccess === true) {
-          return new TextDecoder().decode(
-            Uint8Array.from(atob(storedContentElement?.innerHTML || ''), (c) => c.charCodeAt(0))
-          );
-        }
         return api.content.unlock($host().parentElement!, {
           encodedContent: storedContentElement?.innerHTML || ''
         });
