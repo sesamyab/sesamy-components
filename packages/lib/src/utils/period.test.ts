@@ -5,6 +5,8 @@ import type { PaywallSubscription } from '../types/Paywall';
 
 const en = init('en');
 const sv = init('sv');
+const cs = init('cs');
+const pl = init('pl');
 
 const subscription = (overrides: Partial<PaywallSubscription> = {}): PaywallSubscription => ({
   id: 'sub_1',
@@ -31,6 +33,21 @@ describe('getPeriodLabel', () => {
   ] as const)('%o → %s / %s', (period, enLabel, svLabel) => {
     expect(getPeriodLabel(period, en)).toBe(enLabel);
     expect(getPeriodLabel(period, sv)).toBe(svLabel);
+  });
+
+  it.each([
+    [cs, 'year', 2, '2 roky'],
+    [cs, 'year', 5, '5 let'],
+    [cs, 'week', 2, '2 týdny'],
+    [cs, 'week', 5, '5 týdnů'],
+    [pl, 'month', 2, '2 miesiące'],
+    [pl, 'month', 5, '5 miesięcy'],
+    [pl, 'year', 2, '2 lata'],
+    [pl, 'year', 5, '5 lat'],
+    [pl, 'year', 12, '12 lat'],
+    [pl, 'year', 22, '22 lata']
+  ] as const)('%#: %s %i → %s', (t, period, time, label) => {
+    expect(getPeriodLabel({ period, time }, t)).toBe(label);
   });
 });
 
