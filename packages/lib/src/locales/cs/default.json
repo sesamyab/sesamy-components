@@ -40,7 +40,7 @@
   "something_went_wrong": "Došlo k chybě. Zkuste to prosím znovu. Pokud problém přetrvává, obraťte se na naši technickou podporu.",
   "timeperiod_day": "den",
   "timeperiod_days": "dny",
-  "timeperiod_first_months": "prvních {{count}} měs.",
+  "timeperiod_first_months": "po dobu {{count}} měs.",
   "timeperiod_half_year": "pololetí",
   "timeperiod_month": "měsíc",
   "timeperiod_months": "měsíce",

@@ -23,7 +23,7 @@ export const getPeriodTexts = (subscription: PaywallSubscription, t: Translation
     ? (hasDiscountPrice && discountPeriod) || pricePeriod
     : undefined;
   let headline = headlinePeriod ? getPeriodLabel(headlinePeriod, t) : periodText;
-  if (headlinePeriod && hasDiscountPrice && discountMonths) {
+  if (headlinePeriod && hasDiscountPrice && (discountMonths ?? 0) > 1) {
     headline = `${headline}, ${t('timeperiod_first_months').replace('{{count}}', String(discountMonths))}`;
   }
 

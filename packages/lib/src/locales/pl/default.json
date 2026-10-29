@@ -40,7 +40,7 @@
   "something_went_wrong": "Wystąpił błąd. Spróbuj ponownie, a jeśli problem nadal występuje, skontaktuj się z naszym działem pomocy technicznej.",
   "timeperiod_day": "dzień",
   "timeperiod_days": "dni",
-  "timeperiod_first_months": "pierwsze {{count}} mies.",
+  "timeperiod_first_months": "przez {{count}} mies.",
   "timeperiod_half_year": "pół roku",
   "timeperiod_month": "miesiąc",
   "timeperiod_months": "miesiące",

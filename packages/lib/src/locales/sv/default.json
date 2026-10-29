@@ -40,7 +40,7 @@
   "something_went_wrong": "Något gick fel. Försök igen, och om problemet kvarstår, kontakta vår support.",
   "timeperiod_day": "dag",
   "timeperiod_days": "dagar",
-  "timeperiod_first_months": "första {{count}} månaderna",
+  "timeperiod_first_months": "de första {{count}} månaderna",
   "timeperiod_half_year": "halvår",
   "timeperiod_month": "månad",
   "timeperiod_months": "månader",

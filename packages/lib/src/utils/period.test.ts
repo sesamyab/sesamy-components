@@ -71,6 +71,20 @@ describe('getPeriodTexts', () => {
     expect(texts).toEqual({ headline: 'month, first 3 months', regular: 'month' });
   });
 
+  it('leaves out a one-month discount duration', () => {
+    const texts = getPeriodTexts(
+      subscription({
+        priceMode: 'AUTOMATIC',
+        discountPrice: 99,
+        discountPeriod: { period: 'week', time: 1 },
+        discountMonths: 1,
+        pricePeriod: { period: 'week', time: 1 }
+      }),
+      en
+    );
+    expect(texts.headline).toBe('week');
+  });
+
   it('uses the price period for both lines without a discount', () => {
     const texts = getPeriodTexts(
       subscription({ priceMode: 'AUTOMATIC', pricePeriod: { period: 'year', time: 1 } }),
