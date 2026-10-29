@@ -1,3 +1,16 @@
+# [2.33.0](https://github.com/sesamyab/sesamy-components/compare/v2.32.0...v2.33.0) (2026-10-29)
+
+
+### Bug Fixes
+
+* **paywall:** correct counted period grammar and skip one-month discount suffix ([23aa33d](https://github.com/sesamyab/sesamy-components/commit/23aa33df87c5b6ed0d22991d41f8d62e165ae165))
+* **paywall:** pick the cs/pl plural form for 5+ periods ([c2776d6](https://github.com/sesamyab/sesamy-components/commit/c2776d6d0d9fcb9e46cbdf6a5cee03129d7f7289))
+
+
+### Features
+
+* **paywall:** render automatic-price periods in the paywall language ([99c3110](https://github.com/sesamyab/sesamy-components/commit/99c3110b4637bc0e19515098f475086cc63ce659))
+
 # [2.32.0](https://github.com/sesamyab/sesamy-components/compare/v2.31.0...v2.32.0) (2026-10-22)
 
 
