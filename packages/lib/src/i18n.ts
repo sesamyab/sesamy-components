@@ -27,6 +27,7 @@ export type TranslationComponents = {
 
 export interface TranslationFunction {
   (key: Key, components?: TranslationComponents): string;
+  lang?: string;
 }
 
 export type SupportedLanguage = keyof typeof languages;
@@ -46,8 +47,10 @@ function interpolateComponents(text: string, components?: TranslationComponents)
 
 export default function init(langAttribute: SupportedLanguage): TranslationFunction {
   const lang = languages[langAttribute] ? langAttribute : 'en';
-  return (key: Key, components?: TranslationComponents) => {
+  const t: TranslationFunction = (key: Key, components?: TranslationComponents) => {
     const translation = languages[lang]?.[key] || key;
     return interpolateComponents(translation, components);
   };
+  t.lang = String(lang);
+  return t;
 }

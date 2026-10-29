@@ -81,4 +81,21 @@ describe.each([
     expect(lines).toEqual(expect.arrayContaining(['199 NOK / 3 måneder']));
     expect(lines.join(' | ')).not.toContain('/ måned');
   });
+
+  it('renders AUTOMATIC periods from the structured data instead of the typed text', () => {
+    const { container } = renderSubscriptions(
+      [
+        subscription({
+          priceMode: 'AUTOMATIC',
+          discountPeriod: { period: 'month', time: 3 },
+          pricePeriod: { period: 'month', time: 1 }
+        })
+      ],
+      horizontal
+    );
+
+    expect(priceLines(container)).toEqual(
+      expect.arrayContaining(['99 NOK / timeperiod_quarter', '199 NOK / timeperiod_month'])
+    );
+  });
 });

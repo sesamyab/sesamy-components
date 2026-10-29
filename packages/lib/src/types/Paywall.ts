@@ -10,6 +10,12 @@ export enum PaywallTemplate {
   EMAIL = 'EMAIL'
 }
 
+// A payments recurringSchedule, e.g. { period: 'month', time: 3 }
+export type PaywallPeriod = {
+  period: 'day' | 'week' | 'month' | 'quarter' | 'year';
+  time: number;
+};
+
 export type PaywallSubscription = {
   id: string;
   sku: string;
@@ -26,6 +32,14 @@ export type PaywallSubscription = {
   comparePeriodText?: string;
   price?: number;
   discountPrice?: number;
+  // Missing means MANUAL; only AUTOMATIC subscriptions carry the structured periods below
+  priceMode?: 'MANUAL' | 'AUTOMATIC';
+  pricePeriod?: PaywallPeriod;
+  // Set with discountPrice
+  discountPeriod?: PaywallPeriod;
+  // Discount duration, when longer than one discountPeriod
+  discountMonths?: number;
+  trialDays?: number;
   features?: string[];
   url?: string;
   buttonText?: string;

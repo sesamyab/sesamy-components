@@ -9,6 +9,7 @@
   import Tag from '../Tag.svelte';
   import Selection from './Selection.svelte';
   import DescriptionWithReadMore from './DescriptionWithReadMore.svelte';
+  import { getPeriodTexts } from '../../utils/period';
 
   type Props = {
     t: TranslationFunction;
@@ -55,8 +56,6 @@
       title,
       description,
       price,
-      periodText,
-      comparePeriodText,
       features,
       selected,
       tag,
@@ -68,8 +67,7 @@
     } = subscription}
     {@const hasPrice = typeof price === 'number'}
     {@const hasDiscountPrice = typeof discountPrice === 'number'}
-    <!-- The regular price only gets its own period text while it is the compare-at line -->
-    {@const regularPeriodText = (hasDiscountPrice && comparePeriodText) || periodText}
+    {@const { headline: periodText, regular: regularPeriodText } = getPeriodTexts(subscription, t)}
 
     {#if horizontal}
       <div class="@container/box w-full">
