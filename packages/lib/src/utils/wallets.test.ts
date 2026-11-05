@@ -11,7 +11,8 @@ const UA = {
   androidChrome:
     'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36',
   iPhoneChrome:
-    'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/130.0.0.0 Mobile/15E148 Safari/604.1'
+    'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/130.0.0.0 Mobile/15E148 Safari/604.1',
+  iPad: 'Mozilla/5.0 (iPad; CPU OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/100.0.0.0 Mobile/15E148 Safari/604.1'
 };
 
 const stubBrowser = ({
@@ -51,6 +52,16 @@ describe('getWalletPaymentMethods', () => {
 
   it('offers only Google Pay on Android without ApplePaySession', () => {
     stubBrowser({ userAgent: UA.androidChrome });
+    expect(getWalletPaymentMethods(STRIPE_CARD)).toEqual([GOOGLE_PAY]);
+  });
+
+  it('offers only Google Pay on an iPhone without ApplePaySession', () => {
+    stubBrowser({ userAgent: UA.iPhoneChrome });
+    expect(getWalletPaymentMethods(STRIPE_CARD)).toEqual([GOOGLE_PAY]);
+  });
+
+  it('offers only Google Pay on an iPad without ApplePaySession', () => {
+    stubBrowser({ userAgent: UA.iPad });
     expect(getWalletPaymentMethods(STRIPE_CARD)).toEqual([GOOGLE_PAY]);
   });
 

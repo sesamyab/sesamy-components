@@ -5,14 +5,16 @@ import type { PaymentMethodType } from './checkout';
  * refuses mobile browsers (`navigator.userAgentData.mobile`), and Stripe's
  * Express Checkout Element doesn't support Apple Pay in Chrome on Android. So
  * a mobile browser without a native `ApplePaySession` can't pay with it. iOS
- * browsers all have the native session.
+ * browsers that can pay have the native session, so an iOS user agent without
+ * it (old third-party browsers, webviews that disable Apple Pay JS) counts as
+ * mobile too. iPadOS in desktop mode sends a Mac user agent and isn't caught.
  */
 const isMobileWithoutApplePay = (): boolean => {
   if (typeof window === 'undefined' || typeof navigator === 'undefined') return false;
   if ('ApplePaySession' in window) return false;
   const userAgentData = (navigator as Navigator & { userAgentData?: { mobile?: boolean } })
     .userAgentData;
-  return !!userAgentData?.mobile || /Android/i.test(navigator.userAgent);
+  return !!userAgentData?.mobile || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 };
 
 /**
