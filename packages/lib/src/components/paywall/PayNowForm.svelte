@@ -13,7 +13,7 @@
   import Row from '../Row.svelte';
   import { isValidEmail } from '../../utils/email';
   import Column from '../Column.svelte';
-  import { isSupportingApplePay, isSupportingGooglePay } from '../../utils/browser-support';
+  import { getWalletPaymentMethods } from '../../utils/wallets';
   import emailSpellChecker from '@zootools/email-spell-checker';
   import Accordion from '../Accordion.svelte';
   import { goToCheckout, type PaymentMethodType } from '../../utils/checkout';
@@ -234,13 +234,7 @@
     [] as PaymentMethodType[]
   );
 
-  // Add wallet payment methods if supported by browser
-  if (isSupportingGooglePay()) {
-    paymentMethods.push({ provider: 'STRIPE', method: 'GOOGLE-PAY' });
-  }
-  if (isSupportingApplePay()) {
-    paymentMethods.push({ provider: 'STRIPE', method: 'APPLE-PAY' });
-  }
+  paymentMethods.push(...getWalletPaymentMethods(paymentMethods));
 
   // Remove KLARNA_PRIVATE if both STRIPE_KLARNA and KLARNA_PRIVATE are present
   const hasStripeKlarna = paymentMethods.some((pm) => pm.method === 'STRIPE_KLARNA');
