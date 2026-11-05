@@ -1,3 +1,15 @@
+# [2.34.0](https://github.com/sesamyab/sesamy-components/compare/v2.33.0...v2.34.0) (2026-11-05)
+
+
+### Bug Fixes
+
+* **paywall:** leave Apple Pay out on iOS browsers without ApplePaySession ([ccdcfdc](https://github.com/sesamyab/sesamy-components/commit/ccdcfdc975ed9b7e804c05fa1ddb66383f1d92d9))
+
+
+### Features
+
+* **paywall:** offer Apple Pay and Google Pay whenever the checkout has Stripe card ([892f644](https://github.com/sesamyab/sesamy-components/commit/892f644afdd9434fba0a4df4326daeaa433fe336))
+
 # [2.33.0](https://github.com/sesamyab/sesamy-components/compare/v2.32.0...v2.33.0) (2026-10-29)
 
 
