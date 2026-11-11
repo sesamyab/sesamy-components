@@ -1,3 +1,10 @@
+## [2.34.1](https://github.com/sesamyab/sesamy-components/compare/v2.34.0...v2.34.1) (2026-11-11)
+
+
+### Bug Fixes
+
+* **paywall:** show the paywall on public pages under unified access ([b63b61d](https://github.com/sesamyab/sesamy-components/commit/b63b61ddffa1b2c5f3da23e550622238fb03c1e1))
+
 # [2.34.0](https://github.com/sesamyab/sesamy-components/compare/v2.33.0...v2.34.0) (2026-11-05)
 
 
