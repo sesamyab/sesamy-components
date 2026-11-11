@@ -10,7 +10,8 @@
   import InputGroup from '../InputGroup.svelte';
   import Icon from '../Icon.svelte';
   import { isLight } from '../../utils/color';
-  import { dispatchSesamyEvent } from '../../events';
+  import { dispatchSesamyEvent, SesamyJsEvent } from '../../events';
+  import { onMount, onDestroy } from 'svelte';
 
   type Props = {
     api: SesamyAPI;
@@ -64,23 +65,68 @@
     }, 400);
   };
 
-  const checkAuthAndAnnounce = async () => {
-    let isAuthenticated = false;
-    try {
-      isAuthenticated = await api.auth.isAuthenticated();
-    } catch (error) {
-      console.error('Auth check failed:', error);
-    }
-    if (!isAuthenticated) {
+  // 'checking' renders nothing, as the initial auth check always has.
+  let authState = $state<'checking' | 'authenticated' | 'unauthenticated'>('checking');
+  // Bumped on every change, so a slower initial check cannot overwrite a later event.
+  let authToken = 0;
+
+  const applyAuth = (isAuthenticated: boolean) => {
+    const wasShown = authState === 'unauthenticated';
+    authState = isAuthenticated ? 'authenticated' : 'unauthenticated';
+    if (!isAuthenticated && !wasShown) {
       onShown?.();
       if (host) {
         dispatchSesamyEvent(host, 'sesamy:paywall-shown', {
           reason: 'unauthenticated'
         });
       }
+    } else if (isAuthenticated && wasShown) {
+      // Logging in elsewhere clears the wall just like submitting this form does.
+      // The form stays mounted while hidden, so a later logout would otherwise
+      // show the previous reader's entries again.
+      clearTimeout(suggestionTimeout);
+      email = '';
+      firstName = '';
+      lastName = '';
+      emailSuggestion = '';
+      onAccessGranted?.();
     }
-    return isAuthenticated;
   };
+
+  const checkAuthAndAnnounce = async () => {
+    const token = ++authToken;
+    let isAuthenticated = false;
+    try {
+      isAuthenticated = await api.auth.isAuthenticated();
+    } catch (error) {
+      console.error('Auth check failed:', error);
+    }
+    if (token !== authToken) return;
+    applyAuth(isAuthenticated);
+  };
+
+  // A login or logout in another tab or component must update this wall without a reload;
+  // the paywall element only re-fetches under unified access, which public pages skip.
+  const onAuthenticated = () => {
+    authToken++;
+    applyAuth(true);
+  };
+  const onLogout = () => {
+    authToken++;
+    applyAuth(false);
+  };
+
+  onMount(() => {
+    window.addEventListener(SesamyJsEvent.AUTHENTICATED, onAuthenticated);
+    window.addEventListener(SesamyJsEvent.LOGOUT, onLogout);
+    void checkAuthAndAnnounce();
+  });
+  onDestroy(() => {
+    // A check still in flight must not announce a wall that is gone.
+    authToken++;
+    window.removeEventListener(SesamyJsEvent.AUTHENTICATED, onAuthenticated);
+    window.removeEventListener(SesamyJsEvent.LOGOUT, onLogout);
+  });
 
   const login = async (event: SubmitEvent, api: SesamyAPI) => {
     event.preventDefault();
@@ -100,75 +146,73 @@
   };
 </script>
 
-{#await checkAuthAndAnnounce() then isAuthenticated}
-  {#if !isAuthenticated}
-    <div class="@container" style="font-size: var(--s-base-font-size, 16px)">
-      <form onsubmit={(e) => login(e, api)}>
+{#if authState === 'unauthenticated'}
+  <div class="@container" style="font-size: var(--s-base-font-size, 16px)">
+    <form onsubmit={(e) => login(e, api)}>
+      <Column
+        class={twMerge(
+          'w-full rounded-[var(--s-paywall-border-radius)] @xl:rounded-[var(--s-paywall-border-radius-desktop)]',
+          styling?.showBackground &&
+            'bg-[var(--s-paywall-bg-color)] text-[var(--s-paywall-text-color)]',
+          styling?.showBackground && styling?.dropShadow && 'shadow-md @xl:shadow-lg',
+          darkMode && 'dark'
+        )}
+      >
         <Column
           class={twMerge(
-            'w-full rounded-[var(--s-paywall-border-radius)] @xl:rounded-[var(--s-paywall-border-radius-desktop)]',
-            styling?.showBackground &&
-              'bg-[var(--s-paywall-bg-color)] text-[var(--s-paywall-text-color)]',
-            styling?.showBackground && styling?.dropShadow && 'shadow-md @xl:shadow-lg',
-            darkMode && 'dark'
+            'gap-2 @md:gap-4 pt-0 w-full max-w-[800px]',
+            styling?.showBackground && 'px-2.5 py-4 @sm:p-8 @sm:pb-10 @3xl:p-16 @3xl:pt-10'
           )}
+          up
+          left
         >
-          <Column
-            class={twMerge(
-              'gap-2 @md:gap-4 pt-0 w-full max-w-[800px]',
-              styling?.showBackground && 'px-2.5 py-4 @sm:p-8 @sm:pb-10 @3xl:p-16 @3xl:pt-10'
-            )}
-            up
-            left
-          >
-            <Column left class="w-full gap-6">
-              {#if useDefaultLogo}
-                <img class="h-7" src={logoUrl} alt={`${t('logo_of')} ${vendorId}`} />
-              {/if}
-              <Column left class="gap-3">
-                <div class="w-full text-2xl @md:text-3xl leading-tight font-bold">
-                  <svelte:element this={'slot'} name="headline">{headline}</svelte:element>
-                </div>
-                <svelte:element this={'slot'} name="below-headline" />
-              </Column>
+          <Column left class="w-full gap-6">
+            {#if useDefaultLogo}
+              <img class="h-7" src={logoUrl} alt={`${t('logo_of')} ${vendorId}`} />
+            {/if}
+            <Column left class="gap-3">
+              <div class="w-full text-2xl @md:text-3xl leading-tight font-bold">
+                <svelte:element this={'slot'} name="headline">{headline}</svelte:element>
+              </div>
+              <svelte:element this={'slot'} name="below-headline" />
             </Column>
-
-            <InputGroup>
-              <Input
-                onkeyup={provideSuggestion}
-                bind:value={email}
-                compact
-                placeholder={t('email')}
-              />
-              {#if emailSuggestion}
-                <button
-                  type="button"
-                  class="text-sm gap-1 row"
-                  onclick={() => {
-                    email = emailSuggestion;
-                    emailSuggestion = '';
-                  }}
-                >
-                  <Icon class="text-primary text-xl" name="info" />
-                  <span>
-                    {t('did_you_mean')}{' '}
-                    <span class="text-primary">{emailSuggestion}</span>?
-                  </span>
-                </button>
-              {/if}
-
-              {#if loginFields?.name}
-                <Input bind:value={firstName} compact placeholder={t('first_name')} />
-                <Input bind:value={lastName} compact placeholder={t('last_name')} />
-              {/if}
-            </InputGroup>
-
-            <Button type="submit" class="w-full shadow-md">{t('continue')}</Button>
           </Column>
-        </Column>
-      </form>
-    </div>
 
-    {@html style}
-  {/if}
-{/await}
+          <InputGroup>
+            <Input
+              onkeyup={provideSuggestion}
+              bind:value={email}
+              compact
+              placeholder={t('email')}
+            />
+            {#if emailSuggestion}
+              <button
+                type="button"
+                class="text-sm gap-1 row"
+                onclick={() => {
+                  email = emailSuggestion;
+                  emailSuggestion = '';
+                }}
+              >
+                <Icon class="text-primary text-xl" name="info" />
+                <span>
+                  {t('did_you_mean')}{' '}
+                  <span class="text-primary">{emailSuggestion}</span>?
+                </span>
+              </button>
+            {/if}
+
+            {#if loginFields?.name}
+              <Input bind:value={firstName} compact placeholder={t('first_name')} />
+              <Input bind:value={lastName} compact placeholder={t('last_name')} />
+            {/if}
+          </InputGroup>
+
+          <Button type="submit" class="w-full shadow-md">{t('continue')}</Button>
+        </Column>
+      </Column>
+    </form>
+  </div>
+
+  {@html style}
+{/if}
