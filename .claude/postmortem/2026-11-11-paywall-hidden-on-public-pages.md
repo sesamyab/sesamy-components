@@ -12,7 +12,9 @@ surfaces:
   - sesamy-paywall on a page whose content metadata says accessLevel public (offer, campaign and subscribe pages)
 invariant: A sesamy-paywall on a public page fetches its settings and shows its products, whatever content.hasAccess() answers.
 tests:
-  - 'packages/lib/src/Paywall.wc.test.ts :: paywall on a public page (2 tests)'
+  - 'packages/lib/src/Paywall.wc.test.ts :: paywall on a public page'
+  - 'packages/lib/src/Paywall.wc.test.ts :: paywall visibility by access level under unified access'
+  - 'tests/paywall-public.spec.ts :: the paywall shows its plans on a public page under unified access'
 introduced: v2.31.0, 2026-10-22
 fixed: v2.34.1, 2026-11-11, PR #452
 detected-by: customer
@@ -23,7 +25,7 @@ ticket: none
 
 ## Summary
 
-From 22 October to 11 November 2026, a `<sesamy-paywall>` placed on a public page showed nothing. Offer and subscribe pages are built that way, so readers on 8 pages at 5 publishers saw no products and could not start a purchase. It is over: v2.34.1 is live and all 8 pages show their products. The fix is one condition in the paywall.
+Releases v2.31.0 (22 October 2026) to v2.34.0 made a `<sesamy-paywall>` placed on a public page render nothing. Offer and subscribe pages are built that way. A scan on 11 November found 8 such pages at 5 publishers where readers saw no products and could not start a purchase; when each publisher first got an affected release is not established. It is over: v2.34.1 is live and all 8 pages show their products. The fix is one condition in the paywall.
 
 ## What happened
 
@@ -33,12 +35,13 @@ Times are UTC.
 - 2026-11-11 07:13: a publisher reports through support that the offer page shows no products.
 - 2026-11-11 07:57: the fix is committed. 08:15 PR #452 is merged. 08:18 v2.34.1 is released. 08:20 it is on npm.
 - 2026-11-11 10:50 to 11:00: all 8 pages are confirmed in production.
+- 2026-11-11 12:06: PR #456 is merged and pull request CI runs the unit tests. 12:12 PR #455 is merged with tests that render the plans.
 
 PR #452 says the behaviour dates from 2.32.0. The tags show it one release earlier, the same day.
 
 ## Impact
 
-8 pages at 5 publishers showed an empty paywall, among them the main subscribe page of 3 publishers. VERIFIED by a scan across the publishers' sites on 11 November, before the fix. Readers could not start a purchase from those pages for up to 20 days.
+8 pages at 5 publishers showed an empty paywall, among them the main subscribe page of 3 publishers. VERIFIED by a scan across the publishers' sites on 11 November, before the fix. Readers could not start a purchase from those pages for up to 20 days; the start per publisher is not established.
 
 Not at risk: paywalls on locked articles, access for existing subscribers, payments, reader data. Locked articles worked throughout.
 
@@ -75,9 +78,16 @@ Added in PR #452, in `packages/lib/src/Paywall.wc.test.ts`, under "paywall on a 
 - "fetches the configured paywall without an access check"
 - "stays shown when the container grants the public article"
 
-Red on `dev` before the fix (2 failed, 22 passed), green after (299 passed in the full unit suite). VERIFIED from the PR; not rerun for this file.
+These two assert that no access check is made and that the paywall settings are fetched, also after the container's grant event. They do not assert that products are rendered.
 
-Not tracked when this was written: no workflow ran `yarn test:unit`. `playwright.yml` and `playwright-cron.yml` run `yarn test` (Storybook build and Playwright), and `release.yml` builds and releases. VERIFIED by reading the four workflow files. PR #456 adds the step.
+Added in PR #455, which does assert the rendering:
+
+- `Paywall.wc.test.ts`, under "paywall visibility by access level under unified access": a public page renders the configured plans and a button; an entitlement page hides with access and renders the server-selected plans without; the legacy flow is unchanged.
+- `tests/paywall-public.spec.ts` (Playwright, against a Storybook story with a faked sesamy-js): both plans and a button are visible.
+
+Red and green, VERIFIED on 2026-11-11 15:34 UTC by running `Paywall.wc.test.ts` on `dev` at 5b03337: 29 passed; with the fix condition reverted, 3 failed and 26 passed. The 3 are the two tests from PR #452 and "renders the plans on a public page even though the reader has access". That one fails on its access-check assertion, before its rendering assertions are reached. The Playwright spec was not run against the reverted code.
+
+Tracked: `playwright.yml` runs on every pull request to `dev` and `main`, with `yarn test:unit` (step "Run unit tests", added in PR #456) and `yarn test` (Storybook build and Playwright). VERIFIED by reading the workflow on `dev`. Before PR #456 no workflow ran the unit tests, so the tests in PR #452 were merged without CI running them.
 
 ## Gaps
 
@@ -87,9 +97,9 @@ Detection: nothing looks at a real offer page, and a paywall that renders nothin
 
 ## Follow-ups
 
-1. Run `yarn test:unit` in pull request CI. Owner: repo owner. PR #456.
+1. Run `yarn test:unit` in pull request CI. Owner: repo owner. Done in PR #456.
 2. A production smoke check of offer and subscribe pages: the paywall renders and shows as many products as the paywall API returns. Owner: platform. Proposed.
-3. An access-level matrix test: public and locked, legacy and unified, for each element that decides visibility. Owner: repo owner. Proposed.
+3. An access-level matrix test: public and locked, legacy and unified, for each element that decides visibility. Owner: repo owner. Done for the paywall in PR #455. Proposed for the content container, where the same matrix was not checked.
 4. One line in the client-locking developer docs: a paywall on a public article always renders. Owner: docs. Proposed.
 
 ## Not established
