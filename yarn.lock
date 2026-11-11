@@ -234,10 +234,10 @@
   dependencies:
     regenerator-runtime "^0.14.0"
 
-"@chromatic-com/storybook@3.2.7":
-  version "3.2.7"
-  resolved "https://registry.yarnpkg.com/@chromatic-com/storybook/-/storybook-3.2.7.tgz#e5b9b4015e42e34167e3215c4cc1f6358bff90b4"
-  integrity sha512-fCGhk4cd3VA8RNg55MZL5CScdHqljsQcL9g6Ss7YuobHpSo9yytEWNdgMd5QxAHSPBlLGFHjnSmliM3G/BeBqw==
+"@chromatic-com/storybook@3.2.8":
+  version "3.2.8"
+  resolved "https://registry.yarnpkg.com/@chromatic-com/storybook/-/storybook-3.2.8.tgz#1d430ba0addc2733e6d29c84593d4f24422e6e8d"
+  integrity sha512-XjViqSJZ/AqfzdHihzFDuRmSrDdjHQ8flMbhSCwb4c90qCdsoMbSvqoA+C7IRj21i/GqyN3u/lLKfXLvywEB9Q==
   dependencies:
     chromatic "^11.15.0"
     filesize "^10.0.12"
