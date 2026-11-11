@@ -1,5 +1,7 @@
 import { html } from 'lit-html';
 import type { Meta, StoryObj } from '@storybook/web-components';
+import { createFakeSesamy, installFakeSesamy } from './fake-sesamy';
+import { publicOfferPaywall } from './fixtures/public-offer-paywall';
 
 interface PaywallProps {
   'settings-url': string;
@@ -79,4 +81,40 @@ export const Slots: Story = {
       </sesamy-paywall>
     </div>
   `
+};
+
+/**
+ * An offer page: a public article with the paywall inside it, under unified
+ * content access. Everyone has access to a public article, so the paywall must
+ * still show its plans here (regression: it rendered empty from 2.31 until 2.34.1).
+ * sesamy-js is faked, so the story needs no network and renders the same every time.
+ */
+export const PublicPageUnifiedAccess: Story = {
+  args: {
+    'settings-url': 'pw_public_offer'
+  },
+  // The docs page renders every story in one frame; keep this story's fake
+  // sesamy-js out of the others by giving it a frame of its own there.
+  parameters: { docs: { story: { inline: false, iframeHeight: 420 } } },
+  decorators: [
+    (story) => {
+      installFakeSesamy(
+        createFakeSesamy({
+          metadata: {
+            id: 'offer-page',
+            url: 'https://acme.sesamy.dev/offer',
+            legacyContentAccess: false,
+            accessLevel: 'public'
+          },
+          hasAccess: true,
+          paywall: publicOfferPaywall
+        })
+      );
+      return story();
+    }
+  ],
+  render: (args) =>
+    html` <div style="gap: 10px; padding: 10px; --sesamy-primary-color: 249 86.4% 68.2%;">
+      <sesamy-paywall settings-url=${args['settings-url']}></sesamy-paywall>
+    </div>`
 };
