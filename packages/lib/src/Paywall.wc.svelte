@@ -126,8 +126,11 @@
   async function fetchPaywall(api: SesamyAPI): Promise<PaywallResult> {
     const host = $host();
     const metadata = api.content.get(host);
+    // A public page grants everyone access, so the paywall on it is an offer, not a lock.
     unified =
-      metadata?.legacyContentAccess === false && typeof api.content.hasAccess === 'function';
+      metadata?.legacyContentAccess === false &&
+      metadata?.accessLevel !== 'public' &&
+      typeof api.content.hasAccess === 'function';
     // Whether the renderer should show without deciding entitlements itself.
     // A failed check counts too: the paywall stays until the content container
     // reports a grant, rather than a second check deciding on its own.
