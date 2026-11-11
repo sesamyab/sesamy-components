@@ -228,6 +228,30 @@ describe('paywall on a public page', () => {
     expect(api.content.hasAccess).not.toHaveBeenCalled();
     expect(api.paywalls.get).toHaveBeenCalledTimes(1);
   });
+  it('announces a dismissal for a login wall shown again after a logout', async () => {
+    const { api, host } = setupPublic();
+    (api.paywalls.get as Mock).mockResolvedValue({
+      id: 'login',
+      headline: 'Log in to read',
+      settings: { template: 'LOGIN', styling: {}, loginFields: {} }
+    });
+    (api as unknown as { auth: unknown }).auth = { isAuthenticated: async () => false };
+    const form = () => (host.shadowRoot ?? host).querySelector('form');
+    await flush();
+    await flush();
+    expect(form()).not.toBeNull();
+    window.dispatchEvent(new CustomEvent('sesamyJsAuthenticated'));
+    await flush();
+    expect(form()).toBeNull();
+    window.dispatchEvent(new CustomEvent('sesamyJsLogout'));
+    await flush();
+    expect(form()).not.toBeNull();
+    const dismissed = vi.fn();
+    host.addEventListener('sesamy:paywall-dismissed', dismissed);
+    host.remove();
+    await flush();
+    expect(dismissed).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe('unified paywall visibility over time', () => {

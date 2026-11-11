@@ -82,6 +82,13 @@
       }
     } else if (isAuthenticated && wasShown) {
       // Logging in elsewhere clears the wall just like submitting this form does.
+      // The form stays mounted while hidden, so a later logout would otherwise
+      // show the previous reader's entries again.
+      clearTimeout(suggestionTimeout);
+      email = '';
+      firstName = '';
+      lastName = '';
+      emailSuggestion = '';
       onAccessGranted?.();
     }
   };

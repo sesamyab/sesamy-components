@@ -115,6 +115,35 @@ describe('auth changes (login template)', () => {
     expect(shownEvents).toHaveLength(1);
   });
 
+  it("clears the previous reader's entries when the reader logs in elsewhere", async () => {
+    const host = document.createElement('sesamy-paywall');
+    document.body.appendChild(host);
+    render(LoginRenderer, {
+      props: {
+        api: fakeApi(false),
+        host,
+        t: (key: string) => key,
+        paywall: paywall({
+          settings: { ...paywall().settings, loginFields: { name: true } }
+        })
+      }
+    });
+    await waitFor(() => expect(form()).not.toBeNull());
+    const inputs = () => Array.from(document.querySelectorAll('input'));
+    expect(inputs()).toHaveLength(3);
+    for (const input of inputs()) {
+      input.value = 'typed by the previous reader';
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+
+    window.dispatchEvent(new CustomEvent('sesamyJsAuthenticated'));
+    await waitFor(() => expect(form()).toBeNull());
+    window.dispatchEvent(new CustomEvent('sesamyJsLogout'));
+    await waitFor(() => expect(form()).not.toBeNull());
+
+    expect(inputs().map((input) => input.value)).toEqual(['', '', '']);
+  });
+
   it('does not announce the wall again on a logout while it is already showing', async () => {
     const onShown = vi.fn();
     const { shownEvents } = renderLogin(false, { onShown });

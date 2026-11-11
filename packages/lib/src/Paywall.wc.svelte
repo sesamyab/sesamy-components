@@ -97,6 +97,9 @@
 
   const markShown = () => {
     shown = true;
+    // A wall shown again after a grant (a logout on the login template) is no
+    // longer granted, so removing it is a dismissal.
+    accessGranted = false;
   };
   const markAccessGranted = () => {
     accessGranted = true;
