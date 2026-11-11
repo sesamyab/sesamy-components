@@ -185,6 +185,97 @@ describe('default content access decisions', () => {
   });
 });
 
+/** A paywall with one plan, in the BOXES template, which renders without its own entitlement check. */
+const offerPaywall = (title: string) => ({
+  id: 'offer',
+  vendorId: 'acme',
+  name: 'Offer',
+  currency: 'SEK',
+  headline: 'Pick a plan',
+  features: [],
+  mainColor: '#000000',
+  showLoginButton: false,
+  subscriptions: [{ id: 'sub_1', sku: 'sku_1', poId: 'po_1', title, selected: true, price: 199 }],
+  footerPaymentMethods: [],
+  settings: { template: 'BOXES', styling: {}, loginFields: {} }
+});
+
+const rendered = (host: HTMLElement) => host.shadowRoot ?? host;
+
+/** Lets Base resolve the API and translator, then the paywall fetch and render settle. */
+const settle = async () => {
+  for (let i = 0; i < 5; i++) await flush();
+};
+
+describe('paywall visibility by access level under unified access', () => {
+  afterEach(() => {
+    delete (window as { sesamy?: SesamyAPI }).sesamy;
+    document.body.innerHTML = '';
+  });
+  function setup(accessLevel: string, hasAccess: unknown) {
+    const api = fakeApi();
+    api.content.get = vi.fn(
+      () =>
+        ({
+          id: 'article-1',
+          legacyContentAccess: false,
+          accessLevel,
+          resolvedPaywall: offerPaywall('Selected plan')
+        }) as never
+    );
+    api.content.hasAccess = vi.fn().mockResolvedValue(hasAccess);
+    (api.paywalls.get as Mock).mockResolvedValue(offerPaywall('Configured plan'));
+    (api as unknown as { events: unknown }).events = { emit: () => ({ canceled: false }) };
+    window.sesamy = api;
+    const host = document.createElement('sesamy-paywall');
+    host.setAttribute('settings-url', 'st_acme');
+    document.body.append(host);
+    return { api, host };
+  }
+
+  it('renders the plans on a public page even though the reader has access', async () => {
+    const { api, host } = setup('public', true);
+    await settle();
+    expect(api.content.hasAccess).not.toHaveBeenCalled();
+    expect(rendered(host).textContent).toContain('Configured plan');
+    expect(rendered(host).querySelector('button')).not.toBeNull();
+  });
+
+  it('hides on an entitlement page when the reader has access', async () => {
+    const { api, host } = setup('entitlement', true);
+    await settle();
+    expect(api.content.hasAccess).toHaveBeenCalledTimes(1);
+    expect(api.paywalls.get).not.toHaveBeenCalled();
+    expect(rendered(host).textContent).not.toContain('plan');
+    expect(rendered(host).querySelector('button')).toBeNull();
+  });
+
+  it('renders the server-selected plans on an entitlement page when the reader lacks access', async () => {
+    const { api, host } = setup('entitlement', false);
+    await settle();
+    expect(api.content.hasAccess).toHaveBeenCalledTimes(1);
+    expect(api.paywalls.get).not.toHaveBeenCalled();
+    expect(rendered(host).textContent).toContain('Selected plan');
+    expect(rendered(host).querySelector('button')).not.toBeNull();
+  });
+
+  it.each([
+    ['legacy', { legacyContentAccess: true }],
+    ['absent', {}]
+  ])('keeps the legacy flow when legacyContentAccess is %s', async (_label, flag) => {
+    const { api, host } = setup('entitlement', true);
+    vi.mocked(api.content.get).mockReturnValue({
+      id: 'article-1',
+      accessLevel: 'entitlement',
+      ...flag
+    } as never);
+    await settle();
+    expect(api.content.hasAccess).not.toHaveBeenCalled();
+    expect(api.paywalls.get).toHaveBeenCalledWith('st_acme');
+    expect(rendered(host).textContent).toContain('Configured plan');
+  });
+});
+
 describe('paywall on a public page', () => {
   afterEach(() => {
     delete (window as { sesamy?: SesamyAPI }).sesamy;
