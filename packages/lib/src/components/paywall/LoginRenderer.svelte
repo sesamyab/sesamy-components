@@ -115,6 +115,8 @@
     void checkAuthAndAnnounce();
   });
   onDestroy(() => {
+    // A check still in flight must not announce a wall that is gone.
+    authToken++;
     window.removeEventListener(SesamyJsEvent.AUTHENTICATED, onAuthenticated);
     window.removeEventListener(SesamyJsEvent.LOGOUT, onLogout);
   });

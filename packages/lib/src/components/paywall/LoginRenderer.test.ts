@@ -139,6 +139,22 @@ describe('auth changes (login template)', () => {
     expect(form()).not.toBeNull();
   });
 
+  it('does not announce the wall when the initial check settles after it was removed', async () => {
+    let resolveCheck: (value: boolean) => void = () => {};
+    const onShown = vi.fn();
+    const { unmount, shownEvents } = renderLogin(
+      () => new Promise<boolean>((resolve) => (resolveCheck = resolve)),
+      { onShown }
+    );
+
+    unmount();
+    resolveCheck(false);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(onShown).not.toHaveBeenCalled();
+    expect(shownEvents).toHaveLength(0);
+  });
+
   it('removes its auth listeners once removed', async () => {
     const added = vi.spyOn(window, 'addEventListener');
     const removed = vi.spyOn(window, 'removeEventListener');
