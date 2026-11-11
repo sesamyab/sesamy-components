@@ -14,6 +14,8 @@ jobs:
         run: yarn
       - name: Check formatting
         run: yarn format:check
+      - name: Run unit tests
+        run: yarn test:unit
       - name: Install Playwright Browsers
         run: yarn playwright install --with-deps
       - name: Run Playwright tests
