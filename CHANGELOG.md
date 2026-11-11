@@ -1,3 +1,12 @@
+## [2.34.2](https://github.com/sesamyab/sesamy-components/compare/v2.34.1...v2.34.2) (2026-11-11)
+
+
+### Bug Fixes
+
+* **paywall:** drop a login check that settles after the wall is removed ([2691d69](https://github.com/sesamyab/sesamy-components/commit/2691d690ce52556cb9dcf3408d7f3bd9dec95f13))
+* **paywall:** reset the login wall after a login elsewhere ([69e9a80](https://github.com/sesamyab/sesamy-components/commit/69e9a80ffe4cf509e713515d1d2c45a5dbf93e4c))
+* **paywall:** update the login paywall when the reader logs in or out ([c73ea52](https://github.com/sesamyab/sesamy-components/commit/c73ea52b61068461cf7b9d68e68abb4c7617b051)), closes [#452](https://github.com/sesamyab/sesamy-components/issues/452)
+
 ## [2.34.1](https://github.com/sesamyab/sesamy-components/compare/v2.34.0...v2.34.1) (2026-11-11)
 
 
