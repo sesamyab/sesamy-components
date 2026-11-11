@@ -185,6 +185,51 @@ describe('default content access decisions', () => {
   });
 });
 
+describe('paywall on a public page', () => {
+  afterEach(() => {
+    delete (window as { sesamy?: SesamyAPI }).sesamy;
+    document.body.innerHTML = '';
+  });
+  // An offer page is a public article with the paywall inside it. Everyone has
+  // access to a public article, so asking would always hide the offer.
+  function setupPublic() {
+    const api = fakeApi();
+    api.content.get = vi.fn(
+      () =>
+        ({
+          legacyContentAccess: false,
+          accessLevel: 'public',
+          id: '7019'
+        }) as never
+    );
+    api.content.hasAccess = vi.fn().mockResolvedValue(true);
+    window.sesamy = api;
+    const host = document.createElement('sesamy-paywall');
+    host.setAttribute('settings-url', 'https://api.example.com/paywall/paywalls/acme/offer');
+    document.body.append(host);
+    return { api, host };
+  }
+  it('fetches the configured paywall without an access check', async () => {
+    const { api } = setupPublic();
+    await flush();
+    expect(api.content.hasAccess).not.toHaveBeenCalled();
+    expect(api.paywalls.get).toHaveBeenCalledWith(
+      'https://api.example.com/paywall/paywalls/acme/offer'
+    );
+    expect(api.log).toHaveBeenCalledWith('sesamy-paywall with template ');
+  });
+  it('stays shown when the container grants the public article', async () => {
+    const { api } = setupPublic();
+    await flush();
+    window.dispatchEvent(
+      new CustomEvent('sesamyContentGranted', { detail: { publisherContentId: '7019' } })
+    );
+    await flush();
+    expect(api.content.hasAccess).not.toHaveBeenCalled();
+    expect(api.paywalls.get).toHaveBeenCalledTimes(1);
+  });
+});
+
 describe('unified paywall visibility over time', () => {
   afterEach(() => {
     delete (window as { sesamy?: SesamyAPI }).sesamy;
