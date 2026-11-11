@@ -1,17 +1,18 @@
-import { describe, it, expect, afterEach } from 'vitest';
+import { describe, it, expect, afterEach, vi } from 'vitest';
 import { render, cleanup, waitFor } from '@testing-library/svelte';
 import type { SesamyAPI } from '@sesamy/sesamy-js';
 import LoginRenderer from './LoginRenderer.svelte';
 import { PaywallStatus, PaywallTemplate } from '../../types/Paywall';
 import type { Paywall } from '../../types/Paywall';
 
-const fakeApi = () =>
+const fakeApi = (isAuthenticated: boolean | (() => Promise<boolean>) = false) =>
   ({
     log: () => {},
     isReady: () => true,
     content: { getLanguage: () => 'en' },
     auth: {
-      isAuthenticated: async () => false
+      isAuthenticated:
+        typeof isAuthenticated === 'function' ? isAuthenticated : async () => isAuthenticated
     }
   }) as unknown as SesamyAPI;
 
@@ -62,5 +63,94 @@ describe('headline slot (login template)', () => {
     });
 
     expect(slot.textContent?.trim()).toBe('Stored headline');
+  });
+});
+
+describe('auth changes (login template)', () => {
+  const form = () => document.querySelector('form');
+
+  const renderLogin = (
+    isAuthenticated: boolean | (() => Promise<boolean>),
+    handlers: { onShown?: () => void; onAccessGranted?: () => void } = {}
+  ) => {
+    const host = document.createElement('sesamy-paywall');
+    document.body.appendChild(host);
+    const shownEvents: Event[] = [];
+    host.addEventListener('sesamy:paywall-shown', (event) => shownEvents.push(event));
+    const result = render(LoginRenderer, {
+      props: {
+        api: fakeApi(isAuthenticated),
+        host,
+        t: (key: string) => key,
+        paywall: paywall(),
+        ...handlers
+      }
+    });
+    return { ...result, shownEvents };
+  };
+
+  it('hides the form when the reader logs in elsewhere', async () => {
+    const onAccessGranted = vi.fn();
+    renderLogin(false, { onAccessGranted });
+    await waitFor(() => expect(form()).not.toBeNull());
+
+    window.dispatchEvent(new CustomEvent('sesamyJsAuthenticated'));
+
+    await waitFor(() => expect(form()).toBeNull());
+    expect(onAccessGranted).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows the form and announces it when the reader logs out elsewhere', async () => {
+    const onShown = vi.fn();
+    const { shownEvents } = renderLogin(true, { onShown });
+    // Let the initial check settle with the reader logged in.
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(form()).toBeNull();
+    expect(onShown).not.toHaveBeenCalled();
+
+    window.dispatchEvent(new CustomEvent('sesamyJsLogout'));
+
+    await waitFor(() => expect(form()).not.toBeNull());
+    expect(onShown).toHaveBeenCalledTimes(1);
+    expect(shownEvents).toHaveLength(1);
+  });
+
+  it('does not announce the wall again on a logout while it is already showing', async () => {
+    const onShown = vi.fn();
+    const { shownEvents } = renderLogin(false, { onShown });
+    await waitFor(() => expect(form()).not.toBeNull());
+
+    window.dispatchEvent(new CustomEvent('sesamyJsLogout'));
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(onShown).toHaveBeenCalledTimes(1);
+    expect(shownEvents).toHaveLength(1);
+  });
+
+  it('lets a logout win over a slower initial check that still saw the reader logged in', async () => {
+    let resolveCheck: (value: boolean) => void = () => {};
+    renderLogin(() => new Promise<boolean>((resolve) => (resolveCheck = resolve)));
+
+    window.dispatchEvent(new CustomEvent('sesamyJsLogout'));
+    await waitFor(() => expect(form()).not.toBeNull());
+    resolveCheck(true);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(form()).not.toBeNull();
+  });
+
+  it('removes its auth listeners once removed', async () => {
+    const added = vi.spyOn(window, 'addEventListener');
+    const removed = vi.spyOn(window, 'removeEventListener');
+    const { unmount } = renderLogin(false);
+    unmount();
+
+    for (const type of ['sesamyJsAuthenticated', 'sesamyJsLogout']) {
+      const listener = added.mock.calls.find(([name]) => name === type)?.[1];
+      expect(listener).toBeDefined();
+      expect(removed).toHaveBeenCalledWith(type, listener);
+    }
+    added.mockRestore();
+    removed.mockRestore();
   });
 });
