@@ -93,6 +93,9 @@ export const PublicPageUnifiedAccess: Story = {
   args: {
     'settings-url': 'pw_public_offer'
   },
+  // The docs page renders every story in one frame; keep this story's fake
+  // sesamy-js out of the others by giving it a frame of its own there.
+  parameters: { docs: { story: { inline: false, iframeHeight: 420 } } },
   decorators: [
     (story) => {
       installFakeSesamy(
