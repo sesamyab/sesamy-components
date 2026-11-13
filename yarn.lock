@@ -1405,10 +1405,10 @@
   dependencies:
     wretch "^2.9.0"
 
-"@sesamy/sesamy-js@1.139.3":
-  version "1.139.3"
-  resolved "https://registry.yarnpkg.com/@sesamy/sesamy-js/-/sesamy-js-1.139.3.tgz#cc466c94d04a5de506ef9a04d208f6394e3ebaa9"
-  integrity sha512-+P40UnPL+DqqIZFgGwYfHrOi9tdE8fPIDRGYYTO6xgOl5EK+Mp3S/ygmQoqshWaybDHJKk0mV3tezhiiwI19ug==
+"@sesamy/sesamy-js@1.139.4":
+  version "1.139.4"
+  resolved "https://registry.yarnpkg.com/@sesamy/sesamy-js/-/sesamy-js-1.139.4.tgz#cae43687ddc3f7c8e6c360b1c63322e47deee35e"
+  integrity sha512-fH7KiRLugoGBvrc/WD1Qsdtyh3grUbPlT6YJvqfZUAqGcQ0ZcMrnZDBxrfee0tgQ5Vn9KQ/HtwHXyAm92qe7uw==
   dependencies:
     "@analytics/activity-utils" "^0.1.16"
     "@analytics/scroll-utils" "^0.1.24"
