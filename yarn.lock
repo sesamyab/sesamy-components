@@ -1901,10 +1901,10 @@
   resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-14.5.2.tgz#db7257d727c891905947bd1c1a99da20e03c2ebd"
   integrity sha512-YAh82Wh4TIrxYLmfGcixwD18oIjyC1pFQC2Y01F2lzV2HTMiYrI0nze0FD0ocB//CKS/7jIUgae+adPqxK5yCQ==
 
-"@tsconfig/svelte@5.0.8":
-  version "5.0.8"
-  resolved "https://registry.yarnpkg.com/@tsconfig/svelte/-/svelte-5.0.8.tgz#4c0c85e17cf8efb1e079459e1cebbeed80680509"
-  integrity sha512-UkNnw1/oFEfecR8ypyHIQuWYdkPvHiwcQ78sh+ymIiYoF+uc5H1UBetbjyqT+vgGJ3qQN6nhucJviX6HesWtKQ==
+"@tsconfig/svelte@5.0.9":
+  version "5.0.9"
+  resolved "https://registry.yarnpkg.com/@tsconfig/svelte/-/svelte-5.0.9.tgz#8e6bc0482a4a53706280984b4d95cf0468e7f3c9"
+  integrity sha512-gbtbqsEFq9gFzGmgJMIB3+leXVmkUttoFjzeHsbqN6qFKst40fvxnN9+3Ajdl8VlIGwPevs9LNJ8YUhQgchqaw==
 
 "@tufjs/canonical-json@2.0.0":
   version "2.0.0"
