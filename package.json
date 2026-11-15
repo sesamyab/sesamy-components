@@ -101,7 +101,7 @@
     "jsdom": "25.0.1",
     "libphonenumber-js": "1.13.16",
     "lit": "3.3.3",
-    "lit-html": "3.2.1",
+    "lit-html": "3.3.3",
     "postcss": "8.5.32",
     "postcss-nesting": "13.0.2",
     "postcss-value-parser": "4.2.0",
