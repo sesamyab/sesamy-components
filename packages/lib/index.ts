@@ -1,4 +1,12 @@
 import { version } from '../../package.json';
+import { registerElements } from './src/register';
+
+// A call, not a side-effect import: package.json declares `sideEffects: false`,
+// which would let our own build drop a bare `import './src/register'`. This does
+// not protect a consumer's bundler, which may still drop a bare
+// `import '@sesamy/sesamy-components'` under that same flag, as it could before
+// registration moved here.
+registerElements();
 
 export { default as Login } from './src/Login.wc.svelte';
 export { default as Paywall } from './src/Paywall.wc.svelte';

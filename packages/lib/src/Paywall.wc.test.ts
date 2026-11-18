@@ -1,6 +1,8 @@
 import { describe, it, expect, beforeEach, afterEach, vi, type Mock } from 'vitest';
 import type { SesamyAPI } from '@sesamy/sesamy-js';
-import './Paywall.wc.svelte';
+import { registerElements } from './register';
+
+registerElements();
 
 /**
  * A publisher points the paywall at a settings endpoint on their own site with
