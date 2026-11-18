@@ -24,8 +24,10 @@ export const elements = {
  */
 export function registerElements(): void {
   for (const [tag, component] of Object.entries(elements)) {
-    // `element` is set when the component is compiled as a custom element,
-    // which the library build always does.
-    if (component.element) defineCustomElement(tag, component.element);
+    // Svelte's `create_custom_element` sets `element` when the component is
+    // compiled as a custom element, which the library build always does. It is
+    // not part of the component's type.
+    const { element } = component as { element?: CustomElementConstructor };
+    if (element) defineCustomElement(tag, element);
   }
 }

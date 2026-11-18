@@ -57,9 +57,10 @@ describe('registerElements', () => {
 
   it('ignores an element another copy of the bundle registered first', () => {
     vi.spyOn(console, 'debug').mockImplementation(() => {});
-    // The tag is already defined by the test above; a stand-in for a second,
-    // possibly different, copy of the bundle registering it again.
+    registerElements();
     const original = customElements.get('sesamy-login');
+    expect(original).toBeDefined();
+    // A stand-in for a second, possibly different, copy of the bundle.
     class OtherCopy extends HTMLElement {}
 
     expect(() => defineCustomElement('sesamy-login', OtherCopy)).not.toThrow();
