@@ -1,7 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach, vi, type Mock } from 'vitest';
 import type { SesamyAPI } from '@sesamy/sesamy-js';
-import './ContentContainer.wc.svelte';
+import { registerElements } from './register';
 import { ACCESS_CHECK_TIMEOUT_MS, ACCESS_RETRY_DELAYS_MS, accessRetryDelay } from './content-lock';
+
+registerElements();
 
 /**
  * The publisher-reported bug, at the level it was reported.

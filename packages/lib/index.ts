@@ -1,4 +1,9 @@
 import { version } from '../../package.json';
+import { registerElements } from './src/register';
+
+// A call, not a side-effect import: package.json declares `sideEffects: false`,
+// which would let a bare `import './src/register'` be dropped.
+registerElements();
 
 export { default as Login } from './src/Login.wc.svelte';
 export { default as Paywall } from './src/Paywall.wc.svelte';

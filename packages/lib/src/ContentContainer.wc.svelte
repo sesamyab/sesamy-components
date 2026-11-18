@@ -1,6 +1,5 @@
 <svelte:options
   customElement={{
-    tag: 'sesamy-content-container',
     shadow: 'open',
     extend: deferMountUntilParsed
   }}

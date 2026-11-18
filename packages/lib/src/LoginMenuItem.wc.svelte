@@ -1,4 +1,4 @@
-<svelte:options customElement="sesamy-login-menu-item" />
+<svelte:options customElement={{ shadow: 'open' }} />
 
 <script lang="ts">
   import Base from './Base.svelte';
