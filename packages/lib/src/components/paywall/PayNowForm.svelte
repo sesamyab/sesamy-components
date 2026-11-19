@@ -24,6 +24,7 @@
   import PhoneNumberInput from '../PhoneNumberInput.svelte';
   import { getCallingCode } from '../../utils/phone';
   import type { Paywall } from '../../types/Paywall';
+  import { onDestroy } from 'svelte';
 
   type Props = {
     api: SesamyAPI;
@@ -70,6 +71,11 @@
   let referralEmail = $state('');
   let giftMode = $state(checkout.giftMode);
   let payerEmail = $state('');
+
+  // Going back unmounts this form. A handoff still waiting on the reader's
+  // token must not then send them to the checkout they just left.
+  const handoff = new AbortController();
+  onDestroy(() => handoff.abort());
 
   $effect(() => {
     if (!countries.map((c) => c.value).includes(country)) {
@@ -211,7 +217,7 @@
         payerEmail: giftMode ? payerEmail : undefined
       });
 
-      await goToCheckout(checkout, { auth: api.auth, paymentMethod });
+      await goToCheckout(checkout, { auth: api.auth, paymentMethod, signal: handoff.signal });
       loading = false;
       return;
     } catch (err: any) {

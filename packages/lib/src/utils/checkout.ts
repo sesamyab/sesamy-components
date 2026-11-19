@@ -153,11 +153,17 @@ export type GoToCheckoutOptions = {
   auth?: CheckoutAuth;
   paymentMethod?: PaymentMethodType;
   business?: boolean;
+  /**
+   * Cancels the handoff. Checked after the token lookup, which can take up to
+   * `CHECKOUT_TOKEN_TIMEOUT_MS`: a reader who backs out of the checkout in that
+   * time stays on the page instead of being sent to the one they abandoned.
+   */
+  signal?: AbortSignal;
 };
 
 export const goToCheckout = async (
   checkout: Checkout,
-  { auth, paymentMethod, business }: GoToCheckoutOptions = {}
+  { auth, paymentMethod, business, signal }: GoToCheckoutOptions = {}
 ) => {
   const checkoutURL = new URL(checkout.checkoutUrl);
 
@@ -185,5 +191,6 @@ export const goToCheckout = async (
     }
   }
 
+  if (signal?.aborted) return;
   window.location.href = checkoutURL.href;
 };

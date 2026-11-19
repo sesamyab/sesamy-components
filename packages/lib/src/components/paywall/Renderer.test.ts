@@ -37,7 +37,8 @@ type FakeUser = { email?: string } | null;
 type AuthOverrides = {
   isAuthenticated?: boolean;
   user?: FakeUser | Promise<FakeUser>;
-  token?: string | null;
+  // A promise holds the token lookup open, as a slow silent refresh does.
+  token?: string | null | Promise<string | null>;
   checkoutUrl?: string;
 };
 
@@ -84,9 +85,10 @@ const fakeApi = ({
           checkoutUrl,
           redirectUrl: payload.redirectUrl,
           items: [],
-          availablePaymentMethods: []
+          availablePaymentMethods: [{ provider: 'STRIPE', methods: ['CARD'] }]
         };
-      }
+      },
+      update: async () => ({})
     }
   } as unknown as SesamyAPI;
 
@@ -173,7 +175,7 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe('the login of a signed-in reader (boxes template)', () => {
+describe('the login of a signed-in reader', () => {
   // A fake, not a real JWT.
   const TOKEN = 'header.payload.signature';
   const SESAMY_CHECKOUT = 'https://checkout3.sesamy.com/checkouts/checkout_1';
@@ -200,6 +202,28 @@ describe('the login of a signed-in reader (boxes template)', () => {
 
     await waitFor(() => expect(location.href.startsWith('https://evil.example/c/1')).toBe(true));
     expect(location.href).not.toContain(TOKEN);
+  });
+
+  it('stays on the page when the reader goes back during a slow token lookup', async () => {
+    const location = stubLocation();
+    let resolveToken!: (token: string) => void;
+    const token = new Promise<string>((resolve) => (resolveToken = resolve));
+    renderPaywall(paywall({ settings: { template: PaywallTemplate.ARTICLE } }), {
+      horizontal: false,
+      auth: { isAuthenticated: true, token, checkoutUrl: SESAMY_CHECKOUT }
+    });
+
+    await userEvent.click(await screen.findByRole('button', { name: 'continue' }));
+    await userEvent.type(await screen.findByPlaceholderText('email'), 'reader@example.com');
+    await userEvent.click(screen.getByRole('button', { name: 'pay_now' }));
+    await userEvent.click(screen.getByRole('button', { name: 'go_back' }));
+    await waitFor(() => expect(screen.queryByRole('button', { name: 'pay_now' })).toBeNull());
+
+    resolveToken(TOKEN);
+    await token;
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(location.href).toBe(PAGE_URL);
   });
 });
 
