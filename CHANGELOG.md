@@ -1,3 +1,17 @@
+# [2.35.0](https://github.com/sesamyab/sesamy-components/compare/v2.34.2...v2.35.0) (2026-11-19)
+
+
+### Bug Fixes
+
+* don't throw when the components bundle is loaded twice ([8b4c255](https://github.com/sesamyab/sesamy-components/commit/8b4c255abb5edbe003cff53922fea3962ab048f8))
+* **paywall:** don't send a reader who went back to the checkout they left ([865e771](https://github.com/sesamyab/sesamy-components/commit/865e7715f81632daba6e70dbd00e6c2601c90cd4))
+* read the compiled element class without a type shim, scope the sideEffects note ([ece2c57](https://github.com/sesamyab/sesamy-components/commit/ece2c57abf006ad1b39eeef0c83d8ae3c6eb9f43))
+
+
+### Features
+
+* **paywall:** hand a signed-in reader's login to checkout ([fff4430](https://github.com/sesamyab/sesamy-components/commit/fff4430e0e3c322c64a60f485d230e504eb5fef1))
+
 ## [2.34.2](https://github.com/sesamyab/sesamy-components/compare/v2.34.1...v2.34.2) (2026-11-11)
 
 
