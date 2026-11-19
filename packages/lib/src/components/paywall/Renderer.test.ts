@@ -34,9 +34,19 @@ const restoreLocation = () => {
 type CreatedCheckout = { redirectUrl: string; redirectLabel?: string };
 
 type FakeUser = { email?: string } | null;
-type AuthOverrides = { isAuthenticated?: boolean; user?: FakeUser | Promise<FakeUser> };
+type AuthOverrides = {
+  isAuthenticated?: boolean;
+  user?: FakeUser | Promise<FakeUser>;
+  token?: string | null;
+  checkoutUrl?: string;
+};
 
-const fakeApi = ({ isAuthenticated = false, user = null }: AuthOverrides = {}) => {
+const fakeApi = ({
+  isAuthenticated = false,
+  user = null,
+  token = null,
+  checkoutUrl = 'https://checkout.sesamy.dev/checkout_1'
+}: AuthOverrides = {}) => {
   const created: CreatedCheckout[] = [];
   let authed = isAuthenticated;
   const api = {
@@ -52,6 +62,7 @@ const fakeApi = ({ isAuthenticated = false, user = null }: AuthOverrides = {}) =
     auth: {
       isAuthenticated: async () => authed,
       getUser: async () => user,
+      getTokenSilently: async () => token,
       // Mirrors sesamy-js, which announces the logout on window before redirecting.
       logout: vi.fn(async () => {
         authed = false;
@@ -70,7 +81,7 @@ const fakeApi = ({ isAuthenticated = false, user = null }: AuthOverrides = {}) =
         created.push(payload);
         return {
           id: 'checkout_1',
-          checkoutUrl: 'https://checkout.sesamy.dev/checkout_1',
+          checkoutUrl,
           redirectUrl: payload.redirectUrl,
           items: [],
           availablePaymentMethods: []
@@ -160,6 +171,36 @@ afterEach(() => {
   restoreLocation();
   delete window.sesamy;
   vi.restoreAllMocks();
+});
+
+describe('the login of a signed-in reader (boxes template)', () => {
+  // A fake, not a real JWT.
+  const TOKEN = 'header.payload.signature';
+  const SESAMY_CHECKOUT = 'https://checkout3.sesamy.com/checkouts/checkout_1';
+
+  it('goes to checkout in the fragment', async () => {
+    const location = stubLocation();
+    renderPaywall(paywall(), {
+      auth: { isAuthenticated: true, token: TOKEN, checkoutUrl: SESAMY_CHECKOUT }
+    });
+
+    await userEvent.click(await screen.findByRole('button', { name: 'continue' }));
+
+    await waitFor(() => expect(location.href.startsWith(SESAMY_CHECKOUT)).toBe(true));
+    expect(new URL(location.href).hash).toBe(`#access_token=${TOKEN}`);
+  });
+
+  it('is not sent to a checkout url outside the Sesamy checkout hosts', async () => {
+    const location = stubLocation();
+    renderPaywall(paywall(), {
+      auth: { isAuthenticated: true, token: TOKEN, checkoutUrl: 'https://evil.example/c/1' }
+    });
+
+    await userEvent.click(await screen.findByRole('button', { name: 'continue' }));
+
+    await waitFor(() => expect(location.href.startsWith('https://evil.example/c/1')).toBe(true));
+    expect(location.href).not.toContain(TOKEN);
+  });
 });
 
 describe('paywall redirect resolution (boxes template)', () => {

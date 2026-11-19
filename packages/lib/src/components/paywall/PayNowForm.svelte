@@ -211,7 +211,7 @@
         payerEmail: giftMode ? payerEmail : undefined
       });
 
-      goToCheckout(checkout, paymentMethod);
+      await goToCheckout(checkout, { auth: api.auth, paymentMethod });
       loading = false;
       return;
     } catch (err: any) {

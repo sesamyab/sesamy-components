@@ -85,10 +85,79 @@ export const utmAttribution = (
   return utm;
 };
 
+/**
+ * The hosts the reader's access token may be handed to. These are the
+ * `CHECKOUT_URL` the Sesamy API builds `checkoutUrl` from, and the host
+ * sesamy-js's own `generateLink({ target: 'checkout' })` links to:
+ * `checkout3` on sesamy.com (prod) and sesamy.dev (dev).
+ *
+ * `checkoutUrl` comes from an API response, so it is checked before a token is
+ * attached. Anything else, including a lookalike or a plain-http URL, goes
+ * without one.
+ */
+const TOKEN_CHECKOUT_HOSTS = new Set(['checkout3.sesamy.com', 'checkout3.sesamy.dev']);
+
+const isTokenCheckoutHost = (url: URL) =>
+  url.protocol === 'https:' && TOKEN_CHECKOUT_HOSTS.has(url.hostname);
+
+/**
+ * How long to wait for the token before going to checkout without it. A
+ * signed-in reader's token is normally cached, so this only bounds a slow
+ * silent refresh: the reader then gets checkout's login instead of a stalled
+ * button.
+ */
+export const CHECKOUT_TOKEN_TIMEOUT_MS = 5000;
+
+/** The part of `api.auth` that hands a signed-in reader's login to checkout. */
+export type CheckoutAuth = {
+  isAuthenticated(): Promise<boolean>;
+  getTokenSilently(throwOnUnauthorized: boolean, forceRefresh?: boolean): Promise<string | null>;
+};
+
+/**
+ * The signed-in reader's access token, or null when there is none to hand
+ * over. Mirrors sesamy-js's `generateLink`: `getTokenSilently(false, true)`,
+ * which refreshes a token that is about to expire so checkout gets one that
+ * lasts. In cookie (BFF) mode the token is in an HttpOnly cookie and this is
+ * null, so checkout keeps its own login there.
+ *
+ * Never throws: a failed lookup sends the reader to checkout without a token,
+ * where they can still log in.
+ */
+const checkoutAccessToken = async (auth: CheckoutAuth): Promise<string | null> => {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<null>((resolve) => {
+    timer = setTimeout(() => resolve(null), CHECKOUT_TOKEN_TIMEOUT_MS);
+  });
+
+  const lookup = (async () => {
+    // Ask first, so an anonymous reader doesn't trigger a silent-auth round
+    // trip on their way to checkout.
+    if (!(await auth.isAuthenticated())) return null;
+    return (await auth.getTokenSilently(false, true)) || null;
+  })().catch(() => null);
+
+  try {
+    return await Promise.race([lookup, timeout]);
+  } finally {
+    clearTimeout(timer);
+  }
+};
+
+export type GoToCheckoutOptions = {
+  /**
+   * `api.auth`. When the reader is signed in with a token sesamy-js can read,
+   * it goes to checkout in the URL fragment so they are not asked to log in
+   * again.
+   */
+  auth?: CheckoutAuth;
+  paymentMethod?: PaymentMethodType;
+  business?: boolean;
+};
+
 export const goToCheckout = async (
   checkout: Checkout,
-  paymentMethod?: PaymentMethodType,
-  business?: boolean
+  { auth, paymentMethod, business }: GoToCheckoutOptions = {}
 ) => {
   const checkoutURL = new URL(checkout.checkoutUrl);
 
@@ -104,6 +173,16 @@ export const goToCheckout = async (
   }
   if (business) {
     checkoutURL.searchParams.set('business', 'true');
+  }
+
+  // The same handoff as sesamy-js's `generateLink`: in the fragment only, which
+  // the browser sends neither to the server nor in the Referer. Never a query
+  // param. Checkout reads it, adopts it and removes it from the URL.
+  if (auth && isTokenCheckoutHost(checkoutURL)) {
+    const token = await checkoutAccessToken(auth);
+    if (token) {
+      checkoutURL.hash = `#access_token=${token}`;
+    }
   }
 
   window.location.href = checkoutURL.href;
