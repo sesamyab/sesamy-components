@@ -245,7 +245,10 @@
       });
 
       if (horizontal || selectedProduct.preferBusiness) {
-        goToCheckout(createdCheckout, undefined, selectedProduct.preferBusiness);
+        await goToCheckout(createdCheckout, {
+          auth: api.auth,
+          business: selectedProduct.preferBusiness
+        });
         return;
       }
 

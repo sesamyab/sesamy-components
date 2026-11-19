@@ -36,16 +36,21 @@ type FakeApiOptions = {
   isAuthenticated?: boolean;
   user?: { email?: string } | null;
   cancelCreate?: boolean;
+  token?: string | null;
+  checkoutUrl?: string;
 };
 
 const fakeApi = ({
   hasAccess = false,
   isAuthenticated = false,
   user = null,
-  cancelCreate = false
+  cancelCreate = false,
+  token = null,
+  checkoutUrl = 'https://checkout.sesamy.dev/checkout_1'
 }: FakeApiOptions = {}) => {
   const created: CreatedCheckout[] = [];
   const emitted: string[] = [];
+  const payloads: unknown[] = [];
   const api = {
     log: () => {},
     isReady: () => true,
@@ -58,14 +63,16 @@ const fakeApi = ({
     },
     auth: {
       isAuthenticated: async () => isAuthenticated,
-      getUser: async () => user
+      getUser: async () => user,
+      getTokenSilently: async () => token
     },
     analytics: {
       track: () => {}
     },
     events: {
-      emit: (name: string) => {
+      emit: (name: string, payload?: unknown) => {
         emitted.push(name);
+        payloads.push(payload);
         return { canceled: cancelCreate && name === 'sesamyPaywallCreateCheckout' };
       }
     },
@@ -74,7 +81,7 @@ const fakeApi = ({
         created.push(payload);
         return {
           id: 'checkout_1',
-          checkoutUrl: 'https://checkout.sesamy.dev/checkout_1',
+          checkoutUrl,
           redirectUrl: payload.redirectUrl,
           items: [],
           availablePaymentMethods: []
@@ -87,7 +94,7 @@ const fakeApi = ({
   // API before it renders its slot, so the buttons only exist once it is there.
   window.sesamy = api;
 
-  return { api, created, emitted };
+  return { api, created, emitted, payloads };
 };
 
 const subscription = (overrides: Partial<PaywallSubscription> = {}): PaywallSubscription => ({
@@ -266,6 +273,45 @@ describe('email template', () => {
 
     const input = (await screen.findByPlaceholderText('email')) as HTMLInputElement;
     await waitFor(() => expect(input.value).toBe('member@example.com'));
+  });
+
+  describe('the login of a signed-in reader', () => {
+    // A fake, not a real JWT.
+    const TOKEN = 'header.payload.signature';
+    const SESAMY_CHECKOUT = 'https://checkout3.sesamy.com/checkouts/checkout_1';
+
+    it('goes to checkout in the fragment, so checkout does not ask them to log in', async () => {
+      const location = stubLocation();
+      const { payloads } = renderPaywall(paywall(), {
+        api: {
+          isAuthenticated: true,
+          user: { email: 'member@example.com' },
+          token: TOKEN,
+          checkoutUrl: SESAMY_CHECKOUT
+        }
+      });
+
+      const input = (await screen.findByPlaceholderText('email')) as HTMLInputElement;
+      await waitFor(() => expect(input.value).toBe('member@example.com'));
+      await userEvent.click(await screen.findByRole('button', { name: 'continue' }));
+
+      await waitFor(() => expect(location.href.startsWith(SESAMY_CHECKOUT)).toBe(true));
+      const url = new URL(location.href);
+      expect(url.hash).toBe(`#access_token=${TOKEN}`);
+      expect(url.search).not.toContain(TOKEN);
+      // Nothing a page listener receives carries the token.
+      expect(JSON.stringify(payloads)).not.toContain(TOKEN);
+    });
+
+    it('is not sent when the reader is not signed in', async () => {
+      const location = stubLocation();
+      renderPaywall(paywall(), { api: { token: TOKEN, checkoutUrl: SESAMY_CHECKOUT } });
+
+      await submit('reader@example.com');
+
+      await waitFor(() => expect(location.href.startsWith(SESAMY_CHECKOUT)).toBe(true));
+      expect(location.href).not.toContain(TOKEN);
+    });
   });
 
   it('renders nothing when the reader has access', async () => {

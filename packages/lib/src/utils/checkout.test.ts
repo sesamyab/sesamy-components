@@ -1,6 +1,11 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import type { Checkout } from '@sesamy/sesamy-js';
-import { goToCheckout, resolveRedirectLabel, resolveRedirectUrl } from './checkout';
+import {
+  CHECKOUT_TOKEN_TIMEOUT_MS,
+  goToCheckout,
+  resolveRedirectLabel,
+  resolveRedirectUrl
+} from './checkout';
 
 const PAGE_URL = 'https://vendor.example/article';
 
@@ -135,6 +140,123 @@ describe('goToCheckout', () => {
     expect(url.origin + url.pathname).toBe('https://checkout.sesamy.dev/checkout_1');
     expect(url.searchParams.get('redirect-url')).toBe('https://vendor.example/thanks');
     expect(url.searchParams.get('norecreate')).toBe('true');
+  });
+
+  describe('hands a signed-in reader’s login to checkout', () => {
+    // A fake, not a real JWT: tests never print or hold real tokens.
+    const TOKEN = 'header.payload.signature';
+    const SESAMY_CHECKOUT = 'https://checkout3.sesamy.com/checkouts/checkout_1';
+
+    const auth = ({
+      authenticated = true,
+      token = TOKEN as string | null | Error
+    }: { authenticated?: boolean; token?: string | null | Error } = {}) => ({
+      isAuthenticated: vi.fn(async () => authenticated),
+      getTokenSilently: vi.fn(async () => {
+        if (token instanceof Error) throw token;
+        return token;
+      })
+    });
+
+    const goTo = async (checkoutUrl: string, fakeAuth?: ReturnType<typeof auth>) => {
+      const location = stubLocation();
+      await goToCheckout(
+        { ...checkout('https://vendor.example/thanks'), checkoutUrl } as Checkout,
+        { auth: fakeAuth, paymentMethod: { provider: 'STRIPE', method: 'CARD' }, business: true }
+      );
+      return new URL(location.href);
+    };
+
+    it.each([
+      { env: 'prod', checkoutUrl: SESAMY_CHECKOUT },
+      { env: 'dev', checkoutUrl: 'https://checkout3.sesamy.dev/checkouts/checkout_1' }
+    ])('puts the token in the fragment for the $env checkout', async ({ checkoutUrl }) => {
+      const fakeAuth = auth();
+
+      const url = await goTo(checkoutUrl, fakeAuth);
+
+      expect(url.hash).toBe(`#access_token=${TOKEN}`);
+      // Fragment only: the token must never reach a server as a query param.
+      expect(url.search).not.toContain(TOKEN);
+      expect(url.searchParams.has('access_token')).toBe(false);
+      // The rest of the handoff is untouched.
+      expect(url.origin + url.pathname).toBe(checkoutUrl);
+      expect(url.searchParams.get('payment-method')).toBe('CARD');
+      expect(url.searchParams.get('business')).toBe('true');
+      // The same call sesamy-js's generateLink makes: no throw, refresh if near expiry.
+      expect(fakeAuth.getTokenSilently).toHaveBeenCalledWith(false, true);
+    });
+
+    it('leaves the url unchanged for a reader who is not signed in', async () => {
+      const fakeAuth = auth({ authenticated: false });
+
+      const url = await goTo(SESAMY_CHECKOUT, fakeAuth);
+
+      expect(url.hash).toBe('');
+      expect(fakeAuth.getTokenSilently).not.toHaveBeenCalled();
+    });
+
+    it('leaves the url unchanged in cookie mode, where sesamy-js has no token to give', async () => {
+      // The cookie plugin's getTokenSilently always resolves null.
+      const url = await goTo(SESAMY_CHECKOUT, auth({ token: null }));
+
+      expect(url.hash).toBe('');
+      expect(url.href).not.toContain('access_token');
+    });
+
+    it('goes to checkout without a token when the lookup fails', async () => {
+      const url = await goTo(SESAMY_CHECKOUT, auth({ token: new Error('login_required') }));
+
+      expect(url.origin + url.pathname).toBe(SESAMY_CHECKOUT);
+      expect(url.hash).toBe('');
+    });
+
+    it('goes to checkout without a token when the lookup hangs', async () => {
+      vi.useFakeTimers();
+      try {
+        const location = stubLocation();
+        const hanging = {
+          isAuthenticated: async () => true,
+          getTokenSilently: () => new Promise<string | null>(() => {})
+        };
+
+        const navigation = goToCheckout(
+          {
+            ...checkout('https://vendor.example/thanks'),
+            checkoutUrl: SESAMY_CHECKOUT
+          } as Checkout,
+          { auth: hanging }
+        );
+        await vi.advanceTimersByTimeAsync(CHECKOUT_TOKEN_TIMEOUT_MS);
+        await navigation;
+
+        const url = new URL(location.href);
+        expect(url.origin + url.pathname).toBe(SESAMY_CHECKOUT);
+        expect(url.hash).toBe('');
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    it.each([
+      { kind: 'a non-Sesamy host', checkoutUrl: 'https://evil.example/checkouts/checkout_1' },
+      { kind: 'the legacy checkout host', checkoutUrl: 'https://checkout.sesamy.com/checkout_1' },
+      {
+        kind: 'a lookalike suffix',
+        checkoutUrl: 'https://checkout3.sesamy.com.evil.example/checkouts/checkout_1'
+      },
+      { kind: 'a subdomain', checkoutUrl: 'https://x.checkout3.sesamy.com/checkouts/checkout_1' },
+      { kind: 'plain http', checkoutUrl: 'http://checkout3.sesamy.com/checkouts/checkout_1' }
+    ])('never sends the token to $kind', async ({ checkoutUrl }) => {
+      const fakeAuth = auth();
+
+      const url = await goTo(checkoutUrl, fakeAuth);
+
+      expect(url.href).not.toContain(TOKEN);
+      expect(url.hash).toBe('');
+      // Not even fetched: the host is checked before the token is asked for.
+      expect(fakeAuth.getTokenSilently).not.toHaveBeenCalled();
+    });
   });
 });
 

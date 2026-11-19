@@ -235,7 +235,7 @@
         paywallId: paywall.id
       });
 
-      goToCheckout(createdCheckout);
+      await goToCheckout(createdCheckout, { auth: api.auth });
     } catch (err) {
       console.error(err);
       error = t('something_went_wrong');

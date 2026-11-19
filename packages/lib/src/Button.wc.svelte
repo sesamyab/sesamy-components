@@ -1,4 +1,4 @@
-<svelte:options customElement={{ tag: 'sesamy-button', extend: deferMountUntilParsed }} />
+<svelte:options customElement={{ extend: deferMountUntilParsed }} />
 
 <script lang="ts">
   import { deferMountUntilParsed } from './defer-mount';
