@@ -1,6 +1,12 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import type { SesamyAPI } from '@sesamy/sesamy-js';
-import { getApi, resetApiReadyWait, API_READY_SLOW_MS, API_READY_TIMEOUT_MS } from './api';
+import {
+  getApi,
+  whenApiReady,
+  resetApiReadyWait,
+  API_READY_SLOW_MS,
+  API_READY_TIMEOUT_MS
+} from './api';
 
 /**
  * `window.sesamy` is installed by `registerAPI()` at the very start of
@@ -179,6 +185,22 @@ describe('getApi reporting', () => {
     expect(reports.map((r) => r.details.stage)).toEqual(['api-ready-timeout', 'api-ready-late']);
     expect(reports[1].error.name).toBe('SesamyApiLateReady');
     expect(reports[1].details.lateByMs).toBeGreaterThanOrEqual(4_999);
+    // Components on this bundle pick the api up again, which older ones never did.
+    expect(reports[1].details.componentsRecover).toBe(true);
+  });
+
+  it('keeps the report messages byte-identical, which triage queries match on', async () => {
+    const reports: Report[] = [];
+    window.sesamy = reportingApi(false, reports);
+
+    track(getApi());
+    await vi.advanceTimersByTimeAsync(API_READY_TIMEOUT_MS + 1);
+    becomeReady(reports);
+
+    expect(reports.map((r) => r.error.message)).toEqual([
+      'sesamy-js did not finish initialising within 20000ms',
+      'sesamy-js became ready after components stopped waiting at 20000ms'
+    ]);
   });
 
   it('reports how long the tab was hidden, including a hidden spell still running', async () => {
@@ -276,5 +298,88 @@ describe('getApi reporting', () => {
     await vi.advanceTimersByTimeAsync(API_READY_TIMEOUT_MS + 1);
 
     expect(state.status).toBe('rejected');
+  });
+});
+
+/**
+ * The recovery path. `getApi()` gives up at the deadline so components can show
+ * their fallback, but READY can still come: a silent-login iframe that never
+ * posts back holds it for a minute. `whenApiReady()` is what a component waits
+ * on after that, so it never gives up and never reports.
+ */
+describe('whenApiReady', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    resetApiReadyWait();
+    delete (window as { sesamy?: SesamyAPI }).sesamy;
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    delete (window as { sesamy?: SesamyAPI }).sesamy;
+  });
+
+  it('resolves straight away when the api is already ready', async () => {
+    const api = fakeApi(true);
+    window.sesamy = api;
+
+    await expect(whenApiReady()).resolves.toBe(api);
+  });
+
+  it('waits past the getApi deadline for a late READY', async () => {
+    window.sesamy = fakeApi(false);
+
+    const state = track(whenApiReady());
+    await vi.advanceTimersByTimeAsync(API_READY_TIMEOUT_MS * 5);
+    expect(state.settled).toBe(false);
+
+    const api = fakeApi(true);
+    window.sesamy = api;
+    window.dispatchEvent(new Event('sesamyJsReady'));
+    await vi.advanceTimersByTimeAsync(0);
+
+    expect(state.status).toBe('resolved');
+    expect(state.value).toBe(api);
+  });
+
+  it('waits for sesamy-js that had not loaded at all when it started', async () => {
+    const state = track(whenApiReady());
+    await vi.advanceTimersByTimeAsync(API_READY_TIMEOUT_MS * 2);
+
+    window.sesamy = fakeApi(true);
+    window.dispatchEvent(new Event('sesamyJsReady'));
+    await vi.advanceTimersByTimeAsync(0);
+
+    expect(state.status).toBe('resolved');
+  });
+
+  it('keeps waiting when READY fires but the api still says it is not ready', async () => {
+    window.sesamy = fakeApi(false);
+
+    const state = track(whenApiReady());
+    window.dispatchEvent(new Event('sesamyJsReady'));
+    await vi.advanceTimersByTimeAsync(0);
+    expect(state.settled).toBe(false);
+
+    window.sesamy = fakeApi(true);
+    window.dispatchEvent(new Event('sesamyJsReady'));
+    await vi.advanceTimersByTimeAsync(0);
+    expect(state.status).toBe('resolved');
+  });
+
+  it('drops its listener when aborted, and never settles', async () => {
+    window.sesamy = fakeApi(false);
+    const remove = vi.spyOn(window, 'removeEventListener');
+    const controller = new AbortController();
+
+    const state = track(whenApiReady(controller.signal));
+    controller.abort();
+    expect(remove).toHaveBeenCalledWith('sesamyJsReady', expect.any(Function));
+
+    window.sesamy = fakeApi(true);
+    window.dispatchEvent(new Event('sesamyJsReady'));
+    await vi.advanceTimersByTimeAsync(0);
+    expect(state.settled).toBe(false);
+    remove.mockRestore();
   });
 });
