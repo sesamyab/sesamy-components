@@ -163,9 +163,11 @@ function namedError(name: string, message: string): Error {
 }
 
 /**
- * After giving up, keep listening. If sesamy-js becomes ready after all, the
- * components on this page are stuck on their fallback for good, and this is
- * the report that shows it.
+ * After giving up, keep listening. If sesamy-js becomes ready after all, this
+ * is the report that shows it. The components on the page recover on their own
+ * through `whenApiReady()`, which `componentsRecover` says, so the logs can
+ * tell a late page that recovered from one an older bundle left on its
+ * fallback.
  */
 function watchForLateReady(current: ReadyWait) {
   const onReady = () => {
@@ -177,7 +179,10 @@ function watchForLateReady(current: ReadyWait) {
         'SesamyApiLateReady',
         `sesamy-js became ready after components stopped waiting at ${API_READY_TIMEOUT_MS}ms`
       ),
-      { lateByMs: Math.round(performance.now() - (current.timedOutAt ?? current.startedAt)) }
+      {
+        lateByMs: Math.round(performance.now() - (current.timedOutAt ?? current.startedAt)),
+        componentsRecover: true
+      }
     );
   };
   window.addEventListener('sesamyJsReady', onReady);
@@ -261,6 +266,45 @@ export async function getApi(): Promise<SesamyAPI> {
     }, API_READY_TIMEOUT_MS);
 
     window.addEventListener('sesamyJsReady', onSesamyJsReady);
+  });
+}
+
+/**
+ * Resolve the sesamy-js api whenever it becomes ready, however long that takes.
+ * Never rejects, never reports.
+ *
+ * This is the recovery path for a component whose `getApi()` gave up: READY can
+ * still arrive (a silent-login iframe that never posts back holds it for a
+ * minute), and a component that stayed on its fallback would leave the reader
+ * with no paywall and no way to buy. What a component does with the api is the
+ * same as for one that arrived in time: the content gate still asks for access
+ * before revealing anything.
+ *
+ * Checks `isReady()` first, so a READY that fired between the rejection and
+ * this call is not missed. Aborting `signal` drops the listener.
+ */
+export function whenApiReady(signal?: AbortSignal): Promise<SesamyAPI> {
+  return new Promise((resolve) => {
+    const detach = () => {
+      window.removeEventListener('sesamyJsReady', onReady);
+      signal?.removeEventListener('abort', detach);
+    };
+    const settle = (): boolean => {
+      const api = window.sesamy;
+      if (!api?.isReady()) return false;
+      detach();
+      resolve(api);
+      return true;
+    };
+    // On the unlikely disagreement between the event and `isReady()`, keep
+    // listening rather than hand out a mid-init api.
+    function onReady() {
+      settle();
+    }
+    // An aborted wait simply never settles: the component that asked is gone.
+    if (signal?.aborted || settle()) return;
+    window.addEventListener('sesamyJsReady', onReady);
+    signal?.addEventListener('abort', detach);
   });
 }
 
