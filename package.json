@@ -134,6 +134,7 @@
     "@sesamy/sesamy-js": "1.140.1"
   },
   "dependencies": {
+    "@stripe/stripe-js": "10.2.1",
     "@zootools/email-spell-checker": "^1.12.0",
     "lucide-svelte": "^0.577.0"
   },

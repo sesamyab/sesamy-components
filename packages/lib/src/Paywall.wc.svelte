@@ -85,6 +85,7 @@
   window.addEventListener(SesamyJsEvent.AUTHENTICATED, refresh);
   window.addEventListener(SesamyJsEvent.LOGOUT, refresh);
   window.addEventListener('online', refresh);
+  window.addEventListener(SesamyInternalEvent.ENTITLEMENTS_CHANGED, refresh);
   const granted = (event: Event) => {
     const id = (event as CustomEvent).detail?.publisherContentId;
     if (!id || !apiRef || id !== contentId(apiRef)) return;
@@ -109,6 +110,7 @@
     window.removeEventListener(SesamyJsEvent.AUTHENTICATED, refresh);
     window.removeEventListener(SesamyJsEvent.LOGOUT, refresh);
     window.removeEventListener('online', refresh);
+    window.removeEventListener(SesamyInternalEvent.ENTITLEMENTS_CHANGED, refresh);
     window.removeEventListener(SesamyInternalEvent.CONTENT_GRANTED, granted);
     if (shown && !accessGranted) {
       dispatchSesamyEvent($host(), 'sesamy:paywall-dismissed', {});

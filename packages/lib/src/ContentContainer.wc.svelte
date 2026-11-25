@@ -498,6 +498,7 @@
 
     window.addEventListener(SesamyJsEvent.AUTHENTICATED, onSessionChanged);
     window.addEventListener(SesamyJsEvent.LOGOUT, onSessionChanged);
+    window.addEventListener(SesamyInternalEvent.ENTITLEMENTS_CHANGED, onSessionChanged);
     window.addEventListener('online', onConditionsChanged);
     document.addEventListener('visibilitychange', onConditionsChanged);
 
@@ -511,6 +512,7 @@
   onDestroy(() => {
     window.removeEventListener(SesamyJsEvent.AUTHENTICATED, onSessionChanged);
     window.removeEventListener(SesamyJsEvent.LOGOUT, onSessionChanged);
+    window.removeEventListener(SesamyInternalEvent.ENTITLEMENTS_CHANGED, onSessionChanged);
     window.removeEventListener('online', onConditionsChanged);
     document.removeEventListener('visibilitychange', onConditionsChanged);
     clearRetry();
