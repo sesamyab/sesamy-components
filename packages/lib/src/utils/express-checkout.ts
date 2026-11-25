@@ -54,6 +54,7 @@ export type ApiAddress = {
   firstName?: string;
   lastName?: string;
   co?: string;
+  department?: string;
   street: string;
   city: string;
   zip: string;
@@ -270,6 +271,35 @@ export const expressRefusal = (checkout: ApiCheckout): ExpressRefusal | null => 
   return null;
 };
 
+/** checkout-v4 lib/checkout/address.ts: the step's per-field limit. */
+export const ADDRESS_MAX_LENGTH = 100;
+
+const ADDRESS_FIELDS = ['firstName', 'lastName', 'street', 'co', 'zip', 'city'] as const;
+
+/** Whether an address would pass checkout-v4's step: all but c/o set, within the limit. */
+const addressValid = (a: Partial<ApiAddress> | undefined) =>
+  ADDRESS_FIELDS.every((field) => {
+    const value = (a?.[field] ?? '').trim();
+    return value ? value.length <= ADDRESS_MAX_LENGTH : field === 'co';
+  });
+
+/**
+ * checkout-v4 addressDone: the saved address counts when it is complete,
+ * within the limit and for the checkout's country (v3 lesson 13). True when
+ * none is asked for.
+ */
+export const addressDone = (checkout: ApiCheckout) =>
+  checkout.settings?.requireAddress !== true ||
+  (addressValid(checkout.userDetails?.address) &&
+    checkout.userDetails?.address?.country === checkout.country);
+
+/** checkout-v4 sameAddress: saving `next` would change nothing. */
+const sameAddress = (next: ApiAddress, saved: ApiAddress | undefined) =>
+  !!saved &&
+  (['firstName', 'lastName', 'co', 'street', 'zip', 'city', 'country'] as const).every(
+    (key) => (next[key] ?? '').trim() === (saved[key] ?? '').trim()
+  );
+
 /**
  * What the sheet is asked for: checkout-v4's METHOD_PROVIDES for the wallets
  * (name, phone, address), limited to what this checkout uses and doesn't
@@ -278,7 +308,7 @@ export const expressRefusal = (checkout: ApiCheckout): ExpressRefusal | null => 
 export const sheetRequirements = (checkout: ApiCheckout, wallet: Wallet = 'applePay') => {
   const f = checkout.settings?.fieldSettings;
   const d = checkout.userDetails;
-  const address = checkout.settings?.requireAddress === true && !d?.address?.street;
+  const address = !addressDone(checkout);
   const name = (fieldOf(f?.name).enabled || address) && !(d?.firstName && d?.lastName);
   // checkout-v4 #32: Google Pay's phone is best effort, so a required one is
   // asked inline instead; an optional one is still taken when given.
@@ -478,11 +508,11 @@ export const walletSave = (
   const needsAddress = checkout.settings?.requireAddress === true;
   const body: ApiUserDetails & { isBusiness: boolean } = { isBusiness: d?.isBusiness ?? false };
   const missing: WalletGap[] = [];
-  // A complete saved delivery address carries its recipient's name: then the
-  // address needs no name from the sheet (sheetRequirements doesn't ask one).
-  const savedAddress = d?.address;
-  const addressNeedsName =
-    needsAddress && !(savedAddress?.street && savedAddress.firstName && savedAddress.lastName);
+  // A saved address that counts (addressDone) carries its recipient's name:
+  // then the address needs no name from the sheet (sheetRequirements doesn't
+  // ask one).
+  const saved = addressDone(checkout);
+  const addressNeedsName = needsAddress && !saved;
 
   if (fieldOf(f?.name).enabled || addressNeedsName) {
     const firstName = d?.firstName || contact.firstName;
@@ -511,10 +541,26 @@ export const walletSave = (
     const a = contact.address;
     const firstName = a?.firstName ?? body.firstName ?? d?.firstName;
     const lastName = a?.lastName ?? body.lastName ?? d?.lastName;
-    // The sheet only ships to the checkout's country (allowedShippingCountries).
-    if (a && a.country === checkout.country && firstName && lastName) {
-      body.address = { ...a, firstName, lastName, country: checkout.country };
-    } else if (!d?.address?.street) {
+    // The sheet only ships to the checkout's country (allowedShippingCountries),
+    // and its address must pass the step's own limits (checkout-v4 walletSave).
+    const sheet: ApiAddress | null =
+      a && a.country === checkout.country && firstName && lastName
+        ? {
+            firstName: firstName.trim(),
+            lastName: lastName.trim(),
+            street: a.street,
+            zip: a.zip,
+            city: a.city,
+            country: checkout.country,
+            ...(a.co ? { co: a.co } : {}),
+            // The backend replaces the address whole: keep what the sheet doesn't own.
+            ...(d?.address?.department ? { department: d.address.department } : {})
+          }
+        : null;
+    if (sheet && addressValid(sheet)) {
+      // The sheet's address replaces a saved one; the same one isn't resent.
+      if (!(saved && sameAddress(sheet, d?.address))) body.address = sheet;
+    } else if (!saved) {
       missing.push('address');
     }
   }

@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
+  ADDRESS_MAX_LENGTH,
   awaitCompletion,
   checkoutApiBase,
   checkoutClientSecret,
@@ -607,6 +608,65 @@ describe('walletSave', () => {
     expect(
       walletSave(address, { ...contact, address: { ...contact.address, country: 'NO' } }).missing
     ).toEqual(['address']);
+  });
+
+  // checkout-v4 dev (#32 merged): addressDone, validateAddress, sameAddress.
+  const savedAddress = {
+    firstName: 'Eva',
+    lastName: 'Ek',
+    street: 'Gatan 2',
+    zip: '11122',
+    city: 'Stockholm',
+    country: 'SE'
+  };
+  const sheetContact = {
+    firstName: 'Anna',
+    lastName: 'Svensson',
+    address: { street: 'Gatan 1', zip: '11122', city: 'Stockholm', country: 'SE' }
+  };
+
+  it('asks for the address and its name when the saved one is incomplete or for another country', () => {
+    for (const address of [
+      { ...savedAddress, zip: '' },
+      { ...savedAddress, lastName: undefined },
+      { ...savedAddress, country: 'NO' }
+    ]) {
+      const checkout = apiCheckout({
+        settings: { requireAddress: true },
+        userDetails: { address }
+      });
+      expect(sheetRequirements(checkout)).toMatchObject({ name: true, address: true });
+      expect(walletSave(checkout, {}).missing).toEqual(['name', 'address']);
+      expect(walletSave(checkout, sheetContact).body?.address?.street).toBe('Gatan 1');
+    }
+  });
+
+  it('refuses a sheet address over the step’s length limit', () => {
+    const checkout = apiCheckout({ settings: { requireAddress: true } });
+    const long = { ...sheetContact.address, street: 'x'.repeat(ADDRESS_MAX_LENGTH + 1) };
+    expect(walletSave(checkout, { ...sheetContact, address: long }).missing).toEqual(['address']);
+  });
+
+  it('replaces a saved address with the sheet’s, keeping its department, but never resends the same one', () => {
+    const checkout = apiCheckout({
+      settings: { requireAddress: true },
+      userDetails: { address: { ...savedAddress, department: 'Ekonomi' } }
+    });
+    const named = {
+      ...sheetContact,
+      address: { ...sheetContact.address, firstName: 'Anna', lastName: 'Svensson' }
+    };
+    expect(walletSave(checkout, named).body?.address).toEqual({
+      firstName: 'Anna',
+      lastName: 'Svensson',
+      street: 'Gatan 1',
+      zip: '11122',
+      city: 'Stockholm',
+      country: 'SE',
+      department: 'Ekonomi'
+    });
+    const same = { ...sheetContact, address: { ...savedAddress } };
+    expect(walletSave(checkout, same)).toEqual({ body: null, missing: [] });
   });
 });
 
