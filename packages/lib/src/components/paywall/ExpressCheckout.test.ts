@@ -338,7 +338,7 @@ describe('express checkout on the paywall', () => {
     checkoutApi();
     const { api } = fakeApi();
     const emit = vi.fn((name: string) => ({ canceled: name === 'sesamyPaywallCreateCheckout' }));
-    api.events.emit = emit;
+    api.events.emit = emit as unknown as typeof api.events.emit;
     renderExpress(api);
 
     // The express preparation asked, and was told no.
