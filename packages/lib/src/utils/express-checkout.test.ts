@@ -728,10 +728,20 @@ describe('payWithWallet', () => {
 describe('awaitCompletion', () => {
   it('reports processing when the checkout does not complete in time', async () => {
     const client = fakeCheckoutApi({ get: vi.fn(async () => apiCheckout()) });
+    const tick = () => new Promise<void>((resolve) => setTimeout(resolve, 5));
     await expect(
-      awaitCompletion(client, 'c1', { timeoutMs: 0, intervalMs: 0, wait: async () => {} })
+      awaitCompletion(client, 'c1', { timeoutMs: 40, intervalMs: 0, wait: tick })
     ).resolves.toEqual({ kind: 'processing' });
     expect(client.setWaiting).toHaveBeenCalled();
+  });
+
+  it('does not wait past the deadline for a request that never answers', async () => {
+    const client = fakeCheckoutApi({ get: vi.fn(() => new Promise<never>(() => {})) });
+    const started = Date.now();
+    await expect(
+      awaitCompletion(client, 'c1', { timeoutMs: 50, intervalMs: 0, wait: async () => {} })
+    ).resolves.toEqual({ kind: 'processing' });
+    expect(Date.now() - started).toBeLessThan(1000);
   });
 
   it('does not mark a checkout that already left PENDING', async () => {

@@ -85,6 +85,8 @@
   const publishableKey = userProps?.['stripe-publishable-key']?.trim() || '';
   /** The signed-in reader's email, once known. Express mode only. */
   let readerEmail = $state<string | null>(null);
+  /** Bumped on logout, so a reader lookup from before it is dropped. */
+  let readerSession = 0;
   /** Which wallet buttons this browser shows, as each one reports. */
   let walletAvailability = $state<Partial<Record<Wallet, boolean>>>({});
   /** This browser has neither wallet, or Stripe didn't load. */
@@ -111,6 +113,7 @@
   /** Re-runs the access check once an express purchase has unlocked the article. */
   let accessRun = $state(0);
   const prepared = new Map<string, Promise<ExpressPrepared>>();
+  const PREPARE_TIMEOUT_MS = 15_000;
 
   const loadLoggedInUser = async () => {
     const user = await api.auth.getUser().catch(() => null);
@@ -124,6 +127,8 @@
     authState = 'logged-out';
     email = null;
     readerEmail = null;
+    // A reader lookup still in flight speaks for the session that just ended.
+    readerSession++;
   };
 
   const logout = async () => {
@@ -203,12 +208,16 @@
         void loadLoggedInUser();
       }
       if (isAuthed && expressRequested) {
+        const session = readerSession;
         void api.auth
           .getUser()
           .then((user: { email?: unknown } | null) => {
+            if (session !== readerSession) return;
             readerEmail = typeof user?.email === 'string' ? user.email : null;
           })
-          .catch(() => (readerEmail = null));
+          .catch(() => {
+            if (session === readerSession) readerEmail = null;
+          });
       }
       dispatchSesamyEvent(host, 'sesamy:paywall-shown', {
         reason: isAuthed ? 'no-entitlement' : 'unauthenticated'
@@ -359,7 +368,15 @@
     let promise = prepared.get(key);
     if (!promise) {
       promise = (async (): Promise<ExpressPrepared> => {
-        const created = await api.checkouts.create(checkoutPayloadFor(selectedProduct));
+        const checkoutPayload = checkoutPayloadFor(selectedProduct);
+        // An integration that cancels checkout creation cancels it here too.
+        const event = api.events.emit(
+          'sesamyPaywallCreateCheckout',
+          { payload: checkoutPayload, product: selectedProduct, paywallId: paywall.id },
+          true
+        );
+        if (event.canceled) return { status: 'refused' };
+        const created = await api.checkouts.create(checkoutPayload);
         const base = checkoutApiBase(created.checkoutUrl);
         if (!base) return { status: 'refused' };
         const checkoutApi = createCheckoutApi(base);
@@ -387,26 +404,36 @@
     const key = productKey(product);
     if (express?.key === key) return;
     express = { key, state: { status: 'preparing' } };
-    void prepareExpress(product, readerEmail).then((state) => {
-      if (express?.key === key) express = { key, state };
+    // Preparation that doesn't settle in time gives the normal paywall back.
+    const timeout = new Promise<ExpressPrepared>((resolve) =>
+      setTimeout(() => resolve({ status: 'refused' }), PREPARE_TIMEOUT_MS)
+    );
+    void Promise.race([prepareExpress(product, readerEmail), timeout]).then((state) => {
+      if (express?.key === key && express.state.status === 'preparing') express = { key, state };
     });
   });
 
   const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
   /**
-   * The purchase is complete: drop sesamy-js's cached entitlements and ask
-   * again until the new one is there (it lands shortly after the checkout
-   * completes), then tell the content container and the paywall to re-check.
+   * The purchase is complete (or paid and still being confirmed): drop
+   * sesamy-js's cached entitlements and ask again until the new one is there
+   * (it lands shortly after the checkout completes), then tell the content
+   * container and the paywall to re-check. While this runs no new checkout
+   * can be started, so a slow confirmation never leads to a second payment.
    */
-  const unlockAfterPurchase = async () => {
+  const unlockAfterPurchase = async (processing = false) => {
     expressPhase = 'unlocking';
-    expressNotice = { kind: 'info', text: t('express_unlocking') };
+    expressNotice = {
+      kind: 'info',
+      text: t(processing ? 'express_processing' : 'express_unlocking')
+    };
     const passes = userProps?.pass
       ? userProps.pass.split(';')
       : api.content.get(host)?.pass?.split(';');
+    const attempts = processing ? 60 : 10;
     let granted = false;
-    for (let attempt = 0; attempt < 10 && !granted; attempt++) {
+    for (let attempt = 0; attempt < attempts && !granted; attempt++) {
       if (attempt) await wait(1500);
       try {
         api.clearCache();
@@ -433,7 +460,8 @@
         void unlockAfterPurchase();
         return;
       case 'processing':
-        expressNotice = { kind: 'info', text: t('express_processing') };
+        // Paid, not yet confirmed: keep checking for the entitlement.
+        void unlockAfterPurchase(true);
         return;
       case 'declined':
         expressNotice = { kind: 'error', text: outcome.message || t('express_declined') };
@@ -479,7 +507,8 @@
       month >= 1 &&
       month <= 12 &&
       day >= 1 &&
-      day <= 31;
+      // The last day of that month: no 31 February.
+      day <= new Date(year, month, 0).getDate();
     return valid
       ? `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
       : undefined;

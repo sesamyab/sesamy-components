@@ -562,24 +562,41 @@ export const awaitCompletion = async (
   checkoutId: string,
   { timeoutMs = 60_000, intervalMs = 1500, wait = defaultWait } = {}
 ): Promise<ExpressOutcome> => {
+  // Every request is bounded by the same deadline: a request that never
+  // settles must not hold the reader past it. A late answer is dropped.
+  const deadline = Date.now() + timeoutMs;
+  const TIMED_OUT = Symbol('timed out');
+  const within = <T>(request: () => Promise<T>): Promise<T | typeof TIMED_OUT> => {
+    const remaining = deadline - Date.now();
+    if (remaining <= 0) return Promise.resolve(TIMED_OUT);
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const timeout = new Promise<typeof TIMED_OUT>((resolve) => {
+      timer = setTimeout(() => resolve(TIMED_OUT), remaining);
+    });
+    return Promise.race([request(), timeout]).finally(() => clearTimeout(timer));
+  };
+
   try {
-    const current = await checkoutApi.get(checkoutId);
-    if (current.status === 'COMPLETED') return { kind: 'completed', checkout: current };
-    if (current.status === 'PENDING') await checkoutApi.setWaiting(checkoutId);
+    const current = await within(() => checkoutApi.get(checkoutId));
+    if (current !== TIMED_OUT) {
+      if (current.status === 'COMPLETED') return { kind: 'completed', checkout: current };
+      if (current.status === 'PENDING') await within(() => checkoutApi.setWaiting(checkoutId));
+    }
   } catch {
     // The webhook may have won the race; the poll decides.
   }
-  const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
     await wait(intervalMs);
     try {
-      const current = await checkoutApi.get(checkoutId);
+      const current = await within(() => checkoutApi.get(checkoutId));
+      if (current === TIMED_OUT) break;
       if (current.status === 'COMPLETED') return { kind: 'completed', checkout: current };
       if (current.status === 'FAILED') return { kind: 'declined' };
     } catch {
       // A read failing is no answer: keep polling.
     }
   }
+  // Unknown at the deadline: paid as far as Stripe is concerned, never a decline.
   return { kind: 'processing' };
 };
 

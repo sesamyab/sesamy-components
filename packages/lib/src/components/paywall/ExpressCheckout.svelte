@@ -95,7 +95,17 @@
     if (reported) return;
     reported = true;
     available = value;
+    // Not shown is final for this element: one that loads late, after the
+    // timeout, must not appear (unblocked) once the paywall moved on.
+    if (!value) teardown();
     onAvailability(value);
+  };
+
+  const teardown = () => {
+    element?.destroy();
+    element = null;
+    container?.remove();
+    container = null;
   };
 
   const onConfirm = async (
@@ -153,7 +163,7 @@
 
     getStripe(publishableKey, target.account).then(
       (stripe) => {
-        if (destroyed || !container) return;
+        if (destroyed || reported || !container) return;
         if (!stripe) return report(false);
         const elements = stripe.elements({
           ...elementsOptions(checkout),
@@ -183,7 +193,7 @@
       },
       (error) => {
         console.error('Stripe.js failed to load', error);
-        report(false);
+        if (!destroyed) report(false);
       }
     );
   });
@@ -191,8 +201,7 @@
   onDestroy(() => {
     destroyed = true;
     clearTimeout(readyTimer);
-    element?.destroy();
-    container?.remove();
+    teardown();
   });
 </script>
 

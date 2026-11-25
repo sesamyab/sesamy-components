@@ -334,6 +334,16 @@ describe('express checkout on the paywall', () => {
     expect(screen.queryByRole('button', { name: 'continue' })).toBeNull();
   });
 
+  it('honours an integration that cancels sesamyPaywallCreateCheckout', async () => {
+    checkoutApi();
+    const { api } = fakeApi();
+    api.events.emit = () => ({ canceled: true });
+    renderExpress(api);
+
+    expect(await screen.findByRole('button', { name: 'continue' })).toBeTruthy();
+    expect(api.checkouts.create).not.toHaveBeenCalled();
+  });
+
   it('falls back to the normal paywall for a checkout the sheet cannot complete', async () => {
     checkoutApi({ settings: { giftMode: true } });
     const { api } = fakeApi();
@@ -419,7 +429,7 @@ describe('express checkout on the paywall', () => {
 
     it('asks the birthdate inline, prefills Google Pay’s phone from the profile, and saves both before paying', async () => {
       const { calls } = checkoutApi(acme);
-      const { api } = fakeApi({ profilePhone: '+46701234567' });
+      const { api, grant } = fakeApi({ profilePhone: '+46701234567' });
       renderExpress(api);
       await mounted();
       ready(true, true);
@@ -455,13 +465,18 @@ describe('express checkout on the paywall', () => {
         expect(screen.queryByTestId('express-checkout-googlePay-blocked')).toBeNull()
       );
 
+      grant();
       el('googlePay').handlers.confirm({
         expressPaymentType: 'google_pay',
         billingDetails: { name: 'Anna Svensson', phone: '' },
         paymentFailed: vi.fn()
       });
 
-      await waitFor(() => expect(calls.some((c) => c.url.endsWith('/paymentMethod'))).toBe(true));
+      // The payment's terminal outcome: the checkout completed and access was asked again.
+      const changed = vi.fn();
+      window.addEventListener('sesamyEntitlementsChanged', changed);
+      await waitFor(() => expect(changed).toHaveBeenCalled(), { timeout: 4000 });
+      window.removeEventListener('sesamyEntitlementsChanged', changed);
       const details = calls.find((c) => c.url.endsWith('/userdetails'))!;
       expect(details.body).toEqual({
         isBusiness: false,
