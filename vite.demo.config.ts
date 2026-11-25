@@ -1,5 +1,8 @@
 import { defineConfig } from 'vite';
+import { resolve } from 'node:path';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
+
+const demoRoot = resolve(__dirname, 'packages/demo');
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -7,9 +10,21 @@ export default defineConfig({
   resolve: {
     dedupe: ['svelte']
   },
+  server: {
+    // Wallet buttons need HTTPS on a domain registered with Stripe, so the
+    // express checkout demo is reached through a tunnel to this server:
+    // DEMO_ALLOWED_HOSTS=my-tunnel.example.com yarn dev
+    allowedHosts: process.env.DEMO_ALLOWED_HOSTS?.split(',').map((host) => host.trim())
+  },
   build: {
     outDir: '../../dist',
-    emptyOutDir: false
+    emptyOutDir: false,
+    rollupOptions: {
+      input: {
+        main: resolve(demoRoot, 'index.html'),
+        expressCheckout: resolve(demoRoot, 'express-checkout.html')
+      }
+    }
   },
   plugins: [
     svelte({
