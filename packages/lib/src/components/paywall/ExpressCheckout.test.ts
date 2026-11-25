@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, render, screen, waitFor } from '@testing-library/svelte';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/svelte';
 import userEvent from '@testing-library/user-event';
 import type { SesamyAPI } from '@sesamy/sesamy-js';
 import Renderer from './Renderer.svelte';
@@ -82,9 +82,18 @@ const apiCheckout = (overrides: Record<string, unknown> = {}) => ({
 
 type Call = { url: string; method: string; headers: Record<string, string>; body?: unknown };
 
-const checkoutApi = (first: Record<string, unknown> = {}) => {
+/**
+ * checkout-api, faked. By default PATCH /status completes the checkout (the
+ * webhook came first). With `autoComplete: false` it stays WAITING until the
+ * test moves it with `setStatus`.
+ */
+const checkoutApi = (
+  first: Record<string, unknown> = {},
+  { autoComplete = true }: { autoComplete?: boolean } = {}
+) => {
   const calls: Call[] = [];
   let status = 'PENDING';
+  const setStatus = (next: string) => (status = next);
   const fetchMock = vi.fn(async (url: string, init: RequestInit = {}) => {
     const method = init.method ?? 'GET';
     calls.push({
@@ -102,7 +111,7 @@ const checkoutApi = (first: Record<string, unknown> = {}) => {
         paymentOptions: { paymentSettings: { clientSecret: PI_SECRET } }
       });
     } else if (url.endsWith('/status')) {
-      status = 'COMPLETED';
+      status = autoComplete ? 'COMPLETED' : 'WAITING_PAYMENT_CONFIRMATION';
     }
     return new Response(JSON.stringify(body), {
       status: 200,
@@ -110,7 +119,7 @@ const checkoutApi = (first: Record<string, unknown> = {}) => {
     });
   });
   vi.stubGlobal('fetch', fetchMock);
-  return { calls };
+  return { calls, setStatus };
 };
 
 const fakeApi = ({ authed = true, requireToken = 'reader-token', profilePhone = '' } = {}) => {
@@ -216,6 +225,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  vi.useRealTimers();
   cleanup();
   document.body.replaceChildren();
   delete window.sesamy;
@@ -659,5 +669,122 @@ describe('express checkout on the paywall', () => {
       el('googlePay').handlers.click({ resolve });
       expect(resolve).toHaveBeenCalled();
     });
+  });
+
+  // Paid as far as Stripe knows, never confirmed by checkout-api: the
+  // payment-safety path. It takes the 60 s completion poll plus the 90 s
+  // entitlement wait, so it runs on fake timers (Date included: the poll's
+  // deadline reads it), switched on once the wallets are mounted.
+  describe('a payment that stays unconfirmed', () => {
+    /** Runs the timers and the promises they release, `ms` at a time. */
+    const advance = async (ms: number, step = 1500) => {
+      for (let elapsed = 0; elapsed < ms; elapsed += step) {
+        await vi.advanceTimersByTimeAsync(step);
+      }
+    };
+
+    const moreOptions = () => screen.queryByRole('button', { name: 'express_more_options' });
+    const checkAgain = () => screen.queryByRole('button', { name: 'express_check_again' });
+
+    /** A sheet opens only if Stripe's click is resolved. */
+    const sheetOpens = (wallet: 'applePay' | 'googlePay') => {
+      const resolve = vi.fn();
+      el(wallet).handlers.click({ resolve });
+      return resolve.mock.calls.length > 0;
+    };
+
+    const payAndLeaveUnresolved = async () => {
+      const api = checkoutApi({}, { autoComplete: false });
+      const reader = fakeApi();
+      renderExpress(reader.api);
+      await mounted();
+      ready(true, true);
+
+      vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'Date'] });
+      el('applePay').handlers.confirm({
+        expressPaymentType: 'apple_pay',
+        billingDetails: {},
+        paymentFailed: vi.fn()
+      });
+      // The completion poll (60 s) gives up, then the entitlement wait (90 s).
+      await advance(160_000);
+      return { ...api, ...reader };
+    };
+
+    const paymentMethodCalls = (calls: Call[]) =>
+      calls.filter((c) => c.url.endsWith('/paymentMethod')).length;
+
+    it('keeps the wallets locked and hides "More payment options" while unresolved', async () => {
+      const { calls } = await payAndLeaveUnresolved();
+
+      expect(screen.getByRole('status').textContent).toContain('express_still_processing');
+      expect(checkAgain()).not.toBeNull();
+      expect(moreOptions()).toBeNull();
+      expect(screen.queryByRole('button', { name: 'continue' })).toBeNull();
+      expect(sheetOpens('applePay')).toBe(false);
+      expect(sheetOpens('googlePay')).toBe(false);
+      const refused = vi.fn();
+      el('googlePay').handlers.confirm({
+        expressPaymentType: 'google_pay',
+        billingDetails: {},
+        paymentFailed: refused
+      });
+      expect(refused).toHaveBeenCalledWith({ reason: 'fail' });
+      await advance(3000);
+      expect(paymentMethodCalls(calls)).toBe(1);
+    });
+
+    it('"Check again" unlocks the article once the checkout is COMPLETED', async () => {
+      const { setStatus, grant } = await payAndLeaveUnresolved();
+      const changed = vi.fn();
+      window.addEventListener('sesamyEntitlementsChanged', changed);
+
+      setStatus('COMPLETED');
+      grant();
+      await fireEvent.click(checkAgain()!);
+      await advance(3000);
+
+      expect(changed).toHaveBeenCalled();
+      expect(screen.queryByText('Subscribe')).toBeNull();
+      window.removeEventListener('sesamyEntitlementsChanged', changed);
+    });
+
+    it('"Check again" stays locked while the checkout is still WAITING, and no second payment runs', async () => {
+      const { calls } = await payAndLeaveUnresolved();
+
+      await fireEvent.click(checkAgain()!);
+      await advance(3000);
+
+      expect(checkAgain()).not.toBeNull();
+      expect(moreOptions()).toBeNull();
+      expect(sheetOpens('applePay')).toBe(false);
+      expect(sheetOpens('googlePay')).toBe(false);
+      const refused = vi.fn();
+      el('applePay').handlers.confirm({
+        expressPaymentType: 'apple_pay',
+        billingDetails: {},
+        paymentFailed: refused
+      });
+      expect(refused).toHaveBeenCalledWith({ reason: 'fail' });
+      await advance(3000);
+      expect(paymentMethodCalls(calls)).toBe(1);
+    });
+
+    it.each(['PENDING', 'FAILED'])(
+      '"Check again" opens payment again when the checkout is back to %s',
+      async (status) => {
+        const { setStatus } = await payAndLeaveUnresolved();
+
+        setStatus(status);
+        await fireEvent.click(checkAgain()!);
+        await advance(3000);
+
+        expect(checkAgain()).toBeNull();
+        expect(moreOptions()).not.toBeNull();
+        expect(screen.getByRole('alert').textContent).toContain('express_declined');
+        expect(sheetOpens('applePay')).toBe(true);
+        expect(sheetOpens('googlePay')).toBe(true);
+      }
+    );
   });
 });
