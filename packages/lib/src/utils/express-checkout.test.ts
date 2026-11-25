@@ -12,6 +12,7 @@ import {
   normalizeExpressContact,
   payWithWallet,
   prepareCheckout,
+  ReaderChangedError,
   sheetRequirements,
   walletSave,
   type ApiCheckout,
@@ -62,6 +63,12 @@ describe('checkoutApiBase', () => {
     expect(checkoutApiBase('http://checkout3.sesamy.dev/checkouts/c1')).toBeNull();
     expect(checkoutApiBase('not a url')).toBeNull();
     expect(checkoutApiBase(undefined)).toBeNull();
+  });
+
+  it('refuses hostnames that only an inherited property would match', () => {
+    for (const host of ['constructor', 'toString', '__proto__', 'hasOwnProperty']) {
+      expect(checkoutApiBase(`https://${host}/checkouts/c1`)).toBeNull();
+    }
   });
 });
 
@@ -150,6 +157,46 @@ describe('prepareCheckout', () => {
     });
     await prepareCheckout(client, 'c1', 'reader@example.com', async () => 'tok');
     expect(client.setOwner).not.toHaveBeenCalled();
+  });
+
+  it('never sets the owner, nor asks a token, for a reader whose session ended', async () => {
+    const client = fakeCheckoutApi({
+      get: vi.fn(async () => apiCheckout({ settings: { requireAuth: true } }))
+    });
+    const getToken = vi.fn(async () => 'next-session-token');
+    await expect(
+      prepareCheckout(client, 'c1', 'reader@example.com', getToken, () => false)
+    ).rejects.toBeInstanceOf(ReaderChangedError);
+    expect(getToken).not.toHaveBeenCalled();
+    expect(client.setOwner).not.toHaveBeenCalled();
+  });
+
+  it('stops before the owner when the session ends while the token is fetched', async () => {
+    let current = true;
+    const client = fakeCheckoutApi({
+      get: vi.fn(async () => apiCheckout({ settings: { requireAuth: true } }))
+    });
+    const getToken = vi.fn(async () => {
+      current = false;
+      return 'tok';
+    });
+    await expect(
+      prepareCheckout(client, 'c1', 'reader@example.com', getToken, () => current)
+    ).rejects.toBeInstanceOf(ReaderChangedError);
+    expect(client.setOwner).not.toHaveBeenCalled();
+  });
+});
+
+describe('the checkout-api request timeout', () => {
+  it('aborts a request that never answers', async () => {
+    const fetchImpl = vi.fn(
+      (_url: string, init: RequestInit) =>
+        new Promise<Response>((_resolve, reject) =>
+          init.signal?.addEventListener('abort', () => reject(new Error('aborted')))
+        )
+    );
+    const client = createCheckoutApi('https://api.sesamy.dev', fetchImpl as never, 20);
+    await expect(client.get('c1')).rejects.toThrow('aborted');
   });
 });
 
@@ -504,6 +551,44 @@ describe('walletSave', () => {
     expect(walletSave(acmeLike, sheet, 'applePay', {}).missing).toEqual(['birthdate']);
   });
 
+  it('takes a complete saved address as the recipient, asking no name', () => {
+    const saved = apiCheckout({
+      settings: { requireAddress: true },
+      userDetails: {
+        address: {
+          firstName: 'Eva',
+          lastName: 'Ek',
+          street: 'Gatan 2',
+          zip: '11122',
+          city: 'Stockholm',
+          country: 'SE'
+        }
+      }
+    });
+    expect(sheetRequirements(saved).name).toBe(false);
+    expect(walletSave(saved, {})).toEqual({ body: null, missing: [] });
+  });
+
+  it('still requires the name when the vendor enabled it, next to a saved address', () => {
+    const saved = apiCheckout({
+      settings: {
+        requireAddress: true,
+        fieldSettings: { name: { enabled: true, required: true } }
+      },
+      userDetails: {
+        address: {
+          firstName: 'Eva',
+          lastName: 'Ek',
+          street: 'Gatan 2',
+          zip: '11122',
+          city: 'Stockholm',
+          country: 'SE'
+        }
+      }
+    });
+    expect(walletSave(saved, {}).missing).toEqual(['name']);
+  });
+
   it('takes a delivery address in the checkout country only', () => {
     const address = apiCheckout({ settings: { requireAddress: true } });
     const contact = {
@@ -597,11 +682,15 @@ describe('payWithWallet', () => {
   });
 
   it('confirms a SetupIntent for a 0-kr first period, and tags Google Pay', async () => {
+    const trial = apiCheckout({
+      type: 'RECURRING',
+      price: { initialPrice: { total: 0, currency: 'SEK' } }
+    });
     const checkoutApi = completingApi({
-      setPaymentMethod: vi.fn(async () => withSecret(apiCheckout(), SETI_SECRET))
+      setPaymentMethod: vi.fn(async () => withSecret(trial, SETI_SECRET))
     });
     const ev = { ...event(), expressPaymentType: 'google_pay' as const };
-    const { deps, result } = run({ checkoutApi, event: ev });
+    const { deps, result } = run({ checkoutApi, checkout: trial, event: ev });
     await expect(result).resolves.toMatchObject({ kind: 'completed' });
     expect(deps.stripe.confirmCardSetup).toHaveBeenCalled();
     expect(checkoutApi.setPaymentMethod).toHaveBeenCalledWith(

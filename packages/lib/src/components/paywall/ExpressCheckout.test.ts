@@ -337,9 +337,18 @@ describe('express checkout on the paywall', () => {
   it('honours an integration that cancels sesamyPaywallCreateCheckout', async () => {
     checkoutApi();
     const { api } = fakeApi();
-    api.events.emit = () => ({ canceled: true });
+    const emit = vi.fn((name: string) => ({ canceled: name === 'sesamyPaywallCreateCheckout' }));
+    api.events.emit = emit;
     renderExpress(api);
 
+    // The express preparation asked, and was told no.
+    await waitFor(() =>
+      expect(emit).toHaveBeenCalledWith(
+        'sesamyPaywallCreateCheckout',
+        expect.objectContaining({ paywallId: 'paywall_1' }),
+        true
+      )
+    );
     expect(await screen.findByRole('button', { name: 'continue' })).toBeTruthy();
     expect(api.checkouts.create).not.toHaveBeenCalled();
   });
@@ -448,6 +457,12 @@ describe('express checkout on the paywall', () => {
         )
       );
 
+      // A keyboard activation reaches Stripe's button under the overlay: the
+      // sheet still doesn't open.
+      const resolve = vi.fn();
+      el('applePay').handlers.click({ resolve });
+      expect(resolve).not.toHaveBeenCalled();
+
       await userEvent.click(screen.getByTestId('express-checkout-googlePay-blocked'));
       expect(await screen.findByRole('alert')).toHaveProperty(
         'textContent',
@@ -498,6 +513,151 @@ describe('express checkout on the paywall', () => {
 
       await screen.findByTestId('express-inline-fields');
       await waitFor(() => expect(document.querySelector('input[name="tel"]')).toBeNull());
+    });
+  });
+
+  describe('reader sessions', () => {
+    const deferred = <T>() => {
+      let resolve!: (value: T) => void;
+      const promise = new Promise<T>((r) => (resolve = r));
+      return { promise, resolve };
+    };
+
+    it('never sets an owner for a reader who logged out while the checkout was created', async () => {
+      const { calls } = checkoutApi();
+      const { api } = fakeApi();
+      const creation = deferred<unknown>();
+      api.checkouts.create = vi.fn(() => creation.promise) as never;
+      renderExpress(api);
+      await waitFor(() => expect(api.checkouts.create).toHaveBeenCalled());
+
+      window.dispatchEvent(new CustomEvent('sesamyJsLogout'));
+      creation.resolve({
+        id: 'checkout_1',
+        checkoutUrl: CHECKOUT_URL,
+        items: [],
+        availablePaymentMethods: []
+      });
+
+      expect(await screen.findByRole('button', { name: 'continue' })).toBeTruthy();
+      await new Promise((r) => setTimeout(r, 50));
+      expect(calls.filter((c) => c.url.endsWith('/owner'))).toEqual([]);
+      expect(api.auth.getTokenSilently).not.toHaveBeenCalled();
+      expect(stripeFake.state.byWallet).toEqual({});
+    });
+
+    it('drops the wallet buttons and the typed birthdate on logout', async () => {
+      checkoutApi({
+        settings: { fieldSettings: { birthdate: { enabled: true, required: true } } }
+      });
+      const { api } = fakeApi();
+      renderExpress(api);
+      await mounted();
+      ready(true, true);
+      const inputs = (await screen.findByTestId('express-inline-fields')).querySelectorAll('input');
+      await userEvent.type(inputs[0], '1990');
+
+      window.dispatchEvent(new CustomEvent('sesamyJsLogout'));
+
+      expect(await screen.findByRole('button', { name: 'continue' })).toBeTruthy();
+      expect(screen.queryByTestId('express-inline-fields')).toBeNull();
+      expect(el('applePay').destroyed).toBe(true);
+      expect(el('googlePay').destroyed).toBe(true);
+      expect(document.querySelector('[slot^="sesamy-express-checkout"]')).toBeNull();
+    });
+
+    it('prepares a new checkout, owned by the new reader, after another login', async () => {
+      const { calls } = checkoutApi();
+      const { api } = fakeApi();
+      renderExpress(api);
+      await mounted();
+      const first = el('applePay');
+
+      api.auth.getUser = async () => ({ email: 'other@example.com' });
+      window.dispatchEvent(new CustomEvent('sesamyJsAuthenticated'));
+
+      await waitFor(() => expect(api.checkouts.create).toHaveBeenCalledTimes(2));
+      await waitFor(() => expect(el('applePay')).not.toBe(first));
+      expect(first.destroyed).toBe(true);
+      const owners = calls.filter((c) => c.url.endsWith('/owner')).map((c) => c.body);
+      expect(owners).toEqual([{ email: 'reader@example.com' }, { email: 'other@example.com' }]);
+    });
+
+    it('a login event for the same reader keeps the prepared checkout', async () => {
+      checkoutApi();
+      const { api } = fakeApi();
+      renderExpress(api);
+      await mounted();
+      const first = el('applePay');
+
+      window.dispatchEvent(new CustomEvent('sesamyJsAuthenticated'));
+      await new Promise((r) => setTimeout(r, 50));
+
+      expect(api.checkouts.create).toHaveBeenCalledTimes(1);
+      expect(el('applePay')).toBe(first);
+      expect(first.destroyed).toBe(false);
+    });
+  });
+
+  describe('one payment at a time', () => {
+    it('refuses a second wallet while the first is paying, and charges once', async () => {
+      const { calls } = checkoutApi();
+      const { api, grant } = fakeApi();
+      renderExpress(api);
+      await mounted();
+      ready(true, true);
+
+      // Apple Pay's confirm is held open inside Stripe.
+      let finishConfirm!: (value: unknown) => void;
+      stripeFake.state.confirmResult = new Promise((r) => (finishConfirm = r));
+      el('applePay').handlers.confirm({
+        expressPaymentType: 'apple_pay',
+        billingDetails: {},
+        paymentFailed: vi.fn()
+      });
+      await waitFor(() => expect(calls.some((c) => c.url.endsWith('/paymentMethod'))).toBe(true));
+
+      // Meanwhile Google Pay: no sheet opens, and a confirm is refused.
+      const resolve = vi.fn();
+      el('googlePay').handlers.click({ resolve });
+      expect(resolve).not.toHaveBeenCalled();
+      const secondFailed = vi.fn();
+      el('googlePay').handlers.confirm({
+        expressPaymentType: 'google_pay',
+        billingDetails: {},
+        paymentFailed: secondFailed
+      });
+      expect(secondFailed).toHaveBeenCalledWith({ reason: 'fail' });
+      expect(screen.queryByRole('button', { name: 'express_more_options' })).toBeNull();
+
+      grant();
+      finishConfirm({ paymentIntent: { status: 'succeeded' } });
+      const changed = vi.fn();
+      window.addEventListener('sesamyEntitlementsChanged', changed);
+      await waitFor(() => expect(changed).toHaveBeenCalled(), { timeout: 4000 });
+      window.removeEventListener('sesamyEntitlementsChanged', changed);
+      expect(calls.filter((c) => c.url.endsWith('/paymentMethod'))).toHaveLength(1);
+    });
+
+    it('opens payment again after a decline', async () => {
+      checkoutApi();
+      const { api } = fakeApi();
+      renderExpress(api);
+      await mounted();
+      ready(true, true);
+      stripeFake.state.confirmResult = {
+        error: { type: 'card_error', message: 'Your card was declined.' }
+      };
+      el('applePay').handlers.confirm({
+        expressPaymentType: 'apple_pay',
+        billingDetails: {},
+        paymentFailed: vi.fn()
+      });
+      await screen.findByRole('alert');
+
+      const resolve = vi.fn();
+      el('googlePay').handlers.click({ resolve });
+      expect(resolve).toHaveBeenCalled();
     });
   });
 });

@@ -27,10 +27,12 @@ import { parsePhoneNumber } from './phone';
  * checkout-api for the checkout host sesamy-js links to. Only Sesamy's own
  * hosts: the reader's token may go to these and nowhere else.
  */
-const CHECKOUT_API_BY_HOST: Record<string, string> = {
-  'checkout3.sesamy.com': 'https://api.sesamy.com',
-  'checkout3.sesamy.dev': 'https://api.sesamy.dev'
-};
+// A Map, not an object literal: a hostname such as `constructor` must not
+// find an inherited property.
+const CHECKOUT_API_BY_HOST = new Map<string, string>([
+  ['checkout3.sesamy.com', 'https://api.sesamy.com'],
+  ['checkout3.sesamy.dev', 'https://api.sesamy.dev']
+]);
 
 /** The checkout-api base for an api2 `checkoutUrl`, or null for any other host. */
 export const checkoutApiBase = (checkoutUrl: string | undefined): string | null => {
@@ -38,7 +40,7 @@ export const checkoutApiBase = (checkoutUrl: string | undefined): string | null 
   try {
     const url = new URL(checkoutUrl);
     if (url.protocol !== 'https:') return null;
-    return CHECKOUT_API_BY_HOST[url.hostname] ?? null;
+    return CHECKOUT_API_BY_HOST.get(url.hostname) ?? null;
   } catch {
     return null;
   }
@@ -126,6 +128,14 @@ export class CheckoutApiError extends Error {
   }
 }
 
+/** The signed-in reader changed while their checkout was being prepared. */
+export class ReaderChangedError extends Error {
+  constructor() {
+    super('The signed-in reader changed');
+    this.name = 'ReaderChangedError';
+  }
+}
+
 export type CheckoutApi = {
   get(id: string): Promise<ApiCheckout>;
   setOwner(
@@ -141,33 +151,52 @@ export type CheckoutApi = {
   setWaiting(id: string): Promise<ApiCheckout>;
 };
 
+/**
+ * Per request, body included (checkout-v4's REQUEST_TIMEOUT_MS): an API that
+ * accepts the connection and never answers must not hold a payment open.
+ * A write that timed out may still have happened, so callers read the
+ * checkout before deciding anything; nothing is retried here.
+ */
+export const REQUEST_TIMEOUT_MS = 15_000;
+
 /** checkout-api's endpoints, as checkout-v4's lib/checkout-api/client.ts calls them. */
-export const createCheckoutApi = (base: string, fetchImpl: typeof fetch = fetch): CheckoutApi => {
+export const createCheckoutApi = (
+  base: string,
+  fetchImpl: typeof fetch = fetch,
+  timeoutMs = REQUEST_TIMEOUT_MS
+): CheckoutApi => {
   const call = async <T>(
     path: string,
     init: { method?: string; body?: unknown; headers?: Record<string, string> } = {}
   ): Promise<T> => {
-    const response = await fetchImpl(`${base}/checkout/${path}`, {
-      method: init.method ?? 'GET',
-      cache: 'no-store',
-      headers: {
-        ...init.headers,
-        ...(init.body !== undefined ? { 'Content-Type': 'application/json' } : {})
-      },
-      body: init.body !== undefined ? JSON.stringify(init.body) : undefined
-    });
-    if (!response.ok) {
-      const body = (await response.json().catch(() => null)) as {
-        message?: string;
-        serverErrorCode?: string;
-      } | null;
-      throw new CheckoutApiError(
-        response.status,
-        body?.message || `checkout-api ${response.status}`,
-        body?.serverErrorCode
-      );
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const response = await fetchImpl(`${base}/checkout/${path}`, {
+        method: init.method ?? 'GET',
+        cache: 'no-store',
+        signal: controller.signal,
+        headers: {
+          ...init.headers,
+          ...(init.body !== undefined ? { 'Content-Type': 'application/json' } : {})
+        },
+        body: init.body !== undefined ? JSON.stringify(init.body) : undefined
+      });
+      if (!response.ok) {
+        const body = (await response.json().catch(() => null)) as {
+          message?: string;
+          serverErrorCode?: string;
+        } | null;
+        throw new CheckoutApiError(
+          response.status,
+          body?.message || `checkout-api ${response.status}`,
+          body?.serverErrorCode
+        );
+      }
+      return (await response.json()) as T;
+    } finally {
+      clearTimeout(timer);
     }
-    return (await response.json()) as T;
   };
   const id = encodeURIComponent;
   return {
@@ -449,14 +478,19 @@ export const walletSave = (
   const needsAddress = checkout.settings?.requireAddress === true;
   const body: ApiUserDetails & { isBusiness: boolean } = { isBusiness: d?.isBusiness ?? false };
   const missing: WalletGap[] = [];
+  // A complete saved delivery address carries its recipient's name: then the
+  // address needs no name from the sheet (sheetRequirements doesn't ask one).
+  const savedAddress = d?.address;
+  const addressNeedsName =
+    needsAddress && !(savedAddress?.street && savedAddress.firstName && savedAddress.lastName);
 
-  if (fieldOf(f?.name).enabled || needsAddress) {
+  if (fieldOf(f?.name).enabled || addressNeedsName) {
     const firstName = d?.firstName || contact.firstName;
     const lastName = d?.lastName || contact.lastName;
     if (firstName && lastName) {
       if (!d?.firstName) body.firstName = firstName;
       if (!d?.lastName) body.lastName = lastName;
-    } else if (fieldOf(f?.name).required || needsAddress) {
+    } else if (fieldOf(f?.name).required || addressNeedsName) {
       missing.push('name');
     }
   }
@@ -505,11 +539,20 @@ export const prepareCheckout = async (
   checkoutApi: CheckoutApi,
   checkoutId: string,
   email: string,
-  getToken: () => Promise<string | null>
+  getToken: () => Promise<string | null>,
+  /**
+   * Whether the reader this checkout is prepared for is still the signed-in
+   * one. Checked before the token is asked for and before the owner is
+   * written, so a logout or another login mid-way never sets this reader as
+   * owner, nor hands the next session's token to their checkout.
+   */
+  stillCurrent: () => boolean = () => true
 ): Promise<ApiCheckout> => {
   const checkout = await checkoutApi.get(checkoutId);
+  if (!stillCurrent()) throw new ReaderChangedError();
   if (checkout.user?.email?.toLowerCase() === email.toLowerCase()) return checkout;
   const token = isAuthRequired(checkout) ? await getToken() : null;
+  if (!stillCurrent()) throw new ReaderChangedError();
   return checkoutApi.setOwner(checkoutId, { email }, token);
 };
 

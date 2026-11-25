@@ -33,6 +33,7 @@
     expressRefusal,
     inlineRequirements,
     prepareCheckout,
+    ReaderChangedError,
     type ApiCheckout,
     type CheckoutApi,
     type ExpressOutcome,
@@ -108,7 +109,13 @@
     | { status: 'ready'; checkout: ApiCheckout; created: Checkout; checkoutApi: CheckoutApi }
     | { status: 'refused' };
   let express = $state<{ key: string; state: ExpressPrepared } | null>(null);
-  let expressPhase = $state<'idle' | 'unlocking'>('idle');
+  /**
+   * idle: a wallet may pay. paying: a sheet's payment holds the one payment
+   * slot. unlocking: paid, waiting for the entitlement. unresolved: paid as far
+   * as Stripe knows, not yet confirmed; payment stays closed until a check
+   * shows the attempt did not succeed. done: completed, nothing more to pay.
+   */
+  let expressPhase = $state<'idle' | 'paying' | 'unlocking' | 'unresolved' | 'done'>('idle');
   let expressNotice = $state<{ kind: 'error' | 'info'; text: string } | null>(null);
   /** Re-runs the access check once an express purchase has unlocked the article. */
   let accessRun = $state(0);
@@ -123,12 +130,60 @@
     authState = 'logged-in';
   };
 
+  /**
+   * A logout or a new login ends the reader session: nothing prepared or
+   * typed for the previous reader may reach the next one. Lookups and
+   * preparations still in flight carry the old session and are dropped.
+   */
+  const resetReaderSession = () => {
+    readerSession++;
+    readerEmail = null;
+    prepared.clear();
+    express = null;
+    expressPhase = 'idle';
+    expressNotice = null;
+    birthYear = '';
+    birthMonth = '';
+    birthDay = '';
+    inlinePhone = null;
+    inlinePhoneValid = false;
+    showInlineErrors = false;
+    phonePrefilled = false;
+  };
+
   const syncAuthOnLogout = () => {
     authState = 'logged-out';
     email = null;
-    readerEmail = null;
-    // A reader lookup still in flight speaks for the session that just ended.
-    readerSession++;
+    resetReaderSession();
+  };
+
+  /**
+   * A login on the page: when it is another reader, express mode starts over
+   * for them. The same reader's session event (a refresh) changes nothing.
+   */
+  const syncAuthOnLogin = () => {
+    if (expressRequested) lookUpReader();
+  };
+
+  /**
+   * The signed-in reader's email, for this reader session only. A different
+   * reader than the one express mode was prepared for ends that session.
+   */
+  const lookUpReader = () => {
+    const session = readerSession;
+    void api.auth
+      .getUser()
+      .then((user: { email?: unknown } | null) => {
+        if (session !== readerSession) return;
+        const next = typeof user?.email === 'string' ? user.email : null;
+        if (readerEmail && next?.toLowerCase() !== readerEmail.toLowerCase()) {
+          resetReaderSession();
+        }
+        readerEmail = next;
+      })
+      .catch(() => {
+        if (session === readerSession) readerEmail = null;
+      });
   };
 
   const logout = async () => {
@@ -141,9 +196,11 @@
 
   onMount(() => {
     window.addEventListener(SesamyJsEvent.LOGOUT, syncAuthOnLogout);
+    window.addEventListener(SesamyJsEvent.AUTHENTICATED, syncAuthOnLogin);
   });
   onDestroy(() => {
     window.removeEventListener(SesamyJsEvent.LOGOUT, syncAuthOnLogout);
+    window.removeEventListener(SesamyJsEvent.AUTHENTICATED, syncAuthOnLogin);
   });
 
   const contentArticle = api.content.get(host);
@@ -207,18 +264,7 @@
       } else if (showLoginButton) {
         void loadLoggedInUser();
       }
-      if (isAuthed && expressRequested) {
-        const session = readerSession;
-        void api.auth
-          .getUser()
-          .then((user: { email?: unknown } | null) => {
-            if (session !== readerSession) return;
-            readerEmail = typeof user?.email === 'string' ? user.email : null;
-          })
-          .catch(() => {
-            if (session === readerSession) readerEmail = null;
-          });
-      }
+      if (isAuthed && expressRequested) lookUpReader();
       dispatchSesamyEvent(host, 'sesamy:paywall-shown', {
         reason: isAuthed ? 'no-entitlement' : 'unauthenticated'
       });
@@ -367,6 +413,8 @@
     const key = productKey(selectedProduct);
     let promise = prepared.get(key);
     if (!promise) {
+      const session = readerSession;
+      const stillCurrent = () => session === readerSession;
       promise = (async (): Promise<ExpressPrepared> => {
         const checkoutPayload = checkoutPayloadFor(selectedProduct);
         // An integration that cancels checkout creation cancels it here too.
@@ -377,12 +425,20 @@
         );
         if (event.canceled) return { status: 'refused' };
         const created = await api.checkouts.create(checkoutPayload);
+        // A reader who logged out (or was replaced) meanwhile: this checkout
+        // never gets an owner, and no token is asked for it.
+        if (!stillCurrent()) return { status: 'refused' };
         const base = checkoutApiBase(created.checkoutUrl);
         if (!base) return { status: 'refused' };
         const checkoutApi = createCheckoutApi(base);
-        const apiCheckout = await prepareCheckout(checkoutApi, created.id, owner, () =>
-          api.auth.getTokenSilently(false)
+        const apiCheckout = await prepareCheckout(
+          checkoutApi,
+          created.id,
+          owner,
+          () => api.auth.getTokenSilently(false),
+          stillCurrent
         );
+        if (!stillCurrent()) return { status: 'refused' };
         const refusal = expressRefusal(apiCheckout);
         if (refusal) {
           api.log(`Express checkout not offered for ${key}: ${refusal}`);
@@ -390,8 +446,10 @@
         }
         return { status: 'ready', checkout: apiCheckout, created, checkoutApi };
       })().catch((err) => {
-        console.error('Express checkout could not be prepared', err);
-        prepared.delete(key);
+        if (!(err instanceof ReaderChangedError)) {
+          console.error('Express checkout could not be prepared', err);
+        }
+        if (stillCurrent()) prepared.delete(key);
         return { status: 'refused' } as const;
       });
       prepared.set(key, promise);
@@ -404,11 +462,14 @@
     const key = productKey(product);
     if (express?.key === key) return;
     express = { key, state: { status: 'preparing' } };
+    const session = readerSession;
     // Preparation that doesn't settle in time gives the normal paywall back.
     const timeout = new Promise<ExpressPrepared>((resolve) =>
       setTimeout(() => resolve({ status: 'refused' }), PREPARE_TIMEOUT_MS)
     );
     void Promise.race([prepareExpress(product, readerEmail), timeout]).then((state) => {
+      // Only for the reader session it was prepared in.
+      if (session !== readerSession) return;
       if (express?.key === key && express.state.status === 'preparing') express = { key, state };
     });
   });
@@ -423,6 +484,7 @@
    * can be started, so a slow confirmation never leads to a second payment.
    */
   const unlockAfterPurchase = async (processing = false) => {
+    const session = readerSession;
     expressPhase = 'unlocking';
     expressNotice = {
       kind: 'info',
@@ -435,6 +497,7 @@
     let granted = false;
     for (let attempt = 0; attempt < attempts && !granted; attempt++) {
       if (attempt) await wait(1500);
+      if (session !== readerSession) return;
       try {
         api.clearCache();
         granted = accessDenied
@@ -444,14 +507,50 @@
         api.log(`Access check after express purchase failed: ${err}`);
       }
     }
+    if (session !== readerSession) return;
     window.dispatchEvent(new CustomEvent(SesamyInternalEvent.ENTITLEMENTS_CHANGED));
     if (granted) {
       expressNotice = null;
       accessRun++;
+    } else if (processing) {
+      // Not known to have succeeded nor failed: payment stays closed, so a
+      // second checkout can't charge again, until a check says otherwise.
+      expressPhase = 'unresolved';
+      expressNotice = { kind: 'info', text: t('express_still_processing') };
     } else {
-      expressPhase = 'idle';
+      // The checkout completed: there is nothing left to pay.
+      expressPhase = 'done';
       expressNotice = { kind: 'info', text: t('express_reload') };
     }
+  };
+
+  /**
+   * After an unresolved payment: ask checkout-api where the checkout is.
+   * Completed → unlock; still waiting → stay closed; back to PENDING or
+   * FAILED → the attempt did not succeed, so payment opens again.
+   */
+  const checkPaymentAgain = async () => {
+    const current = express?.state;
+    if (expressPhase !== 'unresolved' || current?.status !== 'ready') return;
+    const session = readerSession;
+    try {
+      const checkoutNow = await current.checkoutApi.get(current.checkout.id);
+      if (session !== readerSession) return;
+      if (checkoutNow.status === 'COMPLETED') return void unlockAfterPurchase();
+      if (checkoutNow.status === 'PENDING' || checkoutNow.status === 'FAILED') {
+        expressPhase = 'idle';
+        expressNotice = { kind: 'error', text: t('express_declined') };
+      }
+    } catch (err) {
+      api.log(`Express checkout status check failed: ${err}`);
+    }
+  };
+
+  /** The paywall's one payment slot, shared by both wallet buttons. */
+  const acquirePayment = () => {
+    if (expressPhase !== 'idle') return false;
+    expressPhase = 'paying';
+    return true;
   };
 
   const onExpressOutcome = (outcome: ExpressOutcome) => {
@@ -464,11 +563,14 @@
         void unlockAfterPurchase(true);
         return;
       case 'declined':
+        // Nothing was charged: the reader may try again.
+        expressPhase = 'idle';
         expressNotice = { kind: 'error', text: outcome.message || t('express_declined') };
         return;
       case 'fallback': {
         // The sheet couldn't give a field the checkout requires: the hosted
         // checkout asks for it, on the same checkout.
+        expressPhase = 'idle';
         const current = express?.state;
         if (current?.status === 'ready') {
           void goToCheckout(current.created, { auth: api.auth });
@@ -476,6 +578,9 @@
         return;
       }
       case 'error':
+        // payWithWallet reports an error only before Stripe holds the
+        // payment, or once Stripe says it wasn't paid: retrying is safe.
+        expressPhase = 'idle';
         expressNotice = { kind: 'error', text: t('something_went_wrong') };
         return;
     }
@@ -780,7 +885,8 @@
                     {#key express.key}
                       <div
                         class="mt-2 w-full column gap-2"
-                        class:pointer-events-none={expressPhase === 'unlocking'}
+                        class:pointer-events-none={expressPhase !== 'idle'}
+                        class:opacity-50={expressPhase === 'unresolved' || expressPhase === 'done'}
                       >
                         {#each WALLETS as wallet (wallet)}
                           <ExpressCheckout
@@ -794,6 +900,8 @@
                             blocked={!inlineComplete(ready.checkout, wallet)}
                             {getInline}
                             onBlockedTap={() => (showInlineErrors = true)}
+                            locked={expressPhase !== 'idle'}
+                            acquire={acquirePayment}
                             onAvailability={(available) =>
                               (walletAvailability = { ...walletAvailability, [wallet]: available })}
                             onStart={onExpressStart}
@@ -818,13 +926,25 @@
                         {expressNotice.text}
                       </div>
                     {/if}
-                    <button
-                      type="submit"
-                      class="text-sm font-bold mx-auto hover:underline p-1"
-                      disabled={loading || expressPhase === 'unlocking'}
-                    >
-                      {t('express_more_options')}
-                    </button>
+                    {#if expressPhase === 'unresolved'}
+                      <button
+                        type="button"
+                        class="text-sm font-bold mx-auto hover:underline p-1"
+                        onclick={checkPaymentAgain}
+                      >
+                        {t('express_check_again')}
+                      </button>
+                    {:else if expressPhase === 'idle'}
+                      <!-- Only while no payment is running or unresolved: a second
+                           checkout must never be started next to the first. -->
+                      <button
+                        type="submit"
+                        class="text-sm font-bold mx-auto hover:underline p-1"
+                        disabled={loading}
+                      >
+                        {t('express_more_options')}
+                      </button>
+                    {/if}
                   {:else if expressActive && express?.state.status === 'preparing'}
                     <div
                       class="mt-2 h-12 w-full rounded-md bg-gray-200 dark:bg-black/25 animate-pulse"

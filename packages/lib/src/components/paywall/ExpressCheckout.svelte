@@ -53,6 +53,17 @@
     getInline?: () => InlineDetails;
     /** A tap while blocked: the paywall points at the missing fields. */
     onBlockedTap?: () => void;
+    /**
+     * No sheet may open: a payment is running or still being confirmed, here
+     * or on the other wallet's button.
+     */
+    locked?: boolean;
+    /**
+     * Claims the paywall's one payment slot at Pay; false when another wallet
+     * payment holds it. The paywall frees it from the outcome, so two sheets
+     * can never pay at once.
+     */
+    acquire?: () => boolean;
     /** Whether this browser shows this wallet (false also when Stripe didn't load). */
     onAvailability: (available: boolean) => void;
     /** The reader tapped the wallet button. */
@@ -71,6 +82,8 @@
     blocked = false,
     getInline,
     onBlockedTap,
+    locked = false,
+    acquire,
     onAvailability,
     onStart,
     onOutcome
@@ -113,7 +126,9 @@
     elements: StripeElements,
     event: StripeExpressCheckoutElementConfirmEvent
   ) => {
-    if (busy) return event.paymentFailed({ reason: 'fail' });
+    if (busy || locked || blocked || (acquire && !acquire())) {
+      return event.paymentFailed({ reason: 'fail' });
+    }
     busy = true;
     try {
       const returnUrl = new URL(window.location.href);
@@ -165,31 +180,12 @@
       (stripe) => {
         if (destroyed || reported || !container) return;
         if (!stripe) return report(false);
-        const elements = stripe.elements({
-          ...elementsOptions(checkout),
-          locale: (t.lang || 'auto') as StripeElementLocale
-        });
-        element = elements.create(
-          'expressCheckout',
-          expressElementOptions(checkout, wallet, t('express_digital_delivery'))
-        );
-        element.on('ready', ({ availablePaymentMethods }) =>
-          report(!!availablePaymentMethods?.[wallet])
-        );
-        element.on('loaderror', () => report(false));
-        // Plain device tokens, also for subscriptions: checkout-v3's Apple Pay
-        // recurring request got renewals declined (v3#893), so none here.
-        element.on('click', (event) => {
-          onStart?.();
-          event.resolve();
-        });
-        // The address in these events is partial and anonymised: never read it.
-        element.on('shippingaddresschange', (event) => event.resolve());
-        element.on('shippingratechange', (event) => event.resolve());
-        element.on('confirm', (event) => void onConfirm(stripe, elements, event));
-        // Dismissing the sheet changes nothing.
-        element.on('cancel', () => {});
-        element.mount(container);
+        try {
+          mountElement(stripe, container);
+        } catch (error) {
+          console.error('Express checkout element failed to mount', error);
+          if (!destroyed) report(false);
+        }
       },
       (error) => {
         console.error('Stripe.js failed to load', error);
@@ -197,6 +193,39 @@
       }
     );
   });
+
+  const mountElement = (stripe: Stripe, target: HTMLDivElement) => {
+    const elements = stripe.elements({
+      ...elementsOptions(checkout),
+      locale: (t.lang || 'auto') as StripeElementLocale
+    });
+    element = elements.create(
+      'expressCheckout',
+      expressElementOptions(checkout, wallet, t('express_digital_delivery'))
+    );
+    element.on('ready', ({ availablePaymentMethods }) =>
+      report(!!availablePaymentMethods?.[wallet])
+    );
+    element.on('loaderror', () => report(false));
+    // Plain device tokens, also for subscriptions: checkout-v3's Apple Pay
+    // recurring request got renewals declined (v3#893), so none here.
+    element.on('click', (event) => {
+      // The overlay covers the button for a pointer, not for a keyboard:
+      // the sheet only opens once its fields are in and no other payment
+      // is running. An unresolved click leaves the sheet closed.
+      if (blocked) return onBlockedTap?.();
+      if (locked) return;
+      onStart?.();
+      event.resolve();
+    });
+    // The address in these events is partial and anonymised: never read it.
+    element.on('shippingaddresschange', (event) => event.resolve());
+    element.on('shippingratechange', (event) => event.resolve());
+    element.on('confirm', (event) => void onConfirm(stripe, elements, event));
+    // Dismissing the sheet changes nothing.
+    element.on('cancel', () => {});
+    element.mount(target);
+  };
 
   onDestroy(() => {
     destroyed = true;
