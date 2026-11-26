@@ -52,7 +52,10 @@ export const SesamyJsEvent = {
 
 // Dispatched on `window` between components, not part of the public API.
 export const SesamyInternalEvent = {
-  CONTENT_GRANTED: 'sesamyContentGranted'
+  CONTENT_GRANTED: 'sesamyContentGranted',
+  // A purchase completed on the page (the paywall's express checkout): the
+  // reader's entitlements changed, so access is asked again.
+  ENTITLEMENTS_CHANGED: 'sesamyEntitlementsChanged'
 } as const;
 
 export const SesamyEventName = {

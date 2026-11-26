@@ -25,6 +25,13 @@ export type PaywallProps = {
   ['utm-term']?: string;
   ['utm-content']?: string;
   pass?: string;
+  // Express checkout (proof of concept): a signed-in reader pays the selected
+  // option with Apple Pay or Google Pay in place, and the article unlocks
+  // without a redirect. Off unless set; "false" also turns it off.
+  ['express-checkout']?: string;
+  // The Stripe platform publishable key Stripe.js loads with (`pk_test_…` on
+  // dev). Required by `express-checkout` until the checkout API returns it.
+  ['stripe-publishable-key']?: string;
 };
 
 export type PaywallElementProps = PaywallProps & {

@@ -307,6 +307,35 @@ A web component that displays a paywall for content, loading paywall settings fr
 - `redirect-label`: Label for the button back to the redirect URL on the checkout confirmation page and in the order confirmation email
 - `utm-source`, `utm-medium`, `utm-campaign`, `utm-term`, `utm-content`: UTM parameters for tracking
 - `pass`: Pass ID for access
+- `express-checkout` (proof of concept): pay with Apple Pay or Google Pay in place. See below.
+- `stripe-publishable-key`: the Stripe platform publishable key, which `express-checkout` needs for now
+
+**Express checkout (proof of concept):**
+
+With `express-checkout` set on an Article paywall, a signed-in reader sees
+Apple Pay and Google Pay buttons in place of Continue. Tapping one opens the
+wallet sheet directly, and when the payment completes the article unlocks on
+the page, without a redirect. It covers single purchases and subscriptions
+paid by card through Stripe.
+
+```html
+<sesamy-paywall
+  settings-url="https://api.sesamy.dev/paywall/paywalls/acme/OxHlsEHTUGs1tpF6EoRy8"
+  express-checkout
+  stripe-publishable-key="pk_test_…"
+></sesamy-paywall>
+```
+
+- A reader who isn't signed in gets the normal paywall and its login.
+- A browser without a wallet, or a checkout with no Stripe card, gets the normal paywall.
+- A required birthdate, and with Google Pay a required phone, are asked next to
+  the buttons. A gift, a business purchase, or anything else the sheet can't
+  give goes to the hosted checkout.
+- Wallet buttons only show over HTTPS, on a domain registered with Stripe for
+  the vendor's connected account.
+
+The demo page is `packages/demo/express-checkout.html` (`yarn dev`, then
+`/express-checkout.html?pk=pk_test_…`).
 
 **Post-purchase redirect:**
 

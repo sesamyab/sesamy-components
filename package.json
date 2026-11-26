@@ -93,6 +93,7 @@
     "@tailwindcss/container-queries": "0.1.1",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/svelte": "5.4.2",
+    "@testing-library/user-event": "14.5.2",
     "@tsconfig/svelte": "5.0.9",
     "@types/node": "24.19.2",
     "autoprefixer": "10.6.2",
@@ -134,6 +135,7 @@
     "@sesamy/sesamy-js": "1.140.1"
   },
   "dependencies": {
+    "@stripe/stripe-js": "10.2.1",
     "@zootools/email-spell-checker": "^1.12.0",
     "lucide-svelte": "^0.577.0"
   },
